@@ -11,10 +11,24 @@ To read-in the data into Python we used the following:
 
 ```{python}
 import geopandas as gpd
-network = gpd.read_file("data/minimal-example-2-scotthall-road.geojson")
+network = gpd.read_file("data/minimal-input.geojson")
 # Column names:
 network.columns
 
 # colour is based on 'description' column
-network.plot(column='description');
+network.plot(column='value')
+```
+
+
+```{r}
+#| eval: false
+#| echo: false
+# Create input dataset:
+network = sf::read_sf("data/minimal-example-2-scotthall-road.geojson")
+network$description = as.numeric(network$description)
+network = network["description"]
+network$value = c(1, 2)
+network = stplanr::overline(network, attrib = "value")
+network
+sf::write_sf(network, "data/minimal-input.geojson")
 ```
