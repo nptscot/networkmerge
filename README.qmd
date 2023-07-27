@@ -31,4 +31,11 @@ network$value = c(1, 2)
 network = stplanr::overline(network, attrib = "value")
 network
 sf::write_sf(network, "data/minimal-input.geojson")
+plot(network[1, "value"])
+plot(network[2, "value"])
+network_merged = network
+network_merged$value[2] = network_merged$value[1] + network_merged$value[2]
+network_merged = network_merged[-1, ]
+plot(network_merged)
+sf::write_sf(network_merged, "data/minimal-output.geojson")
 ```
