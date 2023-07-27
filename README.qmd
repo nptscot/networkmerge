@@ -10,15 +10,21 @@ The example dataset can be found in the `data` folder.
 To read-in the data into Python we used the following:
 
 ```{python}
+#| layout-ncol: 2
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots()
 import geopandas as gpd
 network = gpd.read_file("data/minimal-input.geojson")
 # Column names:
 network.columns
 
 # colour is based on 'description' column
+output = gpd.read_file("data/minimal-output.geojson")
 network.plot(column='value')
+plt.show()
+output.plot(column='value')
+plt.show()
 ```
-
 
 ```{r}
 #| eval: false
