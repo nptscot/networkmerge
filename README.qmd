@@ -32,7 +32,9 @@ plt.show()
 point = (53.81524, -1.53880)
 distance = 500  # in meters
 
-# Download the road network data for the area around the point
+#-----------------------------------------------------------------------#
+#----Download the road network data for the area around the point-------#
+#-----------------------------------------------------------------------#
 graph = ox.graph_from_point(point, dist=distance, network_type='all')
 
 # Save the road network as a shapefile
@@ -51,6 +53,70 @@ gdf_road.plot(ax=ax, color='blue')
 gdf.plot(ax=ax, color='red')
 
 plt.show()
+
+#-----------------------------------------------------------------------#
+#--------------Find matching lines from Leeds road data-----------------#
+#-----------------------------------------------------------------------#
+
+# Define the buffer size
+buffer_size = 0.00001
+
+# Create a buffer around the geometries in gdf
+gdf_buffered = gdf.copy()
+gdf_buffered.geometry = gdf.geometry.buffer(buffer_size)
+
+# Initialize an empty DataFrame to store the matching lines
+matching_lines_large_intersection = gpd.GeoDataFrame(columns=gdf_road.columns)
+
+# Define the intersection length threshold
+intersection_length_threshold = 0.0001
+
+# Iterate over the buffered geometries in the GeoJSON GeoDataFrame
+for geojson_line in gdf_buffered.geometry:
+    # Iterate over the geometries in the shapefile GeoDataFrame
+    for _, edge_row in gdf_road.iterrows():
+        shapefile_line = edge_row.geometry
+        
+        # Calculate the intersection of the GeoJSON line and the shapefile line
+        intersection = geojson_line.intersection(shapefile_line)
+        
+        # If the length of the intersection exceeds the threshold, add the shapefile line to the matching lines DataFrame
+        if intersection.length > intersection_length_threshold:
+            matching_lines_large_intersection = pd.concat([matching_lines_large_intersection, pd.DataFrame(edge_row).T])
+
+# Plot gdf_buffered (in blue) and matching_lines_buffered (in green) on the same plot
+fig, ax = plt.subplots(figsize=(10, 10))
+
+gdf_buffered.boundary.plot(ax=ax, color='blue', label='minimal-input.geojson (Buffered)')
+matching_lines_large_intersection.plot(ax=ax, color='green', label='matching_lines_buffered')
+gdf.plot(ax=ax, color='black')
+ax.set_title('Comparison of minimal-input.geojson (Buffered) and matching_lines_buffered')
+ax.legend()
+
+plt.show()
+
+#---------------------------------------------------------------------------------------#
+#Function to find the nearest line in the Shapefile for a given line in the GeoJSON file#
+#---------------------------------------------------------------------------------------#
+def find_nearest_line(line, lines_df, geom_col='geometry'):
+    # Calculate the distance from the line to all lines in the Shapefile
+    distances = lines_df[geom_col].distance(line)
+    
+    # Find the index of the line with the shortest distance
+    idx_min = distances.idxmin()
+    
+    # Return the row with the shortest distance
+    return lines_df.loc[idx_min]
+
+# Apply the function to each line in the GeoJSON file
+nearest_lines = gdf['geometry'].apply(find_nearest_line, lines_df=gdf_road)
+
+# Now we have a DataFrame with the nearest line from the Shapefile for each line in the GeoJSON file
+nearest_lines[['name', 'highway']]
+nearest_lines['value'] = gdf['value']
+gdf_att = nearest_lines[['name', 'highway', 'value','geometry']]
+
+
 ```
 
 ```{r}
