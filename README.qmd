@@ -134,6 +134,17 @@ def check_same_start_end(gdf, line1, line2):
 
 check_same_start_end(geo_data, 0, 1)
 
+gdf_remove = gdf.copy()
+# Add the value of Line 0 to Line 1
+gdf_remove.loc[1, 'value'] += gdf_remove.loc[0, 'value']
+
+# Remove Line 0
+gdf_remove = gdf_remove.drop(0)
+
+# Reset the index
+gdf_remove = gdf_remove.reset_index(drop=True)
+
+gdf_remove.plot()
 ```
 
 ```{r}
