@@ -169,15 +169,7 @@ gdf_split = gpd.GeoDataFrame(gdf_split, geometry='geometry')
 # Set the CRS of gdf_split to match that of gdf
 gdf_split.crs = gdf.crs
 
-# Plot the gdf_split
-fig, ax = plt.subplots(figsize=(10, 10))
-gdf_split.plot(ax=ax)
-
-# Add labels for each line with its index
-for x, y, label in zip(gdf_split.geometry.centroid.x, gdf_split.geometry.centroid.y, gdf_split.index):
-    ax.text(x, y, str(label), fontsize=12)
-
-plt.show()
+plot_geodataframe_with_labels(gdf_split)
 
 #---------------------------------------------------------------------------------------#
 #Function to find the nearest line in the Shapefile for a given line in the GeoJSON file#
