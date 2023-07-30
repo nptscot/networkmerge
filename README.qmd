@@ -160,11 +160,11 @@ def find_nearest_line(line, lines_df, geom_col='geometry'):
     return lines_df.loc[idx_min]
 
 # Apply the function to each line in the GeoJSON file
-nearest_lines = gdf['geometry'].apply(find_nearest_line, lines_df=gdf_road)
+nearest_lines = gdf_split['geometry'].apply(find_nearest_line, lines_df=gdf_road)
 
 # Now we have a DataFrame with the nearest line from the Shapefile for each line in the GeoJSON file
 nearest_lines[['name', 'highway']]
-nearest_lines['value'] = gdf['value']
+nearest_lines['value'] = gdf_split['value']
 gdf_att = nearest_lines[['name', 'highway', 'value','geometry']]
 gdf_att = gpd.GeoDataFrame(gdf_att, geometry='geometry')
 gdf_att.to_file("data/gdf_att.geojson", driver='GeoJSON')
