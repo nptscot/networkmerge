@@ -116,6 +116,23 @@ nearest_lines[['name', 'highway']]
 nearest_lines['value'] = gdf['value']
 gdf_att = nearest_lines[['name', 'highway', 'value','geometry']]
 
+#--------------------------------------------------------------#
+#-----Function to find the lines have same start_end point-----#
+#--------------------------------------------------------------#
+def check_same_start_end(gdf, line1, line2):
+    """
+    Check if two lines have the same start and end points.
+    
+    """
+    line1_start_end = (gdf.iloc[line1].geometry.coords[0], gdf.iloc[line1].geometry.coords[-1])
+    line2_start_end = (gdf.iloc[line2].geometry.coords[0], gdf.iloc[line2].geometry.coords[-1])
+
+    same_start = line1_start_end[0] == line2_start_end[0]
+    same_end = line1_start_end[1] == line2_start_end[1]
+
+    return same_start, same_end
+
+check_same_start_end(geo_data, 0, 1)
 
 ```
 
