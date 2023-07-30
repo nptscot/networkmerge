@@ -9,20 +9,47 @@ The example dataset can be found in the `data` folder.
 
 To read-in the data into Python we used the following:
 
-```{python}
-#| layout-ncol: 2
+``` python
 import matplotlib.pyplot as plt
-fig, ax = plt.subplots()
+import pandas as pd
+import math
+from typing import List, Tuple
+from shapely.geometry import LineString
 import geopandas as gpd
+import osmnx as ox
+
 network = gpd.read_file("data/minimal-input.geojson")
 # Column names:
 network.columns
-
-# colour is based on 'description' column
 output = gpd.read_file("data/minimal-output.geojson")
 network.plot(column='value')
 plt.show()
 output.plot(column='value')
+plt.show()
+
+# Download Leeds Road Network data from OSM
+# Define the point and distance
+point = (53.81524, -1.53880)
+distance = 500  # in meters
+
+# Download the road network data for the area around the point
+graph = ox.graph_from_point(point, dist=distance, network_type='all')
+
+# Save the road network as a shapefile
+ox.save_graph_shapefile(graph, filepath=r'data/')
+
+gdf = gpd.read_file("data/minimal-input.geojson")
+gdf_road = gpd.read_file("data/edges.shp")
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(10, 10))
+
+# Plot the Shapefile data
+gdf_road.plot(ax=ax, color='blue')
+
+# Plot the GeoJSON data
+gdf.plot(ax=ax, color='red')
+
 plt.show()
 ```
 
