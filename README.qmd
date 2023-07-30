@@ -96,6 +96,57 @@ ax.legend()
 plt.show()
 
 #---------------------------------------------------------------------------------------#
+#-----------------------------Function to split line by angle---------------------------#
+#---------------------------------------------------------------------------------------#
+def split_line_at_angles(line, threshold=30):
+    if isinstance(line, LineString):
+        coords = np.array(line.coords)
+    elif isinstance(line, MultiLineString):
+        coords = np.concatenate([np.array(geom.coords) for geom in line.geoms])
+    else:
+        raise ValueError(f"Unexpected geometry type: {type(line)}")
+
+    # Compute the direction of each vector
+    vectors = np.diff(coords, axis=0)
+    directions = np.arctan2(vectors[:,1], vectors[:,0])
+
+    # Compute the angle between each pair of vectors
+    angles = np.diff(directions)
+    
+    # Convert the angles to degrees and take absolute values
+    angles = np.abs(np.degrees(angles))
+
+    # Identify the indices where the angle exceeds the threshold
+    split_indices = np.where(angles > threshold)[0] + 1
+
+    # Split the line at the points corresponding to the split indices
+    segments = []
+    last_index = 0
+    for index in split_indices:
+        segment = LineString(coords[last_index:index+1])
+        segments.append(segment)
+        last_index = index
+    segment = LineString(coords[last_index:])
+    segments.append(segment)
+
+    return segments
+# Apply the function to each line in the gdf with threshold=30
+gdf_split = gdf['geometry'].apply(lambda x: split_line_at_angles(x, threshold=30))
+gdf_split = gdf_split.explode().reset_index(drop=True)
+gdf_split = gpd.GeoDataFrame(geometry=gdf_split)
+gdf_split.crs = gdf.crs
+
+# Plot the gdf_split
+fig, ax = plt.subplots(figsize=(10, 10))
+gdf_split.plot(ax=ax)
+
+# Add labels for each line with its index
+for x, y, label in zip(gdf_split.geometry.centroid.x, gdf_split.geometry.centroid.y, gdf_split.index):
+    ax.text(x, y, str(label), fontsize=12)
+
+plt.show()
+
+#---------------------------------------------------------------------------------------#
 #Function to find the nearest line in the Shapefile for a given line in the GeoJSON file#
 #---------------------------------------------------------------------------------------#
 def find_nearest_line(line, lines_df, geom_col='geometry'):
