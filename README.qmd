@@ -156,25 +156,53 @@ plt.show()
 #---------------------------------------------------------------------------------------#
 #Function to find the nearest line in the Shapefile for a given line in the GeoJSON file#
 #---------------------------------------------------------------------------------------#
-def find_nearest_line(line, lines_df, geom_col='geometry'):
-    # Calculate the distance from the line to all lines in the Shapefile
-    distances = lines_df[geom_col].distance(line)
+def get_nearest_line_attributes(line, gdf):
+    # Calculate the centroid of the line
+    line_centroid = line.centroid
     
-    # Find the index of the line with the shortest distance
-    idx_min = distances.idxmin()
+    # Calculate the distances from the line's centroid to the centroids of all lines in the GeoDataFrame
+    distances = gdf.centroid.distance(line_centroid)
     
-    # Return the row with the shortest distance
-    return lines_df.loc[idx_min]
+    # Get the index of the line with the minimum distance
+    min_distance_index = distances.idxmin()
+    
+    # Return the attributes of the nearest line
+    return gdf.loc[min_distance_index]
 
-# Apply the function to each line in the GeoJSON file
-nearest_lines = gdf_split['geometry'].apply(find_nearest_line, lines_df=gdf_road)
+# Initialize a list to store the attributes of the nearest lines
+nearest_lines_attributes = []
 
-# Now we have a DataFrame with the nearest line from the Shapefile for each line in the GeoJSON file
-nearest_lines[['name', 'highway']]
-nearest_lines['value'] = gdf_split['value']
-gdf_att = nearest_lines[['name', 'highway', 'value','geometry']]
-gdf_att = gpd.GeoDataFrame(gdf_att, geometry='geometry')
-gdf_att.to_file("data/gdf_att.geojson", driver='GeoJSON')
+# Iterate through the lines in gdf_split
+for line in gdf_split.geometry:
+    # Get the attributes of the nearest line in gdf_road
+    nearest_line_attributes = get_nearest_line_attributes(line, gdf_road)
+    # Append the attributes to the list
+    nearest_lines_attributes.append(nearest_line_attributes)
+
+# Convert the list of Series to a DataFrame
+nearest_lines_attributes = pd.concat(nearest_lines_attributes, axis=1).T
+
+# Reset the index of the DataFrame
+nearest_lines_attributes.reset_index(drop=True, inplace=True)
+
+# Rename the 'geometry' column in nearest_lines_attributes to 'geometry_road'
+nearest_lines_attributes.rename(columns={'geometry': 'geometry_road'}, inplace=True)
+
+# Concatenate gdf_split and nearest_lines_attributes
+gdf_split = pd.concat([gdf_split.reset_index(drop=True), nearest_lines_attributes.reset_index(drop=True)], axis=1)
+
+gdf_att gdf_split[['geometry', 'value', 'name', 'highway','ref']] 
+
+# Plot the data
+fig, ax = plt.subplots(figsize=(10, 10))
+gdf_att.plot(ax=ax)
+
+# Add labels for each line with its index
+for x, y, label in zip(gdf_att.geometry.centroid.x, gdf_att.geometry.centroid.y, gdf_att.index):
+    ax.text(x, y, str(label), fontsize=12)
+
+plt.show()
+
 #--------------------------------------------------------------#
 #-----Function to find the lines have same start_end point-----#
 #--------------------------------------------------------------#
