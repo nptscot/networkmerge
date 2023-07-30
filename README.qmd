@@ -33,6 +33,32 @@ point = (53.81524, -1.53880)
 distance = 500  # in meters
 
 #-----------------------------------------------------------------------#
+#------------function to plot GeoDataFrame with index label-------------#
+#-----------------------------------------------------------------------#
+def plot_geodataframe_with_labels(gdf):
+    """
+    Plot a GeoDataFrame with labels for each line with its index.
+
+    Args:
+    gdf (geopandas.GeoDataFrame): The GeoDataFrame to plot.
+
+    Returns:
+    None
+    """
+    # Create a new figure
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    # Plot the GeoDataFrame
+    gdf.plot(ax=ax)
+
+    # Add labels for each line with its index
+    for x, y, label in zip(gdf.geometry.centroid.x, gdf.geometry.centroid.y, gdf.index):
+        ax.text(x, y, str(label), fontsize=12)
+
+    # Display the plot
+    plt.show()
+
+#-----------------------------------------------------------------------#
 #----Download the road network data for the area around the point-------#
 #-----------------------------------------------------------------------#
 graph = ox.graph_from_point(point, dist=distance, network_type='all')
