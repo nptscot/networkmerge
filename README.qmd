@@ -29,6 +29,7 @@ output = gpd.read_file("data/minimal-output.geojson")
 fig, ax = plt.subplots(figsize=(10, 10))
 network.plot(ax =ax, color = 'red' , column='value')
 output.plot(ax =ax,  color = 'blue' ,column='value')
+plt.savefig("pics/network_output.jpg")
 plt.show()
 
 # Download Leeds Road Network data from OSM
@@ -39,7 +40,7 @@ distance = 500  # in meters
 #########################################################################
 #############function to plot GeoDataFrame with index label##############
 #########################################################################
-def plot_geodataframe_with_labels(gdf):
+def plot_geodataframe_with_labels(gdf, gdf_name):
 
     # Create a new figure
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -50,7 +51,7 @@ def plot_geodataframe_with_labels(gdf):
     # Add labels for each line with its index
     for x, y, label in zip(gdf.geometry.centroid.x, gdf.geometry.centroid.y, gdf.index):
         ax.text(x, y, str(label), fontsize=12)
-
+    plt.savefig(f"pics/{gdf_name}.jpg")
     # Display the plot
     plt.show()
 
@@ -74,6 +75,7 @@ gdf_road.plot(ax=ax, color='blue')
 # Plot the GeoJSON data
 gdf.plot(ax=ax, color='red')
 
+plt.savefig(f"pics/gdf_road.jpg")
 plt.show()
 
 #########################################################################
@@ -114,11 +116,11 @@ matching_lines_large_intersection.plot(ax=ax, color='green', label='matching_lin
 gdf.plot(ax=ax, color='black')
 ax.set_title('Comparison of minimal-input.geojson (Buffered) and matching_lines_buffered')
 ax.legend()
-
+plt.savefig(f"pics/matching_lines.jpg")
 plt.show()
 matching_lines_large_intersection.to_file("data/gdf_matching_lines.geojson", driver='GeoJSON')
 gdf_matching_lines = gpd.read_file("data/gdf_matching_lines.geojson")
-plot_geodataframe_with_labels(gdf_matching_lines)
+plot_geodataframe_with_labels(gdf_matching_lines, gdf_name ='gdf_matching_lines')
 #########################################################################
 ################### Function to split line by angle #####################
 #########################################################################
@@ -167,7 +169,7 @@ gdf_split = gpd.GeoDataFrame(gdf_split, geometry='geometry')
 # Set the CRS of gdf_split to match that of gdf
 gdf_split.crs = gdf.crs
 
-plot_geodataframe_with_labels(gdf_split)
+plot_geodataframe_with_labels(gdf_split, gdf_name ='gdf_split')
 
 #########################################################################
 ### Find the nearest line in the .shp for a given line in the GeoJSON ###
@@ -195,7 +197,7 @@ gdf_split['centroid'].plot(ax=ax, markersize=5, color='red', alpha=0.5, marker='
 
 # Set plot title
 ax.set_title('Buffered Roads and Centroids of Line Segments')
-
+plt.savefig(f"pics/Buffered Roads and Centroids of Line Segments.jpg")
 plt.show()
 
 # Copy the columns from gdf_matching_lines to gdf_split
@@ -305,7 +307,7 @@ def find_line_by_points(gdf, start_point, end_point, tolerance=1e-6):
     # If no line was found, return None
     return None
 
-def plot_paths(gdf, paths, shortest_path):
+def plot_paths(gdf, paths, shortest_path,gdf_name):
     # Create a new figure
     fig, ax = plt.subplots(figsize=(10, 10))
 
@@ -324,12 +326,12 @@ def plot_paths(gdf, paths, shortest_path):
             # Add a label with the line's index
             x, y = line.geometry.centroid.x, line.geometry.centroid.y
             ax.text(x, y, str(line.name), fontsize=12)
-            
+    plt.savefig(f"pics/gdf_{gdf_name}.jpg")        
     # Display the plot
     plt.show()
 
 # Use the function to plot the paths
-plot_paths(gdf_split, all_paths, shortest_path)
+plot_paths(gdf_split, all_paths, shortest_path,gdf_name ='all_paths')
 
 #########################################################################
 ######################## Find division subpaths #########################
@@ -392,7 +394,7 @@ def find_division_subpaths(gdf, paths):
 division_subpaths = find_division_subpaths(gdf_split, all_paths)
 division_subpaths
 
-def plot_lines_by_indices(gdf, line_indices_lists, colors):
+def plot_lines_by_indices(gdf, line_indices_lists, colors, gdf_name):
     # Create a new figure
     fig, ax = plt.subplots(figsize=(10, 10))
     
@@ -408,12 +410,12 @@ def plot_lines_by_indices(gdf, line_indices_lists, colors):
             # Add a label with the line's index
             x, y = line.geometry.centroid.x, line.geometry.centroid.y
             ax.text(x, y, str(line.name), fontsize=12)
-    
+    plt.savefig(f"pics/gdf_{gdf_name}.jpg")  
     # Display the plot
     plt.show()
 
 # Use the function to plot the division subpaths
-plot_lines_by_indices(gdf_split, division_subpaths, ['blue', 'red'])
+plot_lines_by_indices(gdf_split, division_subpaths, ['blue', 'red'], gdf_name ='division_subpaths')
 
 #########################################################################
 ################ Simplify the road network by road type #################
@@ -453,7 +455,7 @@ def simplify_subpaths(gdf, subpaths, road_type ='footway'):
 division_subpaths, gdf_split_modified = simplify_subpaths(gdf_split, division_subpaths, road_type ='footway')
 
 # Show the modified GeoDataFrame
-gdf_split_modified.plot()
+plot_geodataframe_with_labels(gdf_split_modified, gdf_name ='gdf_split_modified')
 
 
 #Following function may be useful in future but not used now
