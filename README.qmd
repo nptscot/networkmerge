@@ -71,7 +71,12 @@ fig, ax = plt.subplots(figsize=(10, 10))
 
 # Plot the Shapefile data
 gdf_road.plot(ax=ax, color='blue')
+# Create the plot
+fig, ax = plt.subplots(figsize=(10, 10))
 
+# Plot the Shapefile data
+gdf_road.plot(ax=ax, color='blue')
+gdf_road.explore()
 # Plot the GeoJSON data
 gdf.plot(ax=ax, color='red')
 
@@ -563,3 +568,11 @@ network_merged = network_merged[-1, ]
 plot(network_merged)
 sf::write_sf(network_merged, "data/minimal-output.geojson")
 ```
+
+Ideas on function arguments:
+
+- Vector of attributes to be merged (e.g. `c("highway", "value")`)
+- Vector of functions, e.g. mean, sum 
+- What to do when you have 2 road names 
+
+
