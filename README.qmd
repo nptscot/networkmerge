@@ -10,6 +10,8 @@ The example dataset can be found in the `data` folder.
 To read-in the data into Python we used the following:
 
 ```{python}
+pip install matplotlib pandas shapely geopandas osmnx networkx scipy
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
@@ -34,7 +36,7 @@ plt.show()
 
 # Download Leeds Road Network data from OSM
 # Define the point and distance
-point = (53.81524, -1.53880)
+point = (55.952227 , -3.1959271)
 distance = 500  # in meters
 
 #########################################################################
@@ -63,9 +65,10 @@ graph = ox.graph_from_point(point, dist=distance, network_type='all')
 # Save the road network as a shapefile
 ox.save_graph_shapefile(graph, filepath=r'data/')
 
-gdf = gpd.read_file("data/minimal-input.geojson")
+gdf = gpd.read_file("data/rnet_princes_street.geojson")
+gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
 gdf_road = gpd.read_file("data/edges.shp")
-
+gdf.head()
 # Create the plot
 fig, ax = plt.subplots(figsize=(10, 10))
 
