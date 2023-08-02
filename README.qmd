@@ -10,7 +10,7 @@ The example dataset can be found in the `data` folder.
 To read-in the data into Python we used the following:
 
 ```{python}
-pip install matplotlib pandas shapely geopandas osmnx networkx scipy
+pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -37,7 +37,7 @@ plt.show()
 # Download Leeds Road Network data from OSM
 # Define the point and distance
 point = (55.952227 , -3.1959271)
-distance = 500  # in meters
+distance = 1300  # in meters
 
 #########################################################################
 #############function to plot GeoDataFrame with index label##############
@@ -81,6 +81,7 @@ gdf.plot(ax=ax, color='red')
 plt.savefig(f"pics/gdf_road.jpg")
 plt.show()
 
+gdf_road.explore()
 #########################################################################
 ############### Find matching lines from Leeds road data ################
 #########################################################################
@@ -173,6 +174,7 @@ gdf_split = gpd.GeoDataFrame(gdf_split, geometry='geometry')
 gdf_split.crs = gdf.crs
 
 plot_geodataframe_with_labels(gdf_split, gdf_name ='gdf_split')
+
 
 #########################################################################
 ### Find the nearest line in the .shp for a given line in the GeoJSON ###
