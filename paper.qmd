@@ -65,9 +65,9 @@ However, the 'overline' approach, without further processing, has limitations:
 -   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
 
 The final point is most relevant to the present paper.
-An example of the issue is shown in Figure
+An example of the issue is shown in @fig-pct-stanningley-road from the Propensity to Cycle Tool for England (PCT) @lovelace2017.
 
-![Illustration of the issues associated with route network-level results on and around Stanningley Road, Leeds, UK. Source: open access Propensity to Cycle Tool results available at www.pct.bike.](images/pct-stanningley-road.png)
+![Illustration of the issues associated with route network-level results on and around Stanningley Road, Leeds, UK. Source: open access Propensity to Cycle Tool results available at www.pct.bike.](images/pct-stanningley-road.png){#fig-pct-stanningley-road}
 
 A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
 The 'rasterisation' stage can tackle some of the issues associated
