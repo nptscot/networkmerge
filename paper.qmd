@@ -31,14 +31,24 @@ You can then add citations and other elements of academic writing.
 
 # Introduction
 
-Datasets representing route networks are a key output of transport models.
-Much research has focussed on their generation \[...\] and visualisation.
+Datasets representing route networks are central to transport planning.
+Unlike other key types of data used in transport planning, route networks are both a key input *and* key output.
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models.
+Global and local estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs.
+However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically with model outputs such as flow per time of day).[^1]
+
+[^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
+
+This raises the question, what are transport network datasets?
+The intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other ways along which people and goods can travel.
+More formally, transport network datasets must contain geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways) and usually some attributes associated with these ways.
+File formats for representing them include Transportation Network Test Problem (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), of typically represented as a series of non-overlapping linestrings, with attributes such as way type and flow, and compliant with the 'simple features' geographic data specification that is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) ---
+
+. Much research has focussed on their generation and visualisation.
 
 [@morgan2020] presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation.
 
-$$
-\sigma = \frac{1}{1 + e^{-x}}
-$$
+![](images/paste-1.png)
 
 # Methods
 

@@ -161,3 +161,4 @@ cython_debug/
 cache
 large_route_network_example_edingurgh.geojson
 paper.pdf
+/.luarc.json
