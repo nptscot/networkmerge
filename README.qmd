@@ -2,6 +2,16 @@
 format: gfm
 ---
 
+# Prerequisites
+
+To run the code in this repo, you need to have a working Python installation with the following packages installed (with pip in this case):
+
+```{bash}
+#| eval: false
+pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
+```
+
+
 # networkmerge
 
 A minimal example dataset was created with the ATIP tool.
@@ -10,8 +20,6 @@ The example dataset can be found in the `data` folder.
 To read-in the data into Python we used the following:
 
 ```{python}
-pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
@@ -24,6 +32,7 @@ from scipy.spatial.distance import pdist, squareform
 from shapely.geometry import Point
 import networkx as nx
 from pyproj import CRS
+import folium
 
 def calculate_total_length(gdf, crs="EPSG:32630"):
     # Copy the GeoDataFrame
@@ -71,12 +80,15 @@ graph = ox.graph_from_point(point, dist=distance, network_type='all')
 # Save the road network as a shapefile
 ox.save_graph_shapefile(graph, filepath=r'data/')
 
+# Read in data from CycleStreets + overline
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
 gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
 
 # Use the function to calculate the total length
 total_length = calculate_total_length(gdf)
 total_length
+# TODO: check total length after network simplification
+total_distance_traveled = round(sum(gdf['value'] * gdf['length']))
 
 gdf_road = gpd.read_file("data/edges.shp")
 gdf.head()
@@ -93,6 +105,39 @@ plt.savefig(f"pics/gdf_road.jpg")
 plt.show()
 
 gdf.explore()
+
+# # Try to Create interactive map with 2 layers: gdf and gdf_road:
+# m = ox.plot_graph_folium(graph, popup_attribute='name', edge_width=2)
+# # Add gdf (red) and gdf_road (blue) to the map
+# folium.GeoJson(gdf).add_to(m)
+# folium.GeoJson(gdf_road).add_to(m)
+# # Save the map as an HTML file
+# # Make gdf plot as blue:
+# # m.save('data/leeds.html')
+# # View the map
+# m
+```
+
+```{r}
+#| eval: false
+gdf = sf::read_sf("data/rnet_princes_street.geojson")
+gdf_road = sf::read_sf("data/edges.shp")
+library(tmap)
+tmap_mode("view")
+m = tm_shape(gdf_road) +
+  tm_lines("blue", lwd = 9) +
+  tm_shape(gdf) +
+  tm_lines("red", lwd = 3) 
+dir.create("maps")
+tmap_save(m, "maps/edinburgh.html")
+browseURL("maps/edinburgh.html")
+```
+
+```{python}
+```
+
+```{python}
+
 #########################################################################
 ############### Find matching lines from Leeds road data ################
 #########################################################################
