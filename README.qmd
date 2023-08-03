@@ -133,6 +133,14 @@ tmap_save(m, "maps/edinburgh.html")
 browseURL("maps/edinburgh.html")
 ```
 
+```{bash}
+#| eval: false
+#| echo: false
+# Upload edinburgh.html as a release with gh tool to the v0.1 release:
+gh release list
+gh release upload v0.1 maps/edinburgh.html
+```
+
 ```{python}
 ```
 
