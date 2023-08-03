@@ -23,16 +23,22 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from shapely.geometry import Point
 import networkx as nx
-network = gpd.read_file("data/minimal-input.geojson")
-# Column names:
-network.columns
-output = gpd.read_file("data/minimal-output.geojson")
+from pyproj import CRS
 
-fig, ax = plt.subplots(figsize=(10, 10))
-network.plot(ax =ax, color = 'red' , column='value')
-output.plot(ax =ax,  color = 'blue' ,column='value')
-plt.savefig("pics/network_output.jpg")
-plt.show()
+def calculate_total_length(gdf, crs="EPSG:32630"):
+    # Copy the GeoDataFrame
+    gdf_projected = gdf.copy()
+
+    # Change the CRS to a UTM zone for more accurate length calculation
+    gdf_projected = gdf_projected.to_crs(crs)
+
+    # Calculate the length of each line
+    gdf_projected["length"] = gdf_projected.length
+
+    # Calculate the total length
+    total_length = gdf_projected["length"].sum()
+
+    return total_length
 
 # Download Leeds Road Network data from OSM
 # Define the point and distance
@@ -67,6 +73,11 @@ ox.save_graph_shapefile(graph, filepath=r'data/')
 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
 gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
+
+# Use the function to calculate the total length
+total_length = calculate_total_length(gdf)
+total_length
+
 gdf_road = gpd.read_file("data/edges.shp")
 gdf.head()
 # Create the plot
@@ -81,13 +92,13 @@ gdf.plot(ax=ax, color='red')
 plt.savefig(f"pics/gdf_road.jpg")
 plt.show()
 
-gdf_road.explore()
+gdf.explore()
 #########################################################################
 ############### Find matching lines from Leeds road data ################
 #########################################################################
 
 # Define the buffer size
-buffer_size = 0.00001
+buffer_size = 0.00002
 
 # Create a buffer around the geometries in gdf
 gdf_buffered = gdf.copy()
@@ -125,14 +136,19 @@ plt.show()
 matching_lines_large_intersection.to_file("data/gdf_matching_lines.geojson", driver='GeoJSON')
 gdf_matching_lines = gpd.read_file("data/gdf_matching_lines.geojson")
 plot_geodataframe_with_labels(gdf_matching_lines, gdf_name ='gdf_matching_lines')
+
+gdf_matching_lines.explore() 
+gdf.explore() 
+gdf_road.explore() 
 #########################################################################
 ################### Function to split line by angle #####################
 #########################################################################
-def split_line_at_angles(line, value, threshold=30):
+def split_line_at_angles_modified(line, value, threshold=30):
     if isinstance(line, LineString):
         coords = np.array(line.coords)
     elif isinstance(line, MultiLineString):
-        coords = np.concatenate([np.array(geom.coords) for geom in line.geoms])
+        # Handle each LineString in the MultiLineString separately
+        return [seg for geom in line.geoms for seg in split_line_at_angles_modified(geom, value, threshold)]
     else:
         raise ValueError(f"Unexpected geometry type: {type(line)}")
 
@@ -156,6 +172,8 @@ def split_line_at_angles(line, value, threshold=30):
         segment = LineString(coords[last_index:index+1])
         segments.append((segment, value))
         last_index = index
+
+    # Include all remaining parts of the line after the last split point
     segment = LineString(coords[last_index:])
     segments.append((segment, value))
 
@@ -174,7 +192,11 @@ gdf_split = gpd.GeoDataFrame(gdf_split, geometry='geometry')
 gdf_split.crs = gdf.crs
 
 plot_geodataframe_with_labels(gdf_split, gdf_name ='gdf_split')
+gdf_split.explore()
 
+gdf_split.to_file("data/gdf_split.geojson", driver='GeoJSON')  
+# Use the function to calculate the total length
+calculate_total_length(gdf_split)
 
 #########################################################################
 ### Find the nearest line in the .shp for a given line in the GeoJSON ###
@@ -190,7 +212,7 @@ gdf_split['centroid'] = gdf_split['geometry'].centroid
 
 # Create a new GeoDataFrame for buffers
 gdf_buffer = gpd.GeoDataFrame(gdf_matching_lines, geometry='buffer')
-
+gdf_buffer.explore()
 # Set up the plot
 fig, ax = plt.subplots(figsize=(10, 10))
 
@@ -222,9 +244,51 @@ for i, row in gdf_split.iterrows():
             break
 
 gdf_split = gdf_split[['value', 'name', 'highway','geometry']]
+gdf_split.head()
+gdf_split['name'] = gdf_split['name'].apply(lambda x: ', '.join(map(str, x)) if isinstance(x, list) else x)
+gdf_split['highway'] = gdf_split['highway'].apply(lambda x: ', '.join(map(str, x)) if isinstance(x, list) else x)
+
 gdf_split.to_file("data/gdf_att.geojson", driver='GeoJSON')    
 gdf_att = gpd.read_file("data/gdf_att.geojson")
-gdf_att
+gdf_att.explore()
+
+
+from shapely.geometry import LineString
+import numpy as np
+from numpy.linalg import norm
+
+def filter_parallel_lines_concat(gdf, name, angle_tolerance=25):
+    # Filter the GeoDataFrame by the 'name' column
+    filtered_gdf = gdf[gdf['name'] == name]
+
+    # Create a list to store the parallel lines
+    parallel_lines = []
+
+    # Iterate through each pair of lines
+    for i in range(len(filtered_gdf)):
+        for j in range(i+1, len(filtered_gdf)):
+            # Get the lines
+            line1 = list(filtered_gdf.iloc[i].geometry.coords)
+            line2 = list(filtered_gdf.iloc[j].geometry.coords)
+
+            # Calculate the angle between the lines
+            angle = calculate_angle(line1, line2)
+
+            # If the angle is close to 0 or 180 degrees, add the lines to the list
+            if abs(angle) <= angle_tolerance or abs(angle - 180) <= angle_tolerance:
+                parallel_lines.append(filtered_gdf.iloc[i:i+1])
+                parallel_lines.append(filtered_gdf.iloc[j:j+1])
+
+    # Combine the lines into a new GeoDataFrame using pd.concat
+    parallel_gdf = pd.concat(parallel_lines).drop_duplicates()
+
+    return parallel_gdf
+
+# Use the function to filter out parallel lines with the name 'Princes Street'
+parallel_gdf_concat = filter_parallel_lines_concat(gdf_att, 'Princes Street')
+parallel_gdf_concat.explore()
+gdf.explore()
+
 #########################################################################
 ######### Find start and end point to define the flow direction #########
 #########################################################################
