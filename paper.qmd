@@ -41,12 +41,36 @@ However, route network datasets are ubiquitous as both transport model inputs (t
 
 This raises the question, what are transport network datasets?
 The intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other ways along which people and goods can travel.
-More formally, transport network datasets must contain geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways) and usually some attributes associated with these ways.
-File formats for representing them include Transportation Network Test Problem (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), of typically represented as a series of non-overlapping linestrings, with attributes such as way type and flow, and compliant with the 'simple features' geographic data specification that is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) ---
+More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways).
+Usually they also contain attributes associated with these ways.
+File formats for representing them include Transportation Network Test Problem (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
+A more recent approach is to represent transport networks in standard geographic file formats.
+In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow.
+Making transport datasets compliant with the 'simple features' geographic data specification in this way has many advantages compared with the proliferation of formats used by proprietary software, enabling more easier sharing of datasets between people and programs.
+The simple features standard is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage.
+For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.
 
-. Much research has focussed on their generation and visualisation.
+Much research has focussed on generating and modelling transport network datasets.
+This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
+Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling.
+<!-- Todo: add papers on network cleaning and simplification. --> However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning.
 
-[@morgan2020] presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation.
+[@morgan2020] presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
+The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings.
+The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally.
+However, the 'overline' approach, without further processing, has limitations:
+
+-   It does not remove redundant vertices, which can lead to large file sizes and slow rendering.
+-   It does not remove redundant edges, which can lead to visual artefacts.
+-   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
+
+The final point is most relevant to the present paper.
+An example of the issue is shown in Figure
+
+![Illustration of the issues associated with route network-level results on and around Stanningley Road, Leeds, UK. Source: open access Propensity to Cycle Tool results available at www.pct.bike.](images/pct-stanningley-road.png)
+
+A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
+The 'rasterisation' stage can tackle some of the issues associated
 
 ![](images/paste-1.png)
 
