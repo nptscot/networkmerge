@@ -20,6 +20,7 @@ The example dataset can be found in the `data` folder.
 To read-in the data into Python we used the following:
 
 ```{python}
+#| label: read-in data
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
@@ -33,6 +34,7 @@ from shapely.geometry import Point
 import networkx as nx
 from pyproj import CRS
 import folium
+import os
 
 def calculate_total_length(gdf, crs="EPSG:32630"):
     # Copy the GeoDataFrame
@@ -75,10 +77,13 @@ def plot_geodataframe_with_labels(gdf, gdf_name):
 #########################################################################
 ##### Download the road network data for the area around the point ######
 #########################################################################
-graph = ox.graph_from_point(point, dist=distance, network_type='all')
+# Only download if the data/edges.shp file does not exist:
+if not os.path.exists("data/edges.shp"):
+    # Download the road network data
+    graph = ox.graph_from_point(point, dist=distance, network_type='all')
 
-# Save the road network as a shapefile
-ox.save_graph_shapefile(graph, filepath=r'data/')
+    # Save the road network as a shapefile
+    ox.save_graph_shapefile(graph, filepath=r'data/')
 
 # Read in data from CycleStreets + overline
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
@@ -142,10 +147,8 @@ gh release upload v0.1 maps/edinburgh.html
 ```
 
 ```{python}
-```
-
-```{python}
-
+#| label: matching-lines
+#| eval: false
 #########################################################################
 ############### Find matching lines from Leeds road data ################
 #########################################################################
