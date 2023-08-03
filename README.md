@@ -1,4 +1,14 @@
 
+# Prerequisites
+
+To run the code in this repo, you need to have a working Python
+installation with the following packages installed (with pip in this
+case):
+
+``` bash
+pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
+```
+
 # networkmerge
 
 A minimal example dataset was created with the ATIP tool. The example
@@ -18,24 +28,29 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from shapely.geometry import Point
 import networkx as nx
-network = gpd.read_file("data/minimal-input.geojson")
-# Column names:
-network.columns
-output = gpd.read_file("data/minimal-output.geojson")
+from pyproj import CRS
+import folium
+import os
 
-fig, ax = plt.subplots(figsize=(10, 10))
-network.plot(ax =ax, color = 'red' , column='value')
-output.plot(ax =ax,  color = 'blue' ,column='value')
-plt.savefig("pics/network_output.jpg")
-plt.show()
-```
-![](pics/network_output.jpg)
+def calculate_total_length(gdf, crs="EPSG:32630"):
+    # Copy the GeoDataFrame
+    gdf_projected = gdf.copy()
 
-``` python
+    # Change the CRS to a UTM zone for more accurate length calculation
+    gdf_projected = gdf_projected.to_crs(crs)
+
+    # Calculate the length of each line
+    gdf_projected["length"] = gdf_projected.length
+
+    # Calculate the total length
+    total_length = gdf_projected["length"].sum()
+
+    return total_length
+
 # Download Leeds Road Network data from OSM
 # Define the point and distance
-point = (53.81524, -1.53880)
-distance = 500  # in meters
+point = (55.952227 , -3.1959271)
+distance = 1300  # in meters
 
 #########################################################################
 #############function to plot GeoDataFrame with index label##############
@@ -58,14 +73,43 @@ def plot_geodataframe_with_labels(gdf, gdf_name):
 #########################################################################
 ##### Download the road network data for the area around the point ######
 #########################################################################
-graph = ox.graph_from_point(point, dist=distance, network_type='all')
+# Only download if the data/edges.shp file does not exist:
+if not os.path.exists("data/edges.shp"):
+    # Download the road network data
+    graph = ox.graph_from_point(point, dist=distance, network_type='all')
 
-# Save the road network as a shapefile
-ox.save_graph_shapefile(graph, filepath=r'data/')
+    # Save the road network as a shapefile
+    ox.save_graph_shapefile(graph, filepath=r'data/')
 
-gdf = gpd.read_file("data/minimal-input.geojson")
+# Read in data from CycleStreets + overline
+gdf = gpd.read_file("data/rnet_princes_street.geojson")
+gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
+
+# Use the function to calculate the total length
+total_length = calculate_total_length(gdf)
+total_length
+```
+
+    49371.10154507467
+
+``` python
+# TODO: check total length after network simplification
+total_distance_traveled = round(sum(gdf['value'] * gdf['length']))
+
 gdf_road = gpd.read_file("data/edges.shp")
+gdf.head()
+```
 
+       value  ...                                           geometry
+    0    0.0  ...  LINESTRING (-3.20572 55.94693, -3.20568 55.94694)
+    1    0.0  ...  LINESTRING (-3.19433 55.95394, -3.19430 55.95388)
+    2    0.0  ...  LINESTRING (-3.19619 55.95291, -3.19608 55.952...
+    3    0.0  ...  LINESTRING (-3.20238 55.95174, -3.20230 55.95162)
+    4    0.0  ...  LINESTRING (-3.19457 55.95517, -3.19469 55.955...
+
+    [5 rows x 4 columns]
+
+``` python
 # Create the plot
 fig, ax = plt.subplots(figsize=(10, 10))
 
@@ -77,9 +121,43 @@ gdf.plot(ax=ax, color='red')
 
 plt.savefig(f"pics/gdf_road.jpg")
 plt.show()
-
 ```
-![](pics/gdf_road.jpg)
+
+![](README_files/figure-commonmark/read-in%20data-1.png)
+
+``` python
+gdf.explore()
+```
+
+    <folium.folium.Map object at 0x7f4a7199f2b0>
+
+``` python
+
+# # Try to Create interactive map with 2 layers: gdf and gdf_road:
+# m = ox.plot_graph_folium(graph, popup_attribute='name', edge_width=2)
+# # Add gdf (red) and gdf_road (blue) to the map
+# folium.GeoJson(gdf).add_to(m)
+# folium.GeoJson(gdf_road).add_to(m)
+# # Save the map as an HTML file
+# # Make gdf plot as blue:
+# # m.save('data/leeds.html')
+# # View the map
+# m
+```
+
+``` r
+gdf = sf::read_sf("data/rnet_princes_street.geojson")
+gdf_road = sf::read_sf("data/edges.shp")
+library(tmap)
+tmap_mode("view")
+m = tm_shape(gdf_road) +
+  tm_lines("blue", lwd = 9) +
+  tm_shape(gdf) +
+  tm_lines("red", lwd = 3) 
+dir.create("maps")
+tmap_save(m, "maps/edinburgh.html")
+browseURL("maps/edinburgh.html")
+```
 
 ``` python
 #########################################################################
@@ -87,7 +165,7 @@ plt.show()
 #########################################################################
 
 # Define the buffer size
-buffer_size = 0.00001
+buffer_size = 0.00002
 
 # Create a buffer around the geometries in gdf
 gdf_buffered = gdf.copy()
@@ -126,18 +204,18 @@ matching_lines_large_intersection.to_file("data/gdf_matching_lines.geojson", dri
 gdf_matching_lines = gpd.read_file("data/gdf_matching_lines.geojson")
 plot_geodataframe_with_labels(gdf_matching_lines, gdf_name ='gdf_matching_lines')
 
-```
-![](pics/gdf_matching_lines.jpg)
-
-``` python
+gdf_matching_lines.explore() 
+gdf.explore() 
+gdf_road.explore() 
 #########################################################################
 ################### Function to split line by angle #####################
 #########################################################################
-def split_line_at_angles(line, value, threshold=30):
+def split_line_at_angles_modified(line, value, threshold=30):
     if isinstance(line, LineString):
         coords = np.array(line.coords)
     elif isinstance(line, MultiLineString):
-        coords = np.concatenate([np.array(geom.coords) for geom in line.geoms])
+        # Handle each LineString in the MultiLineString separately
+        return [seg for geom in line.geoms for seg in split_line_at_angles_modified(geom, value, threshold)]
     else:
         raise ValueError(f"Unexpected geometry type: {type(line)}")
 
@@ -161,6 +239,8 @@ def split_line_at_angles(line, value, threshold=30):
         segment = LineString(coords[last_index:index+1])
         segments.append((segment, value))
         last_index = index
+
+    # Include all remaining parts of the line after the last split point
     segment = LineString(coords[last_index:])
     segments.append((segment, value))
 
@@ -179,11 +259,12 @@ gdf_split = gpd.GeoDataFrame(gdf_split, geometry='geometry')
 gdf_split.crs = gdf.crs
 
 plot_geodataframe_with_labels(gdf_split, gdf_name ='gdf_split')
+gdf_split.explore()
 
-```
-![](pics/gdf_split.jpg)
+gdf_split.to_file("data/gdf_split.geojson", driver='GeoJSON')  
+# Use the function to calculate the total length
+calculate_total_length(gdf_split)
 
-``` python
 #########################################################################
 ### Find the nearest line in the .shp for a given line in the GeoJSON ###
 #########################################################################
@@ -198,7 +279,7 @@ gdf_split['centroid'] = gdf_split['geometry'].centroid
 
 # Create a new GeoDataFrame for buffers
 gdf_buffer = gpd.GeoDataFrame(gdf_matching_lines, geometry='buffer')
-
+gdf_buffer.explore()
 # Set up the plot
 fig, ax = plt.subplots(figsize=(10, 10))
 
@@ -213,10 +294,6 @@ ax.set_title('Buffered Roads and Centroids of Line Segments')
 plt.savefig(f"pics/Buffered Roads and Centroids of Line Segments.jpg")
 plt.show()
 
-```
-![](pics/Buffered Roads and Centroids of Line Segments.jpg)
-
-``` python
 # Copy the columns from gdf_matching_lines to gdf_split
 for col in gdf_matching_lines.columns:
     if col not in gdf_split.columns and col != 'value':
@@ -234,9 +311,51 @@ for i, row in gdf_split.iterrows():
             break
 
 gdf_split = gdf_split[['value', 'name', 'highway','geometry']]
+gdf_split.head()
+gdf_split['name'] = gdf_split['name'].apply(lambda x: ', '.join(map(str, x)) if isinstance(x, list) else x)
+gdf_split['highway'] = gdf_split['highway'].apply(lambda x: ', '.join(map(str, x)) if isinstance(x, list) else x)
+
 gdf_split.to_file("data/gdf_att.geojson", driver='GeoJSON')    
 gdf_att = gpd.read_file("data/gdf_att.geojson")
-gdf_att
+gdf_att.explore()
+
+
+from shapely.geometry import LineString
+import numpy as np
+from numpy.linalg import norm
+
+def filter_parallel_lines_concat(gdf, name, angle_tolerance=25):
+    # Filter the GeoDataFrame by the 'name' column
+    filtered_gdf = gdf[gdf['name'] == name]
+
+    # Create a list to store the parallel lines
+    parallel_lines = []
+
+    # Iterate through each pair of lines
+    for i in range(len(filtered_gdf)):
+        for j in range(i+1, len(filtered_gdf)):
+            # Get the lines
+            line1 = list(filtered_gdf.iloc[i].geometry.coords)
+            line2 = list(filtered_gdf.iloc[j].geometry.coords)
+
+            # Calculate the angle between the lines
+            angle = calculate_angle(line1, line2)
+
+            # If the angle is close to 0 or 180 degrees, add the lines to the list
+            if abs(angle) <= angle_tolerance or abs(angle - 180) <= angle_tolerance:
+                parallel_lines.append(filtered_gdf.iloc[i:i+1])
+                parallel_lines.append(filtered_gdf.iloc[j:j+1])
+
+    # Combine the lines into a new GeoDataFrame using pd.concat
+    parallel_gdf = pd.concat(parallel_lines).drop_duplicates()
+
+    return parallel_gdf
+
+# Use the function to filter out parallel lines with the name 'Princes Street'
+parallel_gdf_concat = filter_parallel_lines_concat(gdf_att, 'Princes Street')
+parallel_gdf_concat.explore()
+gdf.explore()
+
 #########################################################################
 ######### Find start and end point to define the flow direction #########
 #########################################################################
@@ -350,10 +469,6 @@ def plot_paths(gdf, paths, shortest_path,gdf_name):
 # Use the function to plot the paths
 plot_paths(gdf_split, all_paths, shortest_path,gdf_name ='all_paths')
 
-```
-![](pics/gdf_all_paths.jpg)
-
-``` python
 #########################################################################
 ######################## Find division subpaths #########################
 #########################################################################
@@ -438,10 +553,6 @@ def plot_lines_by_indices(gdf, line_indices_lists, colors, gdf_name):
 # Use the function to plot the division subpaths
 plot_lines_by_indices(gdf_split, division_subpaths, ['blue', 'red'], gdf_name ='division_subpaths')
 
-```
-![](pics/gdf_division_subpaths.jpg)
-
-``` python
 #########################################################################
 ################ Simplify the road network by road type #################
 #########################################################################
@@ -482,7 +593,88 @@ division_subpaths, gdf_split_modified = simplify_subpaths(gdf_split, division_su
 # Show the modified GeoDataFrame
 plot_geodataframe_with_labels(gdf_split_modified, gdf_name ='gdf_split_modified')
 
+
+#Following function may be useful in future but not used now
+#########################################################################
+#dissolve/merge lines that share the same 'highway' value, but only if they also share the same 'value'#
+#########################################################################
+
+# Dissolving/merging lines based on 'highway' and 'value'
+gdf_att_dissolved = gdf_att.dissolve(by=['highway', 'value'])
+
+# Resetting the index to have 'highway' and 'value' as normal columns
+gdf_att_dissolved.reset_index(inplace=True)
+
+
+plot_geodataframe_with_labels(gdf_att_dissolved)
+
+
+#--------------------------------------------------------------#
+#-----Function to find the lines have same start_end point-----#
+#--------------------------------------------------------------#
+def check_same_start_end(gdf, line1, line2):
+    """
+    Check if two lines have the same start and end points.
+    
+    """
+    line1_start_end = (gdf.iloc[line1].geometry.coords[0], gdf.iloc[line1].geometry.coords[-1])
+    line2_start_end = (gdf.iloc[line2].geometry.coords[0], gdf.iloc[line2].geometry.coords[-1])
+
+    same_start = line1_start_end[0] == line2_start_end[0]
+    same_end = line1_start_end[1] == line2_start_end[1]
+
+    return same_start, same_end
+
+check_same_start_end(geo_data, 0, 1)
+
+
+# Merge lines 0, 1, 2, 3, 4
+merged_line = LineString([pt for line in gdf_att.iloc[0:5].geometry for pt in line.coords])
+
+# Calculate the total value of the merged line (which is 1 as per the user)
+total_value = 1
+
+# Add the total value to lines 5 and 6, divided equally
+gdf_att.loc[[5, 6], 'value'] += total_value / 2
+
+# Retain only lines 7, 5, 6, 8 in the final output
+gdf_final = gdf_att.loc[[7, 5, 6, 8]]
+
+# Plot the final GeoDataFrame
+plot_geodataframe_with_labels(gdf_final)
+
+#--------------------------------------------------------------#
+#-----find_connected_lines-----#
+#--------------------------------------------------------------#
+def find_connected_lines(gdf):
+    # Create a dictionary where the keys will be points (start or end points of the lines),
+    # and the values will be lists of the indices of the lines with those points
+    points_dict = defaultdict(list)
+
+    # Iterate over the rows of the GeoDataFrame
+    for index, row in gdf.iterrows():
+        # Get the line (geometry)
+        line = row.geometry
+
+        # Get the start and end points of the line
+        start_point = line.coords[0]
+        end_point = line.coords[-1]
+
+        # Add the index of the line to the lists of lines with these start and end points
+        points_dict[start_point].append(index)
+        points_dict[end_point].append(index)
+
+    # Find the sets of connected lines
+    connected_lines = []
+    for indices in points_dict.values():
+        if len(indices) > 1:
+            # If there are multiple lines with this point (start or end point),
+            # they are connected lines
+            connected_lines.append(set(indices))
+
+    return connected_lines
+
+# Find the sets of connected lines in gdf_att
+connected_lines = find_connected_lines(gdf_split)
+connected_lines
 ```
-![](pics/gdf_split_modified.jpg)
-
-
