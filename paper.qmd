@@ -65,14 +65,22 @@ However, the 'overline' approach, without further processing, has limitations:
 -   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
 
 The final point is most relevant to the present paper.
-An example of the issue is shown in @fig-pct-stanningley-road from the Propensity to Cycle Tool for England (PCT) @lovelace2017.
+An example of the issue is shown in @fig-pct from the Propensity to Cycle Tool for England (PCT) @lovelace2017.
+The left panel shows Otley Road with an estimated commuter cycling flow of 818 (@fig-otley-road).
+The right panel, by contrast, shows three parallel ways parallel to Armley Road with a cycling potential of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
+Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
 
-![Illustration of the issues associated with route network-level results on and around Stanningley Road, Leeds, UK. Source: open access Propensity to Cycle Tool results available at www.pct.bike.](images/pct-stanningley-road.png){#fig-pct-stanningley-road}
+::: {#fig-pct layout-ncol="2"}
+![](images/otley-road-narrow.png){#fig-otley-road}
+
+![](images/armley-road-narrow.png){#fig-armley-road}
+
+Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left.
+Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+:::
 
 A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
 The 'rasterisation' stage can tackle some of the issues associated
-
-![](images/paste-1.png)
 
 # Methods
 
