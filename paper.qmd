@@ -44,6 +44,7 @@ The intuitive definition is that route network datasets are digital representati
 More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways).
 Usually they also contain attributes associated with these ways.
 File formats for representing them include Transportation Network Test Problem (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
+
 A more recent approach is to represent transport networks in standard geographic file formats.
 In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow.
 Making transport datasets compliant with the 'simple features' geographic data specification in this way has many advantages compared with the proliferation of formats used by proprietary software, enabling more easier sharing of datasets between people and programs.
@@ -55,7 +56,7 @@ This is unsurprising given the importance of transport networks as inputs and ou
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling.
 <!-- Todo: add papers on network cleaning and simplification. --> However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning.
 
-[@morgan2020] presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
+@morgan2020 presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
 The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings.
 The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally.
 However, the 'overline' approach, without further processing, has limitations:
@@ -80,7 +81,18 @@ Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
 A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
-The 'rasterisation' stage can tackle some of the issues associated
+The 'rasterisation' stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in @fig-rasterisation.
+
+::: {#fig-rasterisation layout-ncol="2"}
+![](images/otley-road-raster.png){#fig-otley-road-raster}
+
+![](images/armley-road-raster.png){#fig-armley-road-raster}
+
+Illustration of the impacts of rasterisation on the visualisation of parallel ways: the rasterisation process can lead to visual artefacts, such as the 'staircase' effect shown in the right hand figure.
+Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+:::
+
+The aim of
 
 # Methods
 
