@@ -134,15 +134,25 @@ gdf.explore()
 ``` python
 
 # # Try to Create interactive map with 2 layers: gdf and gdf_road:
-# m = ox.plot_graph_folium(graph, popup_attribute='name', edge_width=2)
-# # Add gdf (red) and gdf_road (blue) to the map
-# folium.GeoJson(gdf).add_to(m)
-# folium.GeoJson(gdf_road).add_to(m)
-# # Save the map as an HTML file
-# # Make gdf plot as blue:
-# # m.save('data/leeds.html')
-# # View the map
-# m
+# Create a map with OSMnx and add graph
+m = ox.plot_graph_folium(graph, popup_attribute='name', edge_width=2)
+
+# Create GeoJson objects with specified colors
+gdf_layer = folium.GeoJson(gdf, style_function=lambda feature: {'color': 'red'})
+gdf_road_layer = folium.GeoJson(gdf_road, style_function=lambda feature: {'color': 'blue'})
+
+# Add GeoJson objects as layers to the map
+gdf_layer.add_to(m)
+gdf_road_layer.add_to(m)
+
+# Add a layer control panel to the map
+folium.LayerControl().add_to(m)
+
+# Save the map as an HTML file
+m.save('data/leeds.html')
+
+# View the map
+m
 ```
 
 ``` r
