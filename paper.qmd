@@ -129,6 +129,8 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
 As shown in the figures below, it can merge lines that are parallel, but does not work for complex geometries.
 
+::: {#fig-topology-preserving layout-ncol="1"}
+
 ```{r}
 library(sf)
 library(tmap)
@@ -140,8 +142,10 @@ simplification_levels = c(1, 0.5, 0.1, 0.001)
 simp_factor = ordered(simplification_levels, levels = simplification_levels)
 simplification_df = data.frame(
   id = as.character(1:length(simplification_levels)),
-  simp_factor
+  simp_factor,
+  keep = paste0("Keep: ", round(as.numeric(simplification_levels) * 100, 2), "%")
   )
+simplification_df$keep = ordered(simplification_df$keep, levels = simplification_df$keep)
 input_simplified = purrr::map_dfr(simplification_levels, .id = "id", function(x) {
   rmapshaper::ms_simplify(input_projected, keep_shapes = TRUE, keep = x)
 })
@@ -152,7 +156,7 @@ input_simplified = left_join(
   )
 tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
-  tm_facets(by = "simp_factor", free.coords = TRUE)
+  tm_facets(by = "keep", free.coords = TRUE) 
 ```
 
 ```{r}
@@ -168,8 +172,12 @@ input_simplified = left_join(
   )
 tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
-  tm_facets(by = "simp_factor", free.coords = TRUE)
+  tm_facets(by = "keep", free.coords = TRUE) 
 ```
+
+Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package. The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
+
+:::
 
 ```{python}
 #| eval: false
