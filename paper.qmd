@@ -92,7 +92,7 @@ The 'rasterisation' stage can tackle some of the issues associated with multiple
 
 ![](images/armley-road-raster.png){#fig-armley-road-raster}
 
-Illustration of the impacts of rasterisation on the visualisation of parallel ways: the rasterisation process can lead to visual artefacts, such as the 'staircase' effect shown in the right hand figure.
+Rasterised network results for the same corridors shown in Figure @fig-pct. Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
