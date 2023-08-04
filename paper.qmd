@@ -70,9 +70,9 @@ However, the 'overline' approach, without further processing, has limitations:
 -   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
 
 The final point is most relevant to the present paper.
-An example of the issue is shown in @fig-pct from the Propensity to Cycle Tool for England (PCT) @lovelace2017.
-The left panel shows Otley Road with an estimated commuter cycling flow of 818 (@fig-otley-road).
-The right panel, by contrast, shows three parallel ways parallel to Armley Road with a cycling potential of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
+An example of the issue is shown in @fig-pct from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows [@lovelace2017].
+The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
+The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
 
 ::: {#fig-pct layout-ncol="2"}
