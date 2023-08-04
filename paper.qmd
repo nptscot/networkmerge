@@ -1,7 +1,8 @@
 ---
 title: "Network simplification: application to the visualisation of transport networks"
 format:
-  pdf: default
+  gfm: default
+  # pdf: default
   # arxiv-pdf:
   #   keep-tex: true
 number-sections: true
