@@ -162,3 +162,6 @@ cache
 large_route_network_example_edingurgh.geojson
 paper.pdf
 /.luarc.json
+paper_cache/
+maps/
+paper_files/
