@@ -207,6 +207,8 @@ G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_g
 ox.plot_graph(G_simplified);
 ```
 
+Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
+
 :::
 
 ### Simplification with parallel edge removal
