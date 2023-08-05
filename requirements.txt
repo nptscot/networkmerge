@@ -1,0 +1,9 @@
+matplotlib >= 3.7.2
+pandas >= 2.0.3
+shapely >= 2.0.1
+geopandas >= 0.13.2
+osmnx >= 1.6.0
+networkx >= 3.1.0
+scipy >= 1.11.1
+folium >= 0.14.0
+mapclassify >= 2.6.0
