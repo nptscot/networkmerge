@@ -254,6 +254,35 @@ simplification process.
 
 </div>
 
+The graphic below shows a 2 panel plot showing simplification with the
+`consolidate_intersections` function from the `osmnx` Python package.
+
+<div id="fig-osmnx-consolidate-intersections">
+
+<table style="width:50%;">
+<colgroup>
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><div width="50.0%"
+data-layout-align="center">
+<p><img src="paper_files/figure-commonmark/fig-osmnx-before-1.png"
+title="fig:" id="fig-osmnx-before"
+data-ref-parent="fig-osmnx-consolidate-intersections"
+data-fig.extended="false" alt="(a)" /></p>
+</div></td>
+</tr>
+</tbody>
+</table>
+
+Figure 4: <img
+src="paper_files/figure-commonmark/fig-osmnx-consolidate-intersections-3.png"
+title="fig:" id="fig-osmnx-consolidate-intersections"
+data-ref-parent="fig-osmnx-consolidate-intersections" alt="(b)" />
+
+</div>
+
 ### Simplification with parallel edge removal
 
 A more aggressive approach is to simplify and alter network topology in

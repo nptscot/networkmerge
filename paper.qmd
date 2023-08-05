@@ -180,24 +180,34 @@ Illustration of topology-preserving simplification, using the `mapshaper` JavaSc
 
 :::
 
+The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
+
+::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
+
 ```{python}
-#| eval: false
-# Failed experiment with osmnx:
+#| label: fig-osmnx-before
+#| warning: false
 import osmnx as ox
 # Get all streets within 50 m of Princes Street, Edinburgh:
 # Get point that is on Princes Street:
 # ox.geocode_to_gdf("Princes Street Edinburgh")
-G = ox.graph_from_place("Edinburgh Waverley", network_type="walk", buffer_dist=500)
+G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
+ox.plot_graph(G);
 # Plot the graph in an interactive map:
 # ox.plot_graph_folium(G)
 # project to 27700
+```
+
+```{python}
+#| label: fig-osmnx-consolidate-intersections
 G_projected = ox.project_graph(G, 'EPSG:27700')
 # simplify:
 G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
-# plot (there's some bug in osmnx so using geopandas)
-ox.graph_to_gdfs(G_simplified, nodes=False).explore()
-
+# plot G_simplified as GeoPandas in Quarto:
+ox.plot_graph(G_simplified);
 ```
+
+:::
 
 ### Simplification with parallel edge removal
 
