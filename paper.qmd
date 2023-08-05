@@ -190,11 +190,12 @@ import osmnx as ox
 G = ox.graph_from_place("Edinburgh Waverley", network_type="walk", buffer_dist=500)
 # Plot the graph in an interactive map:
 # ox.plot_graph_folium(G)
+# project to 27700
+G_projected = ox.project_graph(G, 27700)
 # simplify:
-G_simplified = ox.consolidate_intersections(G, tolerance=0.0002, rebuild_graph=True)
-ox.plot_graph_folium(G_simplified)
-G_simplified_graph = ox.simplify_graph(G, tolerance=0.0002, rebuild_graph=True)
-
+G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
+# plot (there's some bug in osmnx so using geopandas)
+ox.graph_to_gdfs(G_simplified, nodes=False).explore()
 ```
 
 ### Simplification with parallel edge removal
