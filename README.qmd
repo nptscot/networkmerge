@@ -434,6 +434,24 @@ gdf_buffered['value_sum'] = 0
 gdf_buffered['Line_index_from_gdf_Within'] = None
 all_lines_within_buffer = []
 
+#####
+gdf_buffered['value_sum'] = 0
+gdf_buffered['Line_index_from_gdf_Within'] = None
+all_lines_within_buffer = []
+
+# Iterate through the buffered geometries to find lines within the buffer and sum their 'value'
+for buffer_index, buffered_geom in gdf_buffered.iterrows():
+    value_sum = 0 # Sum of 'value' attributes for lines within the buffer
+    indices_within_buffer = [] # Indices of lines within the buffer
+    for line_index, line_geom in gdf.iterrows():
+        if line_geom['geometry'].within(buffered_geom['geometry']):
+            value_sum += line_geom['value']
+            indices_within_buffer.append(line_index)
+    gdf_buffered.at[buffer_index, 'value_sum'] = value_sum
+    gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = indices_within_buffer
+    all_lines_within_buffer.extend(indices_within_buffer)
+#####
+
 # Iterate through the buffered geometries to find lines within the buffer and sum their 'value'
 for buffer_index, buffered_geom in gdf_buffered.iterrows():
     # Dictionary to store lines grouped by 'Ori_index'
