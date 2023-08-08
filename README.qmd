@@ -266,46 +266,40 @@ def process_sjoin_result(sjoin_result):
     sjoin_result['Line_index_from_gdf'] = sjoin_result['Line_index_from_gdf'].astype(str)
     return sjoin_result    
 
+
 def plot_buffer_with_lines(gdf_buffered, gdf, buffer_index='all', relation='intersect'):
-    # Determine the column to use based on the relation (within or intersect)
     column_name = 'Line_index_from_gdf_Within' if relation == 'within' else 'Line_index_from_gdf_Intersect'
 
-    # Create a figure and axis
     fig, ax = plt.subplots(figsize=(12, 8))
 
-    # Function to plot a single buffer with lines
     def plot_single_buffer(buffer_idx, buffered_geom):
-        # Extract the indices of lines based on the relation
         indices_related_buffer = buffered_geom[column_name]
-
-        # Plot the buffered geometry
         gpd.GeoSeries([buffered_geom['geometry']]).plot(ax=ax, edgecolor='blue', facecolor='none')
 
-        # Check if there are any related lines and plot them
         if indices_related_buffer:
             gdf.loc[indices_related_buffer].plot(ax=ax, color='red')
-            # Annotate the lines related to the buffer with their indices
             for idx in indices_related_buffer:
-                plt.annotate(text=idx, xy=gdf.loc[idx, 'geometry'].centroid.coords[0], fontsize=9, color='red')
+                line_value = gdf.loc[idx, 'value']
+                annotation_text = f"{idx} - {line_value}"
+                centroid = gdf.loc[idx, 'geometry'].centroid.coords[0]
+                plt.text(centroid[0], centroid[1] + 0.00005, annotation_text, fontsize=9, color='red', ha='center')
         else:
-            plt.annotate(text="No lines " + relation, xy=buffered_geom['geometry'].centroid.coords[0], fontsize=9, color='blue')
+            plt.text(buffered_geom['geometry'].centroid.x, buffered_geom['geometry'].centroid.y - 0.00015, "No lines " + relation, fontsize=9, color='blue', ha='center')
 
-        # Annotate the buffer with its index, placed below the buffer to avoid overlap
-        plt.annotate(text=f"Buffer Index: {buffer_idx}", xy=(buffered_geom['geometry'].centroid.x, buffered_geom['geometry'].centroid.y - 0.00015), fontsize=9, color='blue', ha='center')
+        plt.text(buffered_geom['geometry'].centroid.x, buffered_geom['geometry'].centroid.y - 0.00035, f"Buffer Index: {buffer_idx}", fontsize=9, color='blue', ha='center')
 
     if buffer_index == 'all':
-        # Iterate through the buffered geometries
         for buffer_idx, buffered_geom in gdf_buffered.iterrows():
             plot_single_buffer(buffer_idx, buffered_geom)
         plt.title(f'Buffered Geometries (Blue) with {relation.capitalize()} Lines (Red)')
     elif isinstance(buffer_index, int):
-        # Plot the buffered geometry for the specified index
         plot_single_buffer(buffer_index, gdf_buffered.loc[buffer_index])
         plt.title(f'Buffered Geometry (Blue) with {relation.capitalize()} Lines (Red) for Buffer Index {buffer_index}')
 
     plt.xlabel('Longitude')
     plt.ylabel('Latitude')
     plt.show()
+
 
 ```
 
@@ -342,6 +336,7 @@ if 'value' in gdf.columns and 'Quietness' in gdf.columns:
     # Resetting the index
     gdf_dissolved_and_individual.reset_index(inplace=True)
 gdf_dissolved_and_individual['value'].sum()
+gdf_dissolved_and_individual.to_file("data/gdf_dissolved_and_individual.geojson", driver='GeoJSON')
 gdf = gdf_dissolved_and_individual
 gdf.shape
 
@@ -355,8 +350,8 @@ for index, row in gdf.iterrows():
 segments_gdf_modified = gpd.GeoDataFrame(segments_list_modified, columns=['geometry', 'value', 'Quietness', 'Ori_index'])
 segments_gdf_modified['value'].sum(), segments_gdf_modified.shape, segments_gdf_modified.head()
 segments_gdf_modified.shape
+segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
-# gdf_dissolved_and_individual.to_file("data/gdf_dissolved_and_individual.geojson", driver='GeoJSON')
 # # Filter the data with conditions
 # conditions = {
 #     'value': lambda x: x != 0
@@ -424,7 +419,7 @@ gh release upload v0.1 maps/edinburgh.html
 #| label: Join attribute (commute_fastest_bicycle_go_dutch) from gdf to gdf_road_simplified
 #| eval: false
 gdf = segments_gdf_modified
-
+all_lines = gdf.index.tolist()
 # Step 1: Create a buffer around the geometries in gdf_road_simplified
 gdf_buffered = create_buffer(gdf_road_simplified, buffer_size=0.00022)
 
@@ -434,23 +429,23 @@ gdf_buffered['value_sum'] = 0
 gdf_buffered['Line_index_from_gdf_Within'] = None
 all_lines_within_buffer = []
 
-#####
-gdf_buffered['value_sum'] = 0
-gdf_buffered['Line_index_from_gdf_Within'] = None
-all_lines_within_buffer = []
+# #####
+# gdf_buffered['value_sum'] = 0
+# gdf_buffered['Line_index_from_gdf_Within'] = None
+# all_lines_within_buffer = []
 
-# Iterate through the buffered geometries to find lines within the buffer and sum their 'value'
-for buffer_index, buffered_geom in gdf_buffered.iterrows():
-    value_sum = 0 # Sum of 'value' attributes for lines within the buffer
-    indices_within_buffer = [] # Indices of lines within the buffer
-    for line_index, line_geom in gdf.iterrows():
-        if line_geom['geometry'].within(buffered_geom['geometry']):
-            value_sum += line_geom['value']
-            indices_within_buffer.append(line_index)
-    gdf_buffered.at[buffer_index, 'value_sum'] = value_sum
-    gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = indices_within_buffer
-    all_lines_within_buffer.extend(indices_within_buffer)
-#####
+# # Iterate through the buffered geometries to find lines within the buffer and sum their 'value'
+# for buffer_index, buffered_geom in gdf_buffered.iterrows():
+#     value_sum = 0 # Sum of 'value' attributes for lines within the buffer
+#     indices_within_buffer = [] # Indices of lines within the buffer
+#     for line_index, line_geom in gdf.iterrows():
+#         if line_geom['geometry'].within(buffered_geom['geometry']):
+#             value_sum += line_geom['value']
+#             indices_within_buffer.append(line_index)
+#     gdf_buffered.at[buffer_index, 'value_sum'] = value_sum
+#     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = indices_within_buffer
+#     all_lines_within_buffer.extend(indices_within_buffer)
+# #####
 
 # Iterate through the buffered geometries to find lines within the buffer and sum their 'value'
 for buffer_index, buffered_geom in gdf_buffered.iterrows():
@@ -475,8 +470,9 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     all_lines_within_buffer.extend(indices_within_buffer)
 
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
-gdf_buffered.iloc[752]['value_sum']
+gdf_buffered.iloc[1477]['value_sum']
 # Step 2.2: identifying all lines in gdf that intersect with the buffer
+all_lines_intersect_buffer = []
 gdf_buffered['Line_index_from_gdf_Intersect'] = None
 for buffer_index, buffered_geom in gdf_buffered.iterrows():
     indices_intersecting_buffer = []  # Indices of lines intersecting with the buffer
@@ -495,17 +491,24 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
             indices_intersecting_buffer.append(line_index)
     gdf_buffered.at[buffer_index, 'value_sum'] = value_sum
     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Intersect'] = indices_intersecting_buffer
+    all_lines_intersect_buffer.extend(indices_intersecting_buffer)
 
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='intersect')
-gdf_buffered.iloc[1477]['Line_index_from_gdf_Intersect']
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=959, relation='intersect')
+gdf_buffered.iloc[1477]['value_sum']
 
-# Displaying the first few rows of the updated gdf_buffered
-gdf_buffered.head()
+# Finding the missed lines using buffer methods
+missing_lines = set(all_lines) - set(all_lines_within_buffer) - set(all_lines_intersect_buffer)
+len(missing_lines)
+Missed_gdf = gdf.loc[list(missing_lines)]
+
+map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
+                          colors=['blue', 'red', 'green'], line_widths=(3.0, 1.0, 1.5), map_type="Esri Satellite")
+map
 
 # Extracting the details for the provided example
-example_buffer_index = 84
-example_line_index_gdf = 83
-example_line_index_road_simplified = 84
+example_buffer_index = 959
+example_line_index_gdf = 962
+example_line_index_road_simplified = 962
 
 # Getting the geometries for the example
 example_buffer_geom = gdf_buffered.loc[example_buffer_index]['geometry']
