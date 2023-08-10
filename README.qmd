@@ -364,7 +364,7 @@ for index, row in gdf.iterrows():
 segments_gdf_modified = gpd.GeoDataFrame(segments_list_modified, columns=['geometry', 'value', 'Quietness', 'Ori_index'])
 segments_gdf_modified['value'].sum(), segments_gdf_modified.shape, segments_gdf_modified.head()
 segments_gdf_modified.shape
-# segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
+segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
 # # Filter the data with conditions
 # conditions = {
@@ -544,7 +544,7 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Intersect'] = indices_intersecting_buffer
     all_lines_intersect_buffer.extend(indices_intersecting_buffer)
 
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='intersect')
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='intersect')
 
 gdf_buffered.iloc[1477]['value_sum']
 
