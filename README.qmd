@@ -314,17 +314,17 @@ def merge_directly_connected(group):
 ```{python}
 #| label: Download the road network for Area-of-Interest and read GeoJSON files
 
-# Define the centre point of AoT from OSM
-point = (55.952227 , -3.1959271)
-distance = 1300  # in meters
+# # Define the centre point of AoT from OSM
+# point = (55.952227 , -3.1959271)
+# distance = 1300  # in meters
 
-# Only download if the data/edges.shp file does not exist:
-if not os.path.exists("data/edges.shp"):
-    # Download the road network data
-    graph = ox.graph_from_point(point, dist=distance, network_type='all')
+# # Only download if the data/edges.shp file does not exist:
+# if not os.path.exists("data/edges.shp"):
+#     # Download the road network data
+#     graph = ox.graph_from_point(point, dist=distance, network_type='all')
 
-    # Save the road network as a shapefile
-    ox.save_graph_shapefile(graph, filepath=r'data/')
+#     # Save the road network as a shapefile
+#     ox.save_graph_shapefile(graph, filepath=r'data/')
 
 # Read in data from CycleStreets 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
