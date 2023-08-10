@@ -1,29 +1,22 @@
----
-format: gfm
-jupyter: python3
----
-
 # Prerequisites
 
-To run the code in this repo, you need to have a working Python installation with the following packages installed (with pip in this case):
+To run the code in this repo, you need to have a working Python
+installation with the following packages installed (with pip in this
+case):
 
-```{bash}
+``` {bash}
 #| eval: false
 pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
 ```
 
-
 # networkmerge
 
-A minimal example dataset was created with the ATIP tool.
-The example dataset can be found in the `data` folder.
+A minimal example dataset was created with the ATIP tool. The example
+dataset can be found in the `data` folder.
 
 To read-in the data into Python we used the following:
 
-```{python}
-#| label: Import necessary library and all defined functions:calculate_total_length, plot_geodataframe_with_labels, plot_geodataframes, filter_data, create_buffer, get_vector, calculate_angle, split_line_at_angles, calculate_angle, filter_parallel_lines_concat, calculate_distance, plot_buffer_with_lines, merge_directly_connected
-
-
+``` python
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
@@ -309,13 +302,9 @@ def merge_directly_connected(group):
                     break
         merged_lines.append(current_line)
     return merged_lines
-
 ```
 
-
-```{python}
-#| label: Download the road network for Area-of-Interest and read GeoJSON files
-
+``` python
 # # Define the centre point of AoT from OSM
 # point = (55.952227 , -3.1959271)
 # distance = 1300  # in meters
@@ -385,12 +374,13 @@ gdf_road_simplified.crs = "EPSG:4326"
 map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('segments_gdf_modified', segments_gdf_modified),('gdf_merged_directly_connected_final', gdf_merged_directly_connected_final),
                           colors=['blue', 'red', 'green','black'], line_widths=(3.0, 2.0, 1.0,0.6), map_type="Esri Satellite")
 # map
-
 ```
 
-```{python}
-#| label: Join attribute (commute_fastest_bicycle_go_dutch) from gdf to gdf_road_simplified
-#| eval: false
+:::
+{#join-attribute-(commute_fastest_bicycle_go_dutch-from-gdf-to-gdf_road_simplified
+.cell execution_count=3}
+
+``` python
 gdf = segments_gdf_modified
 all_lines = gdf.index.tolist()
 
@@ -574,20 +564,16 @@ total_distance_traveled = round(sum(gdf_road_simplified_updated['value_sum'] * g
 total_distance_traveled
 ```
 
-```{python}
-#| eval: false
-#| echo: false
-# Save gdf_road_simplified_updated as geojson
-gdf_to_save = gdf_road_simplified_updated[['value_sum', 'geometry']]
-gdf_to_save.to_file("data/gdf_road_simplified_updated.geojson", driver='GeoJSON')
-```
+:::
 
-The code above generates output that has values from the detailed network merged onto the simplified network. 
-The output is saved as a GeoJSON file.
+The code above generates output that has values from the detailed
+network merged onto the simplified network. The output is saved as a
+GeoJSON file.
 
-To recap, code below reads the input and output GeoJSON files and displays the first few rows of the output.
+To recap, code below reads the input and output GeoJSON files and
+displays the first few rows of the output.
 
-```{python}
+``` python
 input_detailed = gpd.read_file("data/rnet_princes_street.geojson")
 input_simple = gpd.read_file("data/Edc_Roadlink.geojson")
 input_detailed = input_detailed.to_crs('EPSG:27700')
@@ -611,9 +597,13 @@ input_detailed.plot();
 input_intersection.plot();
 ```
 
+![](buffer-aggregate_files/figure-commonmark/cell-6-output-1.png)
+
+![](buffer-aggregate_files/figure-commonmark/cell-6-output-2.png)
+
 The output is as follows:
 
-```{python}
+``` python
 gdf_output = gpd.read_file("data/gdf_road_simplified_updated.geojson")
 gdf_output.head()
 gdf_output[['value_sum']].mean()
@@ -622,17 +612,21 @@ gdf_output_projected = gdf_output.to_crs('EPSG:27700')
 gdf_output_projected['length'] = gdf_output_projected['geometry'].length
 ```
 
-The total distance travelled on the input and output networks are as follows:
+The total distance travelled on the input and output networks are as
+follows:
 
-```{python}
+``` python
 total_distance_traveled_input = round(sum(input_detailed['commute_fastest_bicycle_go_dutch'] * input_detailed['geometry'].length))
 round(total_distance_traveled_input / 1000)
 ```
 
+    17159
+
 And on the output network:
 
-```{python}
+``` python
 total_distance_traveled_output = round(sum(gdf_output_projected['value_sum'] * gdf_output_projected['geometry'].length))
 round(total_distance_traveled_output / 1000)
 ```
 
+    43926
