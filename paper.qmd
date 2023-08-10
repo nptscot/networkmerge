@@ -15,7 +15,7 @@ editor:
 bibliography: references.bib
 ---
 
-# Reproducibility {-}
+# Reproducibility {.unnumbered}
 
 To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
 
@@ -32,7 +32,7 @@ Ctrl+Shift+F4
 
 You can then add citations and other elements of academic writing.
 
-# Abstract {-}
+# Abstract {.unnumbered}
 
 # Introduction
 
@@ -93,7 +93,8 @@ The 'rasterisation' stage can tackle some of the issues associated with multiple
 
 ![](images/armley-road-raster.png){#fig-armley-road-raster}
 
-Rasterised network results for the same corridors shown in Figure @fig-pct. Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
+Rasterised network results for the same corridors shown in Figure @fig-pct.
+Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
@@ -131,7 +132,6 @@ Topology-preserving simplification reduces the number of vertices in a linestrin
 As shown in the figures below, it can merge lines that are parallel, but does not work for complex geometries.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
-
 ```{r}
 library(sf)
 library(tmap)
@@ -176,14 +176,13 @@ tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_facets(by = "keep", free.coords = TRUE) 
 ```
 
-Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package. The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
-
+Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
+The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 :::
 
 The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
 
 ::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
-
 ```{python}
 #| label: fig-osmnx-before
 #| warning: false
@@ -208,12 +207,20 @@ ox.plot_graph(G_simplified);
 ```
 
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
-
 :::
 
 ### Simplification with parallel edge removal
 
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+
+<!-- TODO: Section on network simplification by iterative edge removal and re-routing -->
+<!-- ## Network simplification by iterative edge removal and re-routing -->
+
+## Merging simple and detailed networks
+
+After you have a simplified version of the network, from any source, the next step is merging the attributes.
+...
+<!-- TODO: add content to this section. -->
 
 # Results {#sec-results}
 

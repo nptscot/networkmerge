@@ -296,6 +296,15 @@ A more aggressive approach is to simplify and alter network topology in
 a single step, “through the removal of duplicate or parallel edges, and
 combining simply-connected nodes” (Deakin 2023).
 
+<!-- TODO: Section on network simplification by iterative edge removal and re-routing -->
+<!-- ## Network simplification by iterative edge removal and re-routing -->
+
+## Merging simple and detailed networks
+
+After you have a simplified version of the network, from any source, the
+next step is merging the attributes. …
+<!-- TODO: add content to this section. -->
+
 # Results
 
 # Discussion
