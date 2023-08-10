@@ -93,7 +93,7 @@ The 'rasterisation' stage can tackle some of the issues associated with multiple
 
 ![](images/armley-road-raster.png){#fig-armley-road-raster}
 
-Rasterised network results for the same corridors shown in Figure @fig-pct.
+Rasterised network results for the same corridors shown in  @fig-pct.
 Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
@@ -156,6 +156,8 @@ As shown in the figures below, it can merge lines that are parallel, but does no
 library(sf)
 library(tmap)
 library(tidyverse)
+library(reticulate)
+reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -206,7 +208,7 @@ The graphic below shows a 2 panel plot showing simplification with the `consolid
 ```{python}
 #| label: fig-osmnx-before
 #| warning: false
-import osmnx as ox
+# import osmnx as ox
 # Get all streets within 50 m of Princes Street, Edinburgh:
 # Get point that is on Princes Street:
 # ox.geocode_to_gdf("Princes Street Edinburgh")

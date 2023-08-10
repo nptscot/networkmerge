@@ -225,7 +225,7 @@ for complex geometries.
 <tr class="odd">
 <td style="text-align: center;"><div width="100.0%"
 data-layout-align="center">
-<p><img src="paper_files/figure-commonmark/unnamed-chunk-2-1.png"
+<p><img src="paper_files/figure-commonmark/unnamed-chunk-3-1.png"
 data-fig.extended="false" /></p>
 </div></td>
 </tr>
@@ -240,7 +240,7 @@ data-fig.extended="false" /></p>
 <tr class="odd">
 <td style="text-align: center;"><div width="100.0%"
 data-layout-align="center">
-<p><img src="paper_files/figure-commonmark/unnamed-chunk-3-1.png"
+<p><img src="paper_files/figure-commonmark/unnamed-chunk-4-1.png"
 data-fig.extended="false" /></p>
 </div></td>
 </tr>
