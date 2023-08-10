@@ -390,7 +390,7 @@ map
 
 ```{python}
 #| label: Join attribute (commute_fastest_bicycle_go_dutch) from gdf to gdf_road_simplified
-#| eval: false
+#| eval: true
 gdf = segments_gdf_modified
 all_lines = gdf.index.tolist()
 
