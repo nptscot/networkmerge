@@ -1,0 +1,271 @@
+---
+title: "Network simplification: application to the visualisation of transport networks"
+format:
+  gfm: default
+  # pdf: default
+  # arxiv-pdf:
+  #   keep-tex: true
+number-sections: true
+execute: 
+  echo: false
+  cache: true
+editor: 
+  markdown: 
+    wrap: sentence
+bibliography: references.bib
+---
+
+# Reproducibility {-}
+
+To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
+
+``` bash
+quarto add quarto-journals/elsevier
+```
+
+To write the paper we recommend using the Quarto extension for VS Code.
+You can go into the visual editor with the following shortcut:
+
+```         
+Ctrl+Shift+F4
+```
+
+You can then add citations and other elements of academic writing.
+
+# Abstract {-}
+
+# Introduction
+
+Datasets representing route networks are central to transport planning.
+Unlike other key types of data used in transport planning, route networks are both a key input *and* key output.
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models.
+Global and local estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs.
+However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically with model outputs such as flow per time of day).[^1]
+
+[^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
+
+This raises the question, what are transport network datasets?
+The intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other ways along which people and goods can travel.
+More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways).
+Usually they also contain attributes associated with these ways.
+File formats for representing them include Transportation Network Test Problem (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
+
+A more recent approach is to represent transport networks in standard geographic file formats.
+In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow.
+Making transport datasets compliant with the 'simple features' geographic data specification in this way has many advantages compared with the proliferation of formats used by proprietary software, enabling more easier sharing of datasets between people and programs.
+The simple features standard is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage.
+For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.
+
+Much research has focussed on generating and modelling transport network datasets.
+This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
+Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling.
+<!-- Todo: add papers on network cleaning and simplification. --> However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning.
+
+@morgan2020 presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
+The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings.
+The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally.
+However, the 'overline' approach, without further processing, has limitations:
+
+-   It does not remove redundant vertices, which can lead to large file sizes and slow rendering.
+-   It does not remove redundant edges, which can lead to visual artefacts.
+-   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
+
+The final point is most relevant to the present paper.
+An example of the issue is shown in @fig-pct from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows [@lovelace2017].
+The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
+The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
+Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
+
+::: {#fig-pct layout-ncol="2"}
+![](images/otley-road-narrow.png){#fig-otley-road}
+
+![](images/armley-road-narrow.png){#fig-armley-road}
+
+Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left.
+Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+:::
+
+A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
+The 'rasterisation' stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in @fig-rasterisation.
+
+::: {#fig-rasterisation layout-ncol="2"}
+![](images/otley-road-raster.png){#fig-otley-road-raster}
+
+![](images/armley-road-raster.png){#fig-armley-road-raster}
+
+Rasterised network results for the same corridors shown in Figure @fig-pct. Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
+Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+:::
+
+The aim of this paper is to outline approaches for visualising transport networks that address the issues associated with multiple parallel ways.
+Furthermore we present solutions, implemented with open source software for reproducible and scalable results, to support better visualisation of transport networks for more evidence-based and sustainable transport planning.
+
+@sec-methods describes the input datasets and methods used to generate the results presented in this paper.
+@sec-results presents the results, illustrated by network maps of the example datasets.
+Finally, @sec-discussion discusses the results and outlines future work.
+
+# Data
+
+# Methods {#sec-methods}
+
+Two fundamental approaches to simplifying transport networks are:
+
+-   Simplifying the geometry of the network, by removing redundant vertices and edges and/or by merging parallel ways and *then* merging the attributes of the original network onto the simplified network.
+-   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
+
+In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available.
+
+## Geometry simplification
+
+A prerequisite of simple networks is simple geometries.
+
+### Topology-preserving simplification
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+```
+
+Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
+As shown in the figures below, it can merge lines that are parallel, but does not work for complex geometries.
+
+::: {#fig-topology-preserving layout-ncol="1"}
+
+```{r}
+library(sf)
+library(tmap)
+library(tidyverse)
+input = sf::read_sf('data/minimal-input.geojson')
+input_projected = sf::st_transform(input, "EPSG:27700")
+simplification_levels = c(1, 0.5, 0.1, 0.001)
+# ordered factor of simplification levels:
+simp_factor = ordered(simplification_levels, levels = simplification_levels)
+simplification_df = data.frame(
+  id = as.character(1:length(simplification_levels)),
+  simp_factor,
+  keep = paste0("Keep: ", round(as.numeric(simplification_levels) * 100, 2), "%")
+  )
+simplification_df$keep = ordered(simplification_df$keep, levels = simplification_df$keep)
+input_simplified = purrr::map_dfr(simplification_levels, .id = "id", function(x) {
+  rmapshaper::ms_simplify(input_projected, keep_shapes = TRUE, keep = x)
+})
+input_simplified = left_join(
+  input_simplified,
+  simplification_df,
+  by = join_by(id == id)
+  )
+tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+  tm_lines() +
+  tm_facets(by = "keep", free.coords = TRUE) 
+```
+
+```{r}
+input = sf::read_sf('data/rnet_princes_street_minimal.geojson')
+input_projected = sf::st_transform(input, "EPSG:27700")
+input_simplified = purrr::map_dfr(simplification_levels, .id = "id", function(x) {
+  rmapshaper::ms_simplify(input_projected, keep_shapes = TRUE, keep = x)
+})
+input_simplified = left_join(
+  input_simplified,
+  simplification_df,
+  by = join_by(id == id)
+  )
+tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+  tm_lines() +
+  tm_facets(by = "keep", free.coords = TRUE) 
+```
+
+Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package. The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
+
+:::
+
+The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
+
+::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
+
+```{python}
+#| label: fig-osmnx-before
+#| warning: false
+import osmnx as ox
+# Get all streets within 50 m of Princes Street, Edinburgh:
+# Get point that is on Princes Street:
+# ox.geocode_to_gdf("Princes Street Edinburgh")
+G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
+ox.plot_graph(G);
+# Plot the graph in an interactive map:
+# ox.plot_graph_folium(G)
+# project to 27700
+```
+
+```{python}
+#| label: fig-osmnx-consolidate-intersections
+G_projected = ox.project_graph(G, 'EPSG:27700')
+# simplify:
+G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
+# plot G_simplified as GeoPandas in Quarto:
+ox.plot_graph(G_simplified);
+```
+
+Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
+
+:::
+
+### Simplification with parallel edge removal
+
+A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+
+# Results {#sec-results}
+
+```{python}
+```
+
+```{python}
+
+```
+
+# Discussion {#sec-discussion}
+
+# References
+
+<!-- Tests -->
+
+```{python}
+# import osmnx as ox
+# import geopandas as gpd
+# import momepy
+# import networkx as nx
+# import topojson as tp
+
+# gdf = gpd.read_file('data/minimal-input.geojson')
+# # Convert to EPSG:27700
+# gdf = gdf.to_crs('EPSG:27700')
+# gdf.plot()
+# gdf_topo = tp.Topology(gdf)
+# gdf_simple = gdf_topo.toposimplify(10).to_gdf()
+# gdf_simple.plot()
+# # Convert gdf linestrings to nodes:
+# gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
+# nx.draw(gdf_nx)
+# momepy.roundabout_simplification(gdf)
+```
+
+```{python}
+# import osmnx as ox
+# import geopandas as gpd
+# import momepy
+# import networkx as nx
+# import topojson as tp
+
+# gdf = gpd.read_file('data/minimal-input.geojson')
+# # Convert to EPSG:27700
+# gdf = gdf.to_crs('EPSG:27700')
+# gdf.plot()
+# gdf_topo = tp.Topology(gdf)
+# gdf_simple = gdf_topo.toposimplify(10).to_gdf()
+# gdf_simple.plot()
+# # Convert gdf linestrings to nodes:
+# gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
+# nx.draw(gdf_nx)
+# momepy.roundabout_simplification(gdf)
+```
