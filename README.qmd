@@ -594,3 +594,5 @@ gdf_road_simplified_updated.head()
 
 total_distance_traveled = round(sum(gdf_road_simplified_updated['value_sum'] * gdf_road_simplified_updated['geometry'].length))
 total_distance_traveled
+```
+
