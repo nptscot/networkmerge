@@ -384,7 +384,7 @@ gdf_road_simplified.crs = "EPSG:4326"
 # Plotting the geodataframes
 map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('segments_gdf_modified', segments_gdf_modified),('gdf_merged_directly_connected_final', gdf_merged_directly_connected_final),
                           colors=['blue', 'red', 'green','black'], line_widths=(3.0, 2.0, 1.0,0.6), map_type="Esri Satellite")
-map
+# map
 
 ```
 
@@ -572,5 +572,12 @@ gdf_road_simplified_updated.head()
 
 total_distance_traveled = round(sum(gdf_road_simplified_updated['value_sum'] * gdf_road_simplified_updated['geometry'].length))
 total_distance_traveled
+```
+
+```{python}
+#| eval: false
+#| echo: false
+# Save gdf_road_simplified_updated as geojson
+gdf_road_simplified_updated.to_file("data/gdf_road_simplified_updated.geojson", driver='GeoJSON')
 ```
 
