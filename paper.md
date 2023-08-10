@@ -169,10 +169,10 @@ data-fig.extended="false" alt="(b)" /></p>
 </table>
 
 Figure 2: Rasterised network results for the same corridors shown in
-Figure [Figure 1](#fig-pct). Note the visual artefacts such as
-‘staircase’ effects and overlapping values resulting from parallel lines
-along Armley Road (right panel). Source: open access Propensity to Cycle
-Tool results available at www.pct.bike.
+[Figure 1](#fig-pct). Note the visual artefacts such as ‘staircase’
+effects and overlapping values resulting from parallel lines along
+Armley Road (right panel). Source: open access Propensity to Cycle Tool
+results available at www.pct.bike.
 
 </div>
 
