@@ -242,7 +242,51 @@ A more aggressive approach is to simplify and alter network topology in a single
 ## Merging simple and detailed networks
 
 After you have a simplified version of the network, from any source, the next step is merging the attributes.
-...
+
+### Data Preparation and Processing
+The methodology employed in this study is designed to process, analyse, and merge detailed spatial data with cycle commuting information, focusing on a simplified road network. By reducing redundancy and intricacies in the data, this approach aims to provide a more intuitive understanding of cycling patterns and behaviors.
+
+The process is divided into several stages, each with a specific purpose, collectively contributing to the creation of a streamlined representation of the road network that emphasises essential cycling-related information. 
+
+The process requires two main input datasets. The first is a GeoJSON file named "rnet_princes_street.geojson," read into the system as input_detailed. This dataset represents the more intricate and detailed spatial information related to cycle commuting (stored in input_detailed['value']). The second is another GeoJSON file named "Edc_Roadlink.geojson," read as input_simple, serving as the simplified road network onto which the detailed information will be projected.
+
+#### The process is structured into specific stages:
+
+##### Preprocessing on input_detailed:
+###### 1. Preprocessing on input_detailed
+The preprocessing stage focuses on cleaning and restructuring the input_detailed data to set a unique index for each road. It involves merging spatially connected lines within the dataset, grouped by 'Value' and 'Quietness' attributes. A custom function, merge_directly_connected, is implemented for this purpose. The function uses a while loop that continuously joins lines if the start and end coordinates match, resulting in a set of merged lines. The purpose of this action is to eliminate redundancy and ensure that each road segment has a unique identifier, facilitating further analysis.
+
+###### 2. Segmentation of input_detailed
+After preprocessing, the processed input_detailed data is then segmented using the split_line_at_angles function. This function computes the direction of each vector within a line and identifies indices where the angle between consecutive vectors exceeds a given threshold. The line is then split at these points into individual segments. The purpose of this action is to ensure that the following geospatial data analysis can produce more refined results by recognising and preserving significant changes in direction.
+
+Together, these stages transform the detailed spatial data into a format suitable for merging with the simplified road network. 
+
+##### Projecting cycle commuting data from input_detailed to input_simple
+The process of projecting cycle commuting data from the more detailed spatial information (input_detailed) to a simplified road network (input_simple) is carried out through a series of well-defined stages:
+
+###### 1. Creating a Buffer around input_simple
+A new GeoDataFrame gdf_buffer is created around the geometries in input_simple using a predefined buffer size. This buffer serves as a zone within which lines from input_detailed will be analyzed and matched to the corresponding roads in input_simple.
+
+###### 2.  Identifying Lines within the Buffer and Processing 'value' Attribute
+The first major step in this stage is to find the lines from input_detailed that fall within the buffer. The 'value' attribute associated with these lines is then processed according to three specific requirements:
+
+Requirement 1: If multiple lines with the same 'Ori_index' are within the same buffer, the mean 'value' of these lines is added to the buffer.
+
+Requirement 2: If lines with the same 'Ori_index' are within different buffers, the lengths of the lines are compared, and the 'value' is added to the buffer with the longer lines.
+
+Requirement 3: The 'value' of each line is added only once to ensure accuracy.
+
+In this section, instead of using standard geopandas functions like gpd.sjoin, the code implements a series of loops and dictionary structures. This custom approach meets the specific requirements, storing the index of lines within the buffer in gdf_buffered['Line_index_from_gdf_Within']  and ensuring that each 'value' is added only once.
+
+###### 3. Identifying Lines that Intersect with the Buffer
+Lines from input_detailed that intersect with the buffer are also identified. This stage involves calculating the angle between intersecting lines and the corresponding lines in input_simple. The functions get_vector and calculate_angle are utilised to compute the vectors and angles, respectively.
+
+If the angle is less than 25 degrees, the intersecting lines are considered to be in the same direction as the corresponding line in input_simple, and their 'value' is added to the attribute gdf_buffered['value_sum']. The index of intersecting lines is recorded in gdf_buffered['Line_index_from_gdf_Intersect'].
+
+###### 4. Final Data Aggregation
+In the final stage of the process, the attributes from gdf_buffered are matched to input_simple using the index. A join operation then updates input_simple with the attributes value_sum, effectively merging the processed cycle commuting data onto the simplified road network.
+
+
 <!-- TODO: add content to this section. -->
 
 # Results {#sec-results}
