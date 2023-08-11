@@ -637,11 +637,8 @@ input_detailed_buffer.crs = input_detailed.crs
 # the intersection of the simple network with the detailed buffered network:
 input_intersection = gpd.overlay(input_simple, input_detailed_buffer, how='intersection')
 # Plot both input and output networks with values represented by colour:
-# Todo: add colour/width to the lines
-# input_detailed.plot(line_width=input_detailed['value']/1000);
-# input.simple.plot(line_width=input_simple['value']/1000);
-input_detailed.plot();
-input_intersection.plot();
+input_detailed.plot(linewidth=input_detailed['commute_fastest_bicycle_go_dutch']/1000, cmap='Blues', legend=True);
+input_intersection.plot(color='red', linewidth=2);
 ```
 
 The output is as follows:
