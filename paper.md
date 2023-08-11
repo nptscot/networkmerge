@@ -225,8 +225,11 @@ for complex geometries.
 <tr class="odd">
 <td style="text-align: center;"><div width="100.0%"
 data-layout-align="center">
-<p><img src="paper_files/figure-commonmark/unnamed-chunk-3-1.png"
-data-fig.extended="false" /></p>
+<p><img
+src="paper_files/figure-commonmark/fig-topology-preserving-1-1.png"
+title="fig:" id="fig-topology-preserving-1"
+data-ref-parent="fig-topology-preserving" data-fig.extended="false"
+alt="(a)" /></p>
 </div></td>
 </tr>
 </tbody>
@@ -240,8 +243,11 @@ data-fig.extended="false" /></p>
 <tr class="odd">
 <td style="text-align: center;"><div width="100.0%"
 data-layout-align="center">
-<p><img src="paper_files/figure-commonmark/unnamed-chunk-4-1.png"
-data-fig.extended="false" /></p>
+<p><img
+src="paper_files/figure-commonmark/fig-topology-preserving-2-1.png"
+title="fig:" id="fig-topology-preserving-2"
+data-ref-parent="fig-topology-preserving" data-fig.extended="false"
+alt="(b)" /></p>
 </div></td>
 </tr>
 </tbody>

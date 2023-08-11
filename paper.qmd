@@ -153,6 +153,7 @@ As shown in the figures below, it can merge lines that are parallel, but does no
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
+#| label: fig-topology-preserving-1
 library(sf)
 library(tmap)
 library(tidyverse)
@@ -184,6 +185,7 @@ tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
 ```
 
 ```{r}
+#| label: fig-topology-preserving-2
 input = sf::read_sf('data/rnet_princes_street_minimal.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 input_simplified = purrr::map_dfr(simplification_levels, .id = "id", function(x) {
