@@ -149,7 +149,7 @@ sf::write_sf(network_merged, "data/minimal-output.geojson")
 ```
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
-As shown in the figures below, it can merge lines that are parallel, but does not work for complex geometries.
+As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
