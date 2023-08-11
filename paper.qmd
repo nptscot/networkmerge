@@ -98,6 +98,9 @@ Note the visual artefacts such as 'staircase' effects and overlapping values res
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
+The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attribures.
+By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.
+
 The aim of this paper is to outline approaches for visualising transport networks that address the issues associated with multiple parallel ways.
 Furthermore we present solutions, implemented with open source software for reproducible and scalable results, to support better visualisation of transport networks for more evidence-based and sustainable transport planning.
 
@@ -242,7 +245,6 @@ A more aggressive approach is to simplify and alter network topology in a single
 After you have a simplified version of the network, from any source, the next step is merging the attributes.
 
 ### Data Preparation and Processing
-The methodology employed in this study is designed to process, analyse, and merge detailed spatial data with cycle commuting information, focusing on a simplified road network. By reducing redundancy and intricacies in the data, this approach aims to provide a more intuitive understanding of cycling patterns and behaviors.
 
 The process is divided into several stages, each with a specific purpose, collectively contributing to the creation of a streamlined representation of the road network that emphasises essential cycling-related information. 
 
