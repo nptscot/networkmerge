@@ -165,3 +165,4 @@ paper.pdf
 paper_cache/
 maps/
 paper_files/figure-pdf
+.Renviron

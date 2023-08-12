@@ -1,5 +1,6 @@
 ---
 format: gfm
+jupyter: python3
 ---
 
 # Prerequisites
@@ -14,31 +15,18 @@ pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapc
 
 # networkmerge
 
-A minimal example dataset was created with the ATIP tool.
-The example dataset can be found in the `data` folder.
+Example datasets were created with the ATIP tool and taken from the NPT project.
+The example datasets can be found in the `data` folder.
 
-To read-in the data into Python we used the following:
+<!-- To read-in the data into Python we used the following: -->
+
+This repo contains different approaches to simplify and merge networks.
+
+See [buffer-aggregate.md](buffer-aggregate.md) for a simple buffer and aggregate approach.
+
+For an in-progress paper describing different approaches, see [paper.md](paper.md).
 
 ```{python}
-#| label: read-in data
-import matplotlib.pyplot as plt
-import pandas as pd
-import math
-from typing import List, Tuple
-from shapely.geometry import LineString
-import geopandas as gpd
-import osmnx as ox
-import numpy as np
-from scipy.spatial.distance import pdist, squareform
-from shapely.geometry import Point
-import networkx as nx
-from pyproj import CRS
-import folium
-import os
-
-def calculate_total_length(gdf, crs="EPSG:32630"):
-    # Copy the GeoDataFrame
-    gdf_projected = gdf.copy()
 
     # Change the CRS to a UTM zone for more accurate length calculation
     gdf_projected = gdf_projected.to_crs(crs)

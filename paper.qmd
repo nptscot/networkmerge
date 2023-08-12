@@ -1,8 +1,8 @@
 ---
 title: "Network simplification: application to the visualisation of transport networks"
 format:
-  gfm: default
-  # pdf: default
+  # gfm: default
+  pdf: default
   # arxiv-pdf:
   #   keep-tex: true
 number-sections: true
@@ -15,7 +15,7 @@ editor:
 bibliography: references.bib
 ---
 
-# Reproducibility {-}
+# Reproducibility {.unnumbered}
 
 To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
 
@@ -32,7 +32,7 @@ Ctrl+Shift+F4
 
 You can then add citations and other elements of academic writing.
 
-# Abstract {-}
+# Abstract {.unnumbered}
 
 # Introduction
 
@@ -93,9 +93,13 @@ The 'rasterisation' stage can tackle some of the issues associated with multiple
 
 ![](images/armley-road-raster.png){#fig-armley-road-raster}
 
-Rasterised network results for the same corridors shown in Figure @fig-pct. Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
+Rasterised network results for the same corridors shown in @fig-pct.
+Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
+
+The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attribures.
+By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.
 
 The aim of this paper is to outline approaches for visualising transport networks that address the issues associated with multiple parallel ways.
 Furthermore we present solutions, implemented with open source software for reproducible and scalable results, to support better visualisation of transport networks for more evidence-based and sustainable transport planning.
@@ -127,15 +131,37 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 ```
 
+```{r}
+#| eval: false
+#| echo: false
+# Create input dataset:
+network = sf::read_sf("https://raw.githubusercontent.com/nptscot/networkmerge/e6f25a7214c15c9c2d5e2cb99a5e4bd4dd92c1b5/data/minimal-example-2-scotthall-road.geojson")
+network$description = as.numeric(network$description)
+network = network["description"]
+network$value = c(1, 2)
+network = stplanr::overline(network, attrib = "value")
+network
+sf::write_sf(network, "data/minimal-input.geojson")
+plot(network[1, "value"])
+plot(network[2, "value"])
+network_merged = network
+network_merged$value[2] = network_merged$value[1] + network_merged$value[2]
+network_merged = network_merged[-1, ]
+plot(network_merged)
+sf::write_sf(network_merged, "data/minimal-output.geojson")
+```
+
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
-As shown in the figures below, it can merge lines that are parallel, but does not work for complex geometries.
+As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
-
 ```{r}
 library(sf)
 library(tmap)
 library(tidyverse)
+library(reticulate)
+# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -176,16 +202,14 @@ tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_facets(by = "keep", free.coords = TRUE) 
 ```
 
-Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package. The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
-
+Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
+The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 :::
 
 The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
 
 ::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
-
 ```{python}
-#| label: fig-osmnx-before
 #| warning: false
 import osmnx as ox
 # Get all streets within 50 m of Princes Street, Edinburgh:
@@ -199,7 +223,6 @@ ox.plot_graph(G);
 ```
 
 ```{python}
-#| label: fig-osmnx-consolidate-intersections
 G_projected = ox.project_graph(G, 'EPSG:27700')
 # simplify:
 G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
@@ -208,12 +231,19 @@ ox.plot_graph(G_simplified);
 ```
 
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
-
 :::
 
 ### Simplification with parallel edge removal
 
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+
+<!-- An approach to simplification with parallel edge removal is described in the `buffer-aggregate` document that accompanies this paper. -->
+
+## Merging simple and detailed networks
+
+After you have a simplified version of the network, from any source, the next step is merging the attributes.
+
+<!-- TODO: add content to this section. -->
 
 # Results {#sec-results}
 
