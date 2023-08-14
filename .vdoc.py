@@ -648,21 +648,9 @@ gdf_output_projected = gdf_output.to_crs('EPSG:27700')
 gdf_output_projected['length'] = gdf_output_projected['geometry'].length
 gdf_output_projected.plot(linewidth=gdf_output_projected['value_sum'] / 1000, cmap='Blues', legend=True)
 
-import matplotlib.pyplot as plt
-
-# Create a plot for gdf_output_projected
-ax = gdf_output_projected.plot(linewidth=gdf_output_projected['value_sum'] / 1000, cmap='Blues', legend=True)
-
-# Plot input_detailed on the same axes
-input_detailed.plot(ax=ax, linewidth=input_detailed['commute_fastest_bicycle_go_dutch'] / 1000, cmap='Blues', legend=True)
-
-# Additional plot customization if needed
-plt.title('Your Title Here')
-plt.xlabel('X-axis Label')
-plt.ylabel('Y-axis Label')
-
-plt.show()
-
+map = plot_geodataframes(('gdf_output_projected', gdf_output_projected), ('input_detailed', input_detailed),('Missed_gdf', Missed_gdf),
+                          colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
+map
 #
 #
 #

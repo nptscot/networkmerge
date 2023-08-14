@@ -169,40 +169,6 @@ def calculate_angle(vector1, vector2):
     return angle
 
 # Modified function to split a line into segments based on an angle threshold and retain the 'value', 'Quietness', and original index
-def split_line_at_angles(line, value, quietness, original_index, threshold=30):
-    segments = []
-    if isinstance(line, LineString):
-        coords = np.array(line.coords)
-        # Compute the direction of each vector
-        vectors = np.diff(coords, axis=0)
-        directions = np.arctan2(vectors[:, 1], vectors[:, 0])
-        # Compute the angle between each pair of vectors
-        angles = np.diff(directions)
-        # Convert the angles to degrees and take absolute values
-        angles = np.abs(np.degrees(angles))
-        # Identify the indices where the angle exceeds the threshold
-        split_indices = np.where(angles > threshold)[0] + 1
-        # Split the line at the points corresponding to the split indices
-        last_index = 0
-        for index in split_indices:
-            segment = LineString(coords[last_index:index + 1])
-            segments.append((segment, value, quietness, original_index))
-            last_index = index
-        # Include all remaining parts of the line after the last split point
-        segment = LineString(coords[last_index:])
-        segments.append((segment, value, quietness, original_index))
-    elif isinstance(line, MultiLineString):
-        # Handle each LineString in the MultiLineString separately
-        for geom in line.geoms:
-            segments.extend(split_line_at_angles(geom, value, quietness, original_index, threshold))
-    else:
-        raise ValueError(f"Unexpected geometry type: {type(line)}")
-
-    return segments
-
-from shapely.geometry import LineString
-import numpy as np
-
 def split_line_at_angles(line, value, quietness, original_index, angle_threshold=30, max_length=0.001):
     segments = []
     if isinstance(line, LineString):
@@ -249,9 +215,6 @@ def split_line_at_angles(line, value, quietness, original_index, angle_threshold
         raise ValueError(f"Unexpected geometry type: {type(line)}")
 
     return segments
-
-
-
 
 # Calculate angle between two line segments 
 def calculate_angle(line1, line2):
@@ -381,7 +344,6 @@ def merge_directly_connected(group):
 # Function to calculate the length-weighted mean
 def length_weighted_mean(group):
     return (group['value'] * group['geometry'].length).sum() / group['geometry'].length.sum()
-
 ```
 
 
@@ -438,14 +400,7 @@ for index, row in gdf.iterrows():
 segments_gdf_modified = gpd.GeoDataFrame(segments_list_modified, columns=['geometry', 'value', 'Quietness', 'Ori_index'])
 segments_gdf_modified['value'].sum(), segments_gdf_modified.shape, segments_gdf_modified.head()
 segments_gdf_modified.shape
-segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
-
-# # Filter the data with conditions
-# conditions = {
-#     'value': lambda x: x != 0
-# }
-
-# filtered_gdf = filter_data(gdf, conditions)
+# segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
 # Read in simplified OS Road map data 
 gdf_road_simplified = gpd.read_file("data/Edc_Roadlink.geojson")
@@ -456,9 +411,12 @@ gdf_road_simplified.crs = "EPSG:4326"
 # Plotting the geodataframes
 map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('segments_gdf_modified', segments_gdf_modified),('gdf_merged_directly_connected_final', gdf_merged_directly_connected_final),
                           colors=['blue', 'red', 'green','black'], line_widths=(3.0, 2.0, 1.0,0.6), map_type="Esri Satellite")
-map
+# map
 
 ```
+Requirement 1A: If multiple lines within the same buffer have the same 'Ori_index', it calculates the length-weighted mean of their 'value' attributes.
+Requirement 1B: If multiple lines within the same buffer have different 'Ori_index' values but the same 'Quietness', it calculates the length-weighted mean of their 'value' attributes.
+Requirement 2: If lines with the same 'Ori_index' are within different buffers, it calculates the length-weighted mean for the longer lines and adds that value to the corresponding buffer.
 
 ```{python}
 #Try to optimize the code by using spatial indexing techniques to reduce the number of geometry comparisons. To handle the large dataset more efficiently.
@@ -555,101 +513,8 @@ map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_g
                           colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
 map
 ```
+
 ```{python}
-# #| label: Join attribute (commute_fastest_bicycle_go_dutch) from gdf to gdf_road_simplified
-# #| eval: false
-# gdf = segments_gdf_modified
-
-# all_lines = gdf.index.tolist()
-
-# # Step 1: Create a buffer around the geometries in gdf_road_simplified
-# gdf_buffered = create_buffer(gdf_road_simplified, buffer_size=0.00022)
-
-# # all_lines_within_buffer = gpd.sjoin(gdf, gdf_buffered, how="inner", op="within")
-
-
-# # Step 2.1: identifying all lines in gdf that are within the buffer
-# # Initializing the required columns
-
-# gdf_buffered['value_sum'] = 0
-# gdf_buffered['Line_index_from_gdf_Within'] = None
-# all_lines_within_buffer = []
-
-# # Dictionary to store lines across different buffers grouped by 'Ori_index'
-# # Iterate through the buffered geometries to find lines within the buffer and sum their 'value'
-
-# lines_across_buffers_by_ori_index = defaultdict(list)
-
-# for buffer_index, buffered_geom in gdf_buffered.iterrows():
-#     # Dictionary to store lines grouped by 'Ori_index' within the current buffer
-#     lines_within_buffer_by_ori_index = defaultdict(list)
-
-#     # Find lines within the buffer and group them by 'Ori_index'
-#     indices_within_buffer = []
-#     for line_index, line_geom in gdf.iterrows():
-#         if line_geom['geometry'].within(buffered_geom['geometry']):
-#             lines_within_buffer_by_ori_index[line_geom['Ori_index']].append((line_index, line_geom['value'], line_geom['geometry'].length))
-#             indices_within_buffer.append(line_index)
-
-#     # Store the lines grouped by 'Ori_index' for comparison across buffers
-#     for ori_index, lines in lines_within_buffer_by_ori_index.items():
-#         lines_across_buffers_by_ori_index[ori_index].append((buffer_index, lines))
-
-#     # Placeholder for value sum; actual sum will be calculated later
-#     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = indices_within_buffer
-#     all_lines_within_buffer.extend(indices_within_buffer)
-
-# # Set to keep track of processed lines
-# processed_lines = set()
-
-# lines_across_buffers_by_ori_index
-# lines_within_buffer_by_ori_index
-
-# # Iterate through lines grouped by 'Ori_index' across buffers
-# for ori_index, buffers_with_lines in lines_across_buffers_by_ori_index.items():
-#     if len(buffers_with_lines) == 1:
-#         # Requirement 1: A. Length-weighted mean for lines with the same 'Ori_index' within the same buffer: If lines within the same buffer have the same 'Ori_index' value, we'll calculate the length-weighted mean for their 'value' attributes. B. Length-weighted mean for lines with different 'Ori_index' values but similar characteristics (e.g., 'Quietness') within the same buffer: If lines within the same buffer have different 'Ori_index' values but the same 'Quietness', we'll calculate the length-weighted mean for their 'value' attributes.
-#         #start by grouping the lines within each buffer by 'Ori_index' and then by 'Quietness' if there are different 'Ori_index' values within the same 'Quietness' group
-
-#         buffer_index, lines = buffers_with_lines[0]
-#         length_weighted_sum = sum(line[1] * line[2] for line in lines if line[0] not in processed_lines)
-#         total_length = sum(line[2] for line in lines if line[0] not in processed_lines)
-#         length_weighted_mean = length_weighted_sum / total_length if total_length > 0 else 0
-#         gdf_buffered.at[buffer_index, 'value_sum'] += length_weighted_mean
-#         processed_lines.update(line[0] for line in lines)
-#     else:
-#         # Requirement 2: Length-weighted mean for lines with the same 'Ori_index' within different buffers
-#         max_length_buffer = max(buffers_with_lines, key=lambda x: sum(line[2] for line in x[1] if line[0] not in processed_lines))
-#         length_weighted_sum = sum(line[1] * line[2] for line in max_length_buffer[1] if line[0] not in processed_lines)
-#         total_length = sum(line[2] for line in max_length_buffer[1] if line[0] not in processed_lines)
-#         length_weighted_mean_value = length_weighted_sum / total_length if total_length > 0 else 0
-#         gdf_buffered.at[max_length_buffer[0], 'value_sum'] += length_weighted_mean_value
-#         processed_lines.update(line[0] for line in max_length_buffer[1])
-
-
-# plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
-# gdf_buffered.iloc[614]
-
-```
-Requirement 1A: If multiple lines within the same buffer have the same 'Ori_index', it calculates the length-weighted mean of their 'value' attributes.
-Requirement 1B: If multiple lines within the same buffer have different 'Ori_index' values but the same 'Quietness', it calculates the length-weighted mean of their 'value' attributes.
-Requirement 2: If lines with the same 'Ori_index' are within different buffers, it calculates the length-weighted mean for the longer lines and adds that value to the corresponding buffer.
-
-For lines with the same 'Ori_index' that are within different buffers:
-
-Identify these lines.
-Calculate the length-weighted mean for the longer lines.
-Add that value to the corresponding buffer.
-For lines within the same buffer:
-
-Calculate the length-weighted mean for these lines.
-Assign the calculated value to the corresponding buffer.
-```{python}
-
-# Helper function to find examples that meet Requirement 1 and Requirement 2
-# Requirement 1: If there are multiple lines with the same 'Ori_index' value within the same buffer, the mean value of those lines should be added to the buffer.
-# Requirement 2: If there are lines with the same 'Ori_index' value but within different buffers, compare the lengths of the lines. If the length of lines with the same 'Ori_index' in one buffer is shorter than the lines in another buffer, only add the value of the lines in the buffer with the longer lines.
-
 def find_examples():
     # Dictionary to store examples
     examples = {"requirement_1": [], "requirement_2": []}
@@ -693,46 +558,9 @@ plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=405, relation='within')
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='within')
 gdf_buffered.iloc[614]['value_sum']
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=463, relation='within')
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1476, relation='within')
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
 gdf_buffered.iloc[463]['value_sum']
 
-##############################################################
-# # Step 2.2: identifying all lines in gdf that intersect with the buffer
-# all_lines_intersect_buffer = []
-# gdf_buffered['Line_index_from_gdf_Intersect'] = None
-# for buffer_index, buffered_geom in gdf_buffered.iterrows():
-#     indices_intersecting_buffer = []  # Indices of lines intersecting with the buffer
-#     value_sum = gdf_buffered.loc[buffer_index, 'value_sum']  # Existing value_sum for the buffer
-#     corresponding_road_line = gdf_road_simplified.loc[buffer_index]['geometry']  # Corresponding road line
-#     for line_index, line_geom in gdf.iterrows():
-#         # Skip lines that are already within any buffer
-#         if line_index in all_lines_within_buffer:
-#             continue
-#         if line_geom['geometry'].intersects(buffered_geom['geometry']):
-#             vector1 = get_vector(line_geom['geometry'])
-#             vector2 = get_vector(corresponding_road_line)
-#             angle = calculate_angle(vector1, vector2)
-#             if angle < 25:
-#                 value_sum += line_geom['value']
-#             indices_intersecting_buffer.append(line_index)
-#     gdf_buffered.at[buffer_index, 'value_sum'] = value_sum
-#     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Intersect'] = indices_intersecting_buffer
-#     all_lines_intersect_buffer.extend(indices_intersecting_buffer)
-
-# plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='intersect')
-
-# gdf_buffered.iloc[1477]['value_sum']
-
-# # Finding the missed lines using buffer methods
-# missing_lines = set(all_lines) - set(all_lines_within_buffer) - set(all_lines_intersect_buffer)
-# len(missing_lines)
-# Missed_gdf = gdf.loc[list(missing_lines)]
-
-# map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
-#                           colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
-# map
-
-##############################################################
 
 # Extracting the details for the provided example
 example_buffer_index = 959
@@ -816,6 +644,9 @@ gdf_output[['value_sum']].mean()
 gdf_output_projected = gdf_output.to_crs('EPSG:27700')
 # calculate the length of each segment:
 gdf_output_projected['length'] = gdf_output_projected['geometry'].length
+gdf_output_projected.plot(linewidth=gdf_output_projected['value_sum'] / 1000, cmap='Blues', legend=True)
+
+
 ```
 
 The total distance travelled on the input and output networks are as follows:
