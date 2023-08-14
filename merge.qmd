@@ -26,6 +26,7 @@ input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
 ```
 
 ```{r}
+#| label: inputs
 m1 = qtm(input_complex)
 m2 = qtm(input_simple)
 tmap_arrange(m1, m2, nrow = 1)
