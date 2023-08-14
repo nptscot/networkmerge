@@ -7,6 +7,7 @@ format: gfm
 ..
 
 ```{r}
+#| label: import library
 library(tidyverse)
 library(sf)
 library(tmap)
@@ -15,6 +16,7 @@ library(tmap)
 
 
 ```{r}
+#| label: read input_complex and input_simple
 input_complex = sf::read_sf("data/rnet_princes_street.geojson")
 # input_simple = sf::read_sf("data/Edc_Roadlink.geojson")
 # input_complex_union = sf::st_union(input_complex)
@@ -28,13 +30,14 @@ input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
 ```
 
 ```{r}
-#| label: inputs
+#| label: plotting spatial data using the tmap
 m1 = qtm(input_complex)
 m2 = qtm(input_simple)
 tmap_arrange(m1, m2, nrow = 1)
 ```
 
 ```{r}
+#| label: insatll stplanr
 remotes::install_github("ropensci/stplanr")
 # stplanr::rnet_join
 ```
@@ -42,6 +45,7 @@ remotes::install_github("ropensci/stplanr")
 The values in the `input_complex` dataset are as follows:
 
 ```{r}
+#| label: summary of input_complex
 names(input_complex)
 summary(input_complex$value)
 ```
@@ -49,17 +53,24 @@ summary(input_complex$value)
 To join the network values we will try the `rnet_join` function in `stplanr`, which has the following arguments:
 
 ```{r}
+#| label: obtain the arguments of the rnet_join function
 args(stplanr::rnet_join)
 ```
 
 ```{r}
 input_simple_id = input_simple |>
   select(identifier)
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
+
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 22)
 rnet_joined
 nrow(rnet_joined)
-nrow(input_simple)
+nrow(input_simple_id)
+names(input_complex)
 names(rnet_joined)
+
+m1 = qtm(input_complex)
+m2 = qtm(rnet_joined)
+tmap_arrange(m1, m2, nrow = 1)
 ```
 
 The overlapping network values are as follows:
@@ -78,7 +89,9 @@ rnet_joined_df = rnet_joined |>
   sf::st_drop_geometry() |>
   mutate(value_weighted = value * length_y)
 total_d = sum(input_complex$length * input_complex$value, na.rm = TRUE)
+total_d
 total_j = sum(rnet_joined_df$value_weighted, na.rm = TRUE)
+total_j
 difference = total_d / total_j
 round(1 - total_d / total_j, 3) # New net has 15% more value
 rnet_joined_df$value_weighted = rnet_joined_df$value_weighted * difference
@@ -89,18 +102,21 @@ rnet_joined_aggregated = rnet_joined_df |>
   group_by(identifier) |>
   summarise(value = sum(value_weighted, na.rm = TRUE) / sum(length_y, na.rm = TRUE))
 sum(rnet_joined_aggregated$value, na.rm = TRUE) == sum(input_complex$value, na.rm = TRUE)
+
 rnet_joined_linestrings = left_join(input_simple, rnet_joined_aggregated, by = "identifier")
+
 ```
 
 The result is as follows:
 
 ```{r}
 #| label: joined
-tm_shape(rnet_joined_linestrings) + tm_lines("value")
 rnet_joined_linestrings$length_simple = as.numeric(sf::st_length(rnet_joined_linestrings))
 cor(rnet_joined_linestrings$length_simple, rnet_joined_linestrings$length)
 sum(rnet_joined_linestrings$value * rnet_joined_linestrings$length, na.rm = TRUE)
 sum(input_complex$value * input_complex$length, na.rm = TRUE)
+
+tm_shape(rnet_joined_linestrings) + tm_lines("value")
 ```
 
 ```{r}
