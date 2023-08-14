@@ -55,3 +55,38 @@ tmap_arrange(m1, m2, nrow = 1)
 ```
 
 ![](merge_files/figure-commonmark/inputs-1.png)
+
+``` r
+remotes::install_github("ropensci/stplanr")
+```
+
+    Using github PAT from envvar GITHUB_PAT
+
+    Skipping install of 'stplanr' from a github remote, the SHA1 (bdbdd983) has not changed since last install.
+      Use `force = TRUE` to force installation
+
+``` r
+# stplanr::rnet_join
+```
+
+In Python these inputs are as follows:
+
+``` python
+import geopandas as gpd
+input_simple = gpd.read_file("data/rnet_pinces_street_simple.geojson")
+input_complex = gpd.read_file("data/rnet_princes_street.geojson")
+```
+
+Plot them as follows:
+
+``` python
+input_complex.plot()
+```
+
+![](merge_files/figure-commonmark/inputs_complex_python-1.png)
+
+``` python
+input_simple.plot()
+```
+
+![](merge_files/figure-commonmark/inputs_simple_python-3.png)
