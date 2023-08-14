@@ -46,22 +46,64 @@ names(input_complex)
 summary(input_complex$value)
 ```
 
-In Python these inputs are as follows:
+To join the network values we will try the `rnet_join` function in `stplanr`, which has the following arguments:
 
-```{python}
-import geopandas as gpd
-input_simple = gpd.read_file("data/rnet_pinces_street_simple.geojson")
-input_complex = gpd.read_file("data/rnet_princes_street.geojson")
+```{r}
+args(stplanr::rnet_join)
 ```
 
-Plot them as follows:
-
-```{python}
-#| label: inputs_complex_python
-input_complex.plot()
+```{r}
+input_simple_id = input_simple |>
+  select(identifier)
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
+rnet_joined
+nrow(rnet_joined)
+nrow(input_simple)
+names(rnet_joined)
 ```
 
-```{python}
-#| label: inputs_simple_python
-input_simple.plot()
+The overlapping network values are as follows:
+
+```{r}
+#| label: overlapping
+tm_shape(rnet_joined) + tm_fill("value")
 ```
+
+We can calculate the distance-weighted average of the network values as follows:
+
+```{r}
+summary(rnet_joined$length_y)
+summary(rnet_joined$length)
+rnet_joined_df = rnet_joined |>
+  sf::st_drop_geometry() |>
+  mutate(value_weighted = value * length_y)
+total_d = sum(input_complex$length * input_complex$value, na.rm = TRUE)
+total_j = sum(rnet_joined_df$value_weighted, na.rm = TRUE)
+difference = total_d / total_j
+round(1 - total_d / total_j, 3) # New net has 15% more value
+rnet_joined_df$value_weighted = rnet_joined_df$value_weighted * difference
+# sum(rnet_joined_df$value_weighted, na.rm = 
+# TRUE) / sum(rnet_joined_df$length_y, na.rm = TRUE)
+# sum(input_complex$value * input_complex$length) / sum(input_complex$length)
+rnet_joined_aggregated = rnet_joined_df |>
+  group_by(identifier) |>
+  summarise(value = sum(value_weighted, na.rm = TRUE) / sum(length_y, na.rm = TRUE))
+sum(rnet_joined_aggregated$value, na.rm = TRUE) == sum(input_complex$value, na.rm = TRUE)
+rnet_joined_linestrings = left_join(input_simple, rnet_joined_aggregated, by = "identifier")
+```
+
+The result is as follows:
+
+```{r}
+#| label: joined
+tm_shape(rnet_joined_linestrings) + tm_lines("value")
+rnet_joined_linestrings$length_simple = as.numeric(sf::st_length(rnet_joined_linestrings))
+cor(rnet_joined_linestrings$length_simple, rnet_joined_linestrings$length)
+sum(rnet_joined_linestrings$value * rnet_joined_linestrings$length, na.rm = TRUE)
+sum(input_complex$value * input_complex$length, na.rm = TRUE)
+```
+
+```{r}
+
+```
+

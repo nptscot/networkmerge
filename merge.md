@@ -86,24 +86,156 @@ summary(input_complex$value)
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
         0.0     3.0    88.0   328.4   375.2  3212.0 
 
-In Python these inputs are as follows:
+To join the network values we will try the `rnet_join` function in
+`stplanr`, which has the following arguments:
 
-``` python
-import geopandas as gpd
-input_simple = gpd.read_file("data/rnet_pinces_street_simple.geojson")
-input_complex = gpd.read_file("data/rnet_princes_street.geojson")
+``` r
+args(stplanr::rnet_join)
 ```
 
-Plot them as follows:
+    function (rnet_x, rnet_y, dist = 5, length_y = TRUE, key_column = 1, 
+        subset_x = TRUE, dist_subset = 5, split_y = TRUE, ...) 
+    NULL
 
-``` python
-input_complex.plot()
+``` r
+input_simple_id = input_simple |>
+  select(identifier)
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
 ```
 
-![](merge_files/figure-commonmark/inputs_complex_python-1.png)
+    Warning: attribute variables are assumed to be spatially constant throughout
+    all geometries
 
-``` python
-input_simple.plot()
+    Warning in st_cast.sf(sf::st_cast(x, "MULTILINESTRING"), "LINESTRING"):
+    repeating attributes for all sub-geometries for which they may not be constant
+
+    Warning: attribute variables are assumed to be spatially constant throughout
+    all geometries
+
+    Warning in st_cast.sf(sf::st_cast(x, "MULTILINESTRING"), "LINESTRING"):
+    repeating attributes for all sub-geometries for which they may not be constant
+
+``` r
+rnet_joined
 ```
 
-![](merge_files/figure-commonmark/inputs_simple_python-3.png)
+    Simple feature collection with 2618 features and 7 fields
+    Geometry type: POLYGON
+    Dimension:     XY
+    Bounding box:  xmin: -3.216283 ymin: 55.94534 xmax: -3.180377 ymax: 55.95821
+    Geodetic CRS:  WGS 84
+    # A tibble: 2,618 × 8
+       identifier                              geometry value Quietness length index
+     * <chr>                              <POLYGON [°]> <dbl>     <dbl>  <dbl> <int>
+     1 93FE6E2B-7E51-4D3D-82… ((-3.182028 55.95153, -3…   333        90   72.8   829
+     2 580841F5-EA4A-44E5-8E… ((-3.180399 55.95281, -3…    NA        NA   NA      NA
+     3 E476FD90-AAF5-4779-AB… ((-3.180796 55.95246, -3…    NA        NA   NA      NA
+     4 5C9AC265-0B3C-4176-95… ((-3.183044 55.95304, -3…     3        80   40.6   304
+     5 5C9AC265-0B3C-4176-95… ((-3.183044 55.95304, -3…    31        60   10.0   395
+     6 5C9AC265-0B3C-4176-95… ((-3.183044 55.95304, -3…    40        80  103.    440
+     7 8E06C42A-AB3E-49E5-B6… ((-3.182967 55.95345, -3…   108        40  222.    603
+     8 01C917BA-9BD2-4502-A4… ((-3.185653 55.95011, -3…    95        80   74.9   590
+     9 01C917BA-9BD2-4502-A4… ((-3.185653 55.95011, -3…   211        60   20.2   746
+    10 F90031B2-58A3-4B2C-95… ((-3.18592 55.94999, -3.…     3        60   37.4   238
+    # ℹ 2,608 more rows
+    # ℹ 2 more variables: length_osm_cast <dbl>, length_y <dbl>
+
+``` r
+nrow(rnet_joined)
+```
+
+    [1] 2618
+
+``` r
+nrow(input_simple)
+```
+
+    [1] 487
+
+``` r
+names(rnet_joined)
+```
+
+    [1] "identifier"      "geometry"        "value"           "Quietness"      
+    [5] "length"          "index"           "length_osm_cast" "length_y"       
+
+The overlapping network values are as follows:
+
+``` r
+tm_shape(rnet_joined) + tm_fill("value")
+```
+
+![](merge_files/figure-commonmark/overlapping-1.png)
+
+We can calculate the distance-weighted average of the network values as
+follows:
+
+``` r
+summary(rnet_joined$length_y)
+```
+
+         Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA's 
+      0.00819   5.71282  11.58242  20.87195  23.08895 254.92652        13 
+
+``` r
+summary(rnet_joined$length)
+```
+
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+      0.6247   9.5251  17.4445  32.5600  38.5052 559.2821       13 
+
+``` r
+rnet_joined_df = rnet_joined |>
+  sf::st_drop_geometry() |>
+  mutate(value_weighted = value * length_y)
+total_d = sum(input_complex$length * input_complex$value, na.rm = TRUE)
+total_j = sum(rnet_joined_df$value_weighted, na.rm = TRUE)
+difference = total_d / total_j
+round(1 - total_d / total_j, 3) # New net has 15% more value
+```
+
+    [1] 0.152
+
+``` r
+rnet_joined_df$value_weighted = rnet_joined_df$value_weighted * difference
+# sum(rnet_joined_df$value_weighted, na.rm = 
+# TRUE) / sum(rnet_joined_df$length_y, na.rm = TRUE)
+# sum(input_complex$value * input_complex$length) / sum(input_complex$length)
+rnet_joined_aggregated = rnet_joined_df |>
+  group_by(identifier) |>
+  summarise(value = sum(value_weighted, na.rm = TRUE) / sum(length_y, na.rm = TRUE))
+sum(rnet_joined_aggregated$value, na.rm = TRUE) == sum(input_complex$value, na.rm = TRUE)
+```
+
+    [1] FALSE
+
+``` r
+rnet_joined_linestrings = left_join(input_simple, rnet_joined_aggregated, by = "identifier")
+```
+
+The result is as follows:
+
+``` r
+tm_shape(rnet_joined_linestrings) + tm_lines("value")
+```
+
+![](merge_files/figure-commonmark/joined-1.png)
+
+``` r
+rnet_joined_linestrings$length_simple = as.numeric(sf::st_length(rnet_joined_linestrings))
+cor(rnet_joined_linestrings$length_simple, rnet_joined_linestrings$length)
+```
+
+    [1] 0.8687748
+
+``` r
+sum(rnet_joined_linestrings$value * rnet_joined_linestrings$length, na.rm = TRUE)
+```
+
+    [1] 9762652
+
+``` r
+sum(input_complex$value * input_complex$length, na.rm = TRUE)
+```
+
+    [1] 17164314
