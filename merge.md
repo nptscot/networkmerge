@@ -45,6 +45,8 @@ input_complex = sf::read_sf("data/rnet_princes_street.geojson")
 # input_complex_convex_hull = sf::st_convex_hull(input_complex_union)
 # input_simple = sf::st_intersection(input_simple, input_complex_convex_hull)
 # sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson")
+# names(input_complex)[1] = "value"
+# sf::write_sf(input_complex, "data/rnet_princes_street.geojson", delete_dsn = TRUE)
 input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
 ```
 
@@ -68,6 +70,21 @@ remotes::install_github("ropensci/stplanr")
 ``` r
 # stplanr::rnet_join
 ```
+
+The values in the `input_complex` dataset are as follows:
+
+``` r
+names(input_complex)
+```
+
+    [1] "value"     "Quietness" "length"    "index"     "geometry" 
+
+``` r
+summary(input_complex$value)
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+        0.0     3.0    88.0   328.4   375.2  3212.0 
 
 In Python these inputs are as follows:
 
