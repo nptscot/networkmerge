@@ -61,16 +61,28 @@ args(stplanr::rnet_join)
 input_simple_id = input_simple |>
   select(identifier)
 
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 22)
-rnet_joined
-nrow(rnet_joined)
-nrow(input_simple_id)
-names(input_complex)
-names(rnet_joined)
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
+# sf::write_sf(rnet_joined, "data/rnet_joined.geojson", delete_dsn = TRUE)
+buffered_input_simple_id <- st_buffer(input_simple_id, dist = 30)
 
-m1 = qtm(input_complex)
-m2 = qtm(rnet_joined)
-tmap_arrange(m1, m2, nrow = 1)
+identified_line_index <- unique(rnet_joined$index)
+length_of_identified_line_index <- length(identified_line_index)
+print(length_of_identified_line_index)
+all_line_index <- unique(input_complex$index)
+length_of_all_line_index <- length(all_line_index)
+print(length_of_all_line_index)
+
+# Finding the missing line indices
+missing_line_index <- setdiff(all_line_index, identified_line_index)
+
+# Filtering the missing lines from the input_complex dataset
+missing_lines <- input_complex[input_complex$index %in% missing_line_index, ]
+
+# Plotting the missing lines (in red) and the rest of the input_complex dataset (in blue)
+tm_shape(input_complex) + tm_lines(col="blue") +
+  tm_shape(missing_lines) + tm_lines(col="red", lwd=2) +
+  tm_shape(buffered_input_simple_id) + tm_borders(col="green", lwd=2)
+
 ```
 
 The overlapping network values are as follows:
@@ -116,7 +128,7 @@ cor(rnet_joined_linestrings$length_simple, rnet_joined_linestrings$length)
 sum(rnet_joined_linestrings$value * rnet_joined_linestrings$length, na.rm = TRUE)
 sum(input_complex$value * input_complex$length, na.rm = TRUE)
 
-tm_shape(rnet_joined_linestrings) + tm_lines("value")
+tm_shape(rnet_joined_linestrings) + tm_lines(col="value", palette="Blues", lwd=2)
 ```
 
 ```{r}
