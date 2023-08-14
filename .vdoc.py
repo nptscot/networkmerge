@@ -345,7 +345,21 @@ def merge_directly_connected(group):
 
 # Function to calculate the length-weighted mean
 def length_weighted_mean(group):
-    return (group['value'] * group['geometry'].length).sum() / group['geometry'].length.sum()
+    total_length = group['geometry'].length.sum()
+    if total_length == 0:
+        return 0
+    else:
+        return (group['value'] * group['geometry'].length).sum() / total_length
+
+
+def length_weighted_mean(lines_group):
+    total_length = lines_group['geometry'].sum()
+    if total_length == 0:
+        return 0
+    non_none_lines = [line for line in lines_group['geometry'] if line is not None]
+    weighted_sum = sum(line.length * value for line, value in zip(non_none_lines, lines_group['value']))
+    return weighted_sum / total_length
+
 #
 #
 #
@@ -427,29 +441,30 @@ gdf = segments_gdf_modified
 all_lines = gdf.index.tolist()
 
 # Step 1: Create a buffer around the geometries in gdf_road_simplified
-gdf_buffered = create_buffer(gdf_road_simplified, buffer_size=0.00022)
+gdf_buffered = create_buffer(gdf_road_simplified, buffer_size=0.0002)
 
 # Performing a spatial join to find the lines within the buffer
 all_lines_within_buffer = gpd.sjoin(gdf, gdf_buffered, how="inner", op="within")
-
+# all_lines_within_buffer.to_file("data/all_lines_within_buffer.geojson", driver='GeoJSON')
 # Resetting the 'value_sum' column to 0 before proceeding
 gdf_buffered['value_sum'] = 0
 gdf_buffered['Line_index_from_gdf_Within'] = None
-all_lines_index_within_buffer = []
+all_lines_index_within_buffer = set()
 
 
 # Iterating through the buffers
 for buffer_index, buffered_geom in gdf_buffered.iterrows():
-
     # Filter lines within the current buffer
     lines_within_buffer = all_lines_within_buffer[all_lines_within_buffer['index_right'] == buffer_index]
-    gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = lines_within_buffer.index.tolist()
-    all_lines_index_within_buffer.extend(lines_within_buffer.index.tolist())
+    unprocessed_lines = lines_within_buffer.loc[~lines_within_buffer.index.isin(all_lines_index_within_buffer)]
+    gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = unprocessed_lines.index.tolist()
+    all_lines_index_within_buffer.update(unprocessed_lines.index.tolist())
+
 
     # Check if there are lines with the same 'Ori_index'
     ori_indices_count = lines_within_buffer['Ori_index'].value_counts()
     multiple_ori_indices = ori_indices_count[ori_indices_count > 1].index.tolist()
-
+    
     if multiple_ori_indices:
         # Group by 'Ori_index' and calculate length-weighted mean for the lines with the same 'Ori_index'
         for ori_index in multiple_ori_indices:
@@ -469,8 +484,48 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     # Add the remaining lines' 'value' to 'value_sum'
     gdf_buffered.at[buffer_index, 'value_sum'] += lines_within_buffer['value'].sum()
 
-    
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='within')
+---
+gdf_buffered['value_sum'] = 0
+gdf_buffered['Line_index_from_gdf_Within'] = None
+all_lines_index_within_buffer = set()
+
+# Iterating through the buffers
+for buffer_index, buffered_geom in gdf_buffered.iterrows():
+    # Filter lines within the current buffer
+    lines_within_buffer = all_lines_within_buffer[all_lines_within_buffer['index_right'] == buffer_index]
+    unprocessed_lines = lines_within_buffer.loc[~lines_within_buffer.index.isin(all_lines_index_within_buffer)]
+    gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = unprocessed_lines.index.tolist()
+    all_lines_index_within_buffer.update(unprocessed_lines.index.tolist())
+
+    # Check if there are lines with the same 'Ori_index'
+    ori_indices_count = unprocessed_lines['Ori_index'].value_counts()
+    multiple_ori_indices = ori_indices_count[ori_indices_count > 1].index.tolist()
+
+    if multiple_ori_indices:
+        # Group by 'Ori_index' and calculate length-weighted mean for the lines with the same 'Ori_index'
+        for ori_index in multiple_ori_indices:
+            lines_group = unprocessed_lines[unprocessed_lines['Ori_index'] == ori_index]
+            length_weighted_mean_value = length_weighted_mean(lines_group)
+            gdf_buffered.at[buffer_index, 'value_sum'] += length_weighted_mean_value
+            # Remove the processed lines
+            unprocessed_lines = unprocessed_lines[unprocessed_lines['Ori_index'] != ori_index]
+
+    # Group by 'Quietness' and calculate length-weighted mean for the remaining lines
+    for quietness, lines_group in unprocessed_lines.groupby('Quietness'):
+        length_weighted_mean_value = length_weighted_mean(lines_group)
+        gdf_buffered.at[buffer_index, 'value_sum'] += length_weighted_mean_value
+        # Remove the processed lines
+        unprocessed_lines = unprocessed_lines[unprocessed_lines['Quietness'] != quietness]
+
+    # Add the remaining lines' 'value' to 'value_sum'
+    gdf_buffered.at[buffer_index, 'value_sum'] += unprocessed_lines['value'].sum()
+
+
+---
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1435, relation='within')
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1444, relation='within')
+gdf_buffered.iloc[1444]
+
 
 # Create a list to store all lines intersecting any buffer
 all_lines_index_intersect_buffer = []
@@ -505,7 +560,7 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     all_lines_index_intersect_buffer.extend(indices_intersecting_buffer)
 
 
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='intersect')    
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=843, relation='intersect')    
 
 missing_lines = set(all_lines) - set(all_lines_index_within_buffer) -set(all_lines_index_intersect_buffer)
 len(missing_lines)
@@ -557,9 +612,9 @@ example_req2
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=405, relation='within')
 
 # Examples
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='within')
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1435, relation='within')
 gdf_buffered.iloc[614]['value_sum']
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=463, relation='within')
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1444, relation='within')
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
 gdf_buffered.iloc[463]['value_sum']
 
@@ -588,9 +643,12 @@ example_line_indices_intersect = gdf_buffered.loc[example_buffer_index]['Line_in
 
 example_angle, add_value_condition, example_value_sum, example_line_indices_intersect
 ##############################################################
-
-# Step 3: Match the attributes from gdf_buffered to gdf_road_simplified using the index, and then update gdf_road_simplified with these attributes.
-# Joining gdf_buffered with gdf_road_simplified on the index to combine attributes
+#
+#
+#
+#
+#
+#
 gdf_road_simplified_updated = gdf_road_simplified.join(gdf_buffered[['value_sum']])
 
 # Displaying the first few rows of the updated gdf_road_simplified DataFrame
@@ -633,7 +691,7 @@ input_intersection = gpd.overlay(input_simple, input_detailed_buffer, how='inter
 # Todo: add colour/width to the lines
 # input_detailed.plot(line_width=input_detailed['value']/1000);
 # input_simple.plot(line_width=input_simple['value']/1000);
-input_detailed.plot(linewidth=input_detailed['commute_fastest_bicycle_go_dutch'] / 1000, cmap='Blues', legend=True);
+input_detailed.plot(linewidth=input_detailed['value'] / 1000, cmap='Blues', legend=True);
 input_intersection.plot(linewidth=2);
 #
 #
@@ -648,9 +706,7 @@ gdf_output_projected = gdf_output.to_crs('EPSG:27700')
 gdf_output_projected['length'] = gdf_output_projected['geometry'].length
 gdf_output_projected.plot(linewidth=gdf_output_projected['value_sum'] / 1000, cmap='Blues', legend=True)
 
-map = plot_geodataframes(('gdf_output_projected', gdf_output_projected), ('input_detailed', input_detailed),('Missed_gdf', Missed_gdf),
-                          colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
-map
+
 #
 #
 #
