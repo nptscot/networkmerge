@@ -1,0 +1,35 @@
+---
+format: gfm
+---
+
+# Prerequisites
+
+..
+
+```{r}
+library(tidyverse)
+library(sf)
+library(tmap)
+```
+
+
+
+```{r}
+input_complex = sf::read_sf("data/rnet_princes_street.geojson")
+# input_simple = sf::read_sf("data/Edc_Roadlink.geojson")
+# input_complex_union = sf::st_union(input_complex)
+# input_complex_30m_buffer = sf::st_buffer(input_complex_union, 30)
+# input_complex_convex_hull = sf::st_convex_hull(input_complex_union)
+# input_simple = sf::st_intersection(input_simple, input_complex_convex_hull)
+# sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson")
+input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
+```
+
+```{r}
+m1 = qtm(input_complex)
+m2 = qtm(input_simple)
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+```{r}
+```
