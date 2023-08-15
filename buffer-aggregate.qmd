@@ -406,6 +406,7 @@ gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
 gdf_road_simplified.shape
 
 ```
+
 ```{python}
 #| label: Plotting the geodataframes
 map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('gdf_centroids', gdf_centroids),
@@ -467,9 +468,10 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     # Add the remaining lines' 'value' to 'value_sum'
     gdf_buffered.at[buffer_index, 'value_sum'] += unprocessed_lines['value'].sum()
 
-i = 4029
+i = 6114
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=i, relation='within')
 gdf_buffered.iloc[i]
+gdf_buffered[gdf_buffered['value_sum'] ==11039]
 
 gdf
 
@@ -519,168 +521,6 @@ gdf.plot(
 
 plt.show()
 
-
-```
-
-```{python}
-gdf_buffered.iloc[0]
-all_lines_within_buffer[all_lines_within_buffer['index_right'] == 0]
-
-# Define a custom aggregation function to retain the highest 'value_sum' value
-aggregation_functions = {'value_sum': 'max'}
-
-# Dissolve (combine) the lines with the same 'identifier' and apply the custom aggregation function
-gdf_buffered_dissolved = gdf_buffered.dissolve(by='identifier', aggfunc=aggregation_functions)
-
-gdf_buffered.shape
-gdf_buffered_dissolved.shape
-
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='within')
-gdf_buffered.iloc[1477]
-gdf_buffered.iloc[614]['Line_index_from_gdf_Within'] = [1175,1177]
-
-all_lines_within_buffer[all_lines_within_buffer['index_right'] == 1477]
-
-A = all_lines_within_buffer[all_lines_within_buffer['index_right'] == 614]['value']
-B = all_lines_within_buffer[all_lines_within_buffer['index_right'] == 614]['length']
-C = A *B
-C.sum()/B.sum()
-
-length_weighted_mean(all_lines_within_buffer[all_lines_within_buffer['index_right'] == 614].iloc[3:5])
-# # Create a list to store all lines intersecting any buffer
-# all_lines_index_intersect_buffer = []
-# gdf_buffered['Line_index_from_gdf_Intersect'] = None
-
-# # Spatial join between the buffers and the lines
-# joined_gdf = gpd.sjoin(gdf, gdf_buffered, how="inner", op="intersects")
-
-# # Iterate through the buffers
-# for buffer_index, buffered_geom in gdf_buffered.iterrows():
-#     indices_intersecting_buffer = []  # Indices of lines intersecting with the buffer
-#     value_sum = gdf_buffered.loc[buffer_index, 'value_sum']  # Existing value_sum for the buffer
-#     corresponding_road_line = gdf_road_simplified.loc[buffer_index]['geometry']  # Corresponding road line
-    
-#     # Filter lines intersecting the current buffer using the spatial join result
-#     lines_intersecting_buffer = joined_gdf[joined_gdf['index_right'] == buffer_index]
-
-#     for line_index, line_geom in lines_intersecting_buffer.iterrows():
-#         # Skip lines that are already within any buffer
-#         if line_index in all_lines_index_within_buffer:
-#             continue
-        
-#         vector1 = get_vector(line_geom['geometry'])
-#         vector2 = get_vector(corresponding_road_line)
-#         angle = calculate_angle(vector1, vector2)
-#         if angle < 25:
-#             value_sum += line_geom['value']
-#         indices_intersecting_buffer.append(line_index)
-
-#     gdf_buffered.at[buffer_index, 'value_sum'] = value_sum
-#     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Intersect'] = indices_intersecting_buffer
-#     all_lines_index_intersect_buffer.extend(indices_intersecting_buffer)
-
-
-# plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=843, relation='intersect')    
-
-# missing_lines = set(all_lines) - set(all_lines_index_within_buffer) 
-# -set(all_lines_index_intersect_buffer)
-# len(missing_lines)
-# Missed_gdf = gdf.loc[list(missing_lines)]
-
-# map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
-                        #   colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
-# map
-```
-
-```{python}
-def find_examples():
-    # Dictionary to store examples
-    examples = {"requirement_1": [], "requirement_2": []}
-
-    # Iterate through buffers to find examples for Requirement 1
-    for buffer_index, buffer_row in gdf_buffered.iterrows():
-        lines_within_buffer = gdf.loc[buffer_row['Line_index_from_gdf_Within']]
-        grouped_by_ori_index = lines_within_buffer.groupby('Ori_index')
-        for ori_index, group in grouped_by_ori_index:
-            if len(group) > 1:
-                examples["requirement_1"].append((buffer_index, ori_index, group))
-
-    # Iterate through unique 'Ori_index' values to find examples for Requirement 2
-    unique_ori_indexes = gdf['Ori_index'].unique()
-    for ori_index in unique_ori_indexes:
-        lines_with_same_ori_index = gdf[gdf['Ori_index'] == ori_index]
-        buffers_with_same_ori_index = gdf_buffered[gdf_buffered['Line_index_from_gdf_Within'].apply(lambda x: any(idx in x for idx in lines_with_same_ori_index.index))]
-        if len(buffers_with_same_ori_index) > 1:
-            examples["requirement_2"].append((ori_index, buffers_with_same_ori_index))
-
-    return examples
-
-# Finding examples for the specific requirements
-examples = find_examples()
-
-# Displaying the first example for Requirement 1
-example_req1 = examples["requirement_1"][0] if examples["requirement_1"] else None
-example_req1_buffer_index, example_req1_ori_index, example_req1_group = example_req1 if example_req1 else (None, None, None)
-
-# Displaying the first example for Requirement 2
-example_req2 = examples["requirement_2"][0] if examples["requirement_2"] else None
-example_req2_ori_index, example_req2_buffers = example_req2 if example_req2 else (None, None)
-
-example_req1
-# plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=405, relation='within')
-example_req2
-
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=405, relation='within')
-
-# Examples
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1250, relation='within')
-gdf_buffered.iloc[614]['value_sum']
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1444, relation='within')
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
-gdf_buffered.iloc[463]['value_sum']
-
-
-# Extracting the details for the provided example
-example_buffer_index = 959
-example_line_index_gdf = 962
-example_line_index_road_simplified = 962
-
-# Getting the geometries for the example
-example_buffer_geom = gdf_buffered.loc[example_buffer_index]['geometry']
-example_line_gdf = gdf.loc[example_line_index_gdf]['geometry']
-example_line_road_simplified = gdf_road_simplified.loc[example_line_index_road_simplified]['geometry']
-
-# Calculating the vector and angle for the example
-vector_gdf = get_vector(example_line_gdf)
-vector_road_simplified = get_vector(example_line_road_simplified)
-example_angle = calculate_angle(vector_gdf, vector_road_simplified)
-
-# Checking the condition for adding the 'value'
-add_value_condition = example_angle < 25
-
-# Getting the 'value_sum' and 'Line_index_from_gdf_Intersect' for the corresponding buffer
-example_value_sum = gdf_buffered.loc[example_buffer_index]['value_sum']
-example_line_indices_intersect = gdf_buffered.loc[example_buffer_index]['Line_index_from_gdf_Intersect']
-
-example_angle, add_value_condition, example_value_sum, example_line_indices_intersect
-##############################################################
-```
-
-
-# Step 3: Match the attributes from gdf_buffered to gdf_road_simplified using the index, and then update gdf_road_simplified with these attributes.
-# Joining gdf_buffered with gdf_road_simplified on the index to combine attributes
-```{python}
-# Dissolve (combine) the lines with the same 'identifier'
-gdf_road_simplified = gdf_road_simplified.dissolve(by='identifier')
-gdf_road_simplified.shape
-
-gdf_road_simplified_updated = gdf_road_simplified.join(gdf_buffered[['value_sum']])
-# Displaying the first few rows of the updated gdf_road_simplified DataFrame
-gdf_road_simplified_updated.head()
-
-total_distance_traveled = round(sum(gdf_road_simplified_updated['value_sum'] * gdf_road_simplified_updated['geometry'].length))
-total_distance_traveled
 ```
 
 ```{python}
