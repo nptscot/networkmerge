@@ -189,8 +189,8 @@ summary(input_simple_joined$flow)
          0   NULL   NULL 
 
 ``` r
-m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
-m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", breaks = brks)
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
 tmap_arrange(m1, m2, nrow = 1)
 ```
 
@@ -222,6 +222,15 @@ message("Total flow output: ", total_flow_output, "km")
 
     Total flow output: 17164km
 
+We can explore the results interactively as follows:
+
+``` r
+tmap_mode("view")
+m_combined = m1 + m2
+tmap_save(m_combined, "data/m_combined.html")
+browseURL("data/m_combined.html")
+```
+
 # Explanation
 
 To clarify what’s going on, lets do the process only for a couple of
@@ -230,7 +239,99 @@ lines, and break the process down into steps.
 ``` r
 input_simple_minimal = input_simple |>
   filter(identifier == "13CF96CE-2A95-451B-B859-E5511B2DEF81" | identifier == "C90C4EA9-5E6A-4A6A-ADEB-5EC5937F6C3A") 
-# tm_shape(input_simple_minimal) + tm_lines()
 ```
 
-The first stage is to take
+The `rnet_join()` function as of July 2023 is as follows:
+
+``` r
+rnet_join = function(rnet_x, rnet_y, dist = 5, length_y = TRUE, key_column = 1,
+                     subset_x = TRUE, dist_subset = 5, split_y = TRUE, ...) {
+  if (subset_x) {
+    rnet_x = rnet_subset(rnet_x, rnet_y, dist = dist_subset, ...)
+  }
+  rnet_x_buffer = geo_buffer(rnet_x, dist = dist, nQuadSegs = 2)
+  if (split_y) {
+    rnet_y = rnet_split_lines(rnet_y, rnet_x, dist = dist_subset)
+  }
+  if (length_y) {
+    rnet_y$length_y = as.numeric(sf::st_length(rnet_y))
+  }
+  rnetj = sf::st_join(rnet_x_buffer[key_column], rnet_y, join = sf::st_contains)
+  rnetj
+}
+
+rnet_subset = function(rnet_x, rnet_y, dist = 1, crop = TRUE, min_x = 3) {
+  rnet_x$length_x_original = as.numeric(sf::st_length(rnet_x))
+  rnet_y_union = sf::st_union(rnet_y)
+  rnet_y_buffer = stplanr::geo_buffer(rnet_y_union, dist = dist, nQuadSegs = 2)
+  if(crop) {
+    rnet_x = sf::st_intersection(rnet_x, rnet_y_buffer)
+    rnet_x = line_cast(rnet_x)
+    rnet_x$length_x_cropped = as.numeric(sf::st_length(rnet_x))
+    min_length = dist * min_x
+    sel_short = rnet_x$length_x_cropped < min_length &
+      rnet_x$length_x_original > min_length
+    rnet_x = rnet_x[!sel_short, ]
+  } else {
+    rnet_x[rnet_y_buffer, , op = sf::st_within]
+  }
+  rnet_x
+}
+rnet_split_lines = function(rnet_x, geo_y, dist = 1) {
+  if (all(grepl(pattern = "LINE", x = sf::st_geometry_type(rnet_x)))) {
+    geo_y = c(
+      lwgeom::st_startpoint(geo_y),
+      lwgeom::st_endpoint(geo_y)
+    )
+  }
+  # speed-up subsequent steps:
+  points = sf::st_union(geo_y)
+  points_buffer = stplanr::geo_buffer(points, dist = dist)
+  rnet_split = sf::st_difference(rnet_x, points_buffer)
+  rnet_split_lines = line_cast(rnet_split)
+  rnet_split_lines$length_osm_cast = as.numeric(sf::st_length(rnet_split_lines))
+  # rnet_split_lines[rnet_split_lines$length_osm_cast > min_lenth, ]
+  rnet_split_lines
+}
+line_cast = function(x) {
+  sf::st_cast(sf::st_cast(x, "MULTILINESTRING"), "LINESTRING")
+}
+```
+
+Let’s run these lines line-by-line, starting by creating `rnet_x` and
+`rnet_y` objects:
+
+``` r
+library(stplanr)
+```
+
+
+    Attaching package: 'stplanr'
+
+    The following objects are masked _by_ '.GlobalEnv':
+
+        line_cast, rnet_join, rnet_split_lines, rnet_subset
+
+``` r
+dist = 30
+rnet_x = input_simple_minimal
+rnet_x_buffer = geo_buffer(rnet_x, dist = dist, nQuadSegs = 2)
+rnet_y = input_complex[rnet_x_buffer, , op = sf::st_within]
+tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
+```
+
+    Some legend labels were too wide. These labels have been resized to 0.66. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+
+![](merge_files/figure-commonmark/rnet-x-y-minimal-1.png)
+
+``` r
+m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
+  qtm(input_simple)
+tmap_save(m, "maps/m_explanation.html")
+```
+
+    Interactive map saved to maps/m_explanation.html
+
+``` r
+# browseURL("maps/m_explanation.html")
+```
