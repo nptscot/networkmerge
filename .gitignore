@@ -166,3 +166,4 @@ paper_cache/
 maps/
 paper_files/figure-pdf
 .Renviron
+.vdoc.py

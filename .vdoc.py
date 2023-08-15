@@ -386,6 +386,20 @@ for (value, quietness), group in grouped_gdf:
 gdf_merged_directly_connected_final = gpd.GeoDataFrame(merged_lines_final, geometry='geometry')
 gdf_merged_directly_connected_final['length'] = gdf_merged_directly_connected_final['geometry'].length
 
+# Read in simplified OS Road map data 
+
+grid = ['NA','NB','NC','ND','NF','NG','NH','NJ','NK','NL','NM','NN','NO','NR','NS','NT','NU','NW','NX','NY','NZ']
+gdfs = [] # to store individual GeoDataFrames
+
+for i in grid:
+    gdf_temp = gpd.read_file(f"C:/GitHub/data/{i}_RoadLink.shp")
+    gdf_temp = gdf_temp[['identifier', 'geometry']]
+    gdfs.append(gdf_temp)
+
+# Concatenating all GeoDataFrames into one
+gdf_road_simplified = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True))
+gdf_road_simplified.crs = "EPSG:4326"
+
 # gdf_merged_directly_connected_final.to_file("data/gdf_merged_directly_connected_final.geojson", driver='GeoJSON')
 
 gdf = gdf_merged_directly_connected_final
@@ -512,14 +526,14 @@ gdf_buffered.iloc[1444]
 
 # plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=843, relation='intersect')    
 
-missing_lines = set(all_lines) - set(all_lines_index_within_buffer) 
+# missing_lines = set(all_lines) - set(all_lines_index_within_buffer) 
 # -set(all_lines_index_intersect_buffer)
-len(missing_lines)
-Missed_gdf = gdf.loc[list(missing_lines)]
+# len(missing_lines)
+# Missed_gdf = gdf.loc[list(missing_lines)]
 
-map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
-                          colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
-map
+# map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
+                        #   colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
+# map
 #
 #
 #

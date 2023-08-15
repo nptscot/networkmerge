@@ -384,6 +384,20 @@ for (value, quietness), group in grouped_gdf:
 gdf_merged_directly_connected_final = gpd.GeoDataFrame(merged_lines_final, geometry='geometry')
 gdf_merged_directly_connected_final['length'] = gdf_merged_directly_connected_final['geometry'].length
 
+# Read in simplified OS Road map data 
+
+grid = ['NA','NB','NC','ND','NF','NG','NH','NJ','NK','NL','NM','NN','NO','NR','NS','NT','NU','NW','NX','NY','NZ']
+gdfs = [] # to store individual GeoDataFrames
+
+for i in grid:
+    gdf_temp = gpd.read_file(f"C:/GitHub/data/{i}_RoadLink.shp")
+    gdf_temp = gdf_temp[['identifier', 'geometry']]
+    gdfs.append(gdf_temp)
+
+# Concatenating all GeoDataFrames into one
+gdf_road_simplified = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True))
+gdf_road_simplified.crs = "EPSG:4326"
+
 # gdf_merged_directly_connected_final.to_file("data/gdf_merged_directly_connected_final.geojson", driver='GeoJSON')
 
 gdf = gdf_merged_directly_connected_final
