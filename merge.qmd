@@ -2,6 +2,7 @@
 format: gfm
 ---
 
+
 # Prerequisites
 
 The following example requires R and the following packages:
@@ -17,19 +18,6 @@ library(tmap)
 
 The inputs are as follows:
 
-```{r}
-#| label: inputs-processing
-#| echo: false
-#| eval: false
-input_simple = sf::read_sf("data/Edc_Roadlink.geojson")
-input_complex_union = sf::st_union(input_complex)
-input_complex_30m_buffer = sf::st_buffer(input_complex_union, 30)
-input_complex_convex_hull = sf::st_convex_hull(input_complex_union)
-input_simple = sf::st_intersection(input_simple, input_complex_convex_hull)
-sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson")
-names(input_complex)[1] = "value"
-sf::write_sf(input_complex, "data/rnet_princes_street.geojson", delete_dsn = TRUE)
-```
 
 ```{r}
 input_complex = sf::read_sf("data/rnet_princes_street.geojson")
@@ -62,6 +50,7 @@ remotes::install_github("ropensci/stplanr")
 The values in the `input_complex` dataset are as follows:
 
 ```{r}
+#| label: summary of input_complex
 names(input_complex)
 summary(input_complex$value)
 ```
@@ -69,6 +58,7 @@ summary(input_complex$value)
 To join the network values we will try the `rnet_join` function in `stplanr`, which has the following arguments:
 
 ```{r}
+#| label: obtain the arguments of the rnet_join function
 args(stplanr::rnet_join)
 ```
 
@@ -146,8 +136,8 @@ We can explore the results interactively as follows:
 #| eval: false
 tmap_mode("view")
 m_combined = m1 + m2
-tmap_save(m_combined, "data/m_combined.html")
-browseURL("data/m_combined.html")
+tmap_save(m_combined, "maps/m_combined.html")
+browseURL("maps/m_combined.html")
 ```
 
 # Explanation
@@ -229,15 +219,22 @@ rnet_y = input_complex[rnet_x_buffer, , op = sf::st_within]
 tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
 ```
 
-```{r}
-```
+The next step is to split the lines in `rnet_y` at the points where they intersect with `rnet_x_buffer`:
 
 ```{r}
-
+#| label: rnet-split-minimal
+rnet_y_split = rnet_split_lines(rnet_y, rnet_x_buffer, dist = dist)
 ```
 
+The resulting `rnet_y_split` object is as follows:
 
-
+```{r}
+rnet_y_split
+rnet_y
+m1 = tm_shape(rnet_y) + tm_lines()
+m2 = tm_shape(rnet_y_split) + tm_lines()
+tmap_arrange(m1, m2, nrow = 1)
+```
 
 
 ```{r}

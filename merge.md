@@ -90,12 +90,12 @@ rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
 rnet_joined
 ```
 
-    Simple feature collection with 2618 features and 7 fields
+    Simple feature collection with 5236 features and 7 fields
     Geometry type: POLYGON
     Dimension:     XY
     Bounding box:  xmin: -3.216283 ymin: 55.94534 xmax: -3.180377 ymax: 55.95821
     Geodetic CRS:  WGS 84
-    # A tibble: 2,618 × 8
+    # A tibble: 5,236 × 8
        identifier                              geometry value Quietness length index
      * <chr>                              <POLYGON [°]> <dbl>     <dbl>  <dbl> <int>
      1 93FE6E2B-7E51-4D3D-82… ((-3.182028 55.95153, -3…   333        90   72.8   829
@@ -108,20 +108,20 @@ rnet_joined
      8 01C917BA-9BD2-4502-A4… ((-3.185653 55.95011, -3…    95        80   74.9   590
      9 01C917BA-9BD2-4502-A4… ((-3.185653 55.95011, -3…   211        60   20.2   746
     10 F90031B2-58A3-4B2C-95… ((-3.18592 55.94999, -3.…     3        60   37.4   238
-    # ℹ 2,608 more rows
+    # ℹ 5,226 more rows
     # ℹ 2 more variables: length_osm_cast <dbl>, length_y <dbl>
 
 ``` r
 nrow(rnet_joined)
 ```
 
-    [1] 2618
+    [1] 5236
 
 ``` r
 nrow(input_simple)
 ```
 
-    [1] 487
+    [1] 974
 
 ``` r
 names(rnet_joined)
@@ -177,7 +177,7 @@ message("Total flow input: ", total_flow_input, "km")
 message("Total flow output: ", total_flow_output, "km")
 ```
 
-    Total flow output: 19888km
+    Total flow output: 79553km
 
 ``` r
 summary(input_simple_joined$flow)
@@ -227,8 +227,8 @@ We can explore the results interactively as follows:
 ``` r
 tmap_mode("view")
 m_combined = m1 + m2
-tmap_save(m_combined, "data/m_combined.html")
-browseURL("data/m_combined.html")
+tmap_save(m_combined, "maps/m_combined.html")
+browseURL("maps/m_combined.html")
 ```
 
 # Explanation
@@ -324,14 +324,102 @@ tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
 
 ![](merge_files/figure-commonmark/rnet-x-y-minimal-1.png)
 
+The next step is to split the lines in `rnet_y` at the points where they
+intersect with `rnet_x_buffer`:
+
 ``` r
-m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
-  qtm(input_simple)
-tmap_save(m, "maps/m_explanation.html")
+rnet_y_split = rnet_split_lines(rnet_y, rnet_x_buffer, dist = dist)
 ```
 
+    Warning: attribute variables are assumed to be spatially constant throughout
+    all geometries
+
+    Warning in st_cast.sf(sf::st_cast(x, "MULTILINESTRING"), "LINESTRING"):
+    repeating attributes for all sub-geometries for which they may not be constant
+
+The resulting `rnet_y_split` object is as follows:
+
+``` r
+rnet_y_split
+```
+
+    Simple feature collection with 23 features and 5 fields
+    Geometry type: LINESTRING
+    Dimension:     XY
+    Bounding box:  xmin: -3.20592 ymin: 55.95036 xmax: -3.19669 ymax: 55.95206
+    Geodetic CRS:  WGS 84
+    # A tibble: 23 × 6
+       value Quietness length index                         geometry length_osm_cast
+     * <dbl>     <dbl>  <dbl> <int>                 <LINESTRING [°]>           <dbl>
+     1     0        50  10.6      8 (-3.205647 55.9505, -3.20564 55…            9.48
+     2     0        40   9.52   107 (-3.2027 55.95092, -3.20266 55.…            9.51
+     3     3        95  32.6    206 (-3.19727 55.95184, -3.19706 55…           32.5 
+     4    32        50  88.1    403 (-3.20409 55.95078, -3.20274 55…           87.9 
+     5    32        40  10.4    406 (-3.20274 55.95101, -3.20273 55…           10.4 
+     6    36        50 102.     413 (-3.205627 55.95051, -3.20409 5…          100.  
+     7   122        50  10.3    631 (-3.19717 55.95191, -3.19709 55…           10.3 
+     8   122        50   6.96   632 (-3.1972 55.95197, -3.19719 55.…            6.95
+     9   147        60  15.1    709 (-3.20592 55.95036, -3.20585 55…            8.80
+    10   357        50  14.3    840 (-3.19727 55.95184, -3.19706 55…           14.2 
+    # ℹ 13 more rows
+
+``` r
+rnet_y
+```
+
+    Simple feature collection with 26 features and 4 fields
+    Geometry type: LINESTRING
+    Dimension:     XY
+    Bounding box:  xmin: -3.20607 ymin: 55.95036 xmax: -3.19669 ymax: 55.95206
+    Geodetic CRS:  WGS 84
+    # A tibble: 26 × 5
+       value Quietness length index                                         geometry
+       <dbl>     <dbl>  <dbl> <int>                                 <LINESTRING [°]>
+     1     0        50  10.6      8 (-3.20565 55.95051, -3.20564 55.95048, -3.20562…
+     2     0        40   9.52   107 (-3.2027 55.95092, -3.20266 55.95086, -3.20266 …
+     3     3        95  32.6    206 (-3.19727 55.95184, -3.19706 55.9518, -3.19678 …
+     4    32        50  88.1    403           (-3.20409 55.95078, -3.20274 55.95101)
+     5    32        40  10.4    406 (-3.20274 55.95101, -3.20273 55.95098, -3.2027 …
+     6    36        50 102.     413           (-3.20565 55.95051, -3.20409 55.95078)
+     7   122        50  10.3    631 (-3.19717 55.95191, -3.19709 55.95193, -3.19707…
+     8   122        50   6.96   632 (-3.1972 55.95197, -3.19719 55.95194, -3.19717 …
+     9   147        60  15.1    709 (-3.20592 55.95036, -3.20585 55.95041, -3.20583…
+    10   147        60  18.1    710 (-3.20594 55.95063, -3.20589 55.95058, -3.20585…
+    # ℹ 16 more rows
+
+``` r
+m1 = tm_shape(rnet_y) + tm_lines()
+m2 = tm_shape(rnet_y_split) + tm_lines()
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+![](merge_files/figure-commonmark/unnamed-chunk-19-1.png)
+
+
+    ::: {.cell}
+
+    :::
+
+
+    ::: {.cell}
+
+    :::
+
+    ::: {.cell}
+
+    ```{.r .cell-code}
+    m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
+      qtm(input_simple)
+    tmap_save(m, "maps/m_explanation.html")
+
+<div class="cell-output cell-output-stderr">
+
     Interactive map saved to maps/m_explanation.html
+
+</div>
 
 ``` r
 # browseURL("maps/m_explanation.html")
 ```
+
+:::
