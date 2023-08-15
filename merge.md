@@ -198,6 +198,30 @@ tmap_arrange(m1, m2, nrow = 1)
 
 ![](merge_files/figure-commonmark/joined-1.png)
 
+We can adjust the values of the new network so that the total distance
+travelled is the same:
+
+``` r
+over_estimate = total_flow_output / total_flow_input
+input_simple_joined = input_simple_joined |>
+  mutate(value = value / over_estimate)
+```
+
+The updated result is as follows:
+
+``` r
+total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
+message("Total flow input: ", total_flow_input, "km")
+```
+
+    Total flow input: 17164km
+
+``` r
+message("Total flow output: ", total_flow_output, "km")
+```
+
+    Total flow output: 17164km
+
 # Explanation
 
 To clarify what’s going on, lets do the process only for a couple of
