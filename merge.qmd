@@ -65,7 +65,7 @@ args(stplanr::rnet_join)
 ```{r}
 input_simple_id = input_simple |>
   select(identifier)
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30, split_y = FALSE)
 rnet_joined
 nrow(rnet_joined)
 nrow(input_simple)
@@ -108,9 +108,6 @@ message("Total flow input: ", total_flow_input, "km")
 message("Total flow output: ", total_flow_output, "km")
 
 summary(input_simple_joined$flow)
-m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
-m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
-tmap_arrange(m1, m2, nrow = 1)
 ```
 
 We can adjust the values of the new network so that the total distance travelled is the same:
@@ -122,6 +119,12 @@ input_simple_joined = input_simple_joined |>
 ```
 
 The updated result is as follows:
+
+```{r}
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, nrow = 1)
+```
 
 ```{r}
 #| label: joined-adjusted
@@ -219,16 +222,17 @@ rnet_y = input_complex[rnet_x_buffer, , op = sf::st_within]
 tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
 ```
 
-The next step is to split the lines in `rnet_y` at the points where they intersect with `rnet_x_buffer`:
+An optional next step is to split the lines in `rnet_y` at the points where they intersect with `rnet_x_buffer`:
 
 ```{r}
 #| label: rnet-split-minimal
-rnet_y_split = rnet_split_lines(rnet_y, rnet_x_buffer, dist = dist)
+rnet_y_split = rnet_split_lines(rnet_y, rnet_x, dist = dist)
 ```
 
 The resulting `rnet_y_split` object is as follows:
 
 ```{r}
+#| label: line-split
 rnet_y_split
 rnet_y
 m1 = tm_shape(rnet_y) + tm_lines()

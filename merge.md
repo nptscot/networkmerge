@@ -71,14 +71,8 @@ args(stplanr::rnet_join)
 ``` r
 input_simple_id = input_simple |>
   select(identifier)
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30, split_y = FALSE)
 ```
-
-    Warning: attribute variables are assumed to be spatially constant throughout
-    all geometries
-
-    Warning in st_cast.sf(sf::st_cast(x, "MULTILINESTRING"), "LINESTRING"):
-    repeating attributes for all sub-geometries for which they may not be constant
 
     Warning: attribute variables are assumed to be spatially constant throughout
     all geometries
@@ -90,32 +84,31 @@ rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
 rnet_joined
 ```
 
-    Simple feature collection with 5236 features and 7 fields
+    Simple feature collection with 4546 features and 6 fields
     Geometry type: POLYGON
     Dimension:     XY
     Bounding box:  xmin: -3.216283 ymin: 55.94534 xmax: -3.180377 ymax: 55.95821
     Geodetic CRS:  WGS 84
-    # A tibble: 5,236 × 8
-       identifier                              geometry value Quietness length index
-     * <chr>                              <POLYGON [°]> <dbl>     <dbl>  <dbl> <int>
-     1 93FE6E2B-7E51-4D3D-82… ((-3.182028 55.95153, -3…   333        90   72.8   829
-     2 580841F5-EA4A-44E5-8E… ((-3.180399 55.95281, -3…    NA        NA   NA      NA
-     3 E476FD90-AAF5-4779-AB… ((-3.180796 55.95246, -3…    NA        NA   NA      NA
-     4 5C9AC265-0B3C-4176-95… ((-3.183044 55.95304, -3…     3        80   40.6   304
-     5 5C9AC265-0B3C-4176-95… ((-3.183044 55.95304, -3…    31        60   10.0   395
-     6 5C9AC265-0B3C-4176-95… ((-3.183044 55.95304, -3…    40        80  103.    440
-     7 8E06C42A-AB3E-49E5-B6… ((-3.182967 55.95345, -3…   108        40  222.    603
-     8 01C917BA-9BD2-4502-A4… ((-3.185653 55.95011, -3…    95        80   74.9   590
-     9 01C917BA-9BD2-4502-A4… ((-3.185653 55.95011, -3…   211        60   20.2   746
-    10 F90031B2-58A3-4B2C-95… ((-3.18592 55.94999, -3.…     3        60   37.4   238
-    # ℹ 5,226 more rows
-    # ℹ 2 more variables: length_osm_cast <dbl>, length_y <dbl>
+    # A tibble: 4,546 × 7
+       identifier                     geometry value Quietness length index length_y
+     * <chr>                     <POLYGON [°]> <dbl>     <dbl>  <dbl> <int>    <dbl>
+     1 93FE6E2B-7E5… ((-3.182028 55.95153, -3…   333        90   72.8   829     72.7
+     2 580841F5-EA4… ((-3.180399 55.95281, -3…    NA        NA   NA      NA     NA  
+     3 E476FD90-AAF… ((-3.180796 55.95246, -3…    NA        NA   NA      NA     NA  
+     4 5C9AC265-0B3… ((-3.183044 55.95304, -3…     3        80   40.6   304     40.5
+     5 5C9AC265-0B3… ((-3.183044 55.95304, -3…    31        60   10.0   395     10.0
+     6 5C9AC265-0B3… ((-3.183044 55.95304, -3…    40        80  103.    440    103. 
+     7 8E06C42A-AB3… ((-3.182967 55.95345, -3…    NA        NA   NA      NA     NA  
+     8 01C917BA-9BD… ((-3.185653 55.95011, -3…    95        80   74.9   590     74.8
+     9 01C917BA-9BD… ((-3.185653 55.95011, -3…   211        60   20.2   746     20.2
+    10 F90031B2-58A… ((-3.18592 55.94999, -3.…     3        60   37.4   238     37.3
+    # ℹ 4,536 more rows
 
 ``` r
 nrow(rnet_joined)
 ```
 
-    [1] 5236
+    [1] 4546
 
 ``` r
 nrow(input_simple)
@@ -127,8 +120,8 @@ nrow(input_simple)
 names(rnet_joined)
 ```
 
-    [1] "identifier"      "geometry"        "value"           "Quietness"      
-    [5] "length"          "index"           "length_osm_cast" "length_y"       
+    [1] "identifier" "geometry"   "value"      "Quietness"  "length"    
+    [6] "index"      "length_y"  
 
 The overlapping network values are as follows:
 
@@ -177,7 +170,7 @@ message("Total flow input: ", total_flow_input, "km")
 message("Total flow output: ", total_flow_output, "km")
 ```
 
-    Total flow output: 79553km
+    Total flow output: 86373km
 
 ``` r
 summary(input_simple_joined$flow)
@@ -187,16 +180,6 @@ summary(input_simple_joined$flow)
 
     Length  Class   Mode 
          0   NULL   NULL 
-
-``` r
-m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
-m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
-tmap_arrange(m1, m2, nrow = 1)
-```
-
-    Warning: Values have found that are higher than the highest break
-
-![](merge_files/figure-commonmark/joined-1.png)
 
 We can adjust the values of the new network so that the total distance
 travelled is the same:
@@ -208,6 +191,16 @@ input_simple_joined = input_simple_joined |>
 ```
 
 The updated result is as follows:
+
+``` r
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+    Warning: Values have found that are higher than the highest break
+
+![](merge_files/figure-commonmark/unnamed-chunk-13-1.png)
 
 ``` r
 total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
@@ -324,11 +317,11 @@ tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
 
 ![](merge_files/figure-commonmark/rnet-x-y-minimal-1.png)
 
-The next step is to split the lines in `rnet_y` at the points where they
-intersect with `rnet_x_buffer`:
+An optional next step is to split the lines in `rnet_y` at the points
+where they intersect with `rnet_x_buffer`:
 
 ``` r
-rnet_y_split = rnet_split_lines(rnet_y, rnet_x_buffer, dist = dist)
+rnet_y_split = rnet_split_lines(rnet_y, rnet_x, dist = dist)
 ```
 
     Warning: attribute variables are assumed to be spatially constant throughout
@@ -343,25 +336,30 @@ The resulting `rnet_y_split` object is as follows:
 rnet_y_split
 ```
 
-    Simple feature collection with 23 features and 5 fields
+    Simple feature collection with 16 features and 5 fields
     Geometry type: LINESTRING
     Dimension:     XY
-    Bounding box:  xmin: -3.20592 ymin: 55.95036 xmax: -3.19669 ymax: 55.95206
+    Bounding box:  xmin: -3.205492 ymin: 55.95045 xmax: -3.19678 ymax: 55.95198
     Geodetic CRS:  WGS 84
-    # A tibble: 23 × 6
+    # A tibble: 16 × 6
        value Quietness length index                         geometry length_osm_cast
      * <dbl>     <dbl>  <dbl> <int>                 <LINESTRING [°]>           <dbl>
-     1     0        50  10.6      8 (-3.205647 55.9505, -3.20564 55…            9.48
-     2     0        40   9.52   107 (-3.2027 55.95092, -3.20266 55.…            9.51
-     3     3        95  32.6    206 (-3.19727 55.95184, -3.19706 55…           32.5 
-     4    32        50  88.1    403 (-3.20409 55.95078, -3.20274 55…           87.9 
-     5    32        40  10.4    406 (-3.20274 55.95101, -3.20273 55…           10.4 
-     6    36        50 102.     413 (-3.205627 55.95051, -3.20409 5…          100.  
-     7   122        50  10.3    631 (-3.19717 55.95191, -3.19709 55…           10.3 
-     8   122        50   6.96   632 (-3.1972 55.95197, -3.19719 55.…            6.95
-     9   147        60  15.1    709 (-3.20592 55.95036, -3.20585 55…            8.80
-    10   357        50  14.3    840 (-3.19727 55.95184, -3.19706 55…           14.2 
-    # ℹ 13 more rows
+     1     0        40   9.52   107 (-3.2027 55.95092, -3.20266 55.…            9.51
+     2     3        95  32.6    206 (-3.19727 55.95184, -3.19706 55…           32.5 
+     3    32        50  88.1    403 (-3.20409 55.95078, -3.20274 55…           87.9 
+     4    32        40  10.4    406 (-3.20274 55.95101, -3.20273 55…           10.4 
+     5    36        50 102.     413 (-3.205492 55.95054, -3.20409 5…           91.3 
+     6   122        50  10.3    631 (-3.19717 55.95191, -3.197136 5…            2.30
+     7   122        50   6.96   632 (-3.1972 55.95197, -3.19719 55.…            6.95
+     8   357        50  14.3    840 (-3.19727 55.95184, -3.197101 5…           11.4 
+     9   366        50 143.     849 (-3.199024 55.95155, -3.19828 5…          114.  
+    10   600        50  33.4    925 (-3.1972 55.95197, -3.197166 55…            2.24
+    11   722        50 152.     959 (-3.199066 55.95164, -3.19848 5…          122.  
+    12   766         1 190.     966 (-3.205438 55.95045, -3.20537 5…          178.  
+    13   798         1 211.     968 (-3.2027 55.95092, -3.199923 55…          181.  
+    14   871        70  23.3    989 (-3.19678 55.95174, -3.19679 55…            2.02
+    15  1581        50 211.    1094 (-3.20274 55.95101, -3.20016 55…          180.  
+    16  1602        50 190.    1095 (-3.205492 55.95054, -3.20274 5…          179.  
 
 ``` r
 rnet_y
@@ -393,33 +391,16 @@ m2 = tm_shape(rnet_y_split) + tm_lines()
 tmap_arrange(m1, m2, nrow = 1)
 ```
 
-![](merge_files/figure-commonmark/unnamed-chunk-19-1.png)
+![](merge_files/figure-commonmark/line-split-1.png)
 
-
-    ::: {.cell}
-
-    :::
-
-
-    ::: {.cell}
-
-    :::
-
-    ::: {.cell}
-
-    ```{.r .cell-code}
-    m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
-      qtm(input_simple)
-    tmap_save(m, "maps/m_explanation.html")
-
-<div class="cell-output cell-output-stderr">
+``` r
+m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
+  qtm(input_simple)
+tmap_save(m, "maps/m_explanation.html")
+```
 
     Interactive map saved to maps/m_explanation.html
-
-</div>
 
 ``` r
 # browseURL("maps/m_explanation.html")
 ```
-
-:::
