@@ -2,7 +2,6 @@
 format: gfm
 ---
 
-
 # Prerequisites
 
 The following example requires R and the following packages:
@@ -17,7 +16,6 @@ library(tmap)
 # Input data
 
 The inputs are as follows:
-
 
 ```{r}
 input_complex = sf::read_sf("data/rnet_princes_street.geojson")
@@ -121,6 +119,7 @@ input_simple_joined = input_simple_joined |>
 The updated result is as follows:
 
 ```{r}
+#| label: updated-result1
 m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
 m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
 tmap_arrange(m1, m2, nrow = 1)
@@ -128,6 +127,9 @@ tmap_arrange(m1, m2, nrow = 1)
 
 ```{r}
 #| label: joined-adjusted
+nrow(input_simple_joined)
+nrow(input_complex)
+nrow(input_simple)
 total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
 message("Total flow input: ", total_flow_input, "km")
 message("Total flow output: ", total_flow_output, "km")
@@ -189,18 +191,18 @@ rnet_subset = function(rnet_x, rnet_y, dist = 1, crop = TRUE, min_x = 3) {
   }
   rnet_x
 }
-rnet_split_lines = function(rnet_x, geo_y, dist = 1) {
-  if (all(grepl(pattern = "LINE", x = sf::st_geometry_type(rnet_x)))) {
-    geo_y = c(
-      lwgeom::st_startpoint(geo_y),
-      lwgeom::st_endpoint(geo_y)
+rnet_split_lines = function(rnet_x, rnet_y, dist = 1) {
+  if (all(grepl(pattern = "LINE", x = sf::st_geometry_type(rnet_y)))) {
+    geo_x = c(
+      lwgeom::st_startpoint(rnet_x),
+      lwgeom::st_endpoint(rnet_x)
     )
   }
   # speed-up subsequent steps:
-  points = sf::st_union(geo_y)
-  points_buffer = stplanr::geo_buffer(points, dist = dist)
-  rnet_split = sf::st_difference(rnet_x, points_buffer)
-  rnet_split_lines = line_cast(rnet_split)
+  points_x = sf::st_union(geo_x)
+  points_buffer_x = stplanr::geo_buffer(points_x, dist = dist)
+  rnet_y_split = sf::st_difference(rnet_y, points_buffer_x)
+  rnet_y_split_lines = line_cast(rnet_y_split)
   rnet_split_lines$length_osm_cast = as.numeric(sf::st_length(rnet_split_lines))
   # rnet_split_lines[rnet_split_lines$length_osm_cast > min_lenth, ]
   rnet_split_lines
@@ -222,11 +224,27 @@ rnet_y = input_complex[rnet_x_buffer, , op = sf::st_within]
 tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
 ```
 
-An optional next step is to split the lines in `rnet_y` at the points where they intersect with `rnet_x_buffer`:
+An optional next step is to split the lines:
 
 ```{r}
 #| label: rnet-split-minimal
-rnet_y_split = rnet_split_lines(rnet_y, rnet_x, dist = dist)
+remotes::install_github("r-spatial/qgisprocess")
+library(qgisprocess)
+
+args(qgis_run_algorithm)
+rnet_y_rebuilt = qgis_run_algorithm(
+  algorithm = "grass7:v.build.polylines",
+  input = rnet_y,
+  # Output sf: 
+)
+rnet_y_split = output = qgis_run_algorithm(
+  algorithm = "grass7:v.split",
+  input = rnet_y |> select(-index) |> sf::st_transform("EPSG:27700"),
+  length = 10
+) |>
+  sf::st_as_sf()
+rnet_y_split = rnet_y_split |> sf::st_transform("EPSG:4326")
+rnet_y_split$length_split = as.numeric(sf::st_length(rnet_y_split))
 ```
 
 The resulting `rnet_y_split` object is as follows:
@@ -240,6 +258,37 @@ m2 = tm_shape(rnet_y_split) + tm_lines()
 tmap_arrange(m1, m2, nrow = 1)
 ```
 
+The next stage is to join the two datasets, speeding things up by taking the centroid of the split lines:
+
+```{r}
+#| label: rnet-join-minimal
+rnet_y_centroids = rnet_y_split |> sf::st_centroid()
+rnetj = sf::st_join(rnet_x_buffer["identifier"], rnet_y_centroids)
+```
+
+We then take the distance-weighted average of the values:
+
+```{r}
+rnetj_summary = rnetj %>%
+  sf::st_drop_geometry() %>%
+  group_by_at(1) %>%
+    summarise(
+      total_flow_m = sum(value * length_split, na.rm = TRUE)
+      )
+input_simple_joined = left_join(rnet_x, rnetj_summary)
+input_simple_joined = input_simple_joined |>
+  mutate(value = total_flow_m / length)
+input_simple_joined["value"]
+```
+
+We can plot the before/after results as follows:
+
+```{r}
+#| label: minimal-before/after
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, nrow = 1)
+```
 
 ```{r}
 #| label: final-explanation
