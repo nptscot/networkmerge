@@ -173,31 +173,23 @@ def split_line_at_angles(line, value, quietness, original_index, length, angle_t
     segments = []
     if isinstance(line, LineString):
         coords = np.array(line.coords)
-        # Compute the direction of each vector
         vectors = np.diff(coords, axis=0)
         directions = np.arctan2(vectors[:, 1], vectors[:, 0])
-        # Compute the angle between each pair of vectors
         angles = np.diff(directions)
-        # Convert the angles to degrees and take absolute values
         angles = np.abs(np.degrees(angles))
-        # Identify the indices where the angle exceeds the threshold
         split_indices = np.where(angles > angle_threshold)[0] + 1
-        # Split the line at the points corresponding to the split indices
         last_index = 0
         for index in split_indices:
             segment_coords = coords[last_index:index + 1]
             segment = LineString(segment_coords)
-            # Subdivide the segment if its length exceeds the max_length
             while segment.length > max_length:
-                # Split the segment at the point max_length from the start
                 split_point = segment.interpolate(max_length)
                 sub_segment_1 = LineString([segment.coords[0], split_point.coords[0]])
                 sub_segment_2 = LineString([split_point.coords[0]] + list(segment.coords)[1:])
-                segments.append((sub_segment_1, value, quietness, original_index))
+                segments.append((sub_segment_1, value, quietness, original_index, sub_segment_1.length))
                 segment = sub_segment_2
-            segments.append((segment, value, quietness, original_index))
+            segments.append((segment, value, quietness, original_index, segment.length))
             last_index = index
-        # Include all remaining parts of the line after the last split point
         segment_coords = coords[last_index:]
         segment = LineString(segment_coords)
         while segment.length > max_length:
@@ -206,11 +198,10 @@ def split_line_at_angles(line, value, quietness, original_index, length, angle_t
             sub_segment_2 = LineString([split_point.coords[0]] + list(segment.coords)[1:])
             segments.append((sub_segment_1, value, quietness, original_index, sub_segment_1.length))
             segment = sub_segment_2
-        segments.append((segment, value, quietness, original_index))
+        segments.append((segment, value, quietness, original_index, segment.length))
     elif isinstance(line, MultiLineString):
-        # Handle each LineString in the MultiLineString separately
         for geom in line.geoms:
-            segments.extend(split_line_at_angles(geom, value, quietness, original_index, angle_threshold, max_length))
+            segments.extend(split_line_at_angles(geom, value, quietness, original_index, geom.length, angle_threshold, max_length))
     else:
         raise ValueError(f"Unexpected geometry type: {type(line)}")
 
@@ -348,6 +339,15 @@ def length_weighted_mean(group):
         return 0
     else:
         return (group['value'] * group['geometry'].length).sum() / total_length
+
+def length_weighted_mean(group):
+    total_length = group['length'].sum()
+    if total_length == 0:
+        return 0
+    else:
+        return (group['value'] * group['length']).sum() / total_length
+        
+
 ```
 
 
@@ -370,7 +370,8 @@ def length_weighted_mean(group):
 # gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
-
+gdf_buffer = gdf.copy()
+gdf_buffer['geometry'] = gdf['geometry'].buffer(0.002)
 # Group the GeoDataFrame by 'value' and 'Quietness' columns
 grouped_gdf = gdf.groupby(['value', 'Quietness'])
 
@@ -409,16 +410,25 @@ total_distance_traveled = round(sum(gdf['value'] * gdf['length']))
 total_distance_traveled
 
 
-# Applying the split function to the gdf GeoDataFrame
+# Applying the function to the GeoDataFrame
 segments_list_modified = []
 for index, row in gdf.iterrows():
-    segments = split_line_at_angles(row['geometry'], row['value'], row['Quietness'], index, angle_threshold=30, max_length=0.01)
+    segments = split_line_at_angles(row['geometry'], row['value'], row['Quietness'], index, row['length'], angle_threshold=30, max_length=0.01)
     segments_list_modified.extend(segments)
 
-# Creating a new GeoDataFrame with the individual segments and additional attributes
-segments_gdf_modified = gpd.GeoDataFrame(segments_list_modified, columns=['geometry', 'value', 'Quietness', 'Ori_index'])
-segments_gdf_modified['value'].sum(), segments_gdf_modified.shape, segments_gdf_modified.head()
-segments_gdf_modified.shape
+# Creating the new GeoDataFrame with the individual segments and additional attributes
+segments_gdf_modified = gpd.GeoDataFrame(segments_list_modified, columns=['geometry', 'value', 'Quietness', 'Ori_index', 'length'])
+
+# Displaying the first few rows of the result
+segments_gdf_modified.head()
+
+# Calculating the centroids of the geometries in segments_gdf_modified
+segments_gdf_modified_centroids = segments_gdf_modified.copy()
+segments_gdf_modified_centroids['geometry'] = segments_gdf_modified['geometry'].centroid
+
+# Displaying the first few rows of the result
+segments_gdf_modified_centroids.head()
+
 # segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
 
@@ -427,11 +437,12 @@ gdf_road_simplified = gpd.read_file("data/Edc_Roadlink.geojson")
 gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
 gdf_road_simplified.crs = "EPSG:4326"
 
-
+gdf_road_simplified = gpd.overlay(gdf_road_simplified, gdf_buffer, how='intersection')
+gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
 # Plotting the geodataframes
-map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('segments_gdf_modified', segments_gdf_modified),('gdf_merged_directly_connected_final', gdf_merged_directly_connected_final),
+map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('segments_gdf_modified', segments_gdf_modified),('segments_gdf_modified_centroids', segments_gdf_modified_centroids),
                           colors=['blue', 'red', 'green','black'], line_widths=(3.0, 2.0, 1.0,0.6), map_type="Esri Satellite")
-# map
+map
 
 ```
 Requirement 1A: If multiple lines within the same buffer have the same 'Ori_index', it calculates the length-weighted mean of their 'value' attributes.
@@ -440,7 +451,7 @@ Requirement 2: If lines with the same 'Ori_index' are within different buffers, 
 
 ```{python}
 #Try to optimize the code by using spatial indexing techniques to reduce the number of geometry comparisons. To handle the large dataset more efficiently.
-# gdf = segments_gdf_modified
+gdf = segments_gdf_modified_centroids
 
 all_lines = gdf.index.tolist()
 
@@ -485,10 +496,11 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     # Add the remaining lines' 'value' to 'value_sum'
     gdf_buffered.at[buffer_index, 'value_sum'] += unprocessed_lines['value'].sum()
 
+gdf_buffered.head()
 
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1083, relation='within')
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=591, relation='within')
-gdf_buffered.iloc[1444]
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='within')
+gdf_buffered.iloc[1083]
 
 
 # # Create a list to store all lines intersecting any buffer
@@ -658,6 +670,7 @@ input_intersection = gpd.overlay(input_simple, input_detailed_buffer, how='inter
 # input_simple.plot(line_width=input_simple['value']/1000);
 input_detailed.plot(linewidth=input_detailed['value'] / 1000, cmap='Blues', legend=True);
 input_intersection.plot(linewidth=2);
+# input_intersection.to_file("data/Edc_Roadlink_simple.geojson",driver='GeoJSON')
 ```
 
 The output is as follows:
