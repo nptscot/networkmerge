@@ -372,7 +372,7 @@ def length_weighted_mean(group):
 # gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
-gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
+gdf.shape
 
 # Group the GeoDataFrame by 'value' and 'Quietness' columns
 grouped_gdf = gdf.groupby(['value', 'Quietness'])
@@ -388,19 +388,19 @@ for (value, quietness), group in grouped_gdf:
 gdf_merged_directly_connected_final = gpd.GeoDataFrame(merged_lines_final, geometry='geometry')
 gdf_merged_directly_connected_final['length'] = gdf_merged_directly_connected_final['geometry'].length
 
-# Read in simplified OS Road map data 
+# # Read in simplified OS Road map data 
 
-grid = ['NA','NB','NC','ND','NF','NG','NH','NJ','NK','NL','NM','NN','NO','NR','NS','NT','NU','NW','NX','NY','NZ']
-gdfs = [] # to store individual GeoDataFrames
+# grid = ['NA','NB','NC','ND','NF','NG','NH','NJ','NK','NL','NM','NN','NO','NR','NS','NT','NU','NW','NX','NY','NZ']
+# gdfs = [] # to store individual GeoDataFrames
 
-for i in grid:
-    gdf_temp = gpd.read_file(f"C:/GitHub/data/{i}_RoadLink.shp")
-    gdf_temp = gdf_temp[['identifier', 'geometry']]
-    gdfs.append(gdf_temp)
+# for i in grid:
+#     gdf_temp = gpd.read_file(f"C:/GitHub/data/{i}_RoadLink.shp")
+#     gdf_temp = gdf_temp[['identifier', 'geometry']]
+#     gdfs.append(gdf_temp)
 
-# Concatenating all GeoDataFrames into one
-gdf_road_simplified = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True))
-gdf_road_simplified.crs = "EPSG:4326"
+# # Concatenating all GeoDataFrames into one
+# gdf_road_simplified = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True))
+# gdf_road_simplified.crs = "EPSG:4326"
 
 # gdf_merged_directly_connected_final.to_file("data/gdf_merged_directly_connected_final.geojson", driver='GeoJSON')
 
@@ -424,6 +424,10 @@ segments_gdf_modified['value'].sum(), segments_gdf_modified.shape, segments_gdf_
 segments_gdf_modified.shape
 # segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
+gdf_slot = gpd.read_file("data/split_by_5m.geojson")
+gdf_slot.head()
+total_distance_traveled = round(sum(gdf_slot['value'] * gdf_slot['length']))
+total_distance_traveled
 # Read in simplified OS Road map data 
 gdf_road_simplified = gpd.read_file("data/Edc_Roadlink.geojson")
 gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
@@ -442,7 +446,7 @@ map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplifi
 #
 #
 #Try to optimize the code by using spatial indexing techniques to reduce the number of geometry comparisons. To handle the large dataset more efficiently.
-gdf = segments_gdf_modified
+# gdf = segments_gdf_modified
 
 all_lines = gdf.index.tolist()
 
