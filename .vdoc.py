@@ -369,6 +369,8 @@ def length_weighted_mean(group):
 #     ox.save_graph_shapefile(graph, filepath=r'data/')
 
 # Read in data from CycleStreets 
+# gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
+
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
 gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
 
