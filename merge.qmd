@@ -1,0 +1,146 @@
+---
+format: gfm
+---
+
+# Prerequisites
+
+The following example requires R and the following packages:
+
+```{r}
+#| message: false
+library(tidyverse)
+library(sf)
+library(tmap)
+```
+
+# Input data
+
+The inputs are as follows:
+
+```{r}
+#| label: inputs-processing
+#| echo: false
+#| eval: false
+input_simple = sf::read_sf("data/Edc_Roadlink.geojson")
+input_complex_union = sf::st_union(input_complex)
+input_complex_30m_buffer = sf::st_buffer(input_complex_union, 30)
+input_complex_convex_hull = sf::st_convex_hull(input_complex_union)
+input_simple = sf::st_intersection(input_simple, input_complex_convex_hull)
+sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson")
+names(input_complex)[1] = "value"
+sf::write_sf(input_complex, "data/rnet_princes_street.geojson", delete_dsn = TRUE)
+```
+
+```{r}
+input_complex = sf::read_sf("data/rnet_princes_street.geojson")
+input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
+```
+
+```{r}
+#| label: inputs
+brks = c(0, 100, 500, 1000, 5000)
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
+m2 = tm_shape(input_simple) + tm_lines()
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+```{r}
+#| eval: false
+#| echo: false
+# Save interactive map outputs
+tmap_save(m1 + m2, "maps/input_complex.html")
+browseURL("maps/input_complex.html")
+```
+
+# Joining the data
+
+```{r}
+remotes::install_github("ropensci/stplanr")
+# stplanr::rnet_join
+```
+
+The values in the `input_complex` dataset are as follows:
+
+```{r}
+names(input_complex)
+summary(input_complex$value)
+```
+
+To join the network values we will try the `rnet_join` function in `stplanr`, which has the following arguments:
+
+```{r}
+args(stplanr::rnet_join)
+```
+
+
+```{r}
+input_simple_id = input_simple |>
+  select(identifier)
+rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
+rnet_joined
+nrow(rnet_joined)
+nrow(input_simple)
+names(rnet_joined)
+```
+
+The overlapping network values are as follows:
+
+```{r}
+#| label: overlapping
+tm_shape(rnet_joined) + tm_fill("value")
+```
+
+We can calculate the distance-weighted average of the network values as follows:
+
+```{r}
+rnetj_summary = rnet_joined %>%
+  sf::st_drop_geometry() %>%
+  group_by_at(1) %>%
+    summarise(
+      mean_flow = weighted.mean(value, length_y, na.rm = TRUE),
+      total_flow_m = sum(value * length_y, na.rm = TRUE)
+      )
+input_simple_joined = left_join(input_simple, rnetj_summary)
+input_simple_joined = input_simple_joined |>
+  mutate(value = total_flow_m / length)
+```
+
+The initial result is as follows:
+
+```{r}
+#| label: joined
+# sanity check lengths:
+# cor(input_complex$length, sf::st_length(input_complex)) # 100%
+total_flow_input = round(sum(input_complex$value * input_complex$length) / 1000)
+# output:
+total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
+
+message("Total flow input: ", total_flow_input, "km")
+message("Total flow output: ", total_flow_output, "km")
+
+summary(input_simple_joined$flow)
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", breaks = brks)
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+```{r}
+
+```
+
+
+
+
+
+# Explanation
+
+To clarify what's going on, lets do the process only for a couple of lines, and break the process down into steps.
+
+```{r}
+#| label: input-simple
+input_simple_minimal = input_simple |>
+  filter(identifier == "13CF96CE-2A95-451B-B859-E5511B2DEF81" | identifier == "C90C4EA9-5E6A-4A6A-ADEB-5EC5937F6C3A") 
+# tm_shape(input_simple_minimal) + tm_lines()
+```
+
+The first stage is to take 
