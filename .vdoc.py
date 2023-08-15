@@ -171,7 +171,7 @@ def calculate_angle(vector1, vector2):
     return angle
 
 # Modified function to split a line into segments based on an angle threshold and retain the 'value', 'Quietness', and original index
-def split_line_at_angles(line, value, quietness, original_index, angle_threshold=30, max_length=0.001):
+def split_line_at_angles(line, value, quietness, original_index, length, angle_threshold=30, max_length=0.001):
     segments = []
     if isinstance(line, LineString):
         coords = np.array(line.coords)
@@ -206,9 +206,9 @@ def split_line_at_angles(line, value, quietness, original_index, angle_threshold
             split_point = segment.interpolate(max_length)
             sub_segment_1 = LineString([segment.coords[0], split_point.coords[0]])
             sub_segment_2 = LineString([split_point.coords[0]] + list(segment.coords)[1:])
-            segments.append((sub_segment_1, value, quietness, original_index))
+            segments.append((sub_segment_1, value, quietness, original_index, sub_segment_1.length))
             segment = sub_segment_2
-        segments.append((segment, value, quietness, original_index))
+        segments.append((segment, value, quietness, original_index, segment.length))
     elif isinstance(line, MultiLineString):
         # Handle each LineString in the MultiLineString separately
         for geom in line.geoms:
@@ -372,7 +372,6 @@ def length_weighted_mean(group):
 # gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
-gdf.shape
 
 # Group the GeoDataFrame by 'value' and 'Quietness' columns
 grouped_gdf = gdf.groupby(['value', 'Quietness'])
@@ -424,10 +423,7 @@ segments_gdf_modified['value'].sum(), segments_gdf_modified.shape, segments_gdf_
 segments_gdf_modified.shape
 # segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
-gdf_slot = gpd.read_file("data/split_by_5m.geojson")
-gdf_slot.head()
-total_distance_traveled = round(sum(gdf_slot['value'] * gdf_slot['length']))
-total_distance_traveled
+
 # Read in simplified OS Road map data 
 gdf_road_simplified = gpd.read_file("data/Edc_Roadlink.geojson")
 gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
