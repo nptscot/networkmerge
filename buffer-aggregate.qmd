@@ -370,7 +370,6 @@ def length_weighted_mean(group):
 # gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
-gdf.shape
 
 # Group the GeoDataFrame by 'value' and 'Quietness' columns
 grouped_gdf = gdf.groupby(['value', 'Quietness'])
