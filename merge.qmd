@@ -4,9 +4,10 @@ format: gfm
 
 # Prerequisites
 
-..
+The following example requires R and the following packages:
 
 ```{r}
+#| message=FALSE
 library(tidyverse)
 library(sf)
 library(tmap)
