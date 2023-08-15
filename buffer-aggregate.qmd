@@ -516,7 +516,7 @@ gdf_buffered.iloc[1444]
 # Missed_gdf = gdf.loc[list(missing_lines)]
 
 # map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
-                          colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
+                        #   colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
 # map
 ```
 
