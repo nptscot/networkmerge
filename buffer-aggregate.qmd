@@ -510,14 +510,14 @@ gdf_buffered.iloc[1444]
 
 # plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=843, relation='intersect')    
 
-missing_lines = set(all_lines) - set(all_lines_index_within_buffer) 
+# missing_lines = set(all_lines) - set(all_lines_index_within_buffer) 
 # -set(all_lines_index_intersect_buffer)
-len(missing_lines)
-Missed_gdf = gdf.loc[list(missing_lines)]
+# len(missing_lines)
+# Missed_gdf = gdf.loc[list(missing_lines)]
 
-map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
+# map = plot_geodataframes(('gdf', gdf), ('gdf_buffered', gdf_buffered),('Missed_gdf', Missed_gdf),
                           colors=['blue', 'red', 'black'], line_widths=(3.0, 2.5, 5), map_type="Esri Satellite")
-map
+# map
 ```
 
 ```{python}
