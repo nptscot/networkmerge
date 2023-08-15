@@ -9,7 +9,7 @@ To run the code in this repo, you need to have a working Python installation wit
 
 ```{bash}
 #| eval: false
-pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
+pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify grass
 ```
 
 
@@ -41,6 +41,7 @@ import os
 from numpy.linalg import norm
 from collections import defaultdict
 from shapely.ops import unary_union
+import grass as gs
 
 # Calculate total length of linestrings in a GeoDataFrame 
 def calculate_total_length(gdf, crs="EPSG:4326"):
@@ -352,30 +353,16 @@ def length_weighted_mean(group):
 
 
 ```{python}
-#| label: Download the road network for Area-of-Interest and read GeoJSON files
-
-# # Define the centre point of AoT from OSM
-# point = (55.952227 , -3.1959271)
-# distance = 1300  # in meters
-
-# # Only download if the data/edges.shp file does not exist:
-# if not os.path.exists("data/edges.shp"):
-#     # Download the road network data
-#     graph = ox.graph_from_point(point, dist=distance, network_type='all')
-
-#     # Save the road network as a shapefile
-#     ox.save_graph_shapefile(graph, filepath=r'data/')
-
-# Read in data from CycleStreets 
-# gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
+#| label:  read rnet_princes_street GeoJSON files
 
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
-gdf_buffer = gdf.copy()
-gdf_buffer['geometry'] = gdf['geometry'].buffer(0.002)
-# Group the GeoDataFrame by 'value' and 'Quietness' columns
-grouped_gdf = gdf.groupby(['value', 'Quietness'])
+gdf.shape
 
-# Iterate through the groups and merge directly connected lines
+```
+
+```{python}
+#| label: merge directly connected lines
+grouped_gdf = gdf.groupby(['value', 'Quietness'])
 merged_lines_final = []
 for (value, quietness), group in grouped_gdf:
     connected_lines = merge_directly_connected(group)
@@ -386,84 +373,67 @@ for (value, quietness), group in grouped_gdf:
 gdf_merged_directly_connected_final = gpd.GeoDataFrame(merged_lines_final, geometry='geometry')
 gdf_merged_directly_connected_final['length'] = gdf_merged_directly_connected_final['geometry'].length
 
-# # Read in simplified OS Road map data 
-
-# grid = ['NA','NB','NC','ND','NF','NG','NH','NJ','NK','NL','NM','NN','NO','NR','NS','NT','NU','NW','NX','NY','NZ']
-# gdfs = [] # to store individual GeoDataFrames
-
-# for i in grid:
-#     gdf_temp = gpd.read_file(f"C:/GitHub/data/{i}_RoadLink.shp")
-#     gdf_temp = gdf_temp[['identifier', 'geometry']]
-#     gdfs.append(gdf_temp)
-
-# # Concatenating all GeoDataFrames into one
-# gdf_road_simplified = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True))
-# gdf_road_simplified.crs = "EPSG:4326"
-
-# gdf_merged_directly_connected_final.to_file("data/gdf_merged_directly_connected_final.geojson", driver='GeoJSON')
-
 gdf = gdf_merged_directly_connected_final
+gdf_merged_directly_connected_final.to_file("data/gdf_merged_directly_connected_final.geojson", driver='GeoJSON')
 gdf.shape
+
 
 # TODO: check total length after network simplification
 total_distance_traveled = round(sum(gdf['value'] * gdf['length']))
 total_distance_traveled
 
+```
+```{python}
+#| label: split line by 10m using GRASS directly connected lines
 
-# Applying the function to the GeoDataFrame
-segments_list_modified = []
-for index, row in gdf.iterrows():
-    segments = split_line_at_angles(row['geometry'], row['value'], row['Quietness'], index, row['length'], angle_threshold=30, max_length=0.01)
-    segments_list_modified.extend(segments)
-
-# Creating the new GeoDataFrame with the individual segments and additional attributes
-segments_gdf_modified = gpd.GeoDataFrame(segments_list_modified, columns=['geometry', 'value', 'Quietness', 'Ori_index', 'length'])
-
-# Displaying the first few rows of the result
-segments_gdf_modified.head()
+gdf = gpd.read_file("data/split_by_5m.geojson")
+gdf = gdf.rename(columns={'fid': 'index', 'cat': 'Ori_index'})
+gdf['index'] = gdf['index'] -1
+gdf['Ori_index'] = gdf['Ori_index'] -1
 
 # Calculating the centroids of the geometries in segments_gdf_modified
-segments_gdf_modified_centroids = segments_gdf_modified.copy()
-segments_gdf_modified_centroids['geometry'] = segments_gdf_modified['geometry'].centroid
+gdf_centroids = gdf.copy()
+gdf_centroids['geometry'] = gdf['geometry'].centroid
+gdf_centroids.to_file("data/gdf_centroids.geojson", driver='GeoJSON')
+gdf_centroids.head()
+```
 
-# Displaying the first few rows of the result
-segments_gdf_modified_centroids.head()
-
-# segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
-
-
-# Read in simplified OS Road map data 
-gdf_road_simplified = gpd.read_file("data/Edc_Roadlink.geojson")
+```{python}
+#| label:Read in simplified OS Road map data (split into 10m)
+gdf_road_simplified = gpd.read_file("data/Edc_Roadlink_5m.geojson")
 gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
-gdf_road_simplified.crs = "EPSG:4326"
-
-gdf_road_simplified = gpd.overlay(gdf_road_simplified, gdf_buffer, how='intersection')
-gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
-# Plotting the geodataframes
-map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('segments_gdf_modified', segments_gdf_modified),('segments_gdf_modified_centroids', segments_gdf_modified_centroids),
-                          colors=['blue', 'red', 'green','black'], line_widths=(3.0, 2.0, 1.0,0.6), map_type="Esri Satellite")
-map
+# gdf_road_simplified = gdf_road_simplified.to_crs(epsg=4326)
+gdf_road_simplified.shape
 
 ```
+```{python}
+#| label: Plotting the geodataframes
+map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplified),('gdf_centroids', gdf_centroids),
+                          colors=['blue', 'red', 'green','black'], line_widths=(3.0, 2.0, 1.0,0.6), map_type="Esri Satellite")
+map
+```
+Step 2:
 Requirement 1A: If multiple lines within the same buffer have the same 'Ori_index', it calculates the length-weighted mean of their 'value' attributes.
 Requirement 1B: If multiple lines within the same buffer have different 'Ori_index' values but the same 'Quietness', it calculates the length-weighted mean of their 'value' attributes.
 Requirement 2: If lines with the same 'Ori_index' are within different buffers, it calculates the length-weighted mean for the longer lines and adds that value to the corresponding buffer.
 
 ```{python}
-#Try to optimize the code by using spatial indexing techniques to reduce the number of geometry comparisons. To handle the large dataset more efficiently.
-gdf = segments_gdf_modified_centroids
+#| label: Try to optimize the code by using spatial indexing techniques to reduce the number of geometry comparisons. To handle the large dataset more efficiently.
+gdf = gdf_centroids
 
 all_lines = gdf.index.tolist()
 
 # Step 1: Create a buffer around the geometries in gdf_road_simplified
-gdf_buffered = create_buffer(gdf_road_simplified, buffer_size=0.0002)
+gdf_buffered = create_buffer(gdf_road_simplified, buffer_size=0.00022)
 
 # Performing a spatial join to find the lines within the buffer
 all_lines_within_buffer = gpd.sjoin(gdf, gdf_buffered, how="inner", op="within")
 
+
 gdf_buffered['value_sum'] = 0
 gdf_buffered['Line_index_from_gdf_Within'] = None
 all_lines_index_within_buffer = set()
+# gdf_buffered['length_sum'] = 0 
 
 # Iterating through the buffers
 for buffer_index, buffered_geom in gdf_buffered.iterrows():
@@ -472,6 +442,7 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     unprocessed_lines = lines_within_buffer.loc[~lines_within_buffer.index.isin(all_lines_index_within_buffer)]
     gdf_buffered.at[buffer_index, 'Line_index_from_gdf_Within'] = unprocessed_lines.index.tolist()
     all_lines_index_within_buffer.update(unprocessed_lines.index.tolist())
+    # gdf_buffered.at[buffer_index, 'length_sum'] = unprocessed_lines['length'].sum()
 
     # Check if there are lines with the same 'Ori_index'
     ori_indices_count = unprocessed_lines['Ori_index'].value_counts()
@@ -496,13 +467,87 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     # Add the remaining lines' 'value' to 'value_sum'
     gdf_buffered.at[buffer_index, 'value_sum'] += unprocessed_lines['value'].sum()
 
-gdf_buffered.head()
+i = 4029
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=i, relation='within')
+gdf_buffered.iloc[i]
 
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1083, relation='within')
+gdf
+
+```
+Step 3: Match the attributes from gdf_buffered to gdf_road_simplified using the index, and then update gdf_road_simplified with these attributes.
+Joining gdf_buffered with gdf_road_simplified on the index to combine attributes
+```{python}
+#| label: join attribur to base layer
+gdf_road_simplified_updated = gdf_road_simplified.join(gdf_buffered[['value_sum']])
+# Displaying the first few rows of the updated gdf_road_simplified DataFrame
+gdf_road_simplified_updated.to_file("data/gdf_road_simplified_updated.geojson", driver='GeoJSON')
+
+total_distance_traveled = round(sum(gdf_road_simplified_updated['value_sum'] * gdf_road_simplified_updated['geometry'].length))
+total_distance_traveled
+```
+
+```{python}
+#| label: Check results
+
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
+# Find the global min and max values
+vmin = min(gdf_road_simplified_updated['value_sum'].min(), gdf['value'].min())
+vmax = max(gdf_road_simplified_updated['value_sum'].max(), gdf['value'].max())
+
+# Create a normalization object
+norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+
+# Plot the first GeoDataFrame using the normalization object
+gdf_road_simplified_updated.plot(
+    linewidth=gdf_road_simplified_updated['value_sum'] / 1000,
+    cmap='Blues',
+    legend=True,
+    norm=norm
+)
+
+plt.show()
+
+# Plot the second GeoDataFrame using the same normalization object
+gdf.plot(
+    linewidth=gdf['value'] / 1000,
+    cmap='Blues',
+    legend=True,
+    norm=norm
+)
+
+plt.show()
+
+
+```
+
+```{python}
+gdf_buffered.iloc[0]
+all_lines_within_buffer[all_lines_within_buffer['index_right'] == 0]
+
+# Define a custom aggregation function to retain the highest 'value_sum' value
+aggregation_functions = {'value_sum': 'max'}
+
+# Dissolve (combine) the lines with the same 'identifier' and apply the custom aggregation function
+gdf_buffered_dissolved = gdf_buffered.dissolve(by='identifier', aggfunc=aggregation_functions)
+
+gdf_buffered.shape
+gdf_buffered_dissolved.shape
+
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=614, relation='within')
-gdf_buffered.iloc[1083]
+gdf_buffered.iloc[1477]
+gdf_buffered.iloc[614]['Line_index_from_gdf_Within'] = [1175,1177]
 
+all_lines_within_buffer[all_lines_within_buffer['index_right'] == 1477]
 
+A = all_lines_within_buffer[all_lines_within_buffer['index_right'] == 614]['value']
+B = all_lines_within_buffer[all_lines_within_buffer['index_right'] == 614]['length']
+C = A *B
+C.sum()/B.sum()
+
+length_weighted_mean(all_lines_within_buffer[all_lines_within_buffer['index_right'] == 614].iloc[3:5])
 # # Create a list to store all lines intersecting any buffer
 # all_lines_index_intersect_buffer = []
 # gdf_buffered['Line_index_from_gdf_Intersect'] = None
@@ -589,7 +634,7 @@ example_req2
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=405, relation='within')
 
 # Examples
-plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1435, relation='within')
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1250, relation='within')
 gdf_buffered.iloc[614]['value_sum']
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1444, relation='within')
 plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=1477, relation='within')
@@ -626,8 +671,11 @@ example_angle, add_value_condition, example_value_sum, example_line_indices_inte
 # Step 3: Match the attributes from gdf_buffered to gdf_road_simplified using the index, and then update gdf_road_simplified with these attributes.
 # Joining gdf_buffered with gdf_road_simplified on the index to combine attributes
 ```{python}
-gdf_road_simplified_updated = gdf_road_simplified.join(gdf_buffered[['value_sum']])
+# Dissolve (combine) the lines with the same 'identifier'
+gdf_road_simplified = gdf_road_simplified.dissolve(by='identifier')
+gdf_road_simplified.shape
 
+gdf_road_simplified_updated = gdf_road_simplified.join(gdf_buffered[['value_sum']])
 # Displaying the first few rows of the updated gdf_road_simplified DataFrame
 gdf_road_simplified_updated.head()
 
@@ -640,6 +688,7 @@ total_distance_traveled
 #| echo: false
 # Save gdf_road_simplified_updated as geojson
 gdf_to_save = gdf_road_simplified_updated[['value_sum', 'geometry']]
+gdf_to_save['v'] = gdf_to_save['value_sum'] / 500
 gdf_to_save.to_file("data/gdf_road_simplified_updated.geojson", driver='GeoJSON')
 ```
 
