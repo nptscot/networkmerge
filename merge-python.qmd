@@ -32,6 +32,7 @@ plt.show()
 
 ```{python}
 #| label: Performing a spatial join using the "within" relationship to transfer all attributes from input_complex to input_simple
+#| eval: false
 input_complex.head()
 
 input_simple_with_attributes = gpd.sjoin(input_simple, input_complex, how="left", op="intersects")
@@ -47,5 +48,15 @@ plt.show()
 # Checking the first few rows to confirm that the attributes have been transferred
 input_simple_with_attributes.head()
 
+
+```
+
+Code to split the `input_complex` object in linestrings with a maximum length of 10 m:
+
+```{python}
+#| label: Splitting the input_complex layer into linestrings with a maximum length of 10 m
+
+# Splitting the input_complex layer into linestrings with a maximum length of 10 m
+input_complex_split = input_complex.explode().reset_index(drop=True)
 
 ```
