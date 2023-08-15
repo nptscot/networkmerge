@@ -3,34 +3,31 @@
 
 The following example requires R and the following packages:
 
-..
-
 ``` r
 library(tidyverse)
 library(sf)
 library(tmap)
 ```
 
+# Input data
+
+The inputs are as follows:
+
 ``` r
 input_complex = sf::read_sf("data/rnet_princes_street.geojson")
-# input_simple = sf::read_sf("data/Edc_Roadlink.geojson")
-# input_complex_union = sf::st_union(input_complex)
-# input_complex_30m_buffer = sf::st_buffer(input_complex_union, 30)
-# input_complex_convex_hull = sf::st_convex_hull(input_complex_union)
-# input_simple = sf::st_intersection(input_simple, input_complex_convex_hull)
-# sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson")
-# names(input_complex)[1] = "value"
-# sf::write_sf(input_complex, "data/rnet_princes_street.geojson", delete_dsn = TRUE)
 input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
 ```
 
 ``` r
-m1 = qtm(input_complex)
-m2 = qtm(input_simple)
+brks = c(0, 100, 500, 1000, 5000)
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
+m2 = tm_shape(input_simple) + tm_lines()
 tmap_arrange(m1, m2, nrow = 1)
 ```
 
 ![](merge_files/figure-commonmark/inputs-1.png)
+
+# Joining the data
 
 ``` r
 remotes::install_github("ropensci/stplanr")
@@ -145,71 +142,71 @@ We can calculate the distance-weighted average of the network values as
 follows:
 
 ``` r
-summary(rnet_joined$length_y)
+rnetj_summary = rnet_joined %>%
+  sf::st_drop_geometry() %>%
+  group_by_at(1) %>%
+    summarise(
+      mean_flow = weighted.mean(value, length_y, na.rm = TRUE),
+      total_flow_m = sum(value * length_y, na.rm = TRUE)
+      )
+input_simple_joined = left_join(input_simple, rnetj_summary)
 ```
 
-         Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA's 
-      0.00819   5.71282  11.58242  20.87195  23.08895 254.92652        13 
+    Joining with `by = join_by(identifier)`
 
 ``` r
-summary(rnet_joined$length)
+input_simple_joined = input_simple_joined |>
+  mutate(value = total_flow_m / length)
 ```
 
-        Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-      0.6247   9.5251  17.4445  32.5600  38.5052 559.2821       13 
+The initial result is as follows:
 
 ``` r
-rnet_joined_df = rnet_joined |>
-  sf::st_drop_geometry() |>
-  mutate(value_weighted = value * length_y)
-total_d = sum(input_complex$length * input_complex$value, na.rm = TRUE)
-total_j = sum(rnet_joined_df$value_weighted, na.rm = TRUE)
-difference = total_d / total_j
-round(1 - total_d / total_j, 3) # New net has 15% more value
+# sanity check lengths:
+# cor(input_complex$length, sf::st_length(input_complex)) # 100%
+total_flow_input = round(sum(input_complex$value * input_complex$length) / 1000)
+# output:
+total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
+
+message("Total flow input: ", total_flow_input, "km")
 ```
 
-    [1] 0.152
+    Total flow input: 17164km
 
 ``` r
-rnet_joined_df$value_weighted = rnet_joined_df$value_weighted * difference
-# sum(rnet_joined_df$value_weighted, na.rm = 
-# TRUE) / sum(rnet_joined_df$length_y, na.rm = TRUE)
-# sum(input_complex$value * input_complex$length) / sum(input_complex$length)
-rnet_joined_aggregated = rnet_joined_df |>
-  group_by(identifier) |>
-  summarise(value = sum(value_weighted, na.rm = TRUE) / sum(length_y, na.rm = TRUE))
-sum(rnet_joined_aggregated$value, na.rm = TRUE) == sum(input_complex$value, na.rm = TRUE)
+message("Total flow output: ", total_flow_output, "km")
 ```
 
-    [1] FALSE
+    Total flow output: 19888km
 
 ``` r
-rnet_joined_linestrings = left_join(input_simple, rnet_joined_aggregated, by = "identifier")
+summary(input_simple_joined$flow)
 ```
 
-The result is as follows:
+    Warning: Unknown or uninitialised column: `flow`.
+
+    Length  Class   Mode 
+         0   NULL   NULL 
 
 ``` r
-tm_shape(rnet_joined_linestrings) + tm_lines("value")
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", breaks = brks)
+tmap_arrange(m1, m2, nrow = 1)
 ```
+
+    Warning: Values have found that are higher than the highest break
 
 ![](merge_files/figure-commonmark/joined-1.png)
 
-``` r
-rnet_joined_linestrings$length_simple = as.numeric(sf::st_length(rnet_joined_linestrings))
-cor(rnet_joined_linestrings$length_simple, rnet_joined_linestrings$length)
-```
+# Explanation
 
-    [1] 0.8687748
+To clarify what’s going on, lets do the process only for a couple of
+lines, and break the process down into steps.
 
 ``` r
-sum(rnet_joined_linestrings$value * rnet_joined_linestrings$length, na.rm = TRUE)
+input_simple_minimal = input_simple |>
+  filter(identifier == "13CF96CE-2A95-451B-B859-E5511B2DEF81" | identifier == "C90C4EA9-5E6A-4A6A-ADEB-5EC5937F6C3A") 
+# tm_shape(input_simple_minimal) + tm_lines()
 ```
 
-    [1] 9762652
-
-``` r
-sum(input_complex$value * input_complex$length, na.rm = TRUE)
-```
-
-    [1] 17164314
+The first stage is to take
