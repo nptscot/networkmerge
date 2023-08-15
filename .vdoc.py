@@ -354,7 +354,7 @@ def length_weighted_mean(group):
 #
 #
 #
-#| label: Download the road network for Area-of-Interest and read GeoJSON files
+#| label: read GeoJSON files and merge/split
 
 # # Define the centre point of AoT from OSM
 # point = (55.952227 , -3.1959271)
@@ -369,7 +369,8 @@ def length_weighted_mean(group):
 #     ox.save_graph_shapefile(graph, filepath=r'data/')
 
 # Read in data from CycleStreets 
-gdf = gpd.read_file("data/rnet_princes_street.geojson")
+gdf = gpd.read_file("https://github.com/nptscot/networkmerge/releases/download/v0.1/large_route_network_example_edingurgh.geojson")
+gdf = gpd.read_file("C:/Users/Zhao Wang/Downloads/large_route_network_example_edingurgh.geojson")
 gdf = gdf.rename(columns={'commute_fastest_bicycle_go_dutch': 'value'})
 
 # Group the GeoDataFrame by 'value' and 'Quietness' columns
@@ -409,6 +410,19 @@ segments_gdf_modified.shape
 # segments_gdf_modified.to_file("data/segments_gdf_modified.geojson", driver='GeoJSON')
 
 # Read in simplified OS Road map data 
+
+grid = ['NA','NB','NC','ND','NF','NG','NH','NJ','NK','NL','NM','NN','NO','NR','NS','NT','NU','NW','NX','NY','NZ']
+gdfs = [] # to store individual GeoDataFrames
+
+for i in grid:
+    gdf_temp = gpd.read_file(f"C:/GitHub/data/{i}_RoadLink.shp")
+    gdf_temp = gdf_temp[['identifier', 'geometry']]
+    gdfs.append(gdf_temp)
+
+# Concatenating all GeoDataFrames into one
+gdf_road_simplified = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True))
+
+
 gdf_road_simplified = gpd.read_file("data/Edc_Roadlink.geojson")
 gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
 gdf_road_simplified.crs = "EPSG:4326"
@@ -425,6 +439,7 @@ map = plot_geodataframes(('gdf', gdf), ('gdf_road_simplified', gdf_road_simplifi
 #
 #
 #
+#| label: 
 #Try to optimize the code by using spatial indexing techniques to reduce the number of geometry comparisons. To handle the large dataset more efficiently.
 gdf = segments_gdf_modified
 
