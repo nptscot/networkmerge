@@ -20,6 +20,17 @@ The inputs are as follows:
 ```{r}
 input_complex = sf::read_sf("data/rnet_princes_street.geojson")
 input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
+summary(duplicated(input_complex$geometry))
+summary(duplicated(input_simple$geometry))
+```
+
+The input 'simple' centreline data has duplicate geometries.
+We can remove those as follows:
+
+```{r}
+dups = duplicated(input_simple$geometry)
+input_simple = input_simple |>
+  filter(!dups)
 ```
 
 ```{r}
@@ -57,30 +68,45 @@ To join the network values we will try the `rnet_join` function in `stplanr`, wh
 
 ```{r}
 #| label: obtain the arguments of the rnet_join function
-args(stplanr::rnet_join)
+args(stplanr::rnet_merge)
 ```
 
 ```{r}
 input_simple_id = input_simple |>
   select(identifier)
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30, split_y = FALSE)
-rnet_joined
-nrow(rnet_joined)
+funs = list(value = sum, Quietness = mean)
+sum(sf::st_length(input_simple))
+input_simple_id = stplanr::rnet_subset(input_simple_id, input_complex, dist = 30)
+input_simple_joined = stplanr::rnet_merge(
+  input_simple_id[1],
+  input_complex[c("value", "Quietness")],
+  dist = 30, segment_length = 10, funs = funs
+)
+nrow(input_simple_joined)
 nrow(input_simple)
-names(rnet_joined)
+names(input_simple_joined)
 ```
 
-The overlapping network values are as follows:
+We can compare the network lengths as follows:
+
+```{r}
+sum(sf::st_length(input_simple_id))
+sum(sf::st_length(input_complex))
+summary(duplicated(input_simple_id$geometry))
+```
+
+<!-- The overlapping network values are as follows: 
 
 ```{r}
 #| label: overlapping
-tm_shape(rnet_joined) + tm_fill("value")
+# tm_shape(input_simple_joined) + tm_fill("value")
 ```
 
-We can calculate the distance-weighted average of the network values as follows:
+ We can calculate the distance-weighted average of the network values as follows:
 
 ```{r}
-rnetj_summary = rnet_joined %>%
+#| eval: false
+rnetj_summary = input_simple_joined %>%
   sf::st_drop_geometry() %>%
   group_by_at(1) %>%
     summarise(
@@ -92,23 +118,38 @@ input_simple_joined = input_simple_joined |>
   mutate(value = total_flow_m / length)
 ```
 
-The initial result is as follows:
+The initial result is as follows: -->
+
+There is a small number of segments in the output that have very high values:
+
+```{r}
+#| label: high-values
+high_values = input_simple_joined |> arrange(desc(value)) |> head(10)
+m_high_values = tm_shape(high_values) + tm_lines("value")
+summary(sf::st_length(high_values))
+summary(high_values$value)
+```
+
+We can remove them to avoid skewing the results.
 
 ```{r}
 #| label: joined
 # sanity check lengths:
 # cor(input_complex$length, sf::st_length(input_complex)) # 100%
-total_flow_input = round(sum(input_complex$value * input_complex$length) / 1000)
+input_simple_joined = input_simple_joined |>
+  filter(length_x > 10)
+total_flow_input = round(sum(input_complex$value * sf::st_length(input_complex)) / 1000)
 # output:
 total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
 
 message("Total flow input: ", total_flow_input, "km")
 message("Total flow output: ", total_flow_output, "km")
 
-summary(input_simple_joined$flow)
+summary(input_simple_joined$value)
+summary(input_complex$value)
 ```
 
-We can adjust the values of the new network so that the total distance travelled is the same:
+If the distances differ, we can adjust the values of the new network so that the total distance travelled is the same:
 
 ```{r}
 over_estimate = total_flow_output / total_flow_input
