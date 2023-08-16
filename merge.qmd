@@ -367,6 +367,7 @@ rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0
 ```
 
 We pre-processed the input simple geometry to make it even simpler as shown below.
+```{r}
 #| label: preprocessing and visualsing the input simple geometry
 # tmap_mode("view")
 # par(mfrow = c(1, 3))
