@@ -350,7 +350,11 @@ def length_weighted_mean(group):
         
 
 ```
+```{python}
+#| label:  
+import grass.script as gs
 
+```
 
 ```{python}
 #| label:  read rnet_princes_street GeoJSON files
@@ -385,8 +389,8 @@ total_distance_traveled
 ```
 ```{python}
 #| label: split line by 10m using GRASS directly connected lines
-len = 100
-gdf = gpd.read_file(f"data/split_by_{len}m.geojson")
+length = 100
+gdf = gpd.read_file(f"data/split_by_{length}m.geojson")
 gdf = gdf.rename(columns={'fid': 'index', 'cat': 'Ori_index'})
 
 gdf['index'] = gdf['index'] -1
@@ -395,7 +399,6 @@ gdf['Ori_index'] = gdf['Ori_index'] -1
 # Calculating the centroids of the geometries in segments_gdf_modified
 gdf_centroids = gdf.copy()
 gdf_centroids['centroid'] = gdf['geometry'].centroid
-# gdf_centroids.to_file(f"data/gdf_centroids_{len}m.geojson", driver='GeoJSON')
 gdf_centroids.head()
 ```
 
