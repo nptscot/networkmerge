@@ -16,6 +16,26 @@ The inputs are as follows:
 ``` r
 input_complex = sf::read_sf("data/rnet_princes_street.geojson")
 input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
+summary(duplicated(input_complex$geometry))
+```
+
+       Mode   FALSE 
+    logical    1144 
+
+``` r
+summary(duplicated(input_simple$geometry))
+```
+
+       Mode   FALSE    TRUE 
+    logical     487     487 
+
+The input ‘simple’ centreline data has duplicate geometries. We can
+remove those as follows:
+
+``` r
+dups = duplicated(input_simple$geometry)
+input_simple = input_simple |>
+  filter(!dups)
 ```
 
 ``` r
@@ -35,7 +55,7 @@ remotes::install_github("ropensci/stplanr")
 
     Using github PAT from envvar GITHUB_PAT
 
-    Skipping install of 'stplanr' from a github remote, the SHA1 (bdbdd983) has not changed since last install.
+    Skipping install of 'stplanr' from a github remote, the SHA1 (4444c7e0) has not changed since last install.
       Use `force = TRUE` to force installation
 
 ``` r
@@ -61,17 +81,24 @@ To join the network values we will try the `rnet_join` function in
 `stplanr`, which has the following arguments:
 
 ``` r
-args(stplanr::rnet_join)
+args(stplanr::rnet_merge)
 ```
 
-    function (rnet_x, rnet_y, dist = 5, length_y = TRUE, key_column = 1, 
-        subset_x = TRUE, dist_subset = 5, split_y = TRUE, ...) 
+    function (rnet_x, rnet_y, dist = 5, funs = NULL, sum_flows = TRUE, 
+        ...) 
     NULL
 
 ``` r
 input_simple_id = input_simple |>
   select(identifier)
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30, split_y = FALSE)
+funs = list(value = sum, Quietness = mean)
+sum(sf::st_length(input_simple))
+```
+
+    38132.7 [m]
+
+``` r
+input_simple_id = stplanr::rnet_subset(input_simple_id, input_complex, dist = 30)
 ```
 
     Warning: attribute variables are assumed to be spatially constant throughout
@@ -81,61 +108,75 @@ rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30, spli
     repeating attributes for all sub-geometries for which they may not be constant
 
 ``` r
-rnet_joined
+input_simple_joined = stplanr::rnet_merge(
+  input_simple_id[1],
+  input_complex[c("value", "Quietness")],
+  dist = 30, segment_length = 10, funs = funs
+)
 ```
 
-    Simple feature collection with 4546 features and 6 fields
-    Geometry type: POLYGON
-    Dimension:     XY
-    Bounding box:  xmin: -3.216283 ymin: 55.94534 xmax: -3.180377 ymax: 55.95821
-    Geodetic CRS:  WGS 84
-    # A tibble: 4,546 × 7
-       identifier                     geometry value Quietness length index length_y
-     * <chr>                     <POLYGON [°]> <dbl>     <dbl>  <dbl> <int>    <dbl>
-     1 93FE6E2B-7E5… ((-3.182028 55.95153, -3…   333        90   72.8   829     72.7
-     2 580841F5-EA4… ((-3.180399 55.95281, -3…    NA        NA   NA      NA     NA  
-     3 E476FD90-AAF… ((-3.180796 55.95246, -3…    NA        NA   NA      NA     NA  
-     4 5C9AC265-0B3… ((-3.183044 55.95304, -3…     3        80   40.6   304     40.5
-     5 5C9AC265-0B3… ((-3.183044 55.95304, -3…    31        60   10.0   395     10.0
-     6 5C9AC265-0B3… ((-3.183044 55.95304, -3…    40        80  103.    440    103. 
-     7 8E06C42A-AB3… ((-3.182967 55.95345, -3…    NA        NA   NA      NA     NA  
-     8 01C917BA-9BD… ((-3.185653 55.95011, -3…    95        80   74.9   590     74.8
-     9 01C917BA-9BD… ((-3.185653 55.95011, -3…   211        60   20.2   746     20.2
-    10 F90031B2-58A… ((-3.18592 55.94999, -3.…     3        60   37.4   238     37.3
-    # ℹ 4,536 more rows
+    Warning: attribute variables are assumed to be spatially constant throughout
+    all geometries
+
+    Warning: repeating attributes for all sub-geometries for which they may not be
+    constant
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Joining with `by = join_by(identifier)`
 
 ``` r
-nrow(rnet_joined)
+nrow(input_simple_joined)
 ```
 
-    [1] 4546
+    [1] 456
 
 ``` r
 nrow(input_simple)
 ```
 
-    [1] 974
+    [1] 487
 
 ``` r
-names(rnet_joined)
+names(input_simple_joined)
 ```
 
-    [1] "identifier" "geometry"   "value"      "Quietness"  "length"    
-    [6] "index"      "length_y"  
+    [1] "identifier" "geometry"   "value"      "Quietness"  "length_x"  
 
-The overlapping network values are as follows:
+We can compare the network lengths as follows:
 
 ``` r
-tm_shape(rnet_joined) + tm_fill("value")
+sum(sf::st_length(input_simple_id))
 ```
 
-![](merge_files/figure-commonmark/overlapping-1.png)
-
-We can calculate the distance-weighted average of the network values as
-follows:
+    34329.99 [m]
 
 ``` r
-rnetj_summary = rnet_joined %>%
+sum(sf::st_length(input_complex))
+```
+
+    49264.17 [m]
+
+``` r
+summary(duplicated(input_simple_id$geometry))
+```
+
+       Mode   FALSE 
+    logical     456 
+
+<!-- The overlapping network values are as follows: 
+&#10;
+::: {.cell}
+&#10;```{.r .cell-code}
+# tm_shape(input_simple_joined) + tm_fill("value")
+```
+:::
+&#10;
+ We can calculate the distance-weighted average of the network values as follows:
+&#10;
+::: {.cell}
+&#10;```{.r .cell-code}
+rnetj_summary = input_simple_joined %>%
   sf::st_drop_geometry() %>%
   group_by_at(1) %>%
     summarise(
@@ -143,46 +184,70 @@ rnetj_summary = rnet_joined %>%
       total_flow_m = sum(value * length_y, na.rm = TRUE)
       )
 input_simple_joined = left_join(input_simple, rnetj_summary)
-```
-
-    Joining with `by = join_by(identifier)`
-
-``` r
 input_simple_joined = input_simple_joined |>
   mutate(value = total_flow_m / length)
 ```
+:::
+&#10;
+The initial result is as follows: -->
 
-The initial result is as follows:
+There is a small number of segments in the output that have very high
+values:
+
+``` r
+high_values = input_simple_joined |> arrange(desc(value)) |> head(10)
+m_high_values = tm_shape(high_values) + tm_lines("value")
+summary(sf::st_length(high_values))
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+     0.8057  4.0527  8.3559  9.4874 11.3714 22.8763 
+
+``` r
+summary(high_values$value)
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+       4347    4931    5295    7608    6905   26002 
+
+We can remove them to avoid skewing the results.
 
 ``` r
 # sanity check lengths:
 # cor(input_complex$length, sf::st_length(input_complex)) # 100%
-total_flow_input = round(sum(input_complex$value * input_complex$length) / 1000)
+input_simple_joined = input_simple_joined |>
+  filter(length_x > 10)
+total_flow_input = round(sum(input_complex$value * sf::st_length(input_complex)) / 1000)
 # output:
 total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
 
 message("Total flow input: ", total_flow_input, "km")
 ```
 
-    Total flow input: 17164km
+    Total flow input: 17121km
 
 ``` r
 message("Total flow output: ", total_flow_output, "km")
 ```
 
-    Total flow output: 86373km
+    Total flow output: 17232km
 
 ``` r
-summary(input_simple_joined$flow)
+summary(input_simple_joined$value)
 ```
 
-    Warning: Unknown or uninitialised column: `flow`.
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+        0.0   184.2   413.2   762.7  1068.1  5349.8      58 
 
-    Length  Class   Mode 
-         0   NULL   NULL 
+``` r
+summary(input_complex$value)
+```
 
-We can adjust the values of the new network so that the total distance
-travelled is the same:
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+        0.0     3.0    88.0   328.4   375.2  3212.0 
+
+If the distances differ, we can adjust the values of the new network so
+that the total distance travelled is the same:
 
 ``` r
 over_estimate = total_flow_output / total_flow_input
@@ -206,7 +271,7 @@ tmap_arrange(m1, m2, nrow = 1)
 nrow(input_simple_joined)
 ```
 
-    [1] 974
+    [1] 425
 
 ``` r
 nrow(input_complex)
@@ -218,20 +283,20 @@ nrow(input_complex)
 nrow(input_simple)
 ```
 
-    [1] 974
+    [1] 487
 
 ``` r
 total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
 message("Total flow input: ", total_flow_input, "km")
 ```
 
-    Total flow input: 17164km
+    Total flow input: 17121km
 
 ``` r
 message("Total flow output: ", total_flow_output, "km")
 ```
 
-    Total flow output: 17164km
+    Total flow output: 17121km
 
 We can explore the results interactively as follows:
 
@@ -321,7 +386,7 @@ library(stplanr)
 
     The following objects are masked _by_ '.GlobalEnv':
 
-        line_cast, rnet_join, rnet_split_lines, rnet_subset
+        line_cast, rnet_join, rnet_subset
 
 ``` r
 dist = 30
@@ -398,13 +463,13 @@ rnet_y_rebuilt = qgis_run_algorithm(
 
     Problem with SAGA installation: unsupported SAGA version (found: 8.2.2, required: 2.3.).
 
-    ERROR: Unable to create table: 'create table vector_64db7ad76b23c2 (cat integer, value double precision, Quietness double precision, length double precision, index integer)'
+    ERROR: Unable to create table: 'create table vector_64dc15ceaf3d82 (cat integer, value double precision, Quietness double precision, length double precision, index integer)'
 
-    WARNING: Unable to open vector map <vector_64db7ad76b23c2@PERMANENT> on level 2. Try to rebuild vector topology with v.build.
-    ERROR: Unable to open vector map <vector_64db7ad76b23c2>
+    WARNING: Unable to open vector map <vector_64dc15ceaf3d82@PERMANENT> on level 2. Try to rebuild vector topology with v.build.
+    ERROR: Unable to open vector map <vector_64dc15ceaf3d82>
 
-    ERROR: Vector map <outputcad6d1e59fc44a73b2002d47be55d470> not found
-    ERROR: Vector map <outputcad6d1e59fc44a73b2002d47be55d470> not found
+    ERROR: Vector map <output5714dedab1214ae0b0f5af57d268dc3f> not found
+    ERROR: Vector map <output5714dedab1214ae0b0f5af57d268dc3f> not found
 
 ``` r
 rnet_y_split = output = qgis_run_algorithm(
@@ -541,18 +606,16 @@ input_simple_joined = input_simple_joined |>
 input_simple_joined["value"]
 ```
 
-    Simple feature collection with 4 features and 1 field
+    Simple feature collection with 2 features and 1 field
     Geometry type: MULTILINESTRING
     Dimension:     XY
     Bounding box:  xmin: -3.205913 ymin: 55.95041 xmax: -3.196692 ymax: 55.95202
     Geodetic CRS:  WGS 84
-    # A tibble: 4 × 2
+    # A tibble: 2 × 2
       value                                                                 geometry
       <dbl>                                                    <MULTILINESTRING [°]>
-    1 5065. ((-3.205913 55.95041, -3.205829 55.95043, -3.205745 55.95045, -3.202624…
-    2 3294. ((-3.199503 55.95153, -3.198098 55.95178, -3.197342 55.95191, -3.196692…
-    3 5065. ((-3.205913 55.95041, -3.205829 55.95043, -3.205745 55.95045, -3.202624…
-    4 3294. ((-3.199503 55.95153, -3.198098 55.95178, -3.197342 55.95191, -3.196692…
+    1 2533. ((-3.205913 55.95041, -3.205829 55.95043, -3.205745 55.95045, -3.202624…
+    2 1647. ((-3.199503 55.95153, -3.198098 55.95178, -3.197342 55.95191, -3.196692…
 
 We can plot the before/after results as follows:
 
@@ -561,8 +624,6 @@ m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks =
 m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
 tmap_arrange(m1, m2, nrow = 1)
 ```
-
-    Warning: Values have found that are higher than the highest break
 
 ![](merge_files/figure-commonmark/minimal-before/after-1.png)
 
