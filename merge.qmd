@@ -34,6 +34,12 @@ input_simple = input_simple |>
 ```
 
 ```{r}
+#| echo: false
+#| eval: false
+sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson", delete_dsn = TRUE)
+```
+
+```{r}
 #| label: inputs
 brks = c(0, 100, 500, 1000, 5000)
 m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
