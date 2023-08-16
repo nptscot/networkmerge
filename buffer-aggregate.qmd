@@ -385,16 +385,17 @@ total_distance_traveled
 ```
 ```{python}
 #| label: split line by 10m using GRASS directly connected lines
-len = 80
+len = 100
 gdf = gpd.read_file(f"data/split_by_{len}m.geojson")
 gdf = gdf.rename(columns={'fid': 'index', 'cat': 'Ori_index'})
+
 gdf['index'] = gdf['index'] -1
 gdf['Ori_index'] = gdf['Ori_index'] -1
 
 # Calculating the centroids of the geometries in segments_gdf_modified
 gdf_centroids = gdf.copy()
-gdf_centroids['geometry'] = gdf['geometry'].centroid
-gdf_centroids.to_file("data/gdf_centroids.geojson", driver='GeoJSON')
+gdf_centroids['centroid'] = gdf['geometry'].centroid
+# gdf_centroids.to_file(f"data/gdf_centroids_{len}m.geojson", driver='GeoJSON')
 gdf_centroids.head()
 ```
 
@@ -403,7 +404,7 @@ gdf_centroids.head()
 gdf_road_simplified = gpd.read_file(f"data/Edc_Roadlink_{len}m.geojson")
 gdf_road_simplified = gdf_road_simplified[['identifier', 'geometry']]
 # gdf_road_simplified = gdf_road_simplified.to_crs(epsg=4326)
-gdf_road_simplified.shape
+gdf_road_simplified.head()
 
 ```
 
@@ -468,10 +469,10 @@ for buffer_index, buffered_geom in gdf_buffered.iterrows():
     # Add the remaining lines' 'value' to 'value_sum'
     gdf_buffered.at[buffer_index, 'value_sum'] += unprocessed_lines['value'].sum()
 
-# i = 6114
-# plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=i, relation='within')
-# gdf_buffered.iloc[i]
-# gdf_buffered[gdf_buffered['value_sum'] ==11039]
+i = 335
+plot_buffer_with_lines(gdf_buffered, gdf, buffer_index=i, relation='within')
+gdf_buffered.iloc[i]
+gdf_buffered[gdf_buffered['value_sum'] ==11039]
 
 ```
 Step 3: Match the attributes from gdf_buffered to gdf_road_simplified using the index, and then update gdf_road_simplified with these attributes.
@@ -481,7 +482,7 @@ Joining gdf_buffered with gdf_road_simplified on the index to combine attributes
 gdf_road_simplified_updated = gdf_road_simplified.join(gdf_buffered[['value_sum']])
 gdf_road_simplified_updated['v'] = gdf_road_simplified_updated['value_sum']/500
 # Displaying the first few rows of the updated gdf_road_simplified DataFrame
-# gdf_road_simplified_updated.to_file("data/gdf_road_simplified_updated.geojson", driver='GeoJSON')
+gdf_road_simplified_updated.to_file(f"data/gdf_road_simplified_updated_{len}m.geojson", driver='GeoJSON')
 
 total_distance_traveled = round(sum(gdf_road_simplified_updated['value_sum'] * gdf_road_simplified_updated['geometry'].length))
 total_distance_traveled
