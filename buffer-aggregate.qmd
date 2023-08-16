@@ -25,6 +25,7 @@ To read-in the data into Python we used the following:
 
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import pandas as pd
 import math
 from typing import List, Tuple
@@ -41,7 +42,6 @@ import os
 from numpy.linalg import norm
 from collections import defaultdict
 from shapely.ops import unary_union
-import grass as gs
 
 # Calculate total length of linestrings in a GeoDataFrame 
 def calculate_total_length(gdf, crs="EPSG:4326"):
@@ -488,10 +488,6 @@ total_distance_traveled
 ```
 
 ```{python}
-#| label: Check results
-
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
 
 # Find the global min and max values
 vmin = min(gdf_road_simplified_updated['value_sum'].min(), gdf['value'].min())
