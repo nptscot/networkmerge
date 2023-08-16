@@ -11,6 +11,8 @@ The following example requires R and the following packages:
 library(tidyverse)
 library(sf)
 library(tmap)
+library(stplanr) 
+library(igraph)
 ```
 
 # Input data
