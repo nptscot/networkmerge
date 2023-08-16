@@ -245,6 +245,9 @@ After you have a simplified version of the network, from any source, the next st
 
 <!-- TODO: add content to this section. -->
 
+<!-- TODO: Is this possible? -->
+<!-- ## Combined network simplification and attribute merging -->
+
 # Results {#sec-results}
 
 ```{python}
