@@ -359,6 +359,13 @@ The `rnet_merge()` function is used to merge two route networks. Here's a breakd
 - `segment_length`: The minimum length of segments.
 - `funs`: 
 
+The inputs are as follows:
+```{r}
+#| label: inputs data read
+rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+```
+
 We pre-processed the input simple geometry to make it even simpler as shown below.
 #| label: preprocessing and visualsing the input simple geometry
 # tmap_mode("view")
@@ -385,7 +392,7 @@ tmap_arrange(m1, m2, sync = TRUE)
 
 We can more reduce the minimum segment length to ensure fewer NA values in the outputs:
 ```{r}
-#| label: educe the minimum segment length
+#| label: reduce the minimum segment length
 rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 10, funs = funs)
 m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
 m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
