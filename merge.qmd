@@ -347,3 +347,64 @@ m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
 tmap_save(m, "maps/m_explanation.html")
 # browseURL("maps/m_explanation.html")
 ```
+
+Another exercise conducted to merge two route networks using the `rnet_merge()` function. 
+# Usage of rnet_merge() function
+
+The `rnet_merge()` function is used to merge two route networks. Here's a breakdown of the parameters:
+
+- `rnet_x`: The first route network.
+- `rnet_y`: The second route network.
+- `dist`: The distance threshold for merging.
+- `segment_length`: The minimum length of segments.
+- `funs`: 
+
+We pre-processed the input simple geometry to make it even simpler as shown below.
+#| label: preprocessing and visualsing the input simple geometry
+# tmap_mode("view")
+# par(mfrow = c(1, 3))
+# plot(sf::st_geometry(rnet_x), main = "Original rnet_x")
+rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20)
+# plot(sf::st_geometry(rnet_x), main = "After first rnet_subset")
+rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20, min_length = 5)
+rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20, rm_disconnected = TRUE)
+# plot(sf::st_geometry(rnet_x), main = "After first rnet_subset")
+```
+
+The initial merged result was as follows.
+```{r}
+#| label: initial merging
+funs = list(value = sum, Quietness = mean)
+brks = c(0, 100, 500, 1000, 5000)
+rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 20, funs = funs)
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)  +
+  tm_scale_bar()
+m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, sync = TRUE)
+```
+
+We can more reduce the minimum segment length to ensure fewer NA values in the outputs:
+```{r}
+#| label: educe the minimum segment length
+rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 10, funs = funs)
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, sync = TRUE)
+```
+
+Reducing the max length of the complex route network led to the following result.
+```{r}
+#| label: result with reducing the max length
+rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 5, funs = funs, dist_subset = 30)
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+# tmap_arrange(m1, m2, sync = TRUE)
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+```{r, echo=FALSE, eval=FALSE}
+sum(rnet_merged$value * sf::st_length(rnet_merged), na.rm = TRUE)
+sum(rnet_y$value * sf::st_length(rnet_y), na.rm = TRUE)
+```
+
+
