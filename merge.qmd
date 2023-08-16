@@ -62,6 +62,7 @@ browseURL("maps/input_complex.html")
 ```{r}
 remotes::install_github("ropensci/stplanr")
 # stplanr::rnet_join
+args(stplanr::rnet_join)
 ```
 
 The values in the `input_complex` dataset are as follows:
@@ -76,7 +77,7 @@ To join the network values we will try the `rnet_join` function in `stplanr`, wh
 
 ```{r}
 #| label: obtain the arguments of the rnet_join function
-args(stplanr::rnet_merge)
+args(stplanr::rnet_join)
 ```
 
 ```{r}
