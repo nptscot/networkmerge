@@ -1,4 +1,6 @@
-```{python}
+# type: ignore
+# flake8: noqa
+#
 from shapely.geometry import MultiLineString, LineString
 from shapely.ops import unary_union
 import geopandas as gpd
@@ -172,9 +174,9 @@ def line_segment(l, segment_length=20):
     return MultiLineString(result_geoms)
 
 
-```
-
-```{python}
+#
+#
+#
 rnet_x_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson"
 rnet_y_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"
 
@@ -185,14 +187,14 @@ rnet_y = rnet_y.to_crs(epsg=27700)
 rnet_y.plot()
 
 ```
-```{python}
+#
 rnet_x.shape
 rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20, min_length = 5 )
 rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20)
 rnet_x.shape
-```
-
-```{python}
+#
+#
+#
 funs = {'value': np.sum, 'Quietness': np.mean}
 
 rnet_merged = rnet_merge(rnet_x, rnet_y, dist=20, segment_length=5, funs=funs)
@@ -206,5 +208,8 @@ total_flow_output = round((rnet_merged['value'] * rnet_merged['geometry'].length
 total_flow_output
 rnet_merged['value'].sum()
 rnet_y['value'].sum()
-```
-
+#
+#
+#
+#
+#
