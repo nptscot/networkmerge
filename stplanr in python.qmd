@@ -72,9 +72,6 @@ def rnet_merge(rnet_x, rnet_y, dist=5, funs=None, sum_flows=True, dist_subset=20
     sum_cols = [name for name, func in funs.items() if func == sum]
     rnetj = rnet_join(rnet_x, rnet_y, dist=dist, dist_subset=dist_subset, **kwargs)
 
-    print("Unique geometry types in rnet_x:", geometry_types)
-
-    print("Unique geometry types in rnet_y:", geometry_types)
     rnetj_df = rnetj.drop(columns=rnetj.geometry.name)
 
     # Define aggregation function
@@ -104,8 +101,7 @@ def rnet_merge(rnet_x, rnet_y, dist=5, funs=None, sum_flows=True, dist_subset=20
 
 def rnet_join(rnet_x, rnet_y, dist=10, length_y=True, key_column=1, subset_x=True, dist_subset=10, segment_length=0, endCapStyle="flat"):
     # Define the end cap style mapping
-    print("Unique geometry types in rnet_x:", geometry_types)
-    print("Unique geometry types in rnet_y:", geometry_types)
+
     cap_style_mapping = {"flat": 1, "round": 2, "square": 3}
     cap_style = cap_style_mapping.get(endCapStyle.lower(), 1)
     
@@ -137,8 +133,6 @@ def rnet_join(rnet_x, rnet_y, dist=10, length_y=True, key_column=1, subset_x=Tru
     # Perform spatial join
     rnetj = gpd.sjoin(rnet_x_buffer_geo_df[[ 'geometry']], rnet_y_centroids, how='inner', op='intersects')
 
-    print("Unique geometry types in rnet_x:", geometry_types)
-    print("Unique geometry types in rnet_y:", geometry_types) 
     return rnetj
 
 
@@ -179,9 +173,9 @@ rnet_x_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_
 rnet_y_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"
 
 rnet_x = gpd.read_file(rnet_x_url)
-rnet_x = rnet_x.to_crs(epsg=27700) 
+# rnet_x = rnet_x.to_crs(epsg=27700) 
 rnet_y = gpd.read_file(rnet_y_url)
-rnet_y = rnet_y.to_crs(epsg=27700) 
+# rnet_y = rnet_y.to_crs(epsg=27700) 
 rnet_y.plot()
 
 ```
@@ -206,5 +200,14 @@ total_flow_output = round((rnet_merged['value'] * rnet_merged['geometry'].length
 total_flow_output
 rnet_merged['value'].sum()
 rnet_y['value'].sum()
+```
+
+```{python}
+# Let's use the provided rnet_merge function on the rnet_x and rnet_y datasets.
+merged_rnet = rnet_merge(rnet_x, rnet_y)
+
+# Display the first few rows of the merged rnet dataset
+merged_rnet_head = merged_rnet.head()
+merged_rnet_head
 ```
 
