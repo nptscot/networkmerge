@@ -173,9 +173,9 @@ rnet_x_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_
 rnet_y_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"
 
 rnet_x = gpd.read_file(rnet_x_url)
-# rnet_x = rnet_x.to_crs(epsg=27700) 
+rnet_x = rnet_x.to_crs(epsg=27700) 
 rnet_y = gpd.read_file(rnet_y_url)
-# rnet_y = rnet_y.to_crs(epsg=27700) 
+rnet_y = rnet_y.to_crs(epsg=27700) 
 rnet_y.plot()
 
 ```
