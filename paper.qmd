@@ -233,9 +233,13 @@ ox.plot_graph(G_simplified);
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
 :::
 
-### Simplification with parallel edge removal
-
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+Two approaches to this are outlined below.
+
+## Simplification by skeletonization
+
+## Simplification via voronoi polygons
+
 
 <!-- An approach to simplification with parallel edge removal is described in the `buffer-aggregate` document that accompanies this paper. -->
 
