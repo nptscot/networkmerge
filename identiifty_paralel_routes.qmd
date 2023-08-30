@@ -1,0 +1,217 @@
+```{python}
+from shapely.geometry import MultiLineString, LineString
+from shapely.ops import unary_union
+import geopandas as gpd
+import pandas as pd
+import networkx as nx
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+from rtree import index
+from scipy.spatial import Voronoi, voronoi_plot_2d
+from shapely.geometry import MultiLineString, Polygon, LineString
+from shapely.ops import polygonize, unary_union
+```
+
+```{python}
+gdf = gpd.read_file("data/rnet_princes_street.geojson")
+gdf.shape
+```
+
+
+```{python}
+# Define a function to check if two lines are parallel, side-by-side, and of similar length, incorporating the new average distance criterion
+def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10, avg_distance_threshold=0.0003):
+    line1 = gdf.loc[idx1, 'geometry']
+    line2 = gdf.loc[idx2, 'geometry']
+
+     # Check if lines are essentially the same line or connected end-to-end
+    if line1.coords[0] == line2.coords[-1] or line1.coords[-1] == line2.coords[0]:
+        return False
+    if line1.coords[0] == line2.coords[0] or line1.coords[-1] == line2.coords[-1]:
+        return False
+           
+    # Check for similar length
+    length1 = line1.length
+    length2 = line2.length
+    if abs(length1 - length2) > length_threshold:
+        return False
+    
+    # Extract the vectors representing the lines
+    x1, y1, x2, y2 = line1.coords[0][0], line1.coords[0][1], line1.coords[-1][0], line1.coords[-1][1]
+    vector1 = np.array([x2 - x1, y2 - y1])
+    
+    x1, y1, x2, y2 = line2.coords[0][0], line2.coords[0][1], line2.coords[-1][0], line2.coords[-1][1]
+    vector2 = np.array([x2 - x1, y2 - y1])
+    
+    # Normalize the vectors
+    vector1 = vector1 / np.linalg.norm(vector1)
+    vector2 = vector2 / np.linalg.norm(vector2)
+    
+    # Calculate the angle between the vectors
+    angle = np.arccos(np.dot(vector1, vector2))
+    
+    # Check if the lines are parallel (angle close to 0 or 180 degrees)
+    if np.isclose(angle, 0, atol=1e-2) or np.isclose(angle, np.pi, atol=1e-2):
+        # Sample equidistant points along each line
+        points1 = [line1.interpolate(distance, normalized=True) for distance in np.linspace(0, 1, point_count)]
+        points2 = [line2.interpolate(distance, normalized=True) for distance in np.linspace(0, 1, point_count)]
+        
+        # Calculate the distances between the points on the two lines
+        distances = [point1.distance(point2) for point1, point2 in zip(points1, points2)]
+        
+        # Calculate average distance
+        avg_distance = sum(distances) / len(distances)
+        
+        # Check if the lines remain close along their lengths based on the new average distance threshold
+        if avg_distance < avg_distance_threshold:
+            return True
+    return False
+
+# Initialize the spatial index
+spatial_index = gdf.sindex
+
+# Initialize an empty list to store pairs of lines meeting the refined criteria
+refined_criteria_lines_efficient = []
+
+# Loop through each line in the GeoDataFrame
+for idx1, row1 in gdf.iterrows():
+    line1 = row1['geometry']
+    
+    # Use the spatial index to find candidates that might be side-by-side and parallel
+    possible_matches_index = list(spatial_index.intersection(line1.bounds))
+    possible_matches = gdf.iloc[possible_matches_index]
+    
+    for idx2, row2 in possible_matches.iterrows():
+        # Skip the line itself
+        if idx1 == idx2:
+            continue
+            
+        # Check if the lines meet the refined criteria
+        if check_refined_criteria(idx1, idx2, gdf):
+            refined_criteria_lines_efficient.append((idx1, idx2))
+
+# Create a new GeoDataFrame containing only the lines meeting the refined criteria
+gdf_refined_criteria_efficient = gdf.loc[[idx for pair in refined_criteria_lines_efficient for idx in pair]]
+
+# Plotting the original GeoDataFrame and the lines meeting the refined criteria
+fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+
+# Plot all lines in the sample in light grey
+gdf.plot(ax=ax, linewidth=1, edgecolor='lightgrey')
+
+# Plot lines meeting the refined criteria in red
+gdf_refined_criteria_efficient.plot(ax=ax, linewidth=2, edgecolor='red')
+
+plt.title('Visualization of Lines Meeting Refined Criteria')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+
+plt.show()
+
+```
+
+
+```{python}
+# Function to interpolate points along a line
+def interpolate_points(line, num_points):
+    return [line.interpolate(i/float(num_points - 1), normalized=True) for i in range(num_points)]
+
+# Function to generate a centerline between two parallel lines
+def generate_centerline(line1, line2, num_points_factor=100):
+    # Interpolate points along each line
+    num_points = max(len(line1.coords), len(line2.coords)) * num_points_factor
+    points1 = interpolate_points(line1, num_points)
+    points2 = interpolate_points(line2, num_points)
+    
+    # Combine all points from the two lines
+    all_points = np.vstack([np.array([(p.x, p.y) for p in points1]),
+                            np.array([(p.x, p.y) for p in points2])])
+    
+    # Create a Voronoi diagram from the points
+    vor = Voronoi(all_points)
+    
+    # Identify the indices that separate points from the two lines
+    index_split = len(points1)
+    
+    # Identify the Voronoi edges that are equidistant to points from different lines
+    centerline_edges = []
+    for pointidx in vor.ridge_points:
+        if (pointidx[0] < index_split and pointidx[1] >= index_split) or \
+           (pointidx[1] < index_split and pointidx[0] >= index_split):
+            centerline_edges.append(pointidx)
+    
+    # Convert the point indices to coordinates
+    centerline_coords = [[vor.points[i] for i in edge] for edge in centerline_edges]
+    
+    # Create LineString objects from the coordinates
+    centerline = [LineString(edge) for edge in centerline_coords]
+    
+    # Create a GeoDataFrame from the centerline
+    centerline_gdf = gpd.GeoDataFrame(geometry=centerline)
+    
+    return centerline_gdf
+
+# Function to plot the centerline
+def plot_centerline(line1, line2, centerline_gdf):
+    fig, ax = plt.subplots(figsize=(10, 10))
+    
+    # Plot the original lines
+    gpd.GeoSeries([line1]).plot(ax=ax, color='blue')
+    gpd.GeoSeries([line2]).plot(ax=ax, color='blue')
+    
+    # Calculate the center points of the centerline and plot them
+    center_points = centerline_gdf.geometry.centroid
+    center_points_gdf = gpd.GeoDataFrame(geometry=center_points)
+    center_points_gdf.plot(ax=ax, color='red', markersize=5)
+    
+    plt.show()
+
+from shapely.ops import unary_union
+
+# Function to convert center points to a center line
+def points_to_centerline(center_points):
+    # Sort the points based on their coordinates to maintain a logical order
+    sorted_points = sorted(center_points, key=lambda point: (point.x, point.y))
+    # Create a LineString geometry from the sorted points
+    center_line = LineString(sorted_points)
+    return center_line
+
+```
+
+```{python}
+# Initialize an empty GeoDataFrame to store the resulting centerlines and parallel lines
+combined_gdf = gpd.GeoDataFrame(columns=['geometry', 'type'])
+
+# Loop through the list of line pairs to generate centerlines and collect parallel lines
+for idx1, idx2 in refined_criteria_lines_efficient:
+    # Get the LineString geometries for the line pair
+    line1 = gdf.loc[idx1, 'geometry']
+    line2 = gdf.loc[idx2, 'geometry']
+    
+    # Generate the centerline GeoDataFrame
+    centerline_gdf = generate_centerline(line1, line2)
+    
+    # Extract the center points of the centerline
+    center_points = centerline_gdf.geometry.centroid.tolist()
+    
+    # Convert the center points to a center line
+    center_line = points_to_centerline(center_points)
+    
+    # Append the center line and parallel lines to the combined GeoDataFrame
+    combined_gdf = combined_gdf.append({'geometry': center_line, 'type': 'centerline'}, ignore_index=True)
+    combined_gdf = combined_gdf.append({'geometry': line1, 'type': 'parallel_line'}, ignore_index=True)
+    combined_gdf = combined_gdf.append({'geometry': line2, 'type': 'parallel_line'}, ignore_index=True)
+
+# Plot the combined GeoDataFrame with different colors for centerlines and parallel lines
+fig, ax = plt.subplots(figsize=(12, 12))
+combined_gdf[combined_gdf['type'] == 'centerline'].plot(ax=ax, color='green', linewidth=2, label='Centerline')
+combined_gdf[combined_gdf['type'] == 'parallel_line'].plot(ax=ax, color='blue', linewidth=1, label='Parallel Lines')
+plt.title('Centerlines and Parallel Lines')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.legend()
+plt.show()
+
+```
+
