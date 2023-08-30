@@ -215,3 +215,42 @@ plt.show()
 
 ```
 
+```{python}
+import folium
+
+# Function to convert GeoDataFrame to GeoJSON format
+def gdf_to_geojson(gdf, properties):
+    geojson = {'type':'FeatureCollection', 'features':[]}
+    for _, row in gdf.iterrows():
+        feature = {'type':'Feature',
+                   'properties':{},
+                   'geometry':{'type':'LineString',
+                               'coordinates':[]}}
+        feature['geometry']['coordinates'] = [list(point) for point in list(row['geometry'].coords)]
+        for prop in properties:
+            feature['properties'][prop] = row[prop]
+        geojson['features'].append(feature)
+    return geojson
+
+# Initialize a map centered around the coordinates
+m = folium.Map([55.952227 , -3.1959271], zoom_start=14)
+
+# Convert the GeoDataFrames to GeoJSON
+geojson_centerlines = gdf_to_geojson(combined_gdf[combined_gdf['type'] == 'centerline'], ['type'])
+geojson_parallel_lines = gdf_to_geojson(combined_gdf[combined_gdf['type'] == 'parallel_line'], ['type'])
+
+# Add the GeoJSONs to the map
+folium.GeoJson(geojson_centerlines, 
+               name='Centerlines',
+               style_function=lambda x: {'color':'green', 'weight':3}).add_to(m)
+folium.GeoJson(geojson_parallel_lines, 
+               name='Parallel Lines',
+               style_function=lambda x: {'color':'blue', 'weight':4}).add_to(m)
+
+# Add a layer control to toggle between layers
+folium.LayerControl().add_to(m)
+
+# Display the map
+m
+
+```
