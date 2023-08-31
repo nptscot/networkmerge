@@ -167,15 +167,51 @@ def line_segment(l, segment_length=20):
 
 
 ```
+```{python}
+url = "https://github.com/nptscot/npt/releases/download/rnet_3km_buffer/rnet_3km_buffer.geojson"
+rnet_3km = gpd.read_file(url)
+rnet_3km.head()
+import os
+directory_path  ="D:\GitHub\GitHub\data"
+# Initialize an empty list to store the GeoDataFrames
+roadlink_shapefiles = []
 
+# Loop through all files in the directory
+for filename in os.listdir(directory_path):
+    if 'RoadLink' in filename and filename.endswith('.shp'):
+        # Construct the full filepath
+        filepath = os.path.join(directory_path, filename)
+        
+        # Read the shapefile into a GeoDataFrame
+        gdf = gpd.read_file(filepath)
+        
+        # Add the GeoDataFrame to the list
+        roadlink_shapefiles.append(gdf)
+
+combined_gdf = pd.concat(roadlink_shapefiles, ignore_index=True)
+# save combined_gdf as geojson  
+# combined_gdf.to_file("G:/Github/combined_gdf.geojson", driver='GeoJSON')
+
+buffered = rnet_3km.copy()
+buffered['geometry'] = rnet_3km['geometry'].buffer(0.001)
+
+# Clip gdf2 with the buffered geometry
+clipped_gdf = gpd.clip(combined_gdf, buffered)
+clipped_gdf = clipped_gdf[['identifier', 'geometry']]
+
+clipped_gdf.crs = "EPSG:27700"
+clipped_gdf.plot()
+clipped_gdf.to_file("data/OS_3km.geojson", driver='GeoJSON')
+
+```
 ```{python}
 rnet_x_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson"
 rnet_y_url = "https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"
 
 rnet_x = gpd.read_file(rnet_x_url)
-rnet_x = rnet_x.to_crs(epsg=27700) 
+# rnet_x = rnet_x.to_crs(epsg=27700) 
 rnet_y = gpd.read_file(rnet_y_url)
-rnet_y = rnet_y.to_crs(epsg=27700) 
+# rnet_y = rnet_y.to_crs(epsg=27700) 
 rnet_y.plot()
 
 ```
