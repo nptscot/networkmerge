@@ -1,12 +1,13 @@
 ---
 title: "Network simplification: application to the visualisation of transport networks"
+# PDF and gfm formats:
 format:
-  # gfm: default
-  pdf: default
+  # pdf: default
+  gfm: default
 number-sections: true
 execute: 
   echo: false
-  cache: true
+  # cache: true
 editor: 
   markdown: 
     wrap: sentence
@@ -227,6 +228,7 @@ ox.plot_graph(G);
 ```
 
 ```{python}
+import osmnx as ox
 G_projected = ox.project_graph(G, 'EPSG:27700')
 # simplify:
 G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
