@@ -11,17 +11,196 @@ from rtree import index
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from shapely.geometry import MultiLineString, Polygon, LineString
 from shapely.ops import polygonize, unary_union
+import osmnx as ox
+from geopy.distance import geodesic
 ```
+
+First we need to read the data, and the gdf.crs is needed to be checked, if it is not in WGS84, we need to convert it to WGS84. 
 
 ```{python}
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
-gdf.shape
+gdf.crs
 ```
+
+Then, we need to getting road infomation form OSM data, we will using the centiod of the gdf and the max_distance.
 
 
 ```{python}
-# Define a function to check if two lines are parallel, side-by-side, and of similar length, incorporating the new average distance criterion
+# Fetch OSM road network data around the centroid of the provided geodataframe.
+
+def fetch_osm_data(gdf, filepath="data/edges.shp"):
+    """
+    Fetch OSM road network data around the centroid of the provided geodataframe.
+
+    Parameters:
+    - gdf (geopandas.GeoDataFrame): The input geodataframe.
+    - filepath (str): The path to save the downloaded OSM data.
+
+    Returns:
+    - gdf_road (geopandas.GeoDataFrame): The road network data from OSM.
+    """
+    
+    # Calculate centroid and convert to WGS84 (EPSG:4326)
+    centroid = gdf.unary_union.centroid
+    point = (centroid.y, centroid.x)
+
+    # Compute the bounding box of the geodataframe
+    bounds = gdf.total_bounds
+
+    # Calculate the diagonal length of the bounding box in degrees
+    diagonal_length_degrees = np.sqrt((bounds[2] - bounds[0])**2 + (bounds[3] - bounds[1])**2)
+
+    # Take half of the diagonal length as the maximum distance in degrees
+    max_distance_degrees = diagonal_length_degrees / 2
+
+    # Calculate the distance in meters for max_distance_degrees at the latitude of the centroid
+    start_point = (point[0], point[1])
+    end_point_max_distance = (point[0], point[1] + max_distance_degrees)
+
+    # Compute the max_distance in meters using geopy
+    max_distance_meters = geodesic(start_point, end_point_max_distance).meters
+
+    # Check if the data exists at the specified filepath
+    if not os.path.exists(filepath):
+        # Download the road network data from OSM
+        graph = ox.graph_from_point(point, dist=max_distance_meters, network_type='all')
+
+        # Save the road network data to the specified filepath
+        ox.save_graph_shapefile(graph, filepath=filepath)
+    
+    # Read the road network data as a geodataframe
+    gdf_road = gpd.read_file(filepath)
+
+    return gdf_road
+
+gdf_road = fetch_osm_data(gdf, filepath="data/edges.shp")
+gdf_road.explore() 
+gdf_road.columns
+```
+
+This step is to pass attibute from gdf_road to gdf, and then we can use the attribute to filter the road network data.
+
+```{python}
+# #improve the efficiency    
+
+# Define the buffer size
+buffer_size = 0.00002
+
+# Create a spatial index for gdf_road
+sindex = gdf_road.sindex
+
+# Define the intersection length threshold
+intersection_length_threshold = 0.00005
+
+# List to store matching lines
+matched_rows = []
+
+# Iterate over the buffered geometries in the GeoJSON GeoDataFrame
+for geojson_line in gdf_buffered.geometry:
+    # Use the spatial index to find potential matches
+    possible_matches_index = list(sindex.intersection(geojson_line.bounds))
+    possible_matches = gdf_road.iloc[possible_matches_index]
+    
+    # Filter possible matches to only those that actually intersect
+    precise_matches = possible_matches[possible_matches.intersects(geojson_line)]
+    
+    # Check the intersection length and store rows that match the condition
+    for _, edge_row in precise_matches.iterrows():
+        shapefile_line = edge_row.geometry
+        intersection = geojson_line.intersection(shapefile_line)
+        if intersection.length > intersection_length_threshold:
+            matched_rows.append(edge_row)
+
+# Convert the matched_rows list to a GeoDataFrame
+matching_lines_large_intersection = gpd.GeoDataFrame(matched_rows, columns=gdf_road.columns)
+# matching_lines_large_intersection.to_file("data/gdf_matching_lines.geojson", driver='GeoJSON')
+matching_lines_large_intersection.explore() 
+
+gdf = matching_lines_large_intersection
+gdf.shape
+
+```
+```{python}
+from shapely.geometry import LineString
+
 def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10, avg_distance_threshold=0.0003):
+    line1_geom = gdf.loc[idx1, 'geometry']
+    line2_geom = gdf.loc[idx2, 'geometry']
+    
+    # Ensure that the geometries are LineStrings before accessing the coords attribute
+    if not isinstance(line1_geom, LineString) or not isinstance(line2_geom, LineString):
+        return False
+
+    line1_coords = line1_geom.coords
+    line2_coords = line2_geom.coords
+
+     # Check if lines are essentially the same line or connected end-to-end
+    if line1_coords[0] == line2_coords[-1] or line1_coords[-1] == line2_coords[0]:
+        return False
+    if line1_coords[0] == line2_coords[0] or line1_coords[-1] == line2_coords[-1]:
+        return False
+           
+    # Check for similar length
+    length1 = line1_geom.length
+    length2 = line2_geom.length
+    if abs(length1 - length2) > length_threshold:
+        return False
+    
+    # Extract the vectors representing the lines
+    x1, y1, x2, y2 = line1_coords[0][0], line1_coords[0][1], line1_coords[-1][0], line1_coords[-1][1]
+    vector1 = np.array([x2 - x1, y2 - y1])
+    
+    x1, y1, x2, y2 = line2_coords[0][0], line2_coords[0][1], line2_coords[-1][0], line2_coords[-1][1]
+    vector2 = np.array([x2 - x1, y2 - y1])
+    
+    # Normalize the vectors
+    vector1 = vector1 / np.linalg.norm(vector1)
+    vector2 = vector2 / np.linalg.norm(vector2)
+    
+    # Calculate the angle between the vectors
+    angle = np.arccos(np.dot(vector1, vector2))
+    
+    # Check if the lines are parallel (angle close to 0 or 180 degrees)
+    if np.isclose(angle, 0, atol=1e-2) or np.isclose(angle, np.pi, atol=1e-2):
+        # Sample equidistant points along each line
+        points1 = [line1_geom.interpolate(distance, normalized=True) for distance in np.linspace(0, 1, point_count)]
+        points2 = [line2_geom.interpolate(distance, normalized=True) for distance in np.linspace(0, 1, point_count)]
+        
+        # Calculate the distances between the points on the two lines
+        distances = [point1.distance(point2) for point1, point2 in zip(points1, points2)]
+        
+        # Calculate average distance
+        avg_distance = sum(distances) / len(distances)
+        
+        # Check if the lines remain close along their lengths based on the new average distance threshold
+        if avg_distance < avg_distance_threshold:
+            return True
+    return False
+
+# Re-run the loop without the spatial index
+refined_criteria_lines_efficient = []
+
+for idx1 in gdf.index:
+    for idx2 in gdf.index:
+        # Skip the line itself
+        if idx1 >= idx2:
+            continue
+            
+        # Check if the lines meet the refined criteria
+        if check_refined_criteria(idx1, idx2, gdf):
+            refined_criteria_lines_efficient.append((idx1, idx2))
+
+# Create a new GeoDataFrame containing only the lines meeting the refined criteria
+gdf_refined_criteria_efficient = gdf.loc[[idx for pair in refined_criteria_lines_efficient for idx in pair]]
+
+# Get the shape of the new GeoDataFrame
+gdf_refined_criteria_efficient_shape = gdf_refined_criteria_efficient.shape
+gdf_refined_criteria_efficient_shape
+
+```
+```{python}
+# Define a function to check if two lines are parallel, side-by-side, and of similar length, incorporating the new average distance criterion
+def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10, avg_distance_threshold=0.005):
     line1 = gdf.loc[idx1, 'geometry']
     line2 = gdf.loc[idx2, 'geometry']
 
@@ -71,10 +250,9 @@ def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10
 # Initialize the spatial index
 spatial_index = gdf.sindex
 
-# Initialize an empty list to store pairs of lines meeting the refined criteria
+# Re-run the provided code to identify pairs of lines that meet the refined criteria
 refined_criteria_lines_efficient = []
 
-# Loop through each line in the GeoDataFrame
 for idx1, row1 in gdf.iterrows():
     line1 = row1['geometry']
     
@@ -93,6 +271,7 @@ for idx1, row1 in gdf.iterrows():
 
 # Create a new GeoDataFrame containing only the lines meeting the refined criteria
 gdf_refined_criteria_efficient = gdf.loc[[idx for pair in refined_criteria_lines_efficient for idx in pair]]
+
 
 # Plotting the original GeoDataFrame and the lines meeting the refined criteria
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
