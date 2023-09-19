@@ -1,3 +1,11 @@
+# Prerequisites
+
+To run the code in this repo, you need to have a working Python installation with the following packages installed (with pip in this case):
+
+```{bash}
+#| eval: false
+pip install shapely geopandas pandas networkx numpy matplotlib rtree scipy osmnx geopy
+```
 ```{python}
 from shapely.geometry import MultiLineString, LineString
 from shapely.ops import unary_union
@@ -13,17 +21,18 @@ from shapely.geometry import MultiLineString, Polygon, LineString
 from shapely.ops import polygonize, unary_union
 import osmnx as ox
 from geopy.distance import geodesic
+import shapely.geometry
+from itertools import combinations
+from shapely.geometry import Point
+import itertools
 ```
-
-First we need to read the data, and the gdf.crs is needed to be checked, if it is not in WGS84, we need to convert it to WGS84. 
 
 ```{python}
 gdf = gpd.read_file("data/rnet_princes_street.geojson")
 gdf.crs
 ```
 
-Then, we need to getting road infomation form OSM data, we will using the centiod of the gdf and the max_distance.
-
+Getting Road infomation form OSM data
 
 ```{python}
 # Fetch OSM road network data around the centroid of the provided geodataframe.
@@ -74,17 +83,19 @@ def fetch_osm_data(gdf, filepath="data/edges.shp"):
     return gdf_road
 
 gdf_road = fetch_osm_data(gdf, filepath="data/edges.shp")
-gdf_road.explore() 
-gdf_road.columns
+# gdf_road.explore() 
+
 ```
 
-This step is to pass attibute from gdf_road to gdf, and then we can use the attribute to filter the road network data.
 
 ```{python}
-# #improve the efficiency    
-
+   
 # Define the buffer size
 buffer_size = 0.00002
+
+# Create a buffer around the geometries in gdf
+gdf_buffered = gdf.copy()
+gdf_buffered.geometry = gdf.geometry.buffer(buffer_size)
 
 # Create a spatial index for gdf_road
 sindex = gdf_road.sindex
@@ -113,98 +124,231 @@ for geojson_line in gdf_buffered.geometry:
 
 # Convert the matched_rows list to a GeoDataFrame
 matching_lines_large_intersection = gpd.GeoDataFrame(matched_rows, columns=gdf_road.columns)
-# matching_lines_large_intersection.to_file("data/gdf_matching_lines.geojson", driver='GeoJSON')
-matching_lines_large_intersection.explore() 
 
-gdf = matching_lines_large_intersection
-gdf.shape
+matching_lines_large_intersection.to_file("G:/temp/gdf_matching_lines.geojson", driver='GeoJSON')
+
+gdf = gpd.read_file("G:/temp/gdf_matching_lines.geojson")
+
+list_columns = []
+
+for col in gdf.columns:
+    if any(isinstance(val, list) for val in gdf[col]):
+        list_columns.append(col)
+
+for col in list_columns:
+    gdf[col] = gdf[col].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+
+gdf.to_file("G:/temp/gdf_matching_lines.geojson", driver='GeoJSON')
+```
+
+```{python}
+
+gdf_matching_lines = gpd.read_file("G:/temp/gdf_matching_lines.geojson")
+
+def find_farthest_points(geom):
+    """Find the two farthest points in a MultiLineString or LineString."""
+    # Extract all points from the geometry
+    if geom.geom_type == 'MultiLineString':
+        points = [Point(coords) for linestring in geom.geoms for coords in linestring.coords]
+    else:
+        points = [Point(coords) for coords in geom.coords]
+
+    # Find the two farthest points
+    max_distance = 0
+    farthest_pair = (None, None)
+    for point1, point2 in combinations(points, 2):
+        distance = point1.distance(point2)
+        if distance > max_distance:
+            max_distance = distance
+            farthest_pair = (point1, point2)
+    
+    return farthest_pair
+
+import networkx as nx
+
+def generate_all_paths(G, start_point, end_point, max_paths=100):
+    """Generate all simple paths between start and end points up to a maximum number of paths."""
+    # Initialize a counter for the number of paths
+    path_count = 0
+    
+    # Use DFS to generate all paths
+    for path in nx.all_simple_paths(G, start_point, end_point):
+        yield path
+        
+        # Increment the path counter
+        path_count += 1
+        
+        # If we've generated the maximum number of paths, stop
+        if path_count >= max_paths:
+            return
+
+all_road_paths_count = {}
+
+unique_road_names = gdf_matching_lines['name'].unique()
+
+for road_name in unique_road_names:
+    road_gdf = gdf_matching_lines[gdf_matching_lines['name'] == road_name]
+    
+    # Combine all segments into one MultiLineString to find the farthest points
+    combined_geom = road_gdf.geometry.unary_union
+    
+    # Check for valid geometry before processing
+    if combined_geom is not None:
+        start_point, end_point = find_farthest_points(combined_geom)
+        
+        # Convert the road segments to a network graph
+        G_road = nx.Graph()
+        for _, row in road_gdf.iterrows():
+            geom = row['geometry']
+            for s, e in zip(list(geom.coords[:-1]), list(geom.coords[1:])):
+                # Add nodes
+                G_road.add_node(s)
+                G_road.add_node(e)
+                # Add edge
+                G_road.add_edge(s, e, weight=Point(s).distance(Point(e)))
+        
+        # Use the provided function to generate all paths for the road
+        paths = list(generate_all_paths(G_road, start_point.coords[0], end_point.coords[0]))
+        
+        # Store the number of paths for the road
+        all_road_paths_count[road_name] = len(paths)
+
+# Filter out roads that have more than one unique path
+roads_with_multiple_paths = [road for road, count in all_road_paths_count.items() if count > 1]
+multiple_paths_gdf = gdf_matching_lines[gdf_matching_lines['name'].isin(roads_with_multiple_paths)]
+
+# Plot the roads with multiple paths
+fig, ax = plt.subplots(figsize=(12, 8))
+multiple_paths_gdf.plot(ax=ax, color='red', linewidth=2)
+gdf.plot(ax=ax, linewidth=1, edgecolor='lightgrey')
+ax.set_title("Roads with More Than One Path")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.grid(True)
+plt.show()
+
+# gdf.explore()
 
 ```
+
 ```{python}
-from shapely.geometry import LineString
+# Extract the specific road data for "York Place"
+york_place_gdf = gdf_matching_lines[gdf_matching_lines['name'] == 'York Place']
 
-def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10, avg_distance_threshold=0.0003):
-    line1_geom = gdf.loc[idx1, 'geometry']
-    line2_geom = gdf.loc[idx2, 'geometry']
-    
-    # Ensure that the geometries are LineStrings before accessing the coords attribute
-    if not isinstance(line1_geom, LineString) or not isinstance(line2_geom, LineString):
-        return False
+# Combine all segments into one MultiLineString to find the farthest points
+combined_geom = york_place_gdf.geometry.unary_union
 
-    line1_coords = line1_geom.coords
-    line2_coords = line2_geom.coords
+# Convert the road segments to a network graph
+G_york = nx.Graph()
+for _, row in york_place_gdf.iterrows():
+    geom = row['geometry']
+    for s, e in zip(list(geom.coords[:-1]), list(geom.coords[1:])):
+        # Add nodes
+        G_york.add_node(s)
+        G_york.add_node(e)
+        # Add edge
+        G_york.add_edge(s, e, weight=shapely.geometry.Point(s).distance(shapely.geometry.Point(e)))
 
-     # Check if lines are essentially the same line or connected end-to-end
-    if line1_coords[0] == line2_coords[-1] or line1_coords[-1] == line2_coords[0]:
-        return False
-    if line1_coords[0] == line2_coords[0] or line1_coords[-1] == line2_coords[-1]:
-        return False
-           
-    # Check for similar length
-    length1 = line1_geom.length
-    length2 = line2_geom.length
-    if abs(length1 - length2) > length_threshold:
-        return False
-    
-    # Extract the vectors representing the lines
-    x1, y1, x2, y2 = line1_coords[0][0], line1_coords[0][1], line1_coords[-1][0], line1_coords[-1][1]
-    vector1 = np.array([x2 - x1, y2 - y1])
-    
-    x1, y1, x2, y2 = line2_coords[0][0], line2_coords[0][1], line2_coords[-1][0], line2_coords[-1][1]
-    vector2 = np.array([x2 - x1, y2 - y1])
-    
-    # Normalize the vectors
-    vector1 = vector1 / np.linalg.norm(vector1)
-    vector2 = vector2 / np.linalg.norm(vector2)
-    
-    # Calculate the angle between the vectors
-    angle = np.arccos(np.dot(vector1, vector2))
-    
-    # Check if the lines are parallel (angle close to 0 or 180 degrees)
-    if np.isclose(angle, 0, atol=1e-2) or np.isclose(angle, np.pi, atol=1e-2):
-        # Sample equidistant points along each line
-        points1 = [line1_geom.interpolate(distance, normalized=True) for distance in np.linspace(0, 1, point_count)]
-        points2 = [line2_geom.interpolate(distance, normalized=True) for distance in np.linspace(0, 1, point_count)]
-        
-        # Calculate the distances between the points on the two lines
-        distances = [point1.distance(point2) for point1, point2 in zip(points1, points2)]
-        
-        # Calculate average distance
-        avg_distance = sum(distances) / len(distances)
-        
-        # Check if the lines remain close along their lengths based on the new average distance threshold
-        if avg_distance < avg_distance_threshold:
-            return True
-    return False
+# Extract the coordinates of the nodes
+node_coords = [node for node in G_york.nodes()]
 
-# Re-run the loop without the spatial index
-refined_criteria_lines_efficient = []
+# Extract paths for "York Place"
+start_point, end_point = find_farthest_points(combined_geom)
+york_paths = list(generate_all_paths(G_york, start_point.coords[0], end_point.coords[0]))
 
-for idx1 in gdf.index:
-    for idx2 in gdf.index:
-        # Skip the line itself
-        if idx1 >= idx2:
-            continue
-            
-        # Check if the lines meet the refined criteria
-        if check_refined_criteria(idx1, idx2, gdf):
-            refined_criteria_lines_efficient.append((idx1, idx2))
+# Extracting xs and ys directly from the single path of "York Place"
+xs, ys = zip(*york_paths[0])
 
-# Create a new GeoDataFrame containing only the lines meeting the refined criteria
-gdf_refined_criteria_efficient = gdf.loc[[idx for pair in refined_criteria_lines_efficient for idx in pair]]
+# Re-plotting with the single path
+fig, ax = plt.subplots(figsize=(12, 8))
 
-# Get the shape of the new GeoDataFrame
-gdf_refined_criteria_efficient_shape = gdf_refined_criteria_efficient.shape
-gdf_refined_criteria_efficient_shape
+# Plot the road segments
+york_place_gdf.plot(ax=ax, color='blue', linewidth=1.5, label="York Place")
+
+# Plot the nodes and their indices
+for idx, (x, y) in enumerate(york_paths[0]):
+    ax.scatter(x, y, color='red')
+    ax.text(x, y, str(idx), fontsize=12, ha="center", va="bottom")
+
+# Plot the single path
+ax.plot(xs, ys, color='green', linestyle='--', linewidth=3)
+
+ax.set_title(f"York Place with 1 Path and Node Indices")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.grid(True)
+# plt.legend()
+plt.show()
+
+# Extracting the indices of the start and end points of the path
+start_idx = york_paths[0].index(start_point.coords[0])
+end_idx = york_paths[0].index(end_point.coords[0])
+start_idx, end_idx
+```
+
+```{python}
+# Extract all nodes from the "York Place" segments
+york_nodes = []
+for _, row in york_place_gdf.iterrows():
+    geom = row['geometry']
+    for coord in geom.coords:
+        if coord not in york_nodes:
+            york_nodes.append(coord)
+
+fig, ax = plt.subplots(figsize=(15, 10))
+
+# Plot the road segments
+york_place_gdf.plot(ax=ax, color='blue', linewidth=1.5, label="York Place")
+
+# Plot the nodes and their adjusted indices
+for idx, (x, y) in enumerate(york_nodes):
+    ax.scatter(x, y, color='red')
+    ax.text(x + 0.00005, y-0.00005, str(idx), fontsize=8, ha="left", va="center")  # Adjusting horizontal alignment and font size
+
+ax.set_title(f"York Place with Node Indices")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.grid(True)
+# plt.legend()
+plt.tight_layout()
+plt.show()
+
 
 ```
 ```{python}
 # Define a function to check if two lines are parallel, side-by-side, and of similar length, incorporating the new average distance criterion
-def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10, avg_distance_threshold=0.005):
+
+def check_refined_criteria(idx1, idx2, gdf, length_threshold=10, point_count=1, avg_distance_threshold=10, use_names=True):
     line1 = gdf.loc[idx1, 'geometry']
     line2 = gdf.loc[idx2, 'geometry']
+    
+    if use_names and 'name' in gdf.columns:
+        name1 = gdf.loc[idx1, 'name']
+        name2 = gdf.loc[idx2, 'name']
+        
+        # Check if all elements in potential list are NaN
+        is_name1_na = pd.isna(name1).all() if isinstance(name1, (list, np.ndarray)) else pd.isna(name1)
+        is_name2_na = pd.isna(name2).all() if isinstance(name2, (list, np.ndarray)) else pd.isna(name2)
+        
+        if is_name1_na and is_name2_na:
+            pass  # both are NaN, so they are considered equal
+        elif is_name1_na or is_name2_na:
+            return False  # one is NaN and the other isn't
+        else:
+            # Convert single strings to list for uniformity
+            if isinstance(name1, str):
+                name1 = [name1]
+            if isinstance(name2, str):
+                name2 = [name2]
+            
+            # Compare names
+            if set(name1) != set(name2):
+                return False
+    # Ensure both geometries are LineStrings
+    if not (isinstance(line1, shapely.geometry.LineString) and isinstance(line2, shapely.geometry.LineString)):
+        return False
 
-     # Check if lines are essentially the same line or connected end-to-end
+    # Check if lines are essentially the same line or connected end-to-end
     if line1.coords[0] == line2.coords[-1] or line1.coords[-1] == line2.coords[0]:
         return False
     if line1.coords[0] == line2.coords[0] or line1.coords[-1] == line2.coords[-1]:
@@ -245,14 +389,16 @@ def check_refined_criteria(idx1, idx2, gdf, length_threshold=0.1, point_count=10
         # Check if the lines remain close along their lengths based on the new average distance threshold
         if avg_distance < avg_distance_threshold:
             return True
+
     return False
 
 # Initialize the spatial index
 spatial_index = gdf.sindex
 
-# Re-run the provided code to identify pairs of lines that meet the refined criteria
+# Initialize an empty list to store pairs of lines meeting the refined criteria
 refined_criteria_lines_efficient = []
 
+# Loop through each line in the GeoDataFrame
 for idx1, row1 in gdf.iterrows():
     line1 = row1['geometry']
     
@@ -269,9 +415,9 @@ for idx1, row1 in gdf.iterrows():
         if check_refined_criteria(idx1, idx2, gdf):
             refined_criteria_lines_efficient.append((idx1, idx2))
 
+
 # Create a new GeoDataFrame containing only the lines meeting the refined criteria
 gdf_refined_criteria_efficient = gdf.loc[[idx for pair in refined_criteria_lines_efficient for idx in pair]]
-
 
 # Plotting the original GeoDataFrame and the lines meeting the refined criteria
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
@@ -287,8 +433,9 @@ plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 
 plt.show()
-
 ```
+
+
 
 
 ```{python}
@@ -346,8 +493,6 @@ def plot_centerline(line1, line2, centerline_gdf):
     
     plt.show()
 
-from shapely.ops import unary_union
-
 # Function to convert center points to a center line
 def points_to_centerline(center_points):
     # Sort the points based on their coordinates to maintain a logical order
@@ -355,7 +500,6 @@ def points_to_centerline(center_points):
     # Create a LineString geometry from the sorted points
     center_line = LineString(sorted_points)
     return center_line
-
 ```
 
 ```{python}
@@ -383,14 +527,14 @@ for idx1, idx2 in refined_criteria_lines_efficient:
     combined_gdf = combined_gdf.append({'geometry': line2, 'type': 'parallel_line'}, ignore_index=True)
 
 # Plot the combined GeoDataFrame with different colors for centerlines and parallel lines
-fig, ax = plt.subplots(figsize=(12, 12))
-combined_gdf[combined_gdf['type'] == 'centerline'].plot(ax=ax, color='green', linewidth=2, label='Centerline')
-combined_gdf[combined_gdf['type'] == 'parallel_line'].plot(ax=ax, color='blue', linewidth=1, label='Parallel Lines')
-plt.title('Centerlines and Parallel Lines')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-plt.legend()
-plt.show()
+# fig, ax = plt.subplots(figsize=(12, 12))
+# combined_gdf[combined_gdf['type'] == 'centerline'].plot(ax=ax, color='green', linewidth=2, label='Centerline')
+# combined_gdf[combined_gdf['type'] == 'parallel_line'].plot(ax=ax, color='blue', linewidth=1, label='Parallel Lines')
+# plt.title('Centerlines and Parallel Lines')
+# plt.xlabel('Longitude')
+# plt.ylabel('Latitude')
+# plt.legend()
+# plt.show()
 
 ```
 
