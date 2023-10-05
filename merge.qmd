@@ -11,6 +11,8 @@ The following example requires R and the following packages:
 library(tidyverse)
 library(sf)
 library(tmap)
+library(stplanr) 
+library(igraph)
 ```
 
 # Input data
@@ -18,22 +20,25 @@ library(tmap)
 The inputs are as follows:
 
 ```{r}
-#| label: inputs-processing
-#| echo: false
-#| eval: false
-input_simple = sf::read_sf("data/Edc_Roadlink.geojson")
-input_complex_union = sf::st_union(input_complex)
-input_complex_30m_buffer = sf::st_buffer(input_complex_union, 30)
-input_complex_convex_hull = sf::st_convex_hull(input_complex_union)
-input_simple = sf::st_intersection(input_simple, input_complex_convex_hull)
-sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson")
-names(input_complex)[1] = "value"
-sf::write_sf(input_complex, "data/rnet_princes_street.geojson", delete_dsn = TRUE)
+input_complex = sf::read_sf("data/rnet_princes_street.geojson")
+input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
+summary(duplicated(input_complex$geometry))
+summary(duplicated(input_simple$geometry))
+```
+
+The input 'simple' centreline data has duplicate geometries.
+We can remove those as follows:
+
+```{r}
+dups = duplicated(input_simple$geometry)
+input_simple = input_simple |>
+  filter(!dups)
 ```
 
 ```{r}
-input_complex = sf::read_sf("data/rnet_princes_street.geojson")
-input_simple = sf::read_sf("data/rnet_pinces_street_simple.geojson")
+#| echo: false
+#| eval: false
+sf::write_sf(input_simple, "data/rnet_pinces_street_simple.geojson", delete_dsn = TRUE)
 ```
 
 ```{r}
@@ -57,11 +62,13 @@ browseURL("maps/input_complex.html")
 ```{r}
 remotes::install_github("ropensci/stplanr")
 # stplanr::rnet_join
+args(stplanr::rnet_join)
 ```
 
 The values in the `input_complex` dataset are as follows:
 
 ```{r}
+#| label: summary of input_complex
 names(input_complex)
 summary(input_complex$value)
 ```
@@ -69,31 +76,46 @@ summary(input_complex$value)
 To join the network values we will try the `rnet_join` function in `stplanr`, which has the following arguments:
 
 ```{r}
+#| label: obtain the arguments of the rnet_join function
 args(stplanr::rnet_join)
 ```
-
 
 ```{r}
 input_simple_id = input_simple |>
   select(identifier)
-rnet_joined = stplanr::rnet_join(input_simple_id, input_complex, dist = 30)
-rnet_joined
-nrow(rnet_joined)
+funs = list(value = sum, Quietness = mean)
+sum(sf::st_length(input_simple))
+input_simple_id = stplanr::rnet_subset(input_simple_id, input_complex, dist = 30)
+input_simple_joined = stplanr::rnet_merge(
+  input_simple_id[1],
+  input_complex[c("value", "Quietness")],
+  dist = 30, segment_length = 10, funs = funs
+)
+nrow(input_simple_joined)
 nrow(input_simple)
-names(rnet_joined)
+names(input_simple_joined)
 ```
 
-The overlapping network values are as follows:
+We can compare the network lengths as follows:
+
+```{r}
+sum(sf::st_length(input_simple_id))
+sum(sf::st_length(input_complex))
+summary(duplicated(input_simple_id$geometry))
+```
+
+<!-- The overlapping network values are as follows: 
 
 ```{r}
 #| label: overlapping
-tm_shape(rnet_joined) + tm_fill("value")
+# tm_shape(input_simple_joined) + tm_fill("value")
 ```
 
-We can calculate the distance-weighted average of the network values as follows:
+ We can calculate the distance-weighted average of the network values as follows:
 
 ```{r}
-rnetj_summary = rnet_joined %>%
+#| eval: false
+rnetj_summary = input_simple_joined %>%
   sf::st_drop_geometry() %>%
   group_by_at(1) %>%
     summarise(
@@ -105,32 +127,73 @@ input_simple_joined = input_simple_joined |>
   mutate(value = total_flow_m / length)
 ```
 
-The initial result is as follows:
+The initial result is as follows: -->
+
+There is a small number of segments in the output that have very high values:
+
+```{r}
+#| label: high-values
+high_values = input_simple_joined |> arrange(desc(value)) |> head(10)
+m_high_values = tm_shape(high_values) + tm_lines("value")
+summary(sf::st_length(high_values))
+summary(high_values$value)
+```
+
+We can remove them to avoid skewing the results.
 
 ```{r}
 #| label: joined
 # sanity check lengths:
 # cor(input_complex$length, sf::st_length(input_complex)) # 100%
-total_flow_input = round(sum(input_complex$value * input_complex$length) / 1000)
+input_simple_joined = input_simple_joined |>
+  filter(length_x > 10)
+total_flow_input = round(sum(input_complex$value * sf::st_length(input_complex)) / 1000)
 # output:
 total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
 
 message("Total flow input: ", total_flow_input, "km")
 message("Total flow output: ", total_flow_output, "km")
 
-summary(input_simple_joined$flow)
-m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", breaks = brks)
-m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", breaks = brks)
+summary(input_simple_joined$value)
+summary(input_complex$value)
+```
+
+If the distances differ, we can adjust the values of the new network so that the total distance travelled is the same:
+
+```{r}
+over_estimate = total_flow_output / total_flow_input
+input_simple_joined = input_simple_joined |>
+  mutate(value = value / over_estimate)
+```
+
+The updated result is as follows:
+
+```{r}
+#| label: updated-result1
+m1 = tm_shape(input_complex) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
 tmap_arrange(m1, m2, nrow = 1)
 ```
 
 ```{r}
-
+#| label: joined-adjusted
+nrow(input_simple_joined)
+nrow(input_complex)
+nrow(input_simple)
+total_flow_output = round(sum(input_simple_joined$value * as.numeric(sf::st_length((input_simple_joined))), na.rm = TRUE) / 1000)
+message("Total flow input: ", total_flow_input, "km")
+message("Total flow output: ", total_flow_output, "km")
 ```
 
+We can explore the results interactively as follows:
 
-
-
+```{r}
+#| eval: false
+tmap_mode("view")
+m_combined = m1 + m2
+tmap_save(m_combined, "maps/m_combined.html")
+browseURL("maps/m_combined.html")
+```
 
 # Explanation
 
@@ -140,7 +203,216 @@ To clarify what's going on, lets do the process only for a couple of lines, and 
 #| label: input-simple
 input_simple_minimal = input_simple |>
   filter(identifier == "13CF96CE-2A95-451B-B859-E5511B2DEF81" | identifier == "C90C4EA9-5E6A-4A6A-ADEB-5EC5937F6C3A") 
-# tm_shape(input_simple_minimal) + tm_lines()
 ```
 
-The first stage is to take 
+The `rnet_join()` function as of July 2023 is as follows:
+
+```{r}
+rnet_join = function(rnet_x, rnet_y, dist = 5, length_y = TRUE, key_column = 1,
+                     subset_x = TRUE, dist_subset = 5, split_y = TRUE, ...) {
+  if (subset_x) {
+    rnet_x = rnet_subset(rnet_x, rnet_y, dist = dist_subset, ...)
+  }
+  rnet_x_buffer = geo_buffer(rnet_x, dist = dist, nQuadSegs = 2)
+  if (split_y) {
+    rnet_y = rnet_split_lines(rnet_y, rnet_x, dist = dist_subset)
+  }
+  if (length_y) {
+    rnet_y$length_y = as.numeric(sf::st_length(rnet_y))
+  }
+  rnetj = sf::st_join(rnet_x_buffer[key_column], rnet_y, join = sf::st_contains)
+  rnetj
+}
+
+rnet_subset = function(rnet_x, rnet_y, dist = 1, crop = TRUE, min_x = 3) {
+  rnet_x$length_x_original = as.numeric(sf::st_length(rnet_x))
+  rnet_y_union = sf::st_union(rnet_y)
+  rnet_y_buffer = stplanr::geo_buffer(rnet_y_union, dist = dist, nQuadSegs = 2)
+  if(crop) {
+    rnet_x = sf::st_intersection(rnet_x, rnet_y_buffer)
+    rnet_x = line_cast(rnet_x)
+    rnet_x$length_x_cropped = as.numeric(sf::st_length(rnet_x))
+    min_length = dist * min_x
+    sel_short = rnet_x$length_x_cropped < min_length &
+      rnet_x$length_x_original > min_length
+    rnet_x = rnet_x[!sel_short, ]
+  } else {
+    rnet_x[rnet_y_buffer, , op = sf::st_within]
+  }
+  rnet_x
+}
+rnet_split_lines = function(rnet_x, rnet_y, dist = 1) {
+  if (all(grepl(pattern = "LINE", x = sf::st_geometry_type(rnet_y)))) {
+    geo_x = c(
+      lwgeom::st_startpoint(rnet_x),
+      lwgeom::st_endpoint(rnet_x)
+    )
+  }
+  # speed-up subsequent steps:
+  points_x = sf::st_union(geo_x)
+  points_buffer_x = stplanr::geo_buffer(points_x, dist = dist)
+  rnet_y_split = sf::st_difference(rnet_y, points_buffer_x)
+  rnet_y_split_lines = line_cast(rnet_y_split)
+  rnet_split_lines$length_osm_cast = as.numeric(sf::st_length(rnet_split_lines))
+  # rnet_split_lines[rnet_split_lines$length_osm_cast > min_lenth, ]
+  rnet_split_lines
+}
+line_cast = function(x) {
+  sf::st_cast(sf::st_cast(x, "MULTILINESTRING"), "LINESTRING")
+}
+```
+
+Let's run these lines line-by-line, starting by creating `rnet_x` and `rnet_y` objects:
+
+```{r}
+#| label: rnet-x-y-minimal
+library(stplanr)
+dist = 30
+rnet_x = input_simple_minimal
+rnet_x_buffer = geo_buffer(rnet_x, dist = dist, nQuadSegs = 2)
+rnet_y = input_complex[rnet_x_buffer, , op = sf::st_within]
+tm_shape(rnet_x_buffer) + tm_fill("identifier") + tm_shape(rnet_y) + tm_lines()
+```
+
+An optional next step is to split the lines:
+
+```{r}
+#| label: rnet-split-minimal
+remotes::install_github("r-spatial/qgisprocess")
+library(qgisprocess)
+
+args(qgis_run_algorithm)
+rnet_y_rebuilt = qgis_run_algorithm(
+  algorithm = "grass7:v.build.polylines",
+  input = rnet_y,
+  # Output sf: 
+)
+rnet_y_split = output = qgis_run_algorithm(
+  algorithm = "grass7:v.split",
+  input = rnet_y |> select(-index) |> sf::st_transform("EPSG:27700"),
+  length = 10
+) |>
+  sf::st_as_sf()
+rnet_y_split = rnet_y_split |> sf::st_transform("EPSG:4326")
+rnet_y_split$length_split = as.numeric(sf::st_length(rnet_y_split))
+```
+
+The resulting `rnet_y_split` object is as follows:
+
+```{r}
+#| label: line-split
+rnet_y_split
+rnet_y
+m1 = tm_shape(rnet_y) + tm_lines()
+m2 = tm_shape(rnet_y_split) + tm_lines()
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+The next stage is to join the two datasets, speeding things up by taking the centroid of the split lines:
+
+```{r}
+#| label: rnet-join-minimal
+rnet_y_centroids = rnet_y_split |> sf::st_centroid()
+rnetj = sf::st_join(rnet_x_buffer["identifier"], rnet_y_centroids)
+```
+
+We then take the distance-weighted average of the values:
+
+```{r}
+rnetj_summary = rnetj %>%
+  sf::st_drop_geometry() %>%
+  group_by_at(1) %>%
+    summarise(
+      total_flow_m = sum(value * length_split, na.rm = TRUE)
+      )
+input_simple_joined = left_join(rnet_x, rnetj_summary)
+input_simple_joined = input_simple_joined |>
+  mutate(value = total_flow_m / length)
+input_simple_joined["value"]
+```
+
+We can plot the before/after results as follows:
+
+```{r}
+#| label: minimal-before/after
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(input_simple_joined) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+```{r}
+#| label: final-explanation
+m = tm_shape(input_simple_minimal) + tm_lines(lwd = 5) +
+  qtm(input_simple)
+tmap_save(m, "maps/m_explanation.html")
+# browseURL("maps/m_explanation.html")
+```
+
+Another exercise conducted to merge two route networks using the `rnet_merge()` function. 
+# Usage of rnet_merge() function
+
+The `rnet_merge()` function is used to merge two route networks. Here's a breakdown of the parameters:
+
+- `rnet_x`: The first route network.
+- `rnet_y`: The second route network.
+- `dist`: The distance threshold for merging.
+- `segment_length`: The minimum length of segments.
+- `funs`: 
+
+The inputs are as follows:
+```{r}
+#| label: inputs data read
+rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+```
+
+We pre-processed the input simple geometry to make it even simpler as shown below.
+```{r}
+#| label: preprocessing and visualsing the input simple geometry
+# tmap_mode("view")
+# par(mfrow = c(1, 3))
+# plot(sf::st_geometry(rnet_x), main = "Original rnet_x")
+rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20)
+# plot(sf::st_geometry(rnet_x), main = "After first rnet_subset")
+rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20, min_length = 5)
+rnet_x = rnet_subset(rnet_x, rnet_y, dist = 20, rm_disconnected = TRUE)
+# plot(sf::st_geometry(rnet_x), main = "After first rnet_subset")
+```
+
+The initial merged result was as follows.
+```{r}
+#| label: initial merging
+funs = list(value = sum, Quietness = mean)
+brks = c(0, 100, 500, 1000, 5000)
+rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 20, funs = funs)
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)  +
+  tm_scale_bar()
+m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, sync = TRUE)
+```
+
+We can more reduce the minimum segment length to ensure fewer NA values in the outputs:
+```{r}
+#| label: reduce the minimum segment length
+rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 10, funs = funs)
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+tmap_arrange(m1, m2, sync = TRUE)
+```
+
+Reducing the max length of the complex route network led to the following result.
+```{r}
+#| label: result with reducing the max length
+rnet_merged = rnet_merge(rnet_x, rnet_y, dist = 20, segment_length = 5, funs = funs, dist_subset = 30)
+m1 = tm_shape(rnet_y) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+m2 = tm_shape(rnet_merged) + tm_lines("value", palette = "viridis", lwd = 5, breaks = brks)
+# tmap_arrange(m1, m2, sync = TRUE)
+tmap_arrange(m1, m2, nrow = 1)
+```
+
+```{r, echo=FALSE, eval=FALSE}
+sum(rnet_merged$value * sf::st_length(rnet_merged), na.rm = TRUE)
+sum(rnet_y$value * sf::st_length(rnet_y), na.rm = TRUE)
+```
+
+

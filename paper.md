@@ -200,20 +200,19 @@ discusses the results and outlines future work.
 
 # Methods
 
-Two fundamental approaches to simplifying transport networks are:
+There are two main challenges that need to be overcome to simplify
+transport networks, in a way that preserves their value:
 
-- Simplifying the geometry of the network, by removing redundant
-  vertices and edges and/or by merging parallel ways and *then* merging
-  the attributes of the original network onto the simplified network.
-- Iteratively removing edges and updating the attributes of the
-  remaining edges by routing through the network.
+1.  Simplifying the *geometry*
+2.  Assigning attributes to the simplified network
 
-In this paper we will focus on the former approach, which assumes that a
-simplified geographic representation of the network is available.
+## Simplifying the geometry
 
-## Geometry simplification
-
-A prerequisite of simple networks is simple geometries.
+<!-- 
+&#10;Two fundamental approaches to simplifying transport networks are:
+&#10;-   Simplifying the geometry of the network, by removing redundant vertices and edges and/or by merging parallel ways and *then* merging the attributes of the original network onto the simplified network.
+-   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
+&#10;In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
 
 ### Topology-preserving simplification
 
@@ -294,13 +293,16 @@ Figure 4: Illustration of consolidation of intersections, with the
 
 </div>
 
-### Simplification with parallel edge removal
-
 A more aggressive approach is to simplify and alter network topology in
 a single step, “through the removal of duplicate or parallel edges, and
-combining simply-connected nodes” (Deakin 2023).
+combining simply-connected nodes” (Deakin 2023). Two approaches to this
+are outlined below.
 
-<!-- An approach to simplification with parallel edge removal is described in the `buffer-aggregate` document that accompanies this paper. -->
+### Simplification by skeletonization
+
+### Simplification via voronoi polygons
+
+![](images/paste-1.png)
 
 ## Merging simple and detailed networks
 
@@ -308,10 +310,18 @@ After you have a simplified version of the network, from any source, the
 next step is merging the attributes.
 
 <!-- TODO: add content to this section. -->
+<!-- TODO: Is this possible? -->
+<!-- ## Combined network simplification and attribute merging -->
 
 # Results
 
 # Discussion
+
+- Optimisation
+
+- Packaging
+
+- 
 
 # References
 

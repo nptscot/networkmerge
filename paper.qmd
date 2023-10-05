@@ -1,14 +1,13 @@
 ---
 title: "Network simplification: application to the visualisation of transport networks"
+# PDF and gfm formats:
 format:
-  gfm: default
   # pdf: default
-  # arxiv-pdf:
-  #   keep-tex: true
+  gfm: default
 number-sections: true
 execute: 
   echo: false
-  cache: true
+  # cache: true
 editor: 
   markdown: 
     wrap: sentence
@@ -112,16 +111,21 @@ Finally, @sec-discussion discusses the results and outlines future work.
 
 # Methods {#sec-methods}
 
+There are two main challenges that need to be overcome to simplify transport networks, in a way that preserves their value: 
+
+1. Simplifying the *geometry*
+2. Assigning attributes to the simplified network
+
+## Simplifying the geometry
+
+<!-- 
+
 Two fundamental approaches to simplifying transport networks are:
 
 -   Simplifying the geometry of the network, by removing redundant vertices and edges and/or by merging parallel ways and *then* merging the attributes of the original network onto the simplified network.
 -   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
 
-In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available.
-
-## Geometry simplification
-
-A prerequisite of simple networks is simple geometries.
+In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
 
 ### Topology-preserving simplification
 
@@ -161,7 +165,7 @@ library(tmap)
 library(tidyverse)
 library(reticulate)
 # reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
-
+tmap_mode("plot")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -204,6 +208,7 @@ tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
 
 Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
+
 :::
 
 The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
@@ -223,6 +228,7 @@ ox.plot_graph(G);
 ```
 
 ```{python}
+import osmnx as ox
 G_projected = ox.project_graph(G, 'EPSG:27700')
 # simplify:
 G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
@@ -233,17 +239,24 @@ ox.plot_graph(G_simplified);
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
 :::
 
-### Simplification with parallel edge removal
-
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+Two approaches to this are outlined below.
 
-<!-- An approach to simplification with parallel edge removal is described in the `buffer-aggregate` document that accompanies this paper. -->
+### Simplification by skeletonization
+
+### Simplification via voronoi polygons
+
+![](images/paste-1.png)
 
 ## Merging simple and detailed networks
 
 After you have a simplified version of the network, from any source, the next step is merging the attributes.
 
 <!-- TODO: add content to this section. -->
+
+<!-- TODO: Is this possible? -->
+
+<!-- ## Combined network simplification and attribute merging -->
 
 # Results {#sec-results}
 
@@ -255,6 +268,12 @@ After you have a simplified version of the network, from any source, the next st
 ```
 
 # Discussion {#sec-discussion}
+
+-   Optimisation
+
+-   Packaging
+
+-   
 
 # References
 
