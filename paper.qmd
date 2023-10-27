@@ -170,10 +170,9 @@ input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
 # ordered factor of simplification levels:
-simp_factor = ordered(simplification_levels, levels = simplification_levels)
 simplification_df = data.frame(
   id = as.character(1:length(simplification_levels)),
-  simp_factor,
+  simp_factor = simplification_levels,
   keep = paste0("Keep: ", round(as.numeric(simplification_levels) * 100, 2), "%")
   )
 simplification_df$keep = ordered(simplification_df$keep, levels = simplification_df$keep)
@@ -183,7 +182,7 @@ smplfy = function(x_list, keep) {
     keep,
     function(x) {
       res = rmapshaper::ms_simplify(x_list, keep_shapes = TRUE, keep = x)
-      res$id = as.character(x)
+      res$id = x
       res
     }
     )
@@ -193,11 +192,11 @@ input_simplified = smplfy(input_projected, simplification_levels)
 input_simplified = left_join(
   input_simplified,
   simplification_df,
-  by = join_by(id == id)
+  by = join_by(id == simp_factor)
   )
 tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
-  tm_facets(by = "id", free.coords = TRUE) 
+  tm_facets(by = "keep", free.coords = TRUE) 
 ```
 
 ```{r}
@@ -207,11 +206,11 @@ input_simplified = smplfy(input_projected, simplification_levels)
 input_simplified = left_join(
   input_simplified,
   simplification_df,
-  by = join_by(id == id)
+  by = join_by(id == simp_factor)
   )
 tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
-  tm_facets(by = "id", free.coords = TRUE) 
+  tm_facets(by = "keep", free.coords = TRUE) 
 ```
 
 Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
