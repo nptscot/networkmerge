@@ -188,7 +188,9 @@ smplfy = function(x_list, keep) {
     )
   do.call(rbind, x_list)
 }
-input_simplified = smplfy(input_projected, simplification_levels)
+# input_simplified = smplfy(input_projected, simplification_levels)
+# sf::write_sf(input_simplified, "data/input_simplified1.geojson")
+input_simplified1 = sf::read_sf('data/input_simplified1.geojson')
 input_simplified = left_join(
   input_simplified,
   simplification_df,
@@ -202,9 +204,11 @@ tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
 ```{r}
 input = sf::read_sf('data/rnet_princes_street_minimal.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
-input_simplified = smplfy(input_projected, simplification_levels)
+# input_simplified = smplfy(input_projected, simplification_levels)
+# sf::write_sf(input_simplified, "data/input_simplified2.geojson", delete_dsn = TRUE)
+input_simplified2 = sf::read_sf('data/input_simplified2.geojson')
 input_simplified = left_join(
-  input_simplified,
+  input_simplified2,
   simplification_df,
   by = join_by(id == simp_factor)
   )
