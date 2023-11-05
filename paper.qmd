@@ -170,20 +170,31 @@ input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
 # ordered factor of simplification levels:
-simp_factor = ordered(simplification_levels, levels = simplification_levels)
 simplification_df = data.frame(
   id = as.character(1:length(simplification_levels)),
-  simp_factor,
+  simp_factor = simplification_levels,
   keep = paste0("Keep: ", round(as.numeric(simplification_levels) * 100, 2), "%")
   )
 simplification_df$keep = ordered(simplification_df$keep, levels = simplification_df$keep)
-input_simplified = purrr::map_dfr(simplification_levels, .id = "id", function(x) {
-  rmapshaper::ms_simplify(input_projected, keep_shapes = TRUE, keep = x)
-})
+
+smplfy = function(x_list, keep) {
+  x_list = lapply(
+    keep,
+    function(x) {
+      res = rmapshaper::ms_simplify(x_list, keep_shapes = TRUE, keep = x)
+      res$id = x
+      res
+    }
+    )
+  do.call(rbind, x_list)
+}
+# input_simplified = smplfy(input_projected, simplification_levels)
+# sf::write_sf(input_simplified, "data/input_simplified1.geojson")
+input_simplified1 = sf::read_sf('data/input_simplified1.geojson')
 input_simplified = left_join(
   input_simplified,
   simplification_df,
-  by = join_by(id == id)
+  by = join_by(id == simp_factor)
   )
 tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
@@ -193,13 +204,13 @@ tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
 ```{r}
 input = sf::read_sf('data/rnet_princes_street_minimal.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
-input_simplified = purrr::map_dfr(simplification_levels, .id = "id", function(x) {
-  rmapshaper::ms_simplify(input_projected, keep_shapes = TRUE, keep = x)
-})
+# input_simplified = smplfy(input_projected, simplification_levels)
+# sf::write_sf(input_simplified, "data/input_simplified2.geojson", delete_dsn = TRUE)
+input_simplified2 = sf::read_sf('data/input_simplified2.geojson')
 input_simplified = left_join(
-  input_simplified,
+  input_simplified2,
   simplification_df,
-  by = join_by(id == id)
+  by = join_by(id == simp_factor)
   )
 tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
