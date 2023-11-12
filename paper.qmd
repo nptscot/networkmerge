@@ -255,6 +255,323 @@ Two approaches to this are outlined below.
 
 ### Simplification by skeletonization
 
+In this approach lines are buffered and combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region.
+
+Using the Edinburgh GeoJSON network as above:
+
+
+#### Create a projected combined buffered geometry:
+
+::: {#fig-base-and-buffered-network layout-ncol="2"}
+```{python}
+from functools import partial
+
+import geopandas as gp
+from shapely import get_coordinates, line_merge, set_precision, unary_union
+
+def get_geometry_buffer(this_gf, radius=8.0):
+    """get_geometry_buffer: return radius buffered GeoDataFrame
+
+    args:
+      this_gf: GeoDataFrame to
+      radius: (default value = 8.0)
+
+    returns:
+      buffered GeoSeries geometry
+
+    """
+    r = gp.GeoSeries(this_gf, crs=CRS).buffer(radius, join_style="mitre")
+    union = unary_union(r)
+    try:
+        r = gp.GeoSeries(union.geoms, crs=CRS)
+    except AttributeError:
+        r = gpd.GeoSeries(union, crs=CRS)
+    return r
+
+CRS = "EPSG:27700"
+set_precision_pointone = partial(set_precision, grid_size=0.1)
+base_nx = gp.read_file("data/rnet_princes_street.geojson").to_crs(CRS)
+base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
+base_nx.plot()
+nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=8.0)
+nx_geometry.plot()
+```
+
+#### Create the affine transformation between the points in the buffer and raster image 
+
+```{python}
+import numpy as np
+import rasterio as rio
+import rasterio.features as rif
+
+def get_pxsize(bound, scale=1.0):
+    """get_pxsize: calculates scaled image size in px
+
+      bound: boundary corner points
+      scale: scaling factor (default = 1.0)
+
+    returns:
+      size in px
+
+    """
+    r = np.diff(bound.reshape(-1, 2), axis=0)
+    r = np.ceil(r.reshape(-1))
+    return (r[[1, 0]] * scale).astype(int)
+
+
+def get_affine_transform(this_gf, scale=1.0):
+    """get_affine_transform: return affine transformations matrices, and scaled image size
+    from GeoPandas boundary size
+
+      this_gf: GeoPanda
+      scale:  (default = 1.0)
+
+    returns:
+      rasterio and shapely affine tranformation matrices, and image size in px
+
+    """
+    TRANSFORM_ONE = np.asarray([0.0, 1.0, -1.0, 0.0, 1.0, 1.0])
+    bound = this_gf.total_bounds
+    s = TRANSFORM_ONE / scale
+    s[[4, 5]] = bound[[0, 3]]
+    r = s[[1, 0, 4, 3, 2, 5]]
+    r = rio.Affine(*r)
+    return r, s, get_pxsize(bound, scale)
+
+r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
+r_matrix
+s_matrix
+
+```
+In this example a scale factor of 2.0 is used.
+
+### Skeletonize the buffer to a point geometry
+
+A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles. The image is then thinned and the resulting skeleton raster image transformed back to a point geometry but still in raster geometry.
+
+This is an issue as the intent is to provide a simplified set of lines not points that lie on these lines.
+
+```{python}
+import warnings
+
+from skimage.morphology import remove_small_holes, skeletonize
+from shapely.affinity import affine_transform
+from shapely.geometry import Point
+
+def get_skeleton(geometry, transform, shape):
+    """get_skeleton: return skeletonized raster buffer from Shapely geometry
+
+    args:
+      geometry: Shapely geometry to convert to raster buffer
+      transform: rasterio affine transformation
+      shape: output buffer px size
+
+    returns:
+      skeltonized numpy array raster buffer
+
+    """
+    r = rif.rasterize(geometry.values, transform=transform, out_shape=shape)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        r = remove_small_holes(r, 4).astype(np.uint8)
+    return skeletonize(r).astype(np.uint8)
+
+skeleton_im = get_skeleton(nx_geometry, r_matrix, out_shape)
+point_im = np.stack(np.where(skeleton_im >= 1))
+nx_point = gp.GeoSeries(map(Point, point_im.T), crs=CRS)
+nx_point.plot()
+
+shapely_transform = partial(affine_transform, matrix=s_matrix)
+transform_point = nx_point.map(shapely_transform).map(set_precision_pointone)
+transform_point.plot()
+```
+
+### Convert from a projected point to a line geometry
+
+Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network. 
+
+First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.
+
+```{python}
+import pandas as pd
+from shapely import get_coordinates
+from shapely.geometry import LineString, MultiLineString
+
+def get_raster_line_with_knots(point):
+    """get_raster_line_with_knots: return LineString GeoSeries from 1px line points with knots
+
+    args:
+      point: 1px point GeoSeries array with knots
+
+    returns:
+      1px line LineString GeoSeries with knots removed
+
+    """
+    square = point.buffer(1, cap_style="square", mitre_limit=1)
+    ix = point.sindex.query(square, predicate="covers").T
+    ix = np.sort(ix)
+    s = pd.DataFrame(ix).drop_duplicates().reset_index(drop=True)
+    s = s.loc[np.where(s[0] != s[1])]
+    s = np.stack([point[s[0].values], point[s[1].values]]).T
+    r = gp.GeoSeries(map(LineString, s), crs=CRS)
+    edge, node = get_source_target(combine_line(r).to_frame("geometry"))
+    return combine_line(edge["geometry"])
+
+def get_end(geometry):
+    """get_end: return numpy array of geometry LineString end-points
+
+    args:
+      geometry: geometry LineString
+
+    returns:
+      end-point numpy arrays
+
+    """
+    r = get_coordinates(geometry)
+    return np.vstack((r[0, :], r[-1, :]))
+
+def get_source_target(line):
+    """get_source_target: return edge and node GeoDataFrames from LineString with unique
+    node Point and edge source and target
+
+    args:
+      line: LineString GeoDataFrame
+
+    returns:
+      edge, node: GeoDataFrames
+
+    """
+    edge = line.copy()
+    r = edge["geometry"].map(get_end)
+    r = np.stack(r)
+    node = gp.GeoSeries(map(Point, r.reshape(-1, 2)), crs=CRS).to_frame("geometry")
+    count = node.groupby("geometry").size().rename("count")
+    node = node.drop_duplicates("geometry").set_index("geometry", drop=False)
+    node = node.join(count).reset_index(drop=True).reset_index(names="node")
+    ix = node.set_index("geometry")["node"]
+    edge = edge.reset_index(names="edge")
+    edge["source"] = ix.loc[map(Point, r[:, 0])].values
+    edge["target"] = ix.loc[map(Point, r[:, 1])].values
+    return edge, node
+
+def combine_line(line):
+    """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
+
+    args:
+      line: mixed LineString GeoSeries
+
+    returns:
+      join LineString GeoSeries
+
+    """
+    r = MultiLineString(line.values)
+    return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
+
+nx_line = get_raster_line_with_knots(nx_point)
+```
+
+To see the simplified network requires the reverse affine transformation to be applied,
+
+```{python}
+shapely_transform = partial(affine_transform, matrix=s_matrix)
+nx_output = nx_line.map(shapely_transform).map(set_precision_pointone)
+nx_output.plot()
+```
+
+### Knots
+Where lines intersect multiple short segment may occur which look like knots. 
+
+To remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,
+
+```{python}
+import networkx as nx
+from shapely.geometry import MultiPoint
+
+def get_raster_line_without_knot(this_line):
+    """get_raster_line_without_knot: remove knots from LineString GeoSeries
+
+    args:
+      this_line: LineString GeoSeries array with knots
+
+    returns:
+      LineString GeoSeries with knots removed
+
+    """
+    edge, node = get_source_target(this_line)
+    ix = edge.length > 2.0
+    connected = get_connected_class(edge.loc[~ix, ["source", "target"]])
+    node = node.loc[connected.index].join(connected).sort_index()
+    connected_edge = get_centre(node)
+    r = combine_line(pd.concat([connected_edge["geometry"], edge.loc[ix, "geometry"]]))
+    return r[r.length > 2.0]
+
+
+def get_connected_class(edge):
+    """get_connected_class: return labeled connected node pandas Series from edge list
+
+    args:
+      edge_list: source, target edge pandas DataFrame
+
+    returns:
+      labeled node pandas Series
+
+    """
+    nx_graph = nx.from_pandas_edgelist(edge)
+    connected = nx.connected_components(nx_graph)
+    r = {k: i for i, j in enumerate(connected) for k in j}
+    return pd.Series(r, name="class")
+
+def get_centre(node):
+    """get_centre_edge: return centroid Point from discrete node clusters
+
+    args:
+      node: discrete node cluster GeoDataSeries
+
+    returns:
+      GeoDataCentre node cluster centroid Point
+
+    """
+    centre = node[["geometry", "class"]].groupby("class").aggregate(tuple)
+    centre = gp.GeoSeries(centre["geometry"].map(MultiPoint), crs=CRS).centroid
+    centre = centre.rename("target")
+    geometry = node[["class", "geometry"]].set_index("class").join(centre)
+    geometry = geometry.apply(LineString, axis=1)
+    r = node.rename(columns={"node": "source"}).copy()
+    r["geometry"] = geometry.values
+    return r
+
+
+nx_line = get_raster_line_without_knot(nx_line.to_frame("geometry"))
+nx_output = nx_output.map(shapely_transform).map(set_precision_pointone)
+nx_output.plot()
+```
+### Primal network
+There are circumstances where it would be interesting to see a "primal" network, only consisting of line start and end points, as here,
+
+```{python}
+def get_nx(line):
+    """get_nx: return primal edge and node network from LineString GeoDataFrame
+
+    args:
+      line: LineString GeoDataFrame
+
+    returns:
+      edge, node GeoDataFrames
+
+    """
+    r = line.map(get_end)
+    edge = gp.GeoSeries(r.map(LineString), crs=CRS)
+    r = np.vstack(r.to_numpy())
+    r = gp.GeoSeries(map(Point, r)).to_frame("geometry")
+    r = r.groupby(r.columns.to_list(), as_index=False).size()
+    node = gp.GeoDataFrame(r, crs=CRS)
+    return edge, node
+
+nx_edge, _ = get_nx(nx_line)
+nx_output = nx_output.map(shapely_transform).map(set_precision_pointone)
+nx_output.plot()
+```
+
 ### Simplification via voronoi polygons
 
 ![](images/paste-1.png)
