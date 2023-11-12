@@ -190,7 +190,7 @@ smplfy = function(x_list, keep) {
 }
 # input_simplified = smplfy(input_projected, simplification_levels)
 # sf::write_sf(input_simplified, "data/input_simplified1.geojson")
-input_simplified1 = sf::read_sf('data/input_simplified1.geojson')
+input_simplified = sf::read_sf('data/input_simplified1.geojson')
 input_simplified = left_join(
   input_simplified,
   simplification_df,
