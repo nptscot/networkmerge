@@ -597,6 +597,8 @@ nx_output.plot()
 In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .
 
 
+### Boundary
+
 ```{python}
 from shapely import box
 from shapely.ops import voronoi_diagram
@@ -618,7 +620,10 @@ def get_geometry_line(this_buffer):
 
 nx_boundary = get_geometry_line(nx_geometry)
 nx_boundary.plot()
+```
 
+### Segment
+```{python}
 def get_segment_nx(line, scale):
     """get_segment_nx: segment line into sections, no more than scale long
 
@@ -662,26 +667,33 @@ def get_segment(line, distance=50.0):
 
 nx_segment = get_segment_nx(nx_boundary, scale).reset_index(drop=True)
 nx_segment.plot()
+```
 
+### Point
+
+```{python}
 nx_point = nx_segment.loc[:, "geometry"].map(get_coordinates).explode()
 nx_point = MultiPoint(nx_point[::2].map(Point).values)
 nx_output = gp.GeoSeries(nx_point, crs=CRS)
 nx_output.plot(edgecolor="blue", color="white")
+```
+### Voronoi
 
-nx_envelope = box(*nx_point.bounds)
+```{python}
 nx_voronoi = voronoi_diagram(nx_point, envelope=nx_envelope, tolerance=tolerance, edges=True)
 nx_voronoi = gp.GeoSeries(map(set_precision_pointone, nx_voronoi.geoms), crs=CRS)
 nx_voronoi.plot()
+```
 
-
+```{python}
+nx_envelope = box(*nx_point.bounds)
 nx_voronoi = nx_voronoi.explode(index_parts=False).clip(nx_envelope)
-
 ix = ~nx_voronoi.is_empty & (nx_voronoi.type == "LineString")
 nx_voronoi = nx_voronoi[ix].reset_index(drop=True)
 nx_voronoi.plot()
-
 ```
 
+### Voronoi simplified network
 
 ```{python}
 def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
@@ -708,7 +720,6 @@ def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
     r = edge["geometry"].map(get_linestring).explode().to_frame("geometry")
     r = set_geometry(r, square)
     return combine_line(r)
-
 
 def filter_distance(line, boundary, offset):
     """filter_distance: filter line closer than distance offset from boundary
@@ -740,7 +751,6 @@ def filter_buffer(line, geometry):
     (_, ix) = line.sindex.query(geometry, predicate="contains_properly")
     return combine_line(line.loc[ix]).simplify(1.0)
 
-
 def set_geometry(line, square):
     """set_geometry: return LineString simplified by combining overlapping end-points
 
@@ -766,7 +776,7 @@ def set_geometry(line, square):
 nx_line = get_voronoi_line(nx_voronoi, nx_boundary, nx_geometry, buffer_size)
 nx_line.plot()
 ```
-
+### Primal network
 ```{python}
 nx_edge = get_nx(nx_line)
 nx_edge.plot()
