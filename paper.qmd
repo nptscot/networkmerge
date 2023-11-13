@@ -260,7 +260,7 @@ In this approach lines are buffered and combined to form a raster image and thin
 
 #### Create a projected combined buffered geometry:
 
-An outer buffer, in this case `8.0m`, is applied to the base network.
+An outer buffer, in this case 8.0m, is applied to the base network.
 
 ```{python}
 from functools import partial
@@ -284,14 +284,16 @@ def get_geometry_buffer(this_gf, radius=8.0):
     try:
         r = gp.GeoSeries(union.geoms, crs=CRS)
     except AttributeError:
-        r = gpd.GeoSeries(union, crs=CRS)
+        r = gp.GeoSeries(union, crs=CRS)
     return r
 
 CRS = "EPSG:27700"
+buffer_size = 8.0
+
 set_precision_pointone = partial(set_precision, grid_size=0.1)
 base_nx = gp.read_file("data/rnet_princes_street.geojson").to_crs(CRS)
 base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
-nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=8.0)
+nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 ```
 
 ```{python}
@@ -318,6 +320,7 @@ A scaled affine transformations between the projected coordinate geometry and sc
 
 ```{python}
 import numpy as np
+import pandas as pd
 import rasterio as rio
 import rasterio.features as rif
 
@@ -401,16 +404,15 @@ transform_point = nx_point.map(shapely_transform).map(set_precision_pointone)
 transform_point.plot(edgecolor="black", color="blue").grid()
 ```
 
-But the issue with this is that we need a simplified set of lines not a set of points that lie on the simplified network.
+The issue with this is that rather than points that lie on the simplified network, we  need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.
 
-### Convert from a projected point to a line geometry
+### Conversion from point to line geometry
 
 Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network. 
 
 First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.
 
 ```{python}
-import pandas as pd
 from shapely import get_coordinates
 from shapely.geometry import LineString, MultiLineString
 
@@ -582,13 +584,195 @@ def get_nx(line):
     r = gp.GeoSeries(map(Point, r)).to_frame("geometry")
     r = r.groupby(r.columns.to_list(), as_index=False).size()
     return edge
+```
 
+```{python}
 nx_edge = get_nx(nx_line)
 nx_output = nx_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 ```
 
 ### Simplification via voronoi polygons
+
+In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .
+
+
+```{python}
+from shapely import box
+from shapely.ops import voronoi_diagram
+
+scale = 5.0
+tolerance=1.0
+
+def get_geometry_line(this_buffer):
+    """get_geometry_line: returns LineString boundary from geometry
+
+    args:
+      this_buffer: geometry to find LineString
+
+    returns:
+       simplified LineString boundary
+    """
+    r = this_buffer.boundary.explode(index_parts=False).reset_index(drop=True)
+    return gp.GeoSeries(r.simplify(tolerance=0.5), crs=CRS)
+
+nx_boundary = get_geometry_line(nx_geometry)
+nx_boundary.plot()
+
+def get_segment_nx(line, scale):
+    """get_segment_nx: segment line into sections, no more than scale long
+
+    args:
+      line:  line to segment
+      scale: length to segment line
+
+    returns:
+      segmented LineStrings
+
+    """
+    set_segment = partial(get_segment, distance=scale)
+    r = line.map(set_segment).explode().rename("geometry")
+    return gp.GeoDataFrame(r, crs=CRS)
+
+def get_linestring(line):
+    """get_linestring: return LineString GeoSeries from line coordinates
+
+    args:
+      line:
+
+    returns:
+       LineString GeoSeries
+    """
+    r = get_coordinates(line)
+    r = np.stack([gp.points_from_xy(*r[:-1].T), gp.points_from_xy(*r[1:].T)])
+    return gp.GeoSeries(pd.DataFrame(r.T).apply(LineString, axis=1), crs=CRS).values
+
+def get_segment(line, distance=50.0):
+    """get_segment: segment LineString GeoSeries into distance length segments
+
+    args:
+      line: GeoSeries LineString
+      length: segmentation distance (default value = 50.0)
+
+    returns:
+      GeoSeries of LineStrings of up to length distance
+
+    """
+    return get_linestring(line.segmentize(distance))
+
+nx_segment = get_segment_nx(nx_boundary, scale).reset_index(drop=True)
+nx_segment.plot()
+
+nx_point = nx_segment.loc[:, "geometry"].map(get_coordinates).explode()
+nx_point = MultiPoint(nx_point[::2].map(Point).values)
+nx_output = gp.GeoSeries(nx_point, crs=CRS)
+nx_output.plot(edgecolor="blue", color="white")
+
+nx_envelope = box(*nx_point.bounds)
+nx_voronoi = voronoi_diagram(nx_point, envelope=nx_envelope, tolerance=tolerance, edges=True)
+nx_voronoi = gp.GeoSeries(map(set_precision_pointone, nx_voronoi.geoms), crs=CRS)
+nx_voronoi.plot()
+
+
+nx_voronoi = nx_voronoi.explode(index_parts=False).clip(nx_envelope)
+
+ix = ~nx_voronoi.is_empty & (nx_voronoi.type == "LineString")
+nx_voronoi = nx_voronoi[ix].reset_index(drop=True)
+nx_voronoi.plot()
+
+```
+
+
+```{python}
+def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
+    """get_voronoi_line: returns cleaned simplified line by filtering Voronoi lines by distance,
+    contained within network buffer Polygons, and combining overlapping end-points
+
+    args:
+      voronoi:     Voronoi LineString
+      boundary:    network buffer LineString
+      geometry:    network buffer Polygon
+      buffer_size: network buffer distance [m]
+
+    returns:
+      simplified simplified network line
+
+    """
+    offset = buffer_size / 2.0
+    r = filter_distance(voronoi, boundary, offset)
+    r = filter_buffer(r, geometry)
+    edge, node = get_source_target(r.to_frame("geometry"))
+    ix = node["count"] < 4
+    square = node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
+    square = gp.GeoSeries(unary_union(square.values).geoms, crs=CRS)
+    r = edge["geometry"].map(get_linestring).explode().to_frame("geometry")
+    r = set_geometry(r, square)
+    return combine_line(r)
+
+
+def filter_distance(line, boundary, offset):
+    """filter_distance: filter line closer than distance offset from boundary
+
+    args:
+      line:     LineStrings to simplify
+      boundary: boundary LineString
+      offset:
+
+    returns:
+      simplified LineStrings
+    """
+    edge, _ = get_source_target(line.to_frame("geometry"))
+    (ix, _), distance = boundary.sindex.nearest(edge["geometry"], return_distance=True)
+    _, ix = np.unique(ix, return_index=True)
+    ix = distance[ix] > offset
+    return combine_line(edge.loc[ix, "geometry"]).simplify(1.0)
+
+def filter_buffer(line, geometry):
+    """filter_buffer: filter keeping lines within boundary Polygon
+
+    args:
+      line:     LineStrings to simplify
+      geometry: boundary Polygon
+
+    returns:
+      filtered LineStrings
+    """
+    (_, ix) = line.sindex.query(geometry, predicate="contains_properly")
+    return combine_line(line.loc[ix]).simplify(1.0)
+
+
+def set_geometry(line, square):
+    """set_geometry: return LineString simplified by combining overlapping end-points
+
+    args:
+      line:     LineStrings to simplify
+      square:   overlapping squares
+
+    returns:
+      simplified LineStrings
+
+    """
+    r = line.reset_index(drop=True)
+    centroid = square.centroid.map(set_precision_pointone).set_crs(CRS)
+    edge, node = get_source_target(r)
+    ix = node["geometry"].sindex.query(square, predicate="contains_properly")
+    node.loc[ix[1], "geometry"] = centroid[ix[0]].values
+    source = node.loc[edge["source"], "geometry"].values
+    target = node.loc[edge["target"], "geometry"].values
+    r = np.stack([source, target]).T
+    return gp.GeoSeries(map(LineString, r), crs=CRS)
+
+
+nx_line = get_voronoi_line(nx_voronoi, nx_boundary, nx_geometry, buffer_size)
+nx_line.plot()
+```
+
+```{python}
+nx_edge = get_nx(nx_line)
+nx_edge.plot()
+
+plt.show()
+```
 
 ![](images/paste-1.png)
 
