@@ -255,14 +255,13 @@ Two approaches to this are outlined below.
 
 ### Simplification by skeletonization
 
-In this approach lines are buffered and combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region.
-
-Using the Edinburgh GeoJSON network as above:
+In this approach lines are buffered and combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.
 
 
 #### Create a projected combined buffered geometry:
 
-::: {#fig-base-and-buffered-network layout-ncol="2"}
+An outer buffer, in this case `8.0m`, is applied to the base network.
+
 ```{python}
 from functools import partial
 
@@ -292,12 +291,30 @@ CRS = "EPSG:27700"
 set_precision_pointone = partial(set_precision, grid_size=0.1)
 base_nx = gp.read_file("data/rnet_princes_street.geojson").to_crs(CRS)
 base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
-base_nx.plot()
 nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=8.0)
-nx_geometry.plot()
+```
+
+```{python}
+import matplotlib.pyplot as plt
+plt.rcParams["figure.figsize"] = (5, 5)
+```
+
+The buffered street network to be simplified is shown in @fig-base-network
+```{python}
+#| label: fig-base-network
+#| fig-cap: Edinburgh Princes Street buffer network
+#| layout-ncol: 2
+#| fig-subcap:
+#| - Geographic (EPSG2700)
+#| - Coordinate (GB1936)
+fig, ax = plt.subplots()
+#base_nx.plot(edgecolor="blue", color="blue", ax=ax).grid()
+nx_geometry.plot(edgecolor="black", color="blue", ax=ax).grid()
 ```
 
 #### Create the affine transformation between the points in the buffer and raster image 
+
+A scaled affine transformations between the projected coordinate geometry and scaled raster image is calculated. 
 
 ```{python}
 import numpy as np
@@ -339,17 +356,17 @@ def get_affine_transform(this_gf, scale=1.0):
     return r, s, get_pxsize(bound, scale)
 
 r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
-r_matrix
-s_matrix
+
+print(f"Rasterio affine transformation:\t{pd.Series(r_matrix)}")
+print(f"Shapely affine transformat:\t{np.asarray(s_matrix).reshape(2, -1)}")
 
 ```
 In this example a scale factor of 2.0 is used.
 
 ### Skeletonize the buffer to a point geometry
 
-A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles. The image is then thinned and the resulting skeleton raster image transformed back to a point geometry but still in raster geometry.
+A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.
 
-This is an issue as the intent is to provide a simplified set of lines not points that lie on these lines.
 
 ```{python}
 import warnings
@@ -357,34 +374,34 @@ import warnings
 from skimage.morphology import remove_small_holes, skeletonize
 from shapely.affinity import affine_transform
 from shapely.geometry import Point
+import rasterio.plot as rip
 
-def get_skeleton(geometry, transform, shape):
-    """get_skeleton: return skeletonized raster buffer from Shapely geometry
+geometry_im = rif.rasterize(nx_geometry.values, transform=r_matrix, out_shape=out_shape)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    geometry_im = remove_small_holes(geometry_im, 4).astype(np.uint8)
 
-    args:
-      geometry: Shapely geometry to convert to raster buffer
-      transform: rasterio affine transformation
-      shape: output buffer px size
+rip.show(geometry_im, cmap="Blues", title="buffer geometry")
+```
 
-    returns:
-      skeltonized numpy array raster buffer
+The image is then thinned and the resulting giving skeleton raster image.
 
-    """
-    r = rif.rasterize(geometry.values, transform=transform, out_shape=shape)
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        r = remove_small_holes(r, 4).astype(np.uint8)
-    return skeletonize(r).astype(np.uint8)
-
-skeleton_im = get_skeleton(nx_geometry, r_matrix, out_shape)
+```{python}
+skeleton_im = skeletonize(geometry_im).astype(np.uint8)
 point_im = np.stack(np.where(skeleton_im >= 1))
+rip.show(skeleton_im, cmap="Blues", title="skeleton geometry")
 nx_point = gp.GeoSeries(map(Point, point_im.T), crs=CRS)
-nx_point.plot()
+```
 
+The point geometry can then be transformed back to a point geometry.
+
+```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix)
 transform_point = nx_point.map(shapely_transform).map(set_precision_pointone)
-transform_point.plot()
+transform_point.plot(edgecolor="black", color="blue").grid()
 ```
+
+But the issue with this is that we need a simplified set of lines not a set of points that lie on the simplified network.
 
 ### Convert from a projected point to a line geometry
 
@@ -542,11 +559,11 @@ def get_centre(node):
 
 
 nx_line = get_raster_line_without_knot(nx_line.to_frame("geometry"))
-nx_output = nx_output.map(shapely_transform).map(set_precision_pointone)
+nx_output = nx_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 ```
 ### Primal network
-There are circumstances where it would be interesting to see a "primal" network, only consisting of line start and end points, as here,
+There are circumstances where it may useful to see a "primal" network, that only consists of lines from start and end points,
 
 ```{python}
 def get_nx(line):
@@ -564,11 +581,10 @@ def get_nx(line):
     r = np.vstack(r.to_numpy())
     r = gp.GeoSeries(map(Point, r)).to_frame("geometry")
     r = r.groupby(r.columns.to_list(), as_index=False).size()
-    node = gp.GeoDataFrame(r, crs=CRS)
-    return edge, node
+    return edge
 
-nx_edge, _ = get_nx(nx_line)
-nx_output = nx_output.map(shapely_transform).map(set_precision_pointone)
+nx_edge = get_nx(nx_line)
+nx_output = nx_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 ```
 
