@@ -1,43 +1,62 @@
-# Spatial network simplification for transport planning
+# Route network simplification for transport planning: methods and
+applications
 
-<!-- # Reproducibility {.unnumbered}
-&#10;To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
+# Reproducibility
+
+<details>
+
+To reproduce this paper you need `quarto` installed.
+
+After installing the dependencies, you can reproduce the paper by
+running the following command in the terminal:
+
+``` bash
+quarto render paper.qmd
+```
+
+<!-- and the Elsevier extension which can be installed as follows:
 &#10;``` bash
-quarto add quarto-journals/elsevier
+quarto add quarto-journals/elsevier 
 ```
-&#10;To write the paper we recommend using the Quarto extension for VS Code.
-You can go into the visual editor with the following shortcut:
-&#10;```         
-Ctrl+Shift+F4
-```
-&#10;You can then add citations and other elements of academic writing. -->
+-->
+
+To contribute to the papers written as quarto documents (with `.qmd`
+extensions) like this one, we recommend using the Quarto extension for
+VS Code. You can go into the visual editor with the following shortcut:
+
+    Ctrl+Shift+F4
+
+You can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s
+other features for academic writing.
+
+</details>
 
 # Abstract
 
 # Introduction
 
-Datasets representing route networks are central to transport planning.
-Unlike other key types of data used in transport planning, route
-networks are both a key input *and* key output. Origin-destination, GPS,
-and remote sensing imagery datasets are all key inputs but rarely
-feature as outputs of transport models. Global and local estimates of
-costs and benefits associated with changes to transport systems,
-geographic outputs at regional, local and corridor level, and
-visualisation of agents on the system are common outputs. However, route
-network datasets are ubiquitous as both transport model inputs
-(typically representing road networks) outputs (typically with model
-outputs such as flow per time of day).[^1]
+Datasets representing route networks are central to transport planning
+as key inputs *and* output. Origin-destination, GPS, and remote sensing
+imagery datasets are all key inputs but rarely feature as outputs of
+transport models. Estimates of costs and benefits associated with
+changes to transport systems, geographic outputs at regional, local and
+corridor level, and visualisation of agents on the system are common
+outputs. However, route network datasets are ubiquitous as both
+transport model inputs (typically representing road networks) outputs
+(typically for visualising model outputs such as flow per time of
+day).[^1]
 
-This raises the question, what are transport network datasets? The
-intuitive definition is that route network datasets are digital
-representations of footpaths, cycleways, highways and other ways along
-which people and goods can travel. More formally, transport network
-datasets must contain, at a minimum, geographic information on the
-coordinates of vertices (points along ways) and edges (the straight
-lines between vertices representing ways). Usually they also contain
-attributes associated with these ways. File formats for representing
-them include Transportation Network Test Problem (TNTP and stored as a
-series of `.tntp` plain text files, examples of which can be found in
+This raises questions about what transport network datasets are, and how
+they can be optimized for more effective decision-making. An intuitive
+definition is that route network datasets are digital representations of
+footpaths, cycleways, highways and other ways along which people and
+goods can travel. More formally, transport network datasets must
+contain, at a minimum, geographic information on the coordinates of
+vertices (points along ways) and edges (the straight lines between
+vertices representing ways). Usually they also contain attributes
+associated with these ways. File formats for representing them include
+Transportation Network Test Problem (TNTP and stored as a series of
+`.tntp` plain text files, examples of which can be found in
 [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)),
 `.DAT` files used by the proprietary SATURN transport modelling system
 and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
