@@ -1,5 +1,5 @@
 ---
-title: "Spatial network simplification for transport planning"
+title: "Spatial network simplification methods for transport planning"
 # Alternatives:
 # title: "Network simplification: application to the visualisation of transport networks"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
@@ -9,29 +9,42 @@ format:
 number-sections: true
 execute: 
   echo: false
-  # cache: true
+  cache: true
 editor: 
   markdown: 
     wrap: sentence
 bibliography: references.bib
 ---
 
-<!-- # Reproducibility {.unnumbered}
+# Reproducibility {.unnumbered}
 
-To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
+<details>
+
+To reproduce this paper you need `quarto` installed.
+
+After installing the dependencies, you can reproduce the paper by running the following command in the terminal:
 
 ``` bash
-quarto add quarto-journals/elsevier
+quarto render paper.qmd
 ```
 
-To write the paper we recommend using the Quarto extension for VS Code.
+<!-- and the Elsevier extension which can be installed as follows:
+
+``` bash
+quarto add quarto-journals/elsevier 
+```
+-->
+
+To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
 
 ```         
 Ctrl+Shift+F4
 ```
 
-You can then add citations and other elements of academic writing. -->
+You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other features for academic writing.
+
+</details>
 
 # Abstract {.unnumbered}
 
