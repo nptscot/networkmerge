@@ -1,21 +1,16 @@
-# Network simplification: application to the visualisation of transport
-networks
+# Spatial network simplification for transport planning
 
-# Reproducibility
-
-To reproduce this paper you need `quarto` installed and the Elsevier
-extension which can be installed as follows:
-
-``` bash
+<!-- # Reproducibility {.unnumbered}
+&#10;To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
+&#10;``` bash
 quarto add quarto-journals/elsevier
 ```
-
-To write the paper we recommend using the Quarto extension for VS Code.
+&#10;To write the paper we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
-
-    Ctrl+Shift+F4
-
-You can then add citations and other elements of academic writing.
+&#10;```         
+Ctrl+Shift+F4
+```
+&#10;You can then add citations and other elements of academic writing. -->
 
 # Abstract
 

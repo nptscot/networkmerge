@@ -1,6 +1,8 @@
 ---
-title: "Network simplification: application to the visualisation of transport networks"
-# PDF and gfm formats:
+title: "Spatial network simplification for transport planning"
+# Alternatives:
+# title: "Network simplification: application to the visualisation of transport networks"
+# title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 format:
   # pdf: default
   gfm: default
@@ -14,7 +16,7 @@ editor:
 bibliography: references.bib
 ---
 
-# Reproducibility {.unnumbered}
+<!-- # Reproducibility {.unnumbered}
 
 To reproduce this paper you need `quarto` installed and the Elsevier extension which can be installed as follows:
 
@@ -29,7 +31,7 @@ You can go into the visual editor with the following shortcut:
 Ctrl+Shift+F4
 ```
 
-You can then add citations and other elements of academic writing.
+You can then add citations and other elements of academic writing. -->
 
 # Abstract {.unnumbered}
 
