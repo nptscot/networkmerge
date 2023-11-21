@@ -79,7 +79,7 @@ Overall this is a good thing for transport planning research, but excess complex
 The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning.
 @sec-problem outlines the problem of complex route networks.
 @sec-data describes the input datasets.
-@sec-methods presents methods for route network generation alongside results based on the example datasets.
+@sec-methods presents methods for route network simplification alongside results based on the example datasets.
 In @sec-discussion we discuss the results and outline future work.
 
 <!-- Much research has focussed on generating and modelling transport network datasets.
