@@ -298,9 +298,149 @@ a single step, “through the removal of duplicate or parallel edges, and
 combining simply-connected nodes” (Deakin 2023). Two approaches to this
 are outlined below.
 
-### Simplification by skeletonization
+### Network Simplification
 
-### Simplification via voronoi polygons
+There are two simplification approaches based presented either using
+image skeletonization or Voronoi diagram to finding a centre line.
+
+### Create a projected combined buffered geometry:
+
+Both approaches a buffer, in this case 8.0m, is applied to the base
+network lines.
+
+The buffered street network to be simplified is
+
+![base network](paper_files/figure-commonmark/unnamed-chunk-8-5.png)
+
+![buffer network](paper_files/figure-commonmark/unnamed-chunk-8-6.png)
+
+Edinburgh Princes Street buffer network
+
+### Skeletonization
+
+Buffered lines are combined to form a raster image and thinned to
+produce to a skeletal remnant that preserves the extent and connectivity
+centred on a line centred on the combined buffered region, using the
+Edinburgh GeoJSON network as above.
+
+#### Create the affine transformation between the points in the buffer and raster image
+
+A scaled affine transformations between the projected coordinate
+geometry and scaled raster image is calculated.
+
+### Affine transforms
+
+#### Rasterio transform
+
+    |     |      |        |
+    |----:|-----:|-------:|
+    | 0.5 |  0   | 324166 |
+    | 0   | -0.5 | 674527 |
+    | 0   |  0   |      1 |
+
+#### Shapely transform
+
+    |     |      |        |
+    |----:|-----:|-------:|
+    | 0   | -0.5 | 324166 |
+    | 0.5 |  0   | 674527 |
+
+In this example a scale factor of 2.0 is used.
+
+### Skeletonize the buffer to a point geometry
+
+A scaled affine transformation is applied to the projected coordinate
+geometry to create a scaled raster image. The raster image is then
+cleaned to remove small holes in the image, typically where buffer lines
+run parallel or intersect at shallow angles.
+
+![](paper_files/figure-commonmark/unnamed-chunk-12-9.png)
+
+The image is then thinned and the resulting giving skeleton raster
+image.
+
+![](paper_files/figure-commonmark/unnamed-chunk-13-11.png)
+
+The point geometry can then be transformed back to a point geometry.
+
+![](paper_files/figure-commonmark/unnamed-chunk-14-13.png)
+
+The issue with this is that rather than points that lie on the
+simplified network, we need a simplified set of lines not a set. This
+requires the line geometry to be inferred from associated points.
+
+### Conversion from point to line geometry
+
+Creating a simplified line geometry from a skeletonized point set is
+arguably the most awkward step in creating a simplified network.
+
+First identify all adjacent points, which are points within a 1x1 px
+square in the raster coordinate system. Then create line segments from
+lines between all adjacent points, and finally combine and the resultant
+lines geometries.
+
+To see the simplified network requires the reverse affine transformation
+to be applied,
+
+![](paper_files/figure-commonmark/unnamed-chunk-16-15.png)
+
+### Knots
+
+Where lines intersect multiple short segment may occur which look like
+knots.
+
+To remove these these short segments are clustered, a cluster
+centre-point calculated, end-points of longer-lines connected to the
+segment cluser are then moved to cluster centre-point, removing the
+knot. As before, prior to plotting the simplified network the reverse
+affine transformation is applied,
+
+![](paper_files/figure-commonmark/unnamed-chunk-17-17.png)
+
+### Primal network
+
+There are circumstances where it may useful to see a “primal” network,
+that only consists of lines from start and end points,
+
+![](paper_files/figure-commonmark/unnamed-chunk-19-19.png)
+
+## Simplification via voronoi polygons
+
+In this approach lines are buffered, the buffer edges segmented into
+sequences of points and a centre-line derived from a set of Voronoi
+polygons convering these .
+
+### Boundary
+
+![](paper_files/figure-commonmark/unnamed-chunk-20-21.png)
+
+### Segment
+
+![](paper_files/figure-commonmark/unnamed-chunk-21-23.png)
+
+### Point
+
+![](paper_files/figure-commonmark/unnamed-chunk-22-25.png)
+
+### Voronoi
+
+![](paper_files/figure-commonmark/unnamed-chunk-23-27.png)
+
+### Voronoi 2
+
+![](paper_files/figure-commonmark/unnamed-chunk-24-29.png)
+
+### Voronoi simplified network
+
+![](paper_files/figure-commonmark/unnamed-chunk-25-31.png)
+
+### Voronoi line
+
+![](paper_files/figure-commonmark/unnamed-chunk-26-33.png)
+
+### Primal network
+
+![](paper_files/figure-commonmark/unnamed-chunk-27-35.png)
 
 ![](images/paste-1.png)
 
