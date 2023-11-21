@@ -76,7 +76,11 @@ A problem associated with the trend towards geographic representation of route n
 With the increasing availability of high resolution imagery, citizens (e.g. via OpenStreetMap) and national mapping agencies are mapping more and more detail.
 Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.
 
-
+The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning.
+@sec-problem outlines the problem of complex route networks.
+@sec-data describes the input datasets.
+@sec-methods presents methods for route network generation alongside results based on the example datasets.
+In @sec-discussion we discuss the results and outline future work.
 
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
@@ -84,7 +88,7 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 <!-- Todo: add papers on network cleaning and simplification. --> 
 <!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
 
-# Prior work and problem definition
+# Prior work and problem definition {#sec-problem}
 
 @morgan2020 presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
 The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings.
@@ -133,7 +137,7 @@ Furthermore we present solutions, implemented with open source software for repr
 @sec-results presents the results, illustrated by network maps of the example datasets.
 Finally, @sec-discussion discusses the results and outlines future work.
 
-# Data
+# Data {#sec-data}
 
 # Methods {#sec-methods}
 
@@ -866,14 +870,6 @@ After you have a simplified version of the network, from any source, the next st
 
 <!-- ## Combined network simplification and attribute merging -->
 
-# Results {#sec-results}
-
-```{python}
-```
-
-```{python}
-
-```
 
 # Discussion {#sec-discussion}
 

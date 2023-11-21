@@ -1,5 +1,4 @@
-# Route network simplification for transport planning: methods and
-applications
+# Route network simplification for transport planning
 
 # Reproducibility
 
@@ -49,44 +48,62 @@ day).[^1]
 This raises questions about what transport network datasets are, and how
 they can be optimized for more effective decision-making. An intuitive
 definition is that route network datasets are digital representations of
-footpaths, cycleways, highways and other ways along which people and
-goods can travel. More formally, transport network datasets must
-contain, at a minimum, geographic information on the coordinates of
-vertices (points along ways) and edges (the straight lines between
-vertices representing ways). Usually they also contain attributes
-associated with these ways. File formats for representing them include
-Transportation Network Test Problem (TNTP and stored as a series of
-`.tntp` plain text files, examples of which can be found in
+footpaths, cycleways, highways and other *ways* (to use the
+OpenStreetMap terminology) along which people and goods can travel. More
+formally, transport network datasets must contain, at a minimum,
+geographic information on the coordinates of vertices (points along
+ways) and edges (the straight lines between vertices representing ways).
+Usually they also contain attributes such as the type of way, it’s
+characteristics (e.g. is lit at night), and the amount of traffic using
+each segment.
+
+File formats for representing route networks include Transportation
+Network Test Problem files (TNTP and stored as a series of `.tntp` plain
+text files, examples of which can be found in
 [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)),
 `.DAT` files used by the proprietary SATURN transport modelling system
-and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
-
-A more recent approach is to represent transport networks in standard
+and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data. A
+more recent approach is to represent transport networks in standard
 geographic file formats. In this approach, used in the present paper,
 transport networks are represented as a series of non-overlapping
 linestrings, with attributes such as way type and flow. Making transport
 datasets compliant with the ‘simple features’ geographic data
-specification in this way has many advantages compared with the
-proliferation of formats used by proprietary software, enabling more
-easier sharing of datasets between people and programs. The simple
-features standard is formalised by the International Organization for
-Standardization in [ISO
+specification in this way has advantages,
+<!-- compared with the proliferation of formats used by proprietary software, -->
+enabling more easier sharing of datasets between people and programs.
+The simple features standard is formalised by the International
+Organization for Standardization in [ISO
 19125-1:2004](https://www.iso.org/standard/40114.html) and implemented
 in a wide range of file formats such as ESRIs shapefile, GeoJSON, and
 the open standard for geographic data, GeoPackage. For ease of data
 sharing, we share transport networks used in this paper as plain text
 GeoJSON files.
 
-Much research has focussed on generating and modelling transport network
-datasets. This is unsurprising given the importance of transport
-networks as inputs and outputs of transport models. Much has been
-written about network ‘cleaning’ and simplification as a pre-processing
-step in transport modelling.
+A problem associated with the trend towards geographic representation of
+route networks is increasing file sizes and complexity. With the
+increasing availability of high resolution imagery, citizens (e.g. via
+OpenStreetMap) and national mapping agencies are mapping more and more
+detail. Overall this is a good thing for transport planning research,
+but excess complexity and intricacy can lead to problems, as outlined in
+the next section.
+
+The aim of this paper is to articulate the problem of complex route
+networks, present solutions with implementations in open source software
+for reproducible research, and describe applications of the methods to
+support more effective transport planning. [Section 2](#sec-problem)
+outlines the problem of complex route networks. [Section 3](#sec-data)
+describes the input datasets. [Section 4](#sec-methods) presents methods
+for route network generation alongside results based on the example
+datasets. In [Section 5](#sec-discussion) we discuss the results and
+outline future work.
+
+<!-- Much research has focussed on generating and modelling transport network datasets.
+This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
+Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
 <!-- Todo: add papers on network cleaning and simplification. -->
-However, there has been relatively little research into transport
-network visualisation, despite the importance of visualisation to enable
-more people to understand transport models, for informing policies and
-prioritising investment in transport planning.
+<!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
+
+# Prior work and problem definition
 
 Morgan and Lovelace (2020) presented methods for combining multiple
 overlapping routes into a single route network with non-overlapping
@@ -204,11 +221,11 @@ for reproducible and scalable results, to support better visualisation
 of transport networks for more evidence-based and sustainable transport
 planning.
 
-[Section 3](#sec-methods) describes the input datasets and methods used
-to generate the results presented in this paper.
-[Section 4](#sec-results) presents the results, illustrated by network
-maps of the example datasets. Finally, [Section 5](#sec-discussion)
-discusses the results and outlines future work.
+[Section 4](#sec-methods) describes the input datasets and methods used
+to generate the results presented in this paper. **?@sec-results**
+presents the results, illustrated by network maps of the example
+datasets. Finally, [Section 5](#sec-discussion) discusses the results
+and outlines future work.
 
 # Data
 
@@ -466,8 +483,6 @@ next step is merging the attributes.
 <!-- TODO: add content to this section. -->
 <!-- TODO: Is this possible? -->
 <!-- ## Combined network simplification and attribute merging -->
-
-# Results
 
 # Discussion
 
