@@ -253,20 +253,21 @@ Illustration of consolidation of intersections, with the `consolidate_intersecti
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
 Two approaches to this are outlined below.
 
-### Simplification by skeletonization
+### Network Simplification
 
-In this approach lines are buffered and combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.
+There are two simplification approaches based presented either using image skeletonization or Voronoi diagram to finding a centre line.
 
+### Create a projected combined buffered geometry:
 
-#### Create a projected combined buffered geometry:
-
-An outer buffer, in this case 8.0m, is applied to the base network.
+Both approaches a buffer, in this case 8.0m, is applied to the base network lines.
 
 ```{python}
 from functools import partial
 
 import geopandas as gp
+import matplotlib.pyplot as plt
 from shapely import get_coordinates, line_merge, set_precision, unary_union
+plt.rcParams["figure.figsize"] = (12, 12)
 
 def get_geometry_buffer(this_gf, radius=8.0):
     """get_geometry_buffer: return radius buffered GeoDataFrame
@@ -279,7 +280,7 @@ def get_geometry_buffer(this_gf, radius=8.0):
       buffered GeoSeries geometry
 
     """
-    r = gp.GeoSeries(this_gf, crs=CRS).buffer(radius, join_style="mitre")
+    r = gp.GeoSeries(this_gf, crs=CRS).buffer(radius, join_style="round", cap_style="round")
     union = unary_union(r)
     try:
         r = gp.GeoSeries(union.geoms, crs=CRS)
@@ -296,23 +297,23 @@ base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
 nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 ```
 
+The buffered street network to be simplified is
 ```{python}
-import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = (5, 5)
-```
-
-The buffered street network to be simplified is shown in @fig-base-network
-```{python}
-#| label: fig-base-network
 #| fig-cap: Edinburgh Princes Street buffer network
 #| layout-ncol: 2
 #| fig-subcap:
-#| - Geographic (EPSG2700)
-#| - Coordinate (GB1936)
-fig, ax = plt.subplots()
-#base_nx.plot(edgecolor="blue", color="blue", ax=ax).grid()
-nx_geometry.plot(edgecolor="black", color="blue", ax=ax).grid()
+#|  - base network
+#|  - buffer network
+base_nx.plot(edgecolor="blue", color="blue").grid()
+plt.show()
+nx_geometry.plot(edgecolor="black", color="blue").grid()
+plt.show()
 ```
+
+### Skeletonization
+
+Buffered lines are combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.
+
 
 #### Create the affine transformation between the points in the buffer and raster image 
 
@@ -359,11 +360,19 @@ def get_affine_transform(this_gf, scale=1.0):
     return r, s, get_pxsize(bound, scale)
 
 r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
-
-print(f"Rasterio affine transformation:\t{pd.Series(r_matrix)}")
-print(f"Shapely affine transformat:\t{np.asarray(s_matrix).reshape(2, -1)}")
-
 ```
+
+```{python}
+list(r_matrix))
+```
+: Rasterio affine transformation
+
+```{python}
+print(pd.DataFrame(s_matrix).to_markdown())
+```
+: Shapely affine transformation:
+
+
 In this example a scale factor of 2.0 is used.
 
 ### Skeletonize the buffer to a point geometry
@@ -402,6 +411,7 @@ The point geometry can then be transformed back to a point geometry.
 shapely_transform = partial(affine_transform, matrix=s_matrix)
 transform_point = nx_point.map(shapely_transform).map(set_precision_pointone)
 transform_point.plot(edgecolor="black", color="blue").grid()
+plt.show()
 ```
 
 The issue with this is that rather than points that lie on the simplified network, we  need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.
@@ -592,12 +602,13 @@ nx_output = nx_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 ```
 
-### Simplification via voronoi polygons
+## Simplification via voronoi polygons
 
 In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .
 
 
 ### Boundary
+
 
 ```{python}
 from shapely import box
@@ -680,13 +691,14 @@ nx_output.plot(edgecolor="blue", color="white")
 ### Voronoi
 
 ```{python}
+nx_envelope = box(*nx_point.bounds)
 nx_voronoi = voronoi_diagram(nx_point, envelope=nx_envelope, tolerance=tolerance, edges=True)
 nx_voronoi = gp.GeoSeries(map(set_precision_pointone, nx_voronoi.geoms), crs=CRS)
 nx_voronoi.plot()
 ```
 
+### Voronoi 2
 ```{python}
-nx_envelope = box(*nx_point.bounds)
 nx_voronoi = nx_voronoi.explode(index_parts=False).clip(nx_envelope)
 ix = ~nx_voronoi.is_empty & (nx_voronoi.type == "LineString")
 nx_voronoi = nx_voronoi[ix].reset_index(drop=True)
@@ -772,10 +784,26 @@ def set_geometry(line, square):
     r = np.stack([source, target]).T
     return gp.GeoSeries(map(LineString, r), crs=CRS)
 
+#nx_line = get_voronoi_line(nx_voronoi, nx_boundary, nx_geometry, buffer_size)
 
-nx_line = get_voronoi_line(nx_voronoi, nx_boundary, nx_geometry, buffer_size)
+offset = buffer_size / 2.0
+nx_line = filter_distance(nx_voronoi, nx_boundary, offset)
 nx_line.plot()
 ```
+
+### Voronoi line
+```{python}
+nx_line = filter_buffer(nx_line, nx_geometry)
+nx_edge, nx_node = get_source_target(nx_line.to_frame("geometry"))
+ix = nx_node["count"] < 4
+nx_square = nx_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
+nx_square = gp.GeoSeries(unary_union(nx_square.values).geoms, crs=CRS)
+nx_line = nx_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
+nx_line = set_geometry(nx_line, nx_square)
+nx_line = combine_line(nx_line)
+nx_line.plot()
+```
+
 ### Primal network
 ```{python}
 nx_edge = get_nx(nx_line)
