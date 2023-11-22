@@ -93,7 +93,7 @@ for reproducible research, and describe applications of the methods to
 support more effective transport planning. [Section 2](#sec-problem)
 outlines the problem of complex route networks. [Section 3](#sec-data)
 describes the input datasets. [Section 4](#sec-methods) presents methods
-for route network generation alongside results based on the example
+for route network simplification alongside results based on the example
 datasets. In [Section 5](#sec-discussion) we discuss the results and
 outline future work.
 
@@ -117,8 +117,6 @@ processing, has limitations:
 
 - It does not remove redundant vertices, which can lead to large file
   sizes and slow rendering.
-- It does not remove redundant edges, which can lead to visual
-  artefacts.
 - Parallel ways that are part of the same corridor are not merged into a
   single way, resulting in outputs that are difficult to interpret.
 
@@ -209,23 +207,10 @@ results available at www.pct.bike.
 
 The methods presented in this paper are designed to take a complex
 network as an input and output a simplified network, while preserving
-the spatial structure of the network and relevant attribures. By
+the spatial structure of the network and relevant attributes. By
 reducing duplicated parallel lines and other intricacies, the outputs
 can enable easier-to-interpret visualisations of transport behaviour on
 the network patterns and behaviors.
-
-The aim of this paper is to outline approaches for visualising transport
-networks that address the issues associated with multiple parallel ways.
-Furthermore we present solutions, implemented with open source software
-for reproducible and scalable results, to support better visualisation
-of transport networks for more evidence-based and sustainable transport
-planning.
-
-[Section 4](#sec-methods) describes the input datasets and methods used
-to generate the results presented in this paper. **?@sec-results**
-presents the results, illustrated by network maps of the example
-datasets. Finally, [Section 5](#sec-discussion) discusses the results
-and outlines future work.
 
 # Data
 

@@ -96,7 +96,6 @@ The approach has been used to visualise large transport networks, informing inve
 However, the 'overline' approach, without further processing, has limitations:
 
 -   It does not remove redundant vertices, which can lead to large file sizes and slow rendering.
--   It does not remove redundant edges, which can lead to visual artefacts.
 -   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
 
 The final point is most relevant to the present paper.
@@ -127,15 +126,8 @@ Note the visual artefacts such as 'staircase' effects and overlapping values res
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
-The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attribures.
+The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes.
 By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.
-
-The aim of this paper is to outline approaches for visualising transport networks that address the issues associated with multiple parallel ways.
-Furthermore we present solutions, implemented with open source software for reproducible and scalable results, to support better visualisation of transport networks for more evidence-based and sustainable transport planning.
-
-@sec-methods describes the input datasets and methods used to generate the results presented in this paper.
-@sec-results presents the results, illustrated by network maps of the example datasets.
-Finally, @sec-discussion discusses the results and outlines future work.
 
 # Data {#sec-data}
 
