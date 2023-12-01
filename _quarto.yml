@@ -1,5 +1,8 @@
 project:
   type: website
+  render: 
+    - "index.qmd"
+    - "paper.qmd"
 
 website:
   title: "networkmerge"
@@ -18,3 +21,4 @@ format:
 
 execute:
   freeze: auto
+
