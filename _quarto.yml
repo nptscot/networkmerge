@@ -1,0 +1,20 @@
+project:
+  type: website
+
+website:
+  title: "networkmerge"
+  navbar:
+    left:
+      - href: paper.qmd
+        text: "Paper"
+      - href: https://www.npt.scot
+        text: "Network Planning Tool application"
+
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+
+execute:
+  freeze: auto
