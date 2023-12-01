@@ -1,0 +1,11 @@
+---
+bibliography: bibliography.bib
+csl: apa.csl
+number-sections: true
+---
+
+This website provides long form documentation on networkmerge.
+
+{{< include paper.qmd >}}
+
+
