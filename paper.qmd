@@ -915,3 +915,10 @@ After you have a simplified version of the network, from any source, the next st
 # nx.draw(gdf_nx)
 # momepy.roundabout_simplification(gdf)
 ```
+
+
+```{r}
+#| eval: false
+#| echo: false
+renv::init()
+```
