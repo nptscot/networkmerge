@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # Run inside the ghcr.io/geocompx/docker container:
+    container: ghcr.io/geocompx/docker:latest
     steps:
       - name: Install libmkl-rt
         run: |
