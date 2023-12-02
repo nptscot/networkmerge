@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "paper.html",
+    "href": "paper.html",
+    "title": "Route network simplification for transport planning",
+    "section": "",
+    "text": "To reproduce this paper you need quarto installed.\nAfter installing the dependencies, you can reproduce the paper by running the following command in the terminal:\nquarto render paper.qmd\n\nTo contribute to the papers written as quarto documents (with .qmd extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:\nCtrl+Shift+F4\nYou can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s other features for academic writing."
+  },
+  {
+    "objectID": "paper.html#simplifying-the-geometry",
+    "href": "paper.html#simplifying-the-geometry",
+    "title": "Route network simplification for transport planning",
+    "section": "4.1 Simplifying the geometry",
+    "text": "4.1 Simplifying the geometry\n\n\n4.1.1 Topology-preserving simplification\nTopology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of Figure 3, topology-preserving simplication can reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in Figure 3.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 3: Illustration of topology-preserving simplification, using the mapshaper JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.\n\n\nThe graphic below shows a 2 panel plot showing simplification with the consolidate_intersections function from the osmnx Python package.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 4: Illustration of consolidation of intersections, with the consolidate_intersections function from the osmnx Python package.\n\n\nA more aggressive approach is to simplify and alter network topology in a single step, “through the removal of duplicate or parallel edges, and combining simply-connected nodes” (Deakin 2023). Two approaches to this are outlined below.\n\n\n4.1.2 Network Simplification\nThere are two simplification approaches based presented either using image skeletonization or Voronoi diagram to finding a centre line.\n\n\n4.1.3 Create a projected combined buffered geometry:\nBoth approaches a buffer, in this case 8.0m, is applied to the base network lines.\nThe buffered street network to be simplified is\n\n\n\n\n\n\nbase network\n\n\n\n\n\n\n\nbuffer network\n\n\n\n\n\n\nEdinburgh Princes Street buffer network\n\n\n\n\n\n4.1.4 Skeletonization\nBuffered lines are combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.\n\n4.1.4.1 Create the affine transformation between the points in the buffer and raster image\nA scaled affine transformations between the projected coordinate geometry and scaled raster image is calculated.\n\n\n\n4.1.5 Affine transforms\n\n4.1.5.1 Rasterio transform\n\n\n|     |      |        |\n|----:|-----:|-------:|\n| 0.5 |  0   | 324166 |\n| 0   | -0.5 | 674527 |\n| 0   |  0   |      1 |\n\n\n\n\n4.1.5.2 Shapely transform\n\n\n|     |      |        |\n|----:|-----:|-------:|\n| 0   | -0.5 | 324166 |\n| 0.5 |  0   | 674527 |\n\n\nIn this example a scale factor of 2.0 is used.\n\n\n\n4.1.6 Skeletonize the buffer to a point geometry\nA scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.\n\n\n\n\n\nThe image is then thinned and the resulting giving skeleton raster image.\n\n\n\n\n\nThe point geometry can then be transformed back to a point geometry.\n\n\n\n\n\nThe issue with this is that rather than points that lie on the simplified network, we need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.\n\n\n4.1.7 Conversion from point to line geometry\nCreating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network.\nFirst identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.\nTo see the simplified network requires the reverse affine transformation to be applied,\n\n\n\n\n\n\n\n4.1.8 Knots\nWhere lines intersect multiple short segment may occur which look like knots.\nTo remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,\n\n\n\n\n\n\n\n4.1.9 Primal network\nThere are circumstances where it may useful to see a “primal” network, that only consists of lines from start and end points,"
+  },
+  {
+    "objectID": "paper.html#simplification-via-voronoi-polygons",
+    "href": "paper.html#simplification-via-voronoi-polygons",
+    "title": "Route network simplification for transport planning",
+    "section": "4.2 Simplification via voronoi polygons",
+    "text": "4.2 Simplification via voronoi polygons\nIn this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .\n\n4.2.1 Boundary\n\n\n\n\n\n\n\n4.2.2 Segment\n\n\n\n\n\n\n\n4.2.3 Point\n\n\n\n\n\n\n\n4.2.4 Voronoi\n\n\n\n\n\n\n\n4.2.5 Voronoi 2\n\n\n\n\n\n\n\n4.2.6 Voronoi simplified network\n\n\n\n\n\n\n\n4.2.7 Voronoi line\n\n\n\n\n\n\n\n4.2.8 Primal network"
+  },
+  {
+    "objectID": "paper.html#merging-simple-and-detailed-networks",
+    "href": "paper.html#merging-simple-and-detailed-networks",
+    "title": "Route network simplification for transport planning",
+    "section": "4.3 Merging simple and detailed networks",
+    "text": "4.3 Merging simple and detailed networks\nAfter you have a simplified version of the network, from any source, the next step is merging the attributes."
+  },
+  {
+    "objectID": "paper.html#footnotes",
+    "href": "paper.html#footnotes",
+    "title": "Route network simplification for transport planning",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nSee the online documentation of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.↩︎"
+  }
+]

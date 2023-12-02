@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>CRUSE - Route network simplification for transport planning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">CRUSE</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./paper.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Networkmerge paper</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.npt.scot" rel="" target="">
+ <span class="menu-text">Network Planning Tool web application with simplified network</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link active" data-scroll-target="#reproducibility">Reproducibility</a></li>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link" data-scroll-target="#abstract">Abstract</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-problem" id="toc-sec-problem" class="nav-link" data-scroll-target="#sec-problem"><span class="header-section-number">2</span> Prior work and problem definition</a></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data"><span class="header-section-number">3</span> Data</a></li>
+  <li><a href="#sec-methods" id="toc-sec-methods" class="nav-link" data-scroll-target="#sec-methods"><span class="header-section-number">4</span> Methods</a>
+  <ul class="collapse">
+  <li><a href="#simplifying-the-geometry" id="toc-simplifying-the-geometry" class="nav-link" data-scroll-target="#simplifying-the-geometry"><span class="header-section-number">4.1</span> Simplifying the geometry</a>
+  <ul class="collapse">
+  <li><a href="#topology-preserving-simplification" id="toc-topology-preserving-simplification" class="nav-link" data-scroll-target="#topology-preserving-simplification"><span class="header-section-number">4.1.1</span> Topology-preserving simplification</a></li>
+  <li><a href="#network-simplification" id="toc-network-simplification" class="nav-link" data-scroll-target="#network-simplification"><span class="header-section-number">4.1.2</span> Network Simplification</a></li>
+  <li><a href="#create-a-projected-combined-buffered-geometry" id="toc-create-a-projected-combined-buffered-geometry" class="nav-link" data-scroll-target="#create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</a></li>
+  <li><a href="#skeletonization" id="toc-skeletonization" class="nav-link" data-scroll-target="#skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</a></li>
+  <li><a href="#affine-transforms" id="toc-affine-transforms" class="nav-link" data-scroll-target="#affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</a></li>
+  <li><a href="#skeletonize-the-buffer-to-a-point-geometry" id="toc-skeletonize-the-buffer-to-a-point-geometry" class="nav-link" data-scroll-target="#skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</a></li>
+  <li><a href="#conversion-from-point-to-line-geometry" id="toc-conversion-from-point-to-line-geometry" class="nav-link" data-scroll-target="#conversion-from-point-to-line-geometry"><span class="header-section-number">4.1.7</span> Conversion from point to line geometry</a></li>
+  <li><a href="#knots" id="toc-knots" class="nav-link" data-scroll-target="#knots"><span class="header-section-number">4.1.8</span> Knots</a></li>
+  <li><a href="#primal-network" id="toc-primal-network" class="nav-link" data-scroll-target="#primal-network"><span class="header-section-number">4.1.9</span> Primal network</a></li>
+  </ul></li>
+  <li><a href="#simplification-via-voronoi-polygons" id="toc-simplification-via-voronoi-polygons" class="nav-link" data-scroll-target="#simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</a>
+  <ul class="collapse">
+  <li><a href="#boundary" id="toc-boundary" class="nav-link" data-scroll-target="#boundary"><span class="header-section-number">4.2.1</span> Boundary</a></li>
+  <li><a href="#segment" id="toc-segment" class="nav-link" data-scroll-target="#segment"><span class="header-section-number">4.2.2</span> Segment</a></li>
+  <li><a href="#point" id="toc-point" class="nav-link" data-scroll-target="#point"><span class="header-section-number">4.2.3</span> Point</a></li>
+  <li><a href="#voronoi" id="toc-voronoi" class="nav-link" data-scroll-target="#voronoi"><span class="header-section-number">4.2.4</span> Voronoi</a></li>
+  <li><a href="#voronoi-2" id="toc-voronoi-2" class="nav-link" data-scroll-target="#voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</a></li>
+  <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</a></li>
+  <li><a href="#voronoi-line" id="toc-voronoi-line" class="nav-link" data-scroll-target="#voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</a></li>
+  <li><a href="#primal-network-1" id="toc-primal-network-1" class="nav-link" data-scroll-target="#primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</a></li>
+  </ul></li>
+  <li><a href="#merging-simple-and-detailed-networks" id="toc-merging-simple-and-detailed-networks" class="nav-link" data-scroll-target="#merging-simple-and-detailed-networks"><span class="header-section-number">4.3</span> Merging simple and detailed networks</a></li>
+  </ul></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">5</span> Discussion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Route network simplification for transport planning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="reproducibility" class="level1 unnumbered">
+<h1 class="unnumbered">Reproducibility</h1>
+<details>
+<p>To reproduce this paper you need <code>quarto</code> installed.</p>
+<p>After installing the dependencies, you can reproduce the paper by running the following command in the terminal:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render paper.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!-- and the Elsevier extension which can be installed as follows:
+
+``` bash
+quarto add quarto-journals/elsevier 
+```
+-->
+<p>To contribute to the papers written as quarto documents (with <code>.qmd</code> extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:</p>
+<pre><code>Ctrl+Shift+F4</code></pre>
+<p>You can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s other features for academic writing.</p>
+</details>
+</section>
+<section id="abstract" class="level1 unnumbered">
+<h1 class="unnumbered">Abstract</h1>
+</section>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Datasets representing route networks are central to transport planning as key inputs <em>and</em> output. Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models. Estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs. However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically for visualising model outputs such as flow per time of day).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways). Usually they also contain attributes such as the type of way, it’s characteristics (e.g.&nbsp;is lit at night), and the amount of traffic using each segment.</p>
+<p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
+<p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.</p>
+<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;5</a> we discuss the results and outline future work.</p>
+<!-- Much research has focussed on generating and modelling transport network datasets.
+This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
+Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
+<!-- Todo: add papers on network cleaning and simplification. -->
+<!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
+</section>
+<section id="sec-problem" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Prior work and problem definition</h1>
+<p><span class="citation" data-cites="morgan2020">Morgan and Lovelace (<a href="#ref-morgan2020" role="doc-biblioref">2020</a>)</span> presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function <code>overline()</code>. The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings. The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally. However, the ‘overline’ approach, without further processing, has limitations:</p>
+<ul>
+<li>It does not remove redundant vertices, which can lead to large file sizes and slow rendering.</li>
+<li>Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.</li>
+</ul>
+<p>The final point is most relevant to the present paper. An example of the issue is shown in <a href="#fig-pct">Figure&nbsp;1</a> from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>. The left panel shows Otley Road with a flow value of 818 (<a href="#fig-otley-road">Figure&nbsp;1 (a)</a>). The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (<a href="#fig-armley-road">Figure&nbsp;1 (b)</a>). Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 &gt; 818), this is not clear from the visualisation.</p>
+<div id="fig-pct" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-otley-road" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/otley-road-narrow.png" class="img-fluid figure-img" data-ref-parent="fig-pct"></p>
+<figcaption class="figure-caption">(a)</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-armley-road" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/armley-road-narrow.png" class="img-fluid figure-img" data-ref-parent="fig-pct"></p>
+<figcaption class="figure-caption">(b)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left. Source: open access Propensity to Cycle Tool results available at www.pct.bike.</figcaption><p></p>
+</figure>
+</div>
+<p>A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network. The ‘rasterisation’ stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in <a href="#fig-rasterisation">Figure&nbsp;2</a>.</p>
+<div id="fig-rasterisation" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-otley-road-raster" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/otley-road-raster.png" class="img-fluid figure-img" data-ref-parent="fig-rasterisation"></p>
+<figcaption class="figure-caption">(a)</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-armley-road-raster" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/armley-road-raster.png" class="img-fluid figure-img" data-ref-parent="fig-rasterisation"></p>
+<figcaption class="figure-caption">(b)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Rasterised network results for the same corridors shown in <a href="#fig-pct">Figure&nbsp;1</a>. Note the visual artefacts such as ‘staircase’ effects and overlapping values resulting from parallel lines along Armley Road (right panel). Source: open access Propensity to Cycle Tool results available at www.pct.bike.</figcaption><p></p>
+</figure>
+</div>
+<p>The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes. By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.</p>
+</section>
+<section id="sec-data" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data</h1>
+</section>
+<section id="sec-methods" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+<p>There are two main challenges that need to be overcome to simplify transport networks, in a way that preserves their value:</p>
+<ol type="1">
+<li>Simplifying the <em>geometry</em></li>
+<li>Assigning attributes to the simplified network</li>
+</ol>
+<section id="simplifying-the-geometry" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="simplifying-the-geometry"><span class="header-section-number">4.1</span> Simplifying the geometry</h2>
+<!-- 
+
+Two fundamental approaches to simplifying transport networks are:
+
+-   Simplifying the geometry of the network, by removing redundant vertices and edges and/or by merging parallel ways and *then* merging the attributes of the original network onto the simplified network.
+-   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
+
+In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
+<section id="topology-preserving-simplification" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="topology-preserving-simplification"><span class="header-section-number">4.1.1</span> Topology-preserving simplification</h3>
+<p>Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of <a href="#fig-topology-preserving">Figure&nbsp;3</a>, topology-preserving simplication <em>can</em> reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in <a href="#fig-topology-preserving">Figure&nbsp;3</a>.</p>
+<div id="fig-topology-preserving" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.</figcaption><p></p>
+</figure>
+</div>
+<p>The graphic below shows a 2 panel plot showing simplification with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</p>
+<div id="fig-osmnx-consolidate-intersections" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="768"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid figure-img" width="768"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of consolidation of intersections, with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</figcaption><p></p>
+</figure>
+</div>
+<p>A more aggressive approach is to simplify and alter network topology in a single step, “through the removal of duplicate or parallel edges, and combining simply-connected nodes” <span class="citation" data-cites="deakin2023">(<a href="#ref-deakin2023" role="doc-biblioref">Deakin 2023</a>)</span>. Two approaches to this are outlined below.</p>
+</section>
+<section id="network-simplification" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="network-simplification"><span class="header-section-number">4.1.2</span> Network Simplification</h3>
+<p>There are two simplification approaches based presented either using image skeletonization or Voronoi diagram to finding a centre line.</p>
+</section>
+<section id="create-a-projected-combined-buffered-geometry" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</h3>
+<p>Both approaches a buffer, in this case 8.0m, is applied to the base network lines.</p>
+<p>The buffered street network to be simplified is</p>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">base network</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">buffer network</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>Edinburgh Princes Street buffer network</p>
+</div>
+</div>
+</div>
+</section>
+<section id="skeletonization" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</h3>
+<p>Buffered lines are combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.</p>
+<section id="create-the-affine-transformation-between-the-points-in-the-buffer-and-raster-image" class="level4" data-number="4.1.4.1">
+<h4 data-number="4.1.4.1" class="anchored" data-anchor-id="create-the-affine-transformation-between-the-points-in-the-buffer-and-raster-image"><span class="header-section-number">4.1.4.1</span> Create the affine transformation between the points in the buffer and raster image</h4>
+<p>A scaled affine transformations between the projected coordinate geometry and scaled raster image is calculated.</p>
+</section>
+</section>
+<section id="affine-transforms" class="level3" data-number="4.1.5">
+<h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
+<section id="rasterio-transform" class="level4" data-number="4.1.5.1">
+<h4 data-number="4.1.5.1" class="anchored" data-anchor-id="rasterio-transform"><span class="header-section-number">4.1.5.1</span> Rasterio transform</h4>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|     |      |        |
+|----:|-----:|-------:|
+| 0.5 |  0   | 324166 |
+| 0   | -0.5 | 674527 |
+| 0   |  0   |      1 |</code></pre>
+</div>
+</div>
+</section>
+<section id="shapely-transform" class="level4" data-number="4.1.5.2">
+<h4 data-number="4.1.5.2" class="anchored" data-anchor-id="shapely-transform"><span class="header-section-number">4.1.5.2</span> Shapely transform</h4>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|     |      |        |
+|----:|-----:|-------:|
+| 0   | -0.5 | 324166 |
+| 0.5 |  0   | 674527 |</code></pre>
+</div>
+</div>
+<p>In this example a scale factor of 2.0 is used.</p>
+</section>
+</section>
+<section id="skeletonize-the-buffer-to-a-point-geometry" class="level3" data-number="4.1.6">
+<h3 data-number="4.1.6" class="anchored" data-anchor-id="skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</h3>
+<p>A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-12-9.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The image is then thinned and the resulting giving skeleton raster image.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-13-11.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The point geometry can then be transformed back to a point geometry.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-14-13.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The issue with this is that rather than points that lie on the simplified network, we need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.</p>
+</section>
+<section id="conversion-from-point-to-line-geometry" class="level3" data-number="4.1.7">
+<h3 data-number="4.1.7" class="anchored" data-anchor-id="conversion-from-point-to-line-geometry"><span class="header-section-number">4.1.7</span> Conversion from point to line geometry</h3>
+<p>Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network.</p>
+<p>First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.</p>
+<p>To see the simplified network requires the reverse affine transformation to be applied,</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-16-15.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="knots" class="level3" data-number="4.1.8">
+<h3 data-number="4.1.8" class="anchored" data-anchor-id="knots"><span class="header-section-number">4.1.8</span> Knots</h3>
+<p>Where lines intersect multiple short segment may occur which look like knots.</p>
+<p>To remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-17-17.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="primal-network" class="level3" data-number="4.1.9">
+<h3 data-number="4.1.9" class="anchored" data-anchor-id="primal-network"><span class="header-section-number">4.1.9</span> Primal network</h3>
+<p>There are circumstances where it may useful to see a “primal” network, that only consists of lines from start and end points,</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-19-19.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</h2>
+<p>In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .</p>
+<section id="boundary" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-20-21.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="segment" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="segment"><span class="header-section-number">4.2.2</span> Segment</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-21-23.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="point" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="point"><span class="header-section-number">4.2.3</span> Point</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-22-25.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.4</span> Voronoi</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-23-27.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi-2" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-24-29.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi-simplified-network" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-25-31.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi-line" class="level3" data-number="4.2.7">
+<h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-26-33.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="primal-network-1" class="level3" data-number="4.2.8">
+<h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-27-35.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><img src="images/paste-1.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="merging-simple-and-detailed-networks" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="merging-simple-and-detailed-networks"><span class="header-section-number">4.3</span> Merging simple and detailed networks</h2>
+<p>After you have a simplified version of the network, from any source, the next step is merging the attributes.</p>
+<!-- TODO: add content to this section. -->
+<!-- TODO: Is this possible? -->
+<!-- ## Combined network simplification and attribute merging -->
+</section>
+</section>
+<section id="sec-discussion" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Discussion</h1>
+<ul>
+<li><p>Optimisation</p></li>
+<li><p>Packaging</p></li>
+<li></li>
+</ul>
+</section>
+<section id="references" class="level1" data-number="6">
+
+<!-- Tests -->
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">6 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-deakin2023" class="csl-entry" role="listitem">
+Deakin, Will. 2023. <em>Transport Network Simplification Through Network Disaggregation and Reassembly of OpenStreet Map (OSM) Networks</em>. <a href="https://github.com/anisotropi4/graph">https://github.com/anisotropi4/graph</a>.
+</div>
+<div id="ref-lovelace2017" class="csl-entry" role="listitem">
+Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
+</div>
+<div id="ref-morgan2020" class="csl-entry" role="listitem">
+Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nationally Scalable Methods for Interactive and Online Visualisation of Transport Behaviour at the Road Network Level.”</span> <em>Environment &amp; Planning B: Planning &amp; Design</em>, July. <a href="https://doi.org/10.1177/2399808320942779">https://doi.org/10.1177/2399808320942779</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>See the <a href="https://sumo.dlr.de/docs/Simulation/Output/index.html">online documentation</a> of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
