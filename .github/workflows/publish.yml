@@ -21,13 +21,7 @@ jobs:
           && sudo apt install gh -y
       - name: Check out repository
         uses: actions/checkout@v4
-      
       - uses: r-lib/actions/setup-renv@v2
-
-
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
 
 #       - name: Install deps
 #         # Run the script in .devcontainer/install-additional-dependencies.sh
