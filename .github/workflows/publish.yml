@@ -1,8 +1,7 @@
 on:
     workflow_dispatch:
     push:
-      # on any branch:
-      branches: [main, 64-improve-reproducibility]
+      branches: main
   
 name: Quarto Publish
 
