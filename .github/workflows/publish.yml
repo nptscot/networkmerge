@@ -13,7 +13,7 @@ jobs:
       contents: write
     steps:
       - name: Install libmkl-rt
-        run: apt install libmkl-rt
+        run: sudo apt install libmkl-rt
       - name: Check out repository
         uses: actions/checkout@v4
       
