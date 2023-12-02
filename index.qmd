@@ -1,6 +1,5 @@
 ---
-bibliography: bibliography.bib
-csl: apa.csl
+bibliography: references.bib
 number-sections: true
 ---
 

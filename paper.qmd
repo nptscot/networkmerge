@@ -40,7 +40,7 @@ py_install(requirements_txt, pip = TRUE)
 ```{r}
 #| include: false
 requirements_txt = readLines("requirements.txt")
-py_install(requirements_txt, pip = TRUE)
+reticulate::py_install(requirements_txt, pip = TRUE)
 ```
 
 ```{r}
@@ -48,7 +48,6 @@ library(sf)
 library(tmap)
 library(dplyr)
 library(ggplot2)
-library(reticulate)
 # reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
 tmap_mode("plot")
 # Install Python dependencies with reticulate:
