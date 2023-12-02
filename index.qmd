@@ -1,0 +1,16 @@
+---
+bibliography: references.bib
+number-sections: true
+---
+
+This website hosts the networkmerge paper, results of which are publicly available at <https://npt.scot>.
+It was produced with Quarto, which was also used to support the academic paper shown below.
+See <https://quarto.org/docs/websites> for further information.
+
+The paper is re-built automatically when the source code is updated.
+
+See [github.com/nptscot/networkmerge](https://github.com/nptscot) for the source code underlying this website.
+
+{{< include paper.qmd >}}
+
+

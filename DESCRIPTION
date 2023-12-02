@@ -1,0 +1,52 @@
+Type: Package
+Package: networkmerge
+Title: Merge Geographic Networks
+Version: 1.1.2.9000
+Authors@R: c(
+    person("Robin", "Lovelace", , "rob00x@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-5679-6536")),
+    person("Zhao", "Wang", role = "ctb",
+           comment = c(ORCID = "0000-0002-4054-0533")),
+    person("Josiah", "Parry", role = "ctb",
+           comment = c(ORCID = "0000-0001-9910-865X"))
+  )
+Maintainer: Robin Lovelace <rob00x@gmail.com>
+Description: Tools for merging networks.
+License: MIT + file LICENSE
+URL: https://github.com/nptscot/networkmerge
+BugReports: https://github.com/nptscot/networkmerge/issues
+Depends:
+    R (>= 3.5.0)
+Imports:
+    curl (>= 3.2),
+    data.table,
+    dplyr (>= 0.7.6),
+    geosphere,
+    httr (>= 1.3.1),
+    jsonlite (>= 1.5),
+    lwgeom (>= 0.1.4),
+    magrittr,
+    methods,
+    nabor (>= 0.5.0),
+    od,
+    pbapply,
+    Rcpp (>= 0.12.1),
+    rlang (>= 0.2.2),
+    sf (>= 0.6.3),
+    sfheaders,
+    tmap,
+    tmaptools,
+    reticulate,
+    quarto,
+    rmarkdown,
+    ggplot2,
+    rsgeo (>= 0.1.6.9000)
+Remotes:
+    JosiahParry/rsgeo
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: yes
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+SystemRequirements: GNU make
