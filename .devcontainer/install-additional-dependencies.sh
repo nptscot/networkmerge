@@ -20,6 +20,7 @@ cat /etc/os-release
 
 
 # Source the R script code/install.R from command line:
+chmod +x code/install.R
 Rscript code/install.R
 
 # Install Python + pip in Debian:
@@ -34,10 +35,10 @@ pip install -r requirements.txt
 
 # Rust, cargo and then then make the https://github.com/dabreegster/odjitter crate available from the command line:
 
-# Install tippecannoe
-cd /tmp
-git clone https://github.com/felt/tippecanoe.git
-cd tippecanoe
-make -j
-sudo make install
-tippecanoe --version
+# # Install tippecannoe
+# cd /tmp
+# git clone https://github.com/felt/tippecanoe.git
+# cd tippecanoe
+# make -j
+# sudo make install
+# tippecanoe --version
