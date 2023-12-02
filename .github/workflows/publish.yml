@@ -20,6 +20,9 @@ jobs:
 
       - name: Install rmakrdown
         run: sudo Rscript -e 'install.packages("rmarkdown")'
+      - name: Install deps
+        # Run the script in .devcontainer/install-additional-dependencies.sh
+        run: bash .devcontainer/install-additional-dependencies.sh
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
