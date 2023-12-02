@@ -30,12 +30,29 @@ After installing the dependencies, you can reproduce the paper by running the fo
 quarto render paper.qmd
 ```
 
-<!-- and the Elsevier extension which can be installed as follows:
+Install the dependencies by cloning the repository and running the following:
 
-``` bash
-quarto add quarto-journals/elsevier 
+```r
+requirements_txt = readLines("requirements.txt")
+py_install(requirements_txt, pip = TRUE)
 ```
--->
+
+```{r}
+#| include: false
+requirements_txt = readLines("requirements.txt")
+py_install(requirements_txt, pip = TRUE)
+```
+
+```{r}
+library(sf)
+library(tmap)
+library(dplyr)
+library(ggplot2)
+library(reticulate)
+# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+tmap_mode("plot")
+# Install Python dependencies with reticulate:
+```
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
@@ -182,13 +199,8 @@ Topology-preserving simplification reduces the number of vertices in a linestrin
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
+
 ```{r}
-library(sf)
-library(tmap)
-library(tidyverse)
-library(reticulate)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
-tmap_mode("plot")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -921,4 +933,5 @@ After you have a simplified version of the network, from any source, the next st
 #| eval: false
 #| echo: false
 renv::init()
+renv::snapshot()
 ```
