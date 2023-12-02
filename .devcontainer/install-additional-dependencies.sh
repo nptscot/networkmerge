@@ -25,7 +25,7 @@ Rscript code/install.R
 
 # Install Python + pip in Debian:
 # Add repository:
-echo "deb http://archive.ubuntu.com/ubuntu/ jammy main restricted" >> /etc/apt/sources.list
+sudo echo "deb http://archive.ubuntu.com/ubuntu/ jammy main restricted" >> /etc/apt/sources.list
 apt-get update
 apt-get install -y software-properties-common
 apt-get install -y python3 python3-pip
