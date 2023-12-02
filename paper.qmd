@@ -10,6 +10,7 @@ format:
 number-sections: true
 execute: 
   echo: false
+  eval: false
   # cache: true
 editor: 
   markdown: 
