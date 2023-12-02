@@ -1,8 +1,1411 @@
-<html xmlns="http://www.w3.org/1999/xhtml">    
-  <head>      
-    <title>Redirect to paper.md</title>      
-    <meta http-equiv="refresh" content="0;URL='paper.md'" />    
-  </head>    
-  <body> 
-  </body>  
-</html>     
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>networkmerge</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">networkmerge</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./paper.html" rel="" target="">
+ <span class="menu-text">Networkmerge paper</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.npt.scot" rel="" target="">
+ <span class="menu-text">Network Planning Tool web application with simplified network</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link active" data-scroll-target="#reproducibility">Reproducibility</a></li>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link" data-scroll-target="#abstract">Abstract</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-problem" id="toc-sec-problem" class="nav-link" data-scroll-target="#sec-problem"><span class="header-section-number">2</span> Prior work and problem definition</a></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data"><span class="header-section-number">3</span> Data</a></li>
+  <li><a href="#sec-methods" id="toc-sec-methods" class="nav-link" data-scroll-target="#sec-methods"><span class="header-section-number">4</span> Methods</a>
+  <ul class="collapse">
+  <li><a href="#simplifying-the-geometry" id="toc-simplifying-the-geometry" class="nav-link" data-scroll-target="#simplifying-the-geometry"><span class="header-section-number">4.1</span> Simplifying the geometry</a>
+  <ul class="collapse">
+  <li><a href="#topology-preserving-simplification" id="toc-topology-preserving-simplification" class="nav-link" data-scroll-target="#topology-preserving-simplification"><span class="header-section-number">4.1.1</span> Topology-preserving simplification</a></li>
+  <li><a href="#network-simplification" id="toc-network-simplification" class="nav-link" data-scroll-target="#network-simplification"><span class="header-section-number">4.1.2</span> Network Simplification</a></li>
+  <li><a href="#create-a-projected-combined-buffered-geometry" id="toc-create-a-projected-combined-buffered-geometry" class="nav-link" data-scroll-target="#create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</a></li>
+  <li><a href="#skeletonization" id="toc-skeletonization" class="nav-link" data-scroll-target="#skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</a></li>
+  <li><a href="#affine-transforms" id="toc-affine-transforms" class="nav-link" data-scroll-target="#affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</a></li>
+  <li><a href="#skeletonize-the-buffer-to-a-point-geometry" id="toc-skeletonize-the-buffer-to-a-point-geometry" class="nav-link" data-scroll-target="#skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</a></li>
+  <li><a href="#conversion-from-point-to-line-geometry" id="toc-conversion-from-point-to-line-geometry" class="nav-link" data-scroll-target="#conversion-from-point-to-line-geometry"><span class="header-section-number">4.1.7</span> Conversion from point to line geometry</a></li>
+  <li><a href="#knots" id="toc-knots" class="nav-link" data-scroll-target="#knots"><span class="header-section-number">4.1.8</span> Knots</a></li>
+  <li><a href="#primal-network" id="toc-primal-network" class="nav-link" data-scroll-target="#primal-network"><span class="header-section-number">4.1.9</span> Primal network</a></li>
+  </ul></li>
+  <li><a href="#simplification-via-voronoi-polygons" id="toc-simplification-via-voronoi-polygons" class="nav-link" data-scroll-target="#simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</a>
+  <ul class="collapse">
+  <li><a href="#boundary" id="toc-boundary" class="nav-link" data-scroll-target="#boundary"><span class="header-section-number">4.2.1</span> Boundary</a></li>
+  <li><a href="#segment" id="toc-segment" class="nav-link" data-scroll-target="#segment"><span class="header-section-number">4.2.2</span> Segment</a></li>
+  <li><a href="#point" id="toc-point" class="nav-link" data-scroll-target="#point"><span class="header-section-number">4.2.3</span> Point</a></li>
+  <li><a href="#voronoi" id="toc-voronoi" class="nav-link" data-scroll-target="#voronoi"><span class="header-section-number">4.2.4</span> Voronoi</a></li>
+  <li><a href="#voronoi-2" id="toc-voronoi-2" class="nav-link" data-scroll-target="#voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</a></li>
+  <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</a></li>
+  <li><a href="#voronoi-line" id="toc-voronoi-line" class="nav-link" data-scroll-target="#voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</a></li>
+  <li><a href="#primal-network-1" id="toc-primal-network-1" class="nav-link" data-scroll-target="#primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</a></li>
+  </ul></li>
+  <li><a href="#merging-simple-and-detailed-networks" id="toc-merging-simple-and-detailed-networks" class="nav-link" data-scroll-target="#merging-simple-and-detailed-networks"><span class="header-section-number">4.3</span> Merging simple and detailed networks</a></li>
+  </ul></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">5</span> Discussion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Route network simplification for transport planning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>This website hosts the networkmerge paper, results of which are publicly available at <a href="https://npt.scot" class="uri">https://npt.scot</a>. It was produced with Quarto, which was also used to support the academic paper shown below. See <a href="https://quarto.org/docs/websites" class="uri">https://quarto.org/docs/websites</a> for further information.</p>
+<p>The paper is re-built automatically when the source code is updated.</p>
+<p>See <a href="https://github.com/nptscot">github.com/cruse-bike/paper</a> for the source code underlying this website.</p>
+<section id="reproducibility" class="level1 unnumbered">
+<h1 class="unnumbered">Reproducibility</h1>
+<details>
+<p>To reproduce this paper you need <code>quarto</code> installed.</p>
+<p>After installing the dependencies, you can reproduce the paper by running the following command in the terminal:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render paper.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Install the dependencies by cloning the repository and running the following:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Breaking News: tmap 3.x is retiring. Please test v4, e.g. with
+remotes::install_github('r-tmap/tmap')</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>tmap mode set to plotting</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python dependencies with reticulate:</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To contribute to the papers written as quarto documents (with <code>.qmd</code> extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:</p>
+<pre><code>Ctrl+Shift+F4</code></pre>
+<p>You can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s other features for academic writing.</p>
+</details>
+</section>
+<section id="abstract" class="level1 unnumbered">
+<h1 class="unnumbered">Abstract</h1>
+</section>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Datasets representing route networks are central to transport planning as key inputs <em>and</em> output. Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models. Estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs. However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically for visualising model outputs such as flow per time of day).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways). Usually they also contain attributes such as the type of way, it’s characteristics (e.g.&nbsp;is lit at night), and the amount of traffic using each segment.</p>
+<p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
+<p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.</p>
+<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;5</a> we discuss the results and outline future work.</p>
+<!-- Much research has focussed on generating and modelling transport network datasets.
+This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
+Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
+<!-- Todo: add papers on network cleaning and simplification. -->
+<!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
+</section>
+<section id="sec-problem" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Prior work and problem definition</h1>
+<p><span class="citation" data-cites="morgan2020">Morgan and Lovelace (<a href="#ref-morgan2020" role="doc-biblioref">2020</a>)</span> presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function <code>overline()</code>. The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings. The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally. However, the ‘overline’ approach, without further processing, has limitations:</p>
+<ul>
+<li>It does not remove redundant vertices, which can lead to large file sizes and slow rendering.</li>
+<li>Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.</li>
+</ul>
+<p>The final point is most relevant to the present paper. An example of the issue is shown in <a href="#fig-pct">Figure&nbsp;1</a> from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>. The left panel shows Otley Road with a flow value of 818 (<a href="#fig-otley-road">Figure&nbsp;1 (a)</a>). The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (<a href="#fig-armley-road">Figure&nbsp;1 (b)</a>). Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 &gt; 818), this is not clear from the visualisation.</p>
+<div id="fig-pct" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-otley-road" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/otley-road-narrow.png" class="img-fluid figure-img" data-ref-parent="fig-pct"></p>
+<figcaption class="figure-caption">(a)</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-armley-road" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/armley-road-narrow.png" class="img-fluid figure-img" data-ref-parent="fig-pct"></p>
+<figcaption class="figure-caption">(b)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left. Source: open access Propensity to Cycle Tool results available at www.pct.bike.</figcaption><p></p>
+</figure>
+</div>
+<p>A subsequent step described in the paper is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network. The ‘rasterisation’ stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in <a href="#fig-rasterisation">Figure&nbsp;2</a>.</p>
+<div id="fig-rasterisation" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-otley-road-raster" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/otley-road-raster.png" class="img-fluid figure-img" data-ref-parent="fig-rasterisation"></p>
+<figcaption class="figure-caption">(a)</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-armley-road-raster" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/armley-road-raster.png" class="img-fluid figure-img" data-ref-parent="fig-rasterisation"></p>
+<figcaption class="figure-caption">(b)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Rasterised network results for the same corridors shown in <a href="#fig-pct">Figure&nbsp;1</a>. Note the visual artefacts such as ‘staircase’ effects and overlapping values resulting from parallel lines along Armley Road (right panel). Source: open access Propensity to Cycle Tool results available at www.pct.bike.</figcaption><p></p>
+</figure>
+</div>
+<p>The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes. By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.</p>
+</section>
+<section id="sec-data" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data</h1>
+</section>
+<section id="sec-methods" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+<p>There are two main challenges that need to be overcome to simplify transport networks, in a way that preserves their value:</p>
+<ol type="1">
+<li>Simplifying the <em>geometry</em></li>
+<li>Assigning attributes to the simplified network</li>
+</ol>
+<section id="simplifying-the-geometry" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="simplifying-the-geometry"><span class="header-section-number">4.1</span> Simplifying the geometry</h2>
+<!-- 
+
+Two fundamental approaches to simplifying transport networks are:
+
+-   Simplifying the geometry of the network, by removing redundant vertices and edges and/or by merging parallel ways and *then* merging the attributes of the original network onto the simplified network.
+-   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
+
+In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
+<section id="topology-preserving-simplification" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="topology-preserving-simplification"><span class="header-section-number">4.1.1</span> Topology-preserving simplification</h3>
+<p>Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of <a href="#fig-topology-preserving">Figure&nbsp;3</a>, topology-preserving simplication <em>can</em> reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in <a href="#fig-topology-preserving">Figure&nbsp;3</a>.</p>
+<div id="fig-topology-preserving" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>input <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/minimal-input.geojson'</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>input_projected <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(input, <span class="st">"EPSG:27700"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>simplification_levels <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span>, <span class="fl">0.001</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ordered factor of simplification levels:</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>simplification_df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(simplification_levels)),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">simp_factor =</span> simplification_levels,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">keep =</span> <span class="fu">paste0</span>(<span class="st">"Keep: "</span>, <span class="fu">round</span>(<span class="fu">as.numeric</span>(simplification_levels) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%"</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>simplification_df<span class="sc">$</span>keep <span class="ot">=</span> <span class="fu">ordered</span>(simplification_df<span class="sc">$</span>keep, <span class="at">levels =</span> simplification_df<span class="sc">$</span>keep)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>smplfy <span class="ot">=</span> <span class="cf">function</span>(x_list, keep) {</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  x_list <span class="ot">=</span> <span class="fu">lapply</span>(</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    keep,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>      res <span class="ot">=</span> rmapshaper<span class="sc">::</span><span class="fu">ms_simplify</span>(x_list, <span class="at">keep_shapes =</span> <span class="cn">TRUE</span>, <span class="at">keep =</span> x)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>      res<span class="sc">$</span>id <span class="ot">=</span> x</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>      res</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, x_list)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># input_simplified = smplfy(input_projected, simplification_levels)</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co"># sf::write_sf(input_simplified, "data/input_simplified1.geojson")</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>input_simplified <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/input_simplified1.geojson'</span>)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>input_simplified <span class="ot">=</span> <span class="fu">left_join</span>(</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  input_simplified,</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  simplification_df,</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(id <span class="sc">==</span> simp_factor)</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(input_simplified, <span class="at">bbox =</span> tmaptools<span class="sc">::</span><span class="fu">bb</span>(input_simplified, <span class="fl">1.1</span>)) <span class="sc">+</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"keep"</span>, <span class="at">free.coords =</span> <span class="cn">TRUE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>input <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/rnet_princes_street_minimal.geojson'</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>input_projected <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(input, <span class="st">"EPSG:27700"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># input_simplified = smplfy(input_projected, simplification_levels)</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># sf::write_sf(input_simplified, "data/input_simplified2.geojson", delete_dsn = TRUE)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>input_simplified2 <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/input_simplified2.geojson'</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>input_simplified <span class="ot">=</span> <span class="fu">left_join</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  input_simplified2,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  simplification_df,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(id <span class="sc">==</span> simp_factor)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(input_simplified, <span class="at">bbox =</span> tmaptools<span class="sc">::</span><span class="fu">bb</span>(input_simplified, <span class="fl">1.1</span>)) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"keep"</span>, <span class="at">free.coords =</span> <span class="cn">TRUE</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.</figcaption><p></p>
+</figure>
+</div>
+<p>The graphic below shows a 2 panel plot showing simplification with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</p>
+<div id="fig-osmnx-consolidate-intersections" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> osmnx <span class="im">as</span> ox</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all streets within 50 m of Princes Street, Edinburgh:</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get point that is on Princes Street:</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ox.geocode_to_gdf("Princes Street Edinburgh")</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>G <span class="op">=</span> ox.graph_from_place(<span class="st">"Royal Scots Greys Memorial"</span>, network_type<span class="op">=</span><span class="st">"walk"</span>, buffer_dist<span class="op">=</span><span class="dv">200</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>ox.plot_graph(G)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="768"></p>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the graph in an interactive map:</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ox.plot_graph_folium(G)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># project to 27700</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> osmnx <span class="im">as</span> ox</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>G_projected <span class="op">=</span> ox.project_graph(G, <span class="st">'EPSG:27700'</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># simplify:</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>G_simplified <span class="op">=</span> ox.consolidate_intersections(G_projected, tolerance<span class="op">=</span><span class="dv">10</span>, rebuild_graph<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot G_simplified as GeoPandas in Quarto:</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ox.plot_graph(G_simplified)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid figure-img" width="768"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of consolidation of intersections, with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</figcaption><p></p>
+</figure>
+</div>
+<p>A more aggressive approach is to simplify and alter network topology in a single step, “through the removal of duplicate or parallel edges, and combining simply-connected nodes” <span class="citation" data-cites="deakin2023">(<a href="#ref-deakin2023" role="doc-biblioref">Deakin 2023</a>)</span>. Two approaches to this are outlined below.</p>
+</section>
+<section id="network-simplification" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="network-simplification"><span class="header-section-number">4.1.2</span> Network Simplification</h3>
+<p>There are two simplification approaches based presented either using image skeletonization or Voronoi diagram to finding a centre line.</p>
+</section>
+<section id="create-a-projected-combined-buffered-geometry" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</h3>
+<p>Both approaches a buffer, in this case 8.0m, is applied to the base network lines.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gp</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> get_coordinates, line_merge, set_precision, unary_union</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">12</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_geometry_buffer(this_gf, radius<span class="op">=</span><span class="fl">8.0</span>):</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_geometry_buffer: return radius buffered GeoDataFrame</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">      this_gf: GeoDataFrame to</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">      radius: (default value = 8.0)</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">      buffered GeoSeries geometry</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> gp.GeoSeries(this_gf, crs<span class="op">=</span>CRS).<span class="bu">buffer</span>(radius, join_style<span class="op">=</span><span class="st">"round"</span>, cap_style<span class="op">=</span><span class="st">"round"</span>)</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    union <span class="op">=</span> unary_union(r)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> gp.GeoSeries(union.geoms, crs<span class="op">=</span>CRS)</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> gp.GeoSeries(union, crs<span class="op">=</span>CRS)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>CRS <span class="op">=</span> <span class="st">"EPSG:27700"</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>buffer_size <span class="op">=</span> <span class="fl">8.0</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>set_precision_pointone <span class="op">=</span> partial(set_precision, grid_size<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>base_nx <span class="op">=</span> gp.read_file(<span class="st">"data/rnet_princes_street.geojson"</span>).to_crs(CRS)</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>base_nx[<span class="st">"geometry"</span>] <span class="op">=</span> base_nx[<span class="st">"geometry"</span>].<span class="bu">map</span>(set_precision_pointone)</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>nx_geometry <span class="op">=</span> get_geometry_buffer(base_nx[<span class="st">"geometry"</span>], radius<span class="op">=</span>buffer_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The buffered street network to be simplified is ::: {.cell layout-ncol=“2”}</p>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>base_nx.plot(edgecolor<span class="op">=</span><span class="st">"blue"</span>, color<span class="op">=</span><span class="st">"blue"</span>).grid()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">base network</figcaption>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nx_geometry.plot(edgecolor<span class="op">=</span><span class="st">"black"</span>, color<span class="op">=</span><span class="st">"blue"</span>).grid()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-6.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">buffer network</figcaption>
+</figure>
+</div>
+</div>
+<p>Edinburgh Princes Street buffer network :::</p>
+</section>
+<section id="skeletonization" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</h3>
+<p>Buffered lines are combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.</p>
+<section id="create-the-affine-transformation-between-the-points-in-the-buffer-and-raster-image" class="level4" data-number="4.1.4.1">
+<h4 data-number="4.1.4.1" class="anchored" data-anchor-id="create-the-affine-transformation-between-the-points-in-the-buffer-and-raster-image"><span class="header-section-number">4.1.4.1</span> Create the affine transformation between the points in the buffer and raster image</h4>
+<p>A scaled affine transformations between the projected coordinate geometry and scaled raster image is calculated.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio <span class="im">as</span> rio</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio.features <span class="im">as</span> rif</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pxsize(bound, scale<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_pxsize: calculates scaled image size in px</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">      bound: boundary corner points</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">      scale: scaling factor (default = 1.0)</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">      size in px</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.diff(bound.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.ceil(r.reshape(<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (r[[<span class="dv">1</span>, <span class="dv">0</span>]] <span class="op">*</span> scale).astype(<span class="bu">int</span>)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_affine_transform(this_gf, scale<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_affine_transform: return affine transformations matrices, and scaled image size</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">    from GeoPandas boundary size</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co">      this_gf: GeoPanda</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="co">      scale:  (default = 1.0)</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co">      rasterio and shapely affine tranformation matrices, and image size in px</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    TRANSFORM_ONE <span class="op">=</span> np.asarray([<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    bound <span class="op">=</span> this_gf.total_bounds</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> TRANSFORM_ONE <span class="op">/</span> scale</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>    s[[<span class="dv">4</span>, <span class="dv">5</span>]] <span class="op">=</span> bound[[<span class="dv">0</span>, <span class="dv">3</span>]]</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> s[[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">5</span>]]</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> rio.Affine(<span class="op">*</span>r)</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r, s, get_pxsize(bound, scale)</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>r_matrix, s_matrix, out_shape <span class="op">=</span> get_affine_transform(nx_geometry, scale<span class="op">=</span><span class="fl">2.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="affine-transforms" class="level3" data-number="4.1.5">
+<h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
+<section id="rasterio-transform" class="level4" data-number="4.1.5.1">
+<h4 data-number="4.1.5.1" class="anchored" data-anchor-id="rasterio-transform"><span class="header-section-number">4.1.5.1</span> Rasterio transform</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> display_matrix(matrix, header):</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> matrix.to_markdown(index<span class="op">=</span><span class="va">False</span>, headers<span class="op">=</span>header)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    display(r)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>or_matrix <span class="op">=</span> pd.DataFrame(np.asarray(r_matrix).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>os_matrix <span class="op">=</span> pd.DataFrame(np.asarray(s_matrix).reshape(<span class="dv">3</span>, <span class="op">-</span><span class="dv">1</span>).T)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>display_matrix(or_matrix, <span class="st">"   "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>|     |      |        |
+|----:|-----:|-------:|
+| 0.5 |  0   | 324166 |
+| 0   | -0.5 | 674527 |
+| 0   |  0   |      1 |</code></pre>
+</div>
+</div>
+</section>
+<section id="shapely-transform" class="level4" data-number="4.1.5.2">
+<h4 data-number="4.1.5.2" class="anchored" data-anchor-id="shapely-transform"><span class="header-section-number">4.1.5.2</span> Shapely transform</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>display_matrix(os_matrix, <span class="st">"   "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>|     |      |        |
+|----:|-----:|-------:|
+| 0   | -0.5 | 324166 |
+| 0.5 |  0   | 674527 |</code></pre>
+</div>
+</div>
+<p>In this example a scale factor of 2.0 is used.</p>
+</section>
+</section>
+<section id="skeletonize-the-buffer-to-a-point-geometry" class="level3" data-number="4.1.6">
+<h3 data-number="4.1.6" class="anchored" data-anchor-id="skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</h3>
+<p>A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage.morphology <span class="im">import</span> remove_small_holes, skeletonize</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.affinity <span class="im">import</span> affine_transform</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> Point</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio.plot <span class="im">as</span> rip</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>geometry_im <span class="op">=</span> rif.rasterize(nx_geometry.values, transform<span class="op">=</span>r_matrix, out_shape<span class="op">=</span>out_shape)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> warnings.catch_warnings():</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    warnings.simplefilter(<span class="st">"ignore"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    geometry_im <span class="op">=</span> remove_small_holes(geometry_im, <span class="dv">4</span>).astype(np.uint8)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>rip.show(geometry_im, cmap<span class="op">=</span><span class="st">"Blues"</span>, title<span class="op">=</span><span class="st">"buffer geometry"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-9.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The image is then thinned and the resulting giving skeleton raster image.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>skeleton_im <span class="op">=</span> skeletonize(geometry_im).astype(np.uint8)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>point_im <span class="op">=</span> np.stack(np.where(skeleton_im <span class="op">&gt;=</span> <span class="dv">1</span>))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>rip.show(skeleton_im, cmap<span class="op">=</span><span class="st">"Blues"</span>, title<span class="op">=</span><span class="st">"skeleton geometry"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-15-11.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nx_point <span class="op">=</span> gp.GeoSeries(<span class="bu">map</span>(Point, point_im.T), crs<span class="op">=</span>CRS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The point geometry can then be transformed back to a point geometry.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>shapely_transform <span class="op">=</span> partial(affine_transform, matrix<span class="op">=</span>s_matrix)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>transform_point <span class="op">=</span> nx_point.<span class="bu">map</span>(shapely_transform).<span class="bu">map</span>(set_precision_pointone)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>transform_point.plot(edgecolor<span class="op">=</span><span class="st">"black"</span>, color<span class="op">=</span><span class="st">"blue"</span>).grid()</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-13.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The issue with this is that rather than points that lie on the simplified network, we need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.</p>
+</section>
+<section id="conversion-from-point-to-line-geometry" class="level3" data-number="4.1.7">
+<h3 data-number="4.1.7" class="anchored" data-anchor-id="conversion-from-point-to-line-geometry"><span class="header-section-number">4.1.7</span> Conversion from point to line geometry</h3>
+<p>Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network.</p>
+<p>First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> get_coordinates</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> LineString, MultiLineString</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_raster_line_with_knots(point):</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_raster_line_with_knots: return LineString GeoSeries from 1px line points with knots</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">      point: 1px point GeoSeries array with knots</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">      1px line LineString GeoSeries with knots removed</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    square <span class="op">=</span> point.<span class="bu">buffer</span>(<span class="dv">1</span>, cap_style<span class="op">=</span><span class="st">"square"</span>, mitre_limit<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> point.sindex.query(square, predicate<span class="op">=</span><span class="st">"covers"</span>).T</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> np.sort(ix)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> pd.DataFrame(ix).drop_duplicates().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> s.loc[np.where(s[<span class="dv">0</span>] <span class="op">!=</span> s[<span class="dv">1</span>])]</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> np.stack([point[s[<span class="dv">0</span>].values], point[s[<span class="dv">1</span>].values]]).T</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> gp.GeoSeries(<span class="bu">map</span>(LineString, s), crs<span class="op">=</span>CRS)</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    edge, node <span class="op">=</span> get_source_target(combine_line(r).to_frame(<span class="st">"geometry"</span>))</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combine_line(edge[<span class="st">"geometry"</span>])</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_end(geometry):</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_end: return numpy array of geometry LineString end-points</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a><span class="co">      geometry: geometry LineString</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="co">      end-point numpy arrays</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> get_coordinates(geometry)</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.vstack((r[<span class="dv">0</span>, :], r[<span class="op">-</span><span class="dv">1</span>, :]))</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_source_target(line):</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_source_target: return edge and node GeoDataFrames from LineString with unique</span></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a><span class="co">    node Point and edge source and target</span></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a><span class="co">      line: LineString GeoDataFrame</span></span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a><span class="co">      edge, node: GeoDataFrames</span></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a>    edge <span class="op">=</span> line.copy()</span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> edge[<span class="st">"geometry"</span>].<span class="bu">map</span>(get_end)</span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.stack(r)</span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a>    node <span class="op">=</span> gp.GeoSeries(<span class="bu">map</span>(Point, r.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)), crs<span class="op">=</span>CRS).to_frame(<span class="st">"geometry"</span>)</span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> node.groupby(<span class="st">"geometry"</span>).size().rename(<span class="st">"count"</span>)</span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a>    node <span class="op">=</span> node.drop_duplicates(<span class="st">"geometry"</span>).set_index(<span class="st">"geometry"</span>, drop<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb32-54"><a href="#cb32-54" aria-hidden="true" tabindex="-1"></a>    node <span class="op">=</span> node.join(count).reset_index(drop<span class="op">=</span><span class="va">True</span>).reset_index(names<span class="op">=</span><span class="st">"node"</span>)</span>
+<span id="cb32-55"><a href="#cb32-55" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> node.set_index(<span class="st">"geometry"</span>)[<span class="st">"node"</span>]</span>
+<span id="cb32-56"><a href="#cb32-56" aria-hidden="true" tabindex="-1"></a>    edge <span class="op">=</span> edge.reset_index(names<span class="op">=</span><span class="st">"edge"</span>)</span>
+<span id="cb32-57"><a href="#cb32-57" aria-hidden="true" tabindex="-1"></a>    edge[<span class="st">"source"</span>] <span class="op">=</span> ix.loc[<span class="bu">map</span>(Point, r[:, <span class="dv">0</span>])].values</span>
+<span id="cb32-58"><a href="#cb32-58" aria-hidden="true" tabindex="-1"></a>    edge[<span class="st">"target"</span>] <span class="op">=</span> ix.loc[<span class="bu">map</span>(Point, r[:, <span class="dv">1</span>])].values</span>
+<span id="cb32-59"><a href="#cb32-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> edge, node</span>
+<span id="cb32-60"><a href="#cb32-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-61"><a href="#cb32-61" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combine_line(line):</span>
+<span id="cb32-62"><a href="#cb32-62" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""combine_line: return LineString GeoSeries combining lines with intersecting endpoints</span></span>
+<span id="cb32-63"><a href="#cb32-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-64"><a href="#cb32-64" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb32-65"><a href="#cb32-65" aria-hidden="true" tabindex="-1"></a><span class="co">      line: mixed LineString GeoSeries</span></span>
+<span id="cb32-66"><a href="#cb32-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-67"><a href="#cb32-67" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb32-68"><a href="#cb32-68" aria-hidden="true" tabindex="-1"></a><span class="co">      join LineString GeoSeries</span></span>
+<span id="cb32-69"><a href="#cb32-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-70"><a href="#cb32-70" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb32-71"><a href="#cb32-71" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> MultiLineString(line.values)</span>
+<span id="cb32-72"><a href="#cb32-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gp.GeoSeries(line_merge(r).geoms, crs<span class="op">=</span>CRS)</span>
+<span id="cb32-73"><a href="#cb32-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-74"><a href="#cb32-74" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> get_raster_line_with_knots(nx_point)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To see the simplified network requires the reverse affine transformation to be applied,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>shapely_transform <span class="op">=</span> partial(affine_transform, matrix<span class="op">=</span>s_matrix)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>nx_output <span class="op">=</span> nx_line.<span class="bu">map</span>(shapely_transform).<span class="bu">map</span>(set_precision_pointone)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>nx_output.plot()</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-18-15.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="knots" class="level3" data-number="4.1.8">
+<h3 data-number="4.1.8" class="anchored" data-anchor-id="knots"><span class="header-section-number">4.1.8</span> Knots</h3>
+<p>Where lines intersect multiple short segment may occur which look like knots.</p>
+<p>To remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> MultiPoint</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_raster_line_without_knot(this_line):</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_raster_line_without_knot: remove knots from LineString GeoSeries</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co">      this_line: LineString GeoSeries array with knots</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co">      LineString GeoSeries with knots removed</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    edge, node <span class="op">=</span> get_source_target(this_line)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> edge.length <span class="op">&gt;</span> <span class="fl">2.0</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>    connected <span class="op">=</span> get_connected_class(edge.loc[<span class="op">~</span>ix, [<span class="st">"source"</span>, <span class="st">"target"</span>]])</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    node <span class="op">=</span> node.loc[connected.index].join(connected).sort_index()</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>    connected_edge <span class="op">=</span> get_centre(node)</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> combine_line(pd.concat([connected_edge[<span class="st">"geometry"</span>], edge.loc[ix, <span class="st">"geometry"</span>]]))</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r[r.length <span class="op">&gt;</span> <span class="fl">2.0</span>]</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_connected_class(edge):</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_connected_class: return labeled connected node pandas Series from edge list</span></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a><span class="co">      edge_list: source, target edge pandas DataFrame</span></span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a><span class="co">      labeled node pandas Series</span></span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>    nx_graph <span class="op">=</span> nx.from_pandas_edgelist(edge)</span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>    connected <span class="op">=</span> nx.connected_components(nx_graph)</span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> {k: i <span class="cf">for</span> i, j <span class="kw">in</span> <span class="bu">enumerate</span>(connected) <span class="cf">for</span> k <span class="kw">in</span> j}</span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.Series(r, name<span class="op">=</span><span class="st">"class"</span>)</span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_centre(node):</span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_centre_edge: return centroid Point from discrete node clusters</span></span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a><span class="co">      node: discrete node cluster GeoDataSeries</span></span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a><span class="co">      GeoDataCentre node cluster centroid Point</span></span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a>    centre <span class="op">=</span> node[[<span class="st">"geometry"</span>, <span class="st">"class"</span>]].groupby(<span class="st">"class"</span>).aggregate(<span class="bu">tuple</span>)</span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>    centre <span class="op">=</span> gp.GeoSeries(centre[<span class="st">"geometry"</span>].<span class="bu">map</span>(MultiPoint), crs<span class="op">=</span>CRS).centroid</span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>    centre <span class="op">=</span> centre.rename(<span class="st">"target"</span>)</span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>    geometry <span class="op">=</span> node[[<span class="st">"class"</span>, <span class="st">"geometry"</span>]].set_index(<span class="st">"class"</span>).join(centre)</span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>    geometry <span class="op">=</span> geometry.<span class="bu">apply</span>(LineString, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> node.rename(columns<span class="op">=</span>{<span class="st">"node"</span>: <span class="st">"source"</span>}).copy()</span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>    r[<span class="st">"geometry"</span>] <span class="op">=</span> geometry.values</span>
+<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r</span>
+<span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> get_raster_line_without_knot(nx_line.to_frame(<span class="st">"geometry"</span>))</span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>nx_output <span class="op">=</span> nx_line.<span class="bu">map</span>(shapely_transform).<span class="bu">map</span>(set_precision_pointone)</span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>nx_output.plot()</span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-17.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="primal-network" class="level3" data-number="4.1.9">
+<h3 data-number="4.1.9" class="anchored" data-anchor-id="primal-network"><span class="header-section-number">4.1.9</span> Primal network</h3>
+<p>There are circumstances where it may useful to see a “primal” network, that only consists of lines from start and end points,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_nx(line):</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_nx: return primal edge and node network from LineString GeoDataFrame</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">      line: LineString GeoDataFrame</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co">      edge, node GeoDataFrames</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> line.<span class="bu">map</span>(get_end)</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    edge <span class="op">=</span> gp.GeoSeries(r.<span class="bu">map</span>(LineString), crs<span class="op">=</span>CRS)</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.vstack(r.to_numpy())</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> gp.GeoSeries(<span class="bu">map</span>(Point, r)).to_frame(<span class="st">"geometry"</span>)</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> r.groupby(r.columns.to_list(), as_index<span class="op">=</span><span class="va">False</span>).size()</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> edge</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>nx_edge <span class="op">=</span> get_nx(nx_line)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>nx_output <span class="op">=</span> nx_edge.<span class="bu">map</span>(shapely_transform).<span class="bu">map</span>(set_precision_pointone)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>nx_output.plot()</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-21-19.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</h2>
+<p>In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .</p>
+<section id="boundary" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> box</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.ops <span class="im">import</span> voronoi_diagram</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>scale <span class="op">=</span> <span class="fl">5.0</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>tolerance<span class="op">=</span><span class="fl">1.0</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_geometry_line(this_buffer):</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_geometry_line: returns LineString boundary from geometry</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co">      this_buffer: geometry to find LineString</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="co">       simplified LineString boundary</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> this_buffer.boundary.explode(index_parts<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gp.GeoSeries(r.simplify(tolerance<span class="op">=</span><span class="fl">0.5</span>), crs<span class="op">=</span>CRS)</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>nx_boundary <span class="op">=</span> get_geometry_line(nx_geometry)</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>nx_boundary.plot()</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-21.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="segment" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="segment"><span class="header-section-number">4.2.2</span> Segment</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_segment_nx(line, scale):</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_segment_nx: segment line into sections, no more than scale long</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">      line:  line to segment</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">      scale: length to segment line</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co">      segmented LineStrings</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    set_segment <span class="op">=</span> partial(get_segment, distance<span class="op">=</span>scale)</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> line.<span class="bu">map</span>(set_segment).explode().rename(<span class="st">"geometry"</span>)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gp.GeoDataFrame(r, crs<span class="op">=</span>CRS)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_linestring(line):</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_linestring: return LineString GeoSeries from line coordinates</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="co">      line:</span></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a><span class="co">       LineString GeoSeries</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> get_coordinates(line)</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.stack([gp.points_from_xy(<span class="op">*</span>r[:<span class="op">-</span><span class="dv">1</span>].T), gp.points_from_xy(<span class="op">*</span>r[<span class="dv">1</span>:].T)])</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gp.GeoSeries(pd.DataFrame(r.T).<span class="bu">apply</span>(LineString, axis<span class="op">=</span><span class="dv">1</span>), crs<span class="op">=</span>CRS).values</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_segment(line, distance<span class="op">=</span><span class="fl">50.0</span>):</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_segment: segment LineString GeoSeries into distance length segments</span></span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a><span class="co">      line: GeoSeries LineString</span></span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a><span class="co">      length: segmentation distance (default value = 50.0)</span></span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a><span class="co">      GeoSeries of LineStrings of up to length distance</span></span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_linestring(line.segmentize(distance))</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a>nx_segment <span class="op">=</span> get_segment_nx(nx_boundary, scale).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a>nx_segment.plot()</span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-23-23.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="point" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="point"><span class="header-section-number">4.2.3</span> Point</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>nx_point <span class="op">=</span> nx_segment.loc[:, <span class="st">"geometry"</span>].<span class="bu">map</span>(get_coordinates).explode()</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>nx_point <span class="op">=</span> MultiPoint(nx_point[::<span class="dv">2</span>].<span class="bu">map</span>(Point).values)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>nx_output <span class="op">=</span> gp.GeoSeries(nx_point, crs<span class="op">=</span>CRS)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>nx_output.plot(edgecolor<span class="op">=</span><span class="st">"blue"</span>, color<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-25.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.4</span> Voronoi</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>nx_envelope <span class="op">=</span> box(<span class="op">*</span>nx_point.bounds)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>nx_voronoi <span class="op">=</span> voronoi_diagram(nx_point, envelope<span class="op">=</span>nx_envelope, tolerance<span class="op">=</span>tolerance, edges<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>nx_voronoi <span class="op">=</span> gp.GeoSeries(<span class="bu">map</span>(set_precision_pointone, nx_voronoi.geoms), crs<span class="op">=</span>CRS)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>nx_voronoi.plot()</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-25-27.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi-2" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>nx_voronoi <span class="op">=</span> nx_voronoi.explode(index_parts<span class="op">=</span><span class="va">False</span>).clip(nx_envelope)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>ix <span class="op">=</span> <span class="op">~</span>nx_voronoi.is_empty <span class="op">&amp;</span> (nx_voronoi.<span class="bu">type</span> <span class="op">==</span> <span class="st">"LineString"</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>nx_voronoi <span class="op">=</span> nx_voronoi[ix].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>nx_voronoi.plot()</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-26-29.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi-simplified-network" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_voronoi_line(voronoi, boundary, geometry, buffer_size):</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_voronoi_line: returns cleaned simplified line by filtering Voronoi lines by distance,</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co">    contained within network buffer Polygons, and combining overlapping end-points</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="co">      voronoi:     Voronoi LineString</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co">      boundary:    network buffer LineString</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co">      geometry:    network buffer Polygon</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co">      buffer_size: network buffer distance [m]</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="co">      simplified simplified network line</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>    offset <span class="op">=</span> buffer_size <span class="op">/</span> <span class="fl">2.0</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> filter_distance(voronoi, boundary, offset)</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> filter_buffer(r, geometry)</span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>    edge, node <span class="op">=</span> get_source_target(r.to_frame(<span class="st">"geometry"</span>))</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> node[<span class="st">"count"</span>] <span class="op">&lt;</span> <span class="dv">4</span></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>    square <span class="op">=</span> node[ix].<span class="bu">buffer</span>(offset, cap_style<span class="op">=</span><span class="st">"square"</span>, mitre_limit<span class="op">=</span>offset)</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>    square <span class="op">=</span> gp.GeoSeries(unary_union(square.values).geoms, crs<span class="op">=</span>CRS)</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> edge[<span class="st">"geometry"</span>].<span class="bu">map</span>(get_linestring).explode().to_frame(<span class="st">"geometry"</span>)</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> set_geometry(r, square)</span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combine_line(r)</span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filter_distance(line, boundary, offset):</span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""filter_distance: filter line closer than distance offset from boundary</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a><span class="co">      line:     LineStrings to simplify</span></span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a><span class="co">      boundary: boundary LineString</span></span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a><span class="co">      offset:</span></span>
+<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a><span class="co">      simplified LineStrings</span></span>
+<span id="cb42-36"><a href="#cb42-36" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb42-37"><a href="#cb42-37" aria-hidden="true" tabindex="-1"></a>    edge, _ <span class="op">=</span> get_source_target(line.to_frame(<span class="st">"geometry"</span>))</span>
+<span id="cb42-38"><a href="#cb42-38" aria-hidden="true" tabindex="-1"></a>    (ix, _), distance <span class="op">=</span> boundary.sindex.nearest(edge[<span class="st">"geometry"</span>], return_distance<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb42-39"><a href="#cb42-39" aria-hidden="true" tabindex="-1"></a>    _, ix <span class="op">=</span> np.unique(ix, return_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb42-40"><a href="#cb42-40" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> distance[ix] <span class="op">&gt;</span> offset</span>
+<span id="cb42-41"><a href="#cb42-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combine_line(edge.loc[ix, <span class="st">"geometry"</span>]).simplify(<span class="fl">1.0</span>)</span>
+<span id="cb42-42"><a href="#cb42-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-43"><a href="#cb42-43" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filter_buffer(line, geometry):</span>
+<span id="cb42-44"><a href="#cb42-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""filter_buffer: filter keeping lines within boundary Polygon</span></span>
+<span id="cb42-45"><a href="#cb42-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-46"><a href="#cb42-46" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb42-47"><a href="#cb42-47" aria-hidden="true" tabindex="-1"></a><span class="co">      line:     LineStrings to simplify</span></span>
+<span id="cb42-48"><a href="#cb42-48" aria-hidden="true" tabindex="-1"></a><span class="co">      geometry: boundary Polygon</span></span>
+<span id="cb42-49"><a href="#cb42-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-50"><a href="#cb42-50" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb42-51"><a href="#cb42-51" aria-hidden="true" tabindex="-1"></a><span class="co">      filtered LineStrings</span></span>
+<span id="cb42-52"><a href="#cb42-52" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb42-53"><a href="#cb42-53" aria-hidden="true" tabindex="-1"></a>    (_, ix) <span class="op">=</span> line.sindex.query(geometry, predicate<span class="op">=</span><span class="st">"contains_properly"</span>)</span>
+<span id="cb42-54"><a href="#cb42-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combine_line(line.loc[ix]).simplify(<span class="fl">1.0</span>)</span>
+<span id="cb42-55"><a href="#cb42-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-56"><a href="#cb42-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_geometry(line, square):</span>
+<span id="cb42-57"><a href="#cb42-57" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""set_geometry: return LineString simplified by combining overlapping end-points</span></span>
+<span id="cb42-58"><a href="#cb42-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-59"><a href="#cb42-59" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb42-60"><a href="#cb42-60" aria-hidden="true" tabindex="-1"></a><span class="co">      line:     LineStrings to simplify</span></span>
+<span id="cb42-61"><a href="#cb42-61" aria-hidden="true" tabindex="-1"></a><span class="co">      square:   overlapping squares</span></span>
+<span id="cb42-62"><a href="#cb42-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-63"><a href="#cb42-63" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb42-64"><a href="#cb42-64" aria-hidden="true" tabindex="-1"></a><span class="co">      simplified LineStrings</span></span>
+<span id="cb42-65"><a href="#cb42-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-66"><a href="#cb42-66" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb42-67"><a href="#cb42-67" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> line.reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb42-68"><a href="#cb42-68" aria-hidden="true" tabindex="-1"></a>    centroid <span class="op">=</span> square.centroid.<span class="bu">map</span>(set_precision_pointone).set_crs(CRS)</span>
+<span id="cb42-69"><a href="#cb42-69" aria-hidden="true" tabindex="-1"></a>    edge, node <span class="op">=</span> get_source_target(r)</span>
+<span id="cb42-70"><a href="#cb42-70" aria-hidden="true" tabindex="-1"></a>    ix <span class="op">=</span> node[<span class="st">"geometry"</span>].sindex.query(square, predicate<span class="op">=</span><span class="st">"contains_properly"</span>)</span>
+<span id="cb42-71"><a href="#cb42-71" aria-hidden="true" tabindex="-1"></a>    node.loc[ix[<span class="dv">1</span>], <span class="st">"geometry"</span>] <span class="op">=</span> centroid[ix[<span class="dv">0</span>]].values</span>
+<span id="cb42-72"><a href="#cb42-72" aria-hidden="true" tabindex="-1"></a>    source <span class="op">=</span> node.loc[edge[<span class="st">"source"</span>], <span class="st">"geometry"</span>].values</span>
+<span id="cb42-73"><a href="#cb42-73" aria-hidden="true" tabindex="-1"></a>    target <span class="op">=</span> node.loc[edge[<span class="st">"target"</span>], <span class="st">"geometry"</span>].values</span>
+<span id="cb42-74"><a href="#cb42-74" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.stack([source, target]).T</span>
+<span id="cb42-75"><a href="#cb42-75" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gp.GeoSeries(<span class="bu">map</span>(LineString, r), crs<span class="op">=</span>CRS)</span>
+<span id="cb42-76"><a href="#cb42-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-77"><a href="#cb42-77" aria-hidden="true" tabindex="-1"></a><span class="co">#nx_line = get_voronoi_line(nx_voronoi, nx_boundary, nx_geometry, buffer_size)</span></span>
+<span id="cb42-78"><a href="#cb42-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-79"><a href="#cb42-79" aria-hidden="true" tabindex="-1"></a>offset <span class="op">=</span> buffer_size <span class="op">/</span> <span class="fl">2.0</span></span>
+<span id="cb42-80"><a href="#cb42-80" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> filter_distance(nx_voronoi, nx_boundary, offset)</span>
+<span id="cb42-81"><a href="#cb42-81" aria-hidden="true" tabindex="-1"></a>nx_line.plot()</span>
+<span id="cb42-82"><a href="#cb42-82" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-27-31.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="voronoi-line" class="level3" data-number="4.2.7">
+<h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> filter_buffer(nx_line, nx_geometry)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>nx_edge, nx_node <span class="op">=</span> get_source_target(nx_line.to_frame(<span class="st">"geometry"</span>))</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>ix <span class="op">=</span> nx_node[<span class="st">"count"</span>] <span class="op">&lt;</span> <span class="dv">4</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>nx_square <span class="op">=</span> nx_node[ix].<span class="bu">buffer</span>(offset, cap_style<span class="op">=</span><span class="st">"square"</span>, mitre_limit<span class="op">=</span>offset)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>nx_square <span class="op">=</span> gp.GeoSeries(unary_union(nx_square.values).geoms, crs<span class="op">=</span>CRS)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> nx_edge[<span class="st">"geometry"</span>].<span class="bu">map</span>(get_linestring).explode().to_frame(<span class="st">"geometry"</span>)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> set_geometry(nx_line, nx_square)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>nx_line <span class="op">=</span> combine_line(nx_line)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>nx_line.plot()</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-28-33.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="primal-network-1" class="level3" data-number="4.2.8">
+<h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>nx_edge <span class="op">=</span> get_nx(nx_line)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>nx_edge.plot()</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-29-35.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><img src="images/paste-1.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="merging-simple-and-detailed-networks" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="merging-simple-and-detailed-networks"><span class="header-section-number">4.3</span> Merging simple and detailed networks</h2>
+<p>After you have a simplified version of the network, from any source, the next step is merging the attributes.</p>
+<!-- TODO: add content to this section. -->
+<!-- TODO: Is this possible? -->
+<!-- ## Combined network simplification and attribute merging -->
+</section>
+</section>
+<section id="sec-discussion" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Discussion</h1>
+<ul>
+<li><p>Optimisation</p></li>
+<li><p>Packaging</p></li>
+<li></li>
+</ul>
+</section>
+<section id="references" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> References</h1>
+<!-- Tests -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import osmnx as ox</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import geopandas as gpd</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import momepy</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import networkx as nx</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import topojson as tp</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gpd.read_file('data/minimal-input.geojson')</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert to EPSG:27700</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gdf.to_crs('EPSG:27700')</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf.plot()</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_topo = tp.Topology(gdf)</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple = gdf_topo.toposimplify(10).to_gdf()</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple.plot()</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert gdf linestrings to nodes:</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')</span></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="co"># nx.draw(gdf_nx)</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="co"># momepy.roundabout_simplification(gdf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import osmnx as ox</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import geopandas as gpd</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import momepy</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import networkx as nx</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import topojson as tp</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gpd.read_file('data/minimal-input.geojson')</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert to EPSG:27700</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gdf.to_crs('EPSG:27700')</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf.plot()</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_topo = tp.Topology(gdf)</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple = gdf_topo.toposimplify(10).to_gdf()</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple.plot()</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert gdf linestrings to nodes:</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="co"># nx.draw(gdf_nx)</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="co"># momepy.roundabout_simplification(gdf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-deakin2023" class="csl-entry" role="listitem">
+Deakin, Will. 2023. <em>Transport Network Simplification Through Network Disaggregation and Reassembly of OpenStreet Map (OSM) Networks</em>. <a href="https://github.com/anisotropi4/graph">https://github.com/anisotropi4/graph</a>.
+</div>
+<div id="ref-lovelace2017" class="csl-entry" role="listitem">
+Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
+</div>
+<div id="ref-morgan2020" class="csl-entry" role="listitem">
+Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nationally Scalable Methods for Interactive and Online Visualisation of Transport Behaviour at the Road Network Level.”</span> <em>Environment &amp; Planning B: Planning &amp; Design</em>, July. <a href="https://doi.org/10.1177/2399808320942779">https://doi.org/10.1177/2399808320942779</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>See the <a href="https://sumo.dlr.de/docs/Simulation/Output/index.html">online documentation</a> of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

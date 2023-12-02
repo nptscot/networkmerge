@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>CRUSE - Route network simplification for transport planning</title>
+<title>networkmerge - Route network simplification for transport planning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -124,7 +124,7 @@ div.csl-indent {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">CRUSE</span>
+    <span class="navbar-title">networkmerge</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -220,12 +220,9 @@ div.csl-indent {
 <p>To reproduce this paper you need <code>quarto</code> installed.</p>
 <p>After installing the dependencies, you can reproduce the paper by running the following command in the terminal:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render paper.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<!-- and the Elsevier extension which can be installed as follows:
-
-``` bash
-quarto add quarto-journals/elsevier 
-```
--->
+<p>Install the dependencies by cloning the repository and running the following:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To contribute to the papers written as quarto documents (with <code>.qmd</code> extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:</p>
 <pre><code>Ctrl+Shift+F4</code></pre>
 <p>You can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s other features for academic writing.</p>
@@ -331,16 +328,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</div>
+
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</div>
+
 </div>
 </div>
 <p></p><figcaption class="figure-caption">Figure&nbsp;3: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.</figcaption><p></p>
@@ -351,14 +344,10 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="768"></p>
-</div>
+
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid figure-img" width="768"></p>
-</div>
+
 </div>
 </div>
 <p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of consolidation of intersections, with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</figcaption><p></p>
@@ -375,24 +364,6 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>Both approaches a buffer, in this case 8.0m, is applied to the base network lines.</p>
 <p>The buffered street network to be simplified is</p>
 <div class="cell quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="paper_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">base network</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="paper_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">buffer network</figcaption>
-</figure>
-</div>
-</div>
-</div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p>Edinburgh Princes Street buffer network</p>
@@ -412,49 +383,17 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
 <section id="rasterio-transform" class="level4" data-number="4.1.5.1">
 <h4 data-number="4.1.5.1" class="anchored" data-anchor-id="rasterio-transform"><span class="header-section-number">4.1.5.1</span> Rasterio transform</h4>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>|     |      |        |
-|----:|-----:|-------:|
-| 0.5 |  0   | 324166 |
-| 0   | -0.5 | 674527 |
-| 0   |  0   |      1 |</code></pre>
-</div>
-</div>
 </section>
 <section id="shapely-transform" class="level4" data-number="4.1.5.2">
 <h4 data-number="4.1.5.2" class="anchored" data-anchor-id="shapely-transform"><span class="header-section-number">4.1.5.2</span> Shapely transform</h4>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>|     |      |        |
-|----:|-----:|-------:|
-| 0   | -0.5 | 324166 |
-| 0.5 |  0   | 674527 |</code></pre>
-</div>
-</div>
 <p>In this example a scale factor of 2.0 is used.</p>
 </section>
 </section>
 <section id="skeletonize-the-buffer-to-a-point-geometry" class="level3" data-number="4.1.6">
 <h3 data-number="4.1.6" class="anchored" data-anchor-id="skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</h3>
 <p>A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-12-9.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 <p>The image is then thinned and the resulting giving skeleton raster image.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-13-11.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 <p>The point geometry can then be transformed back to a point geometry.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-14-13.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 <p>The issue with this is that rather than points that lie on the simplified network, we need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.</p>
 </section>
 <section id="conversion-from-point-to-line-geometry" class="level3" data-number="4.1.7">
@@ -462,30 +401,15 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network.</p>
 <p>First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.</p>
 <p>To see the simplified network requires the reverse affine transformation to be applied,</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-16-15.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="knots" class="level3" data-number="4.1.8">
 <h3 data-number="4.1.8" class="anchored" data-anchor-id="knots"><span class="header-section-number">4.1.8</span> Knots</h3>
 <p>Where lines intersect multiple short segment may occur which look like knots.</p>
 <p>To remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-17-17.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="primal-network" class="level3" data-number="4.1.9">
 <h3 data-number="4.1.9" class="anchored" data-anchor-id="primal-network"><span class="header-section-number">4.1.9</span> Primal network</h3>
 <p>There are circumstances where it may useful to see a “primal” network, that only consists of lines from start and end points,</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-19-19.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 </section>
 <section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
@@ -493,67 +417,27 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .</p>
 <section id="boundary" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-20-21.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="segment" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="segment"><span class="header-section-number">4.2.2</span> Segment</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-21-23.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="point" class="level3" data-number="4.2.3">
 <h3 data-number="4.2.3" class="anchored" data-anchor-id="point"><span class="header-section-number">4.2.3</span> Point</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-22-25.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="voronoi" class="level3" data-number="4.2.4">
 <h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.4</span> Voronoi</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-23-27.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="voronoi-2" class="level3" data-number="4.2.5">
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-24-29.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="voronoi-simplified-network" class="level3" data-number="4.2.6">
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-25-31.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="voronoi-line" class="level3" data-number="4.2.7">
 <h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-26-33.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="primal-network-1" class="level3" data-number="4.2.8">
 <h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-27-35.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 <p><img src="images/paste-1.png" class="img-fluid"></p>
 </section>
 </section>
