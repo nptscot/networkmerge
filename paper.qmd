@@ -6,7 +6,7 @@ title: "Route network simplification for transport planning"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 format:
   # pdf: default
-  gfm: default
+  html: default
 number-sections: true
 execute: 
   echo: false

@@ -1,0 +1,23 @@
+project:
+  type: website
+  render:
+    - index.qmd
+    - paper.qmd
+
+website:
+  title: "CRUSE"
+  navbar:
+    left:
+      - href: paper.qmd
+        text: "Networkmerge paper"
+      - href: https://www.npt.scot
+        text: "Network Planning Tool web application with simplified network"
+
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+
+execute:
+  freeze: auto
