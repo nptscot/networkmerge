@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Install libmkl-rt
         run: sudo apt install libmkl-rt
+        run: sudo apt install build-essential gfortran
+        run: sudo apt install libxml2-dev libglpk-dev
       - name: Check out repository
         uses: actions/checkout@v4
       
