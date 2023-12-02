@@ -40,6 +40,11 @@ py_install(requirements_txt, pip = TRUE)
 ```{r}
 #| include: false
 requirements_txt = readLines("requirements.txt")
+# Check if Python is installed:
+if (!requireNamespace("reticulate")) {
+  install.packages("reticulate")
+}
+reticulate::install_python()
 reticulate::py_install(requirements_txt, pip = TRUE)
 ```
 
