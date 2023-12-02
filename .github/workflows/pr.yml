@@ -1,7 +1,9 @@
 on:
     workflow_dispatch:
-    push:
-      branches: main
+    # Run on Pull Requests
+    pull_request:
+      branches:
+        - main
   
 name: Quarto Publish
 
@@ -28,9 +30,5 @@ jobs:
 #         # Run the script in .devcontainer/install-additional-dependencies.sh
 #         run: bash .devcontainer/install-additional-dependencies.sh
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Render
+        uses: quarto-dev/quarto-actions/render@v2
