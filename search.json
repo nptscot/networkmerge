@@ -39,7 +39,7 @@
     "href": "index.html",
     "title": "Route network simplification for transport planning",
     "section": "",
-    "text": "This website hosts the networkmerge paper, results of which are publicly available at https://npt.scot. It was produced with Quarto, which was also used to support the academic paper shown below. See https://quarto.org/docs/websites for further information.\nThe paper is re-built automatically when the source code is updated.\nSee github.com/nptscot/networkmerge for the source code underlying this website."
+    "text": "This website hosts the networkmerge paper, results of which are publicly available at https://npt.scot. It was produced with Quarto, which was also used to support the academic paper shown below. See https://quarto.org/docs/websites for further information.\nThe paper is re-built automatically when the source code is updated:\nSee github.com/nptscot/networkmerge for the source code underlying this website."
   },
   {
     "objectID": "index.html#simplifying-the-geometry",
