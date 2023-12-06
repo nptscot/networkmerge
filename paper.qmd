@@ -6,7 +6,7 @@ title: "Route network simplification for transport planning"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 format:
   # pdf: default
-  gfm: default
+  html: default
 number-sections: true
 execute: 
   echo: false
@@ -15,8 +15,6 @@ editor:
   markdown: 
     wrap: sentence
 bibliography: references.bib
-
-jupyter: python3
 ---
 
 # Reproducibility {.unnumbered}
@@ -31,12 +29,33 @@ After installing the dependencies, you can reproduce the paper by running the fo
 quarto render paper.qmd
 ```
 
-<!-- and the Elsevier extension which can be installed as follows:
+Install the dependencies by cloning the repository and running the following:
 
-``` bash
-quarto add quarto-journals/elsevier 
+```r
+requirements_txt = readLines("requirements.txt")
+py_install(requirements_txt, pip = TRUE)
 ```
--->
+
+```{r}
+#| include: false
+requirements_txt = readLines("requirements.txt")
+# Check if Python is installed:
+if (!requireNamespace("reticulate")) {
+  install.packages("reticulate")
+}
+reticulate::install_python()
+reticulate::py_install(requirements_txt, pip = TRUE)
+```
+
+```{r}
+library(sf)
+library(tmap)
+library(dplyr)
+library(ggplot2)
+# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+tmap_mode("plot")
+# Install Python dependencies with reticulate:
+```
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
@@ -53,10 +72,11 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Introduction
 
-Datasets representing route networks are central to transport planning as key inputs *and* output.
-Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models.
-Estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs.
-However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically for visualising model outputs such as flow per time of day).[^1]
+Datasets representing route networks are central to transport planning as key inputs *and* outputs.
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
+Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
+However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
+
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
@@ -184,12 +204,6 @@ As shown in top panel of @fig-topology-preserving, topology-preserving simplicat
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
-library(sf)
-library(tmap)
-library(tidyverse)
-library(reticulate)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
-tmap_mode("plot")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -912,23 +926,24 @@ In instances where a simplified version of the network is readily available, suc
 <!-- Tests -->
 
 ```{python}
-import osmnx as ox
-import geopandas as gpd
-import momepy
-import networkx as nx
-import topojson as tp
+# osmnx test:
+# import osmnx as ox
+# import geopandas as gpd
+# import momepy
+# import networkx as nx
+# import topojson as tp
 
-gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
-# Convert to EPSG:27700
-gdf = gdf.to_crs('EPSG:27700')
-gdf.plot()
-gdf_topo = tp.Topology(gdf)
-gdf_simple = gdf_topo.toposimplify(10).to_gdf()
-gdf_simple.plot()
-# Convert gdf linestrings to nodes:
-gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
-nx.draw(gdf_nx)
-momepy.roundabout_simplification(gdf)
+# gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+# # Convert to EPSG:27700
+# gdf = gdf.to_crs('EPSG:27700')
+# gdf.plot()
+# gdf_topo = tp.Topology(gdf)
+# gdf_simple = gdf_topo.toposimplify(10).to_gdf()
+# gdf_simple.plot()
+# # Convert gdf linestrings to nodes:
+# gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
+# nx.draw(gdf_nx)
+# momepy.roundabout_simplification(gdf)
 ```
 
 ```{python}
