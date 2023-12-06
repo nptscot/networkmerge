@@ -894,23 +894,24 @@ After you have a simplified version of the network, from any source, the next st
 <!-- Tests -->
 
 ```{python}
-import osmnx as ox
-import geopandas as gpd
-import momepy
-import networkx as nx
-import topojson as tp
+# osmnx test:
+# import osmnx as ox
+# import geopandas as gpd
+# import momepy
+# import networkx as nx
+# import topojson as tp
 
-gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
-# Convert to EPSG:27700
-gdf = gdf.to_crs('EPSG:27700')
-gdf.plot()
-gdf_topo = tp.Topology(gdf)
-gdf_simple = gdf_topo.toposimplify(10).to_gdf()
-gdf_simple.plot()
-# Convert gdf linestrings to nodes:
-gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
-nx.draw(gdf_nx)
-momepy.roundabout_simplification(gdf)
+# gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+# # Convert to EPSG:27700
+# gdf = gdf.to_crs('EPSG:27700')
+# gdf.plot()
+# gdf_topo = tp.Topology(gdf)
+# gdf_simple = gdf_topo.toposimplify(10).to_gdf()
+# gdf_simple.plot()
+# # Convert gdf linestrings to nodes:
+# gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
+# nx.draw(gdf_nx)
+# momepy.roundabout_simplification(gdf)
 ```
 
 ```{python}
