@@ -6,7 +6,7 @@ title: "Route network simplification for transport planning"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 format:
   # pdf: default
-  gfm: default
+  html: default
 number-sections: true
 execute: 
   echo: false
@@ -15,8 +15,6 @@ editor:
   markdown: 
     wrap: sentence
 bibliography: references.bib
-
-jupyter: python3
 ---
 
 # Reproducibility {.unnumbered}
@@ -74,10 +72,11 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Introduction
 
-Datasets representing route networks are central to transport planning as key inputs *and* output.
-Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models.
-Estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs.
-However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically for visualising model outputs such as flow per time of day).[^1]
+Datasets representing route networks are central to transport planning as key inputs *and* outputs.
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
+Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
+However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
+
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
@@ -205,12 +204,6 @@ As shown in top panel of @fig-topology-preserving, topology-preserving simplicat
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
-library(sf)
-library(tmap)
-library(tidyverse)
-library(reticulate)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
-tmap_mode("plot")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
