@@ -172,7 +172,7 @@ div.csl-indent {
   <li><a href="#skeletonization" id="toc-skeletonization" class="nav-link" data-scroll-target="#skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</a></li>
   <li><a href="#affine-transforms" id="toc-affine-transforms" class="nav-link" data-scroll-target="#affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</a></li>
   <li><a href="#skeletonize-the-buffer-to-a-point-geometry" id="toc-skeletonize-the-buffer-to-a-point-geometry" class="nav-link" data-scroll-target="#skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</a></li>
-  <li><a href="#conversion-from-point-to-line-geometry" id="toc-conversion-from-point-to-line-geometry" class="nav-link" data-scroll-target="#conversion-from-point-to-line-geometry"><span class="header-section-number">4.1.7</span> Conversion from point to line geometry</a></li>
+  <li><a href="#transforming-point-geometry-into-line-geometry" id="toc-transforming-point-geometry-into-line-geometry" class="nav-link" data-scroll-target="#transforming-point-geometry-into-line-geometry"><span class="header-section-number">4.1.7</span> Transforming point geometry into line geometry</a></li>
   <li><a href="#knots" id="toc-knots" class="nav-link" data-scroll-target="#knots"><span class="header-section-number">4.1.8</span> Knots</a></li>
   <li><a href="#primal-network" id="toc-primal-network" class="nav-link" data-scroll-target="#primal-network"><span class="header-section-number">4.1.9</span> Primal network</a></li>
   </ul></li>
@@ -187,7 +187,7 @@ div.csl-indent {
   <li><a href="#voronoi-line" id="toc-voronoi-line" class="nav-link" data-scroll-target="#voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</a></li>
   <li><a href="#primal-network-1" id="toc-primal-network-1" class="nav-link" data-scroll-target="#primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</a></li>
   </ul></li>
-  <li><a href="#merging-simple-and-detailed-networks" id="toc-merging-simple-and-detailed-networks" class="nav-link" data-scroll-target="#merging-simple-and-detailed-networks"><span class="header-section-number">4.3</span> Merging simple and detailed networks</a></li>
+  <li><a href="#integrating-attributes-from-the-detailed-network-into-the-simplified-network" id="toc-integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="nav-link" data-scroll-target="#integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</a></li>
   </ul></li>
   <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">5</span> Discussion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6</span> References</a></li>
@@ -396,43 +396,34 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <section id="create-a-projected-combined-buffered-geometry" class="level3" data-number="4.1.3">
 <h3 data-number="4.1.3" class="anchored" data-anchor-id="create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</h3>
 <p>In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.</p>
-<p>The buffered street network to be simplified is</p>
+<p>The street network that requires simplification and the corresponding buffered network are presented as follows:</p>
 <div class="cell quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="paper_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">base network</figcaption>
+<p><img src="paper_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1152"></p>
+<figcaption class="figure-caption">Buffered Network</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="paper_files/figure-html/unnamed-chunk-10-6.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">buffer network</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p>Edinburgh Princes Street buffer network</p>
+<p>Buffered Network Visualization of Edinburgh’s Princes Street</p>
 </div>
 </div>
 </div>
 </section>
 <section id="skeletonization" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</h3>
-<p>Buffered lines are combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.</p>
-<section id="create-the-affine-transformation-between-the-points-in-the-buffer-and-raster-image" class="level4" data-number="4.1.4.1">
-<h4 data-number="4.1.4.1" class="anchored" data-anchor-id="create-the-affine-transformation-between-the-points-in-the-buffer-and-raster-image"><span class="header-section-number">4.1.4.1</span> Create the affine transformation between the points in the buffer and raster image</h4>
-<p>A scaled affine transformations between the projected coordinate geometry and scaled raster image is calculated.</p>
+<p>The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.</p>
+<section id="establish-an-affine-transformation-that-maps-the-points-within-the-buffered-geometry-to-corresponding-positions-in-the-raster-image" class="level4" data-number="4.1.4.1">
+<h4 data-number="4.1.4.1" class="anchored" data-anchor-id="establish-an-affine-transformation-that-maps-the-points-within-the-buffered-geometry-to-corresponding-positions-in-the-raster-image"><span class="header-section-number">4.1.4.1</span> Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image</h4>
+<p>A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image.</p>
 </section>
 </section>
 <section id="affine-transforms" class="level3" data-number="4.1.5">
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
+<p>The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.</p>
 <section id="rasterio-transform" class="level4" data-number="4.1.5.1">
 <h4 data-number="4.1.5.1" class="anchored" data-anchor-id="rasterio-transform"><span class="header-section-number">4.1.5.1</span> Rasterio transform</h4>
 <div class="cell">
@@ -455,94 +446,99 @@ In this paper we will focus on the former approach, which assumes that a simplif
 | 0.5 |  0   | 674527 |</code></pre>
 </div>
 </div>
-<p>In this example a scale factor of 2.0 is used.</p>
+<p>In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.</p>
 </section>
 </section>
 <section id="skeletonize-the-buffer-to-a-point-geometry" class="level3" data-number="4.1.6">
 <h3 data-number="4.1.6" class="anchored" data-anchor-id="skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.1.6</span> Skeletonize the buffer to a point geometry</h3>
-<p>A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.</p>
+<p>A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster’s scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-14-9.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-14-7.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The image is then thinned and the resulting giving skeleton raster image.</p>
+<p>The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-15-11.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-15-9.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The point geometry can then be transformed back to a point geometry.</p>
+<p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-16-13.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-16-11.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The issue with this is that rather than points that lie on the simplified network, we need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.</p>
+<p>The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.</p>
 </section>
-<section id="conversion-from-point-to-line-geometry" class="level3" data-number="4.1.7">
-<h3 data-number="4.1.7" class="anchored" data-anchor-id="conversion-from-point-to-line-geometry"><span class="header-section-number">4.1.7</span> Conversion from point to line geometry</h3>
-<p>Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network.</p>
-<p>First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.</p>
-<p>To see the simplified network requires the reverse affine transformation to be applied,</p>
+<section id="transforming-point-geometry-into-line-geometry" class="level3" data-number="4.1.7">
+<h3 data-number="4.1.7" class="anchored" data-anchor-id="transforming-point-geometry-into-line-geometry"><span class="header-section-number">4.1.7</span> Transforming point geometry into line geometry</h3>
+<p>Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.</p>
+<p>The process of transforming point geometry into line geometry involves several key steps. Initially, the point set, derived from a skeletonized image, is analysed to identify adjacent points. Adjacency is determined based on proximity within the raster coordinate system, usually within a 1x1 pixel square.</p>
+<p>Once adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network structure. This conversion from point to line geometry is a pivotal aspect of network simplification.</p>
+<p>To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-18-15.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-18-13.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="knots" class="level3" data-number="4.1.8">
 <h3 data-number="4.1.8" class="anchored" data-anchor-id="knots"><span class="header-section-number">4.1.8</span> Knots</h3>
-<p>Where lines intersect multiple short segment may occur which look like knots.</p>
-<p>To remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,</p>
+<p>Knots in the network often manifest as multiple short segments at intersections, resembling tangled knots.</p>
+<p>To address these, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster’s central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-19-17.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-19-15.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="primal-network" class="level3" data-number="4.1.9">
 <h3 data-number="4.1.9" class="anchored" data-anchor-id="primal-network"><span class="header-section-number">4.1.9</span> Primal network</h3>
-<p>There are circumstances where it may useful to see a “primal” network, that only consists of lines from start and end points,</p>
+<p>There are circumstances where it might be beneficial to view a “primal” network, which is exclusively composed of direct lines connecting start and end points.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-21-19.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-21-17.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 </section>
 <section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</h2>
-<p>In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .</p>
+<p>In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
 <section id="boundary" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
+<p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-22-21.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-22-19.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="segment" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="segment"><span class="header-section-number">4.2.2</span> Segment</h3>
+<p>The simplified LineString geometries are then broken down into shorter segments.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-23-23.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-23-21.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="point" class="level3" data-number="4.2.3">
 <h3 data-number="4.2.3" class="anchored" data-anchor-id="point"><span class="header-section-number">4.2.3</span> Point</h3>
+<p>The simplified LineString geometries are converted into point geometries.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-24-25.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-24-23.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="voronoi" class="level3" data-number="4.2.4">
 <h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.4</span> Voronoi</h3>
+<p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-25-27.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-25-25.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -550,7 +546,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-26-29.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-26-27.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -558,7 +554,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-27-31.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-27-29.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -566,7 +562,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-28-33.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-28-31.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -574,15 +570,15 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-29-35.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-29-33.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><img src="images/paste-1.png" class="img-fluid"></p>
 </section>
 </section>
-<section id="merging-simple-and-detailed-networks" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="merging-simple-and-detailed-networks"><span class="header-section-number">4.3</span> Merging simple and detailed networks</h2>
-<p>After you have a simplified version of the network, from any source, the next step is merging the attributes.</p>
+<section id="integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</h2>
+<p>In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.</p>
 <!-- TODO: add content to this section. -->
 <!-- TODO: Is this possible? -->
 <!-- ## Combined network simplification and attribute merging -->
