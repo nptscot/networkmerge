@@ -6,16 +6,17 @@ title: "Route network simplification for transport planning"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 format:
   # pdf: default
-  html: default
+  gfm: default
 number-sections: true
 execute: 
   echo: false
-  eval: false
   # cache: true
 editor: 
   markdown: 
     wrap: sentence
 bibliography: references.bib
+
+jupyter: python3
 ---
 
 # Reproducibility {.unnumbered}
@@ -30,33 +31,12 @@ After installing the dependencies, you can reproduce the paper by running the fo
 quarto render paper.qmd
 ```
 
-Install the dependencies by cloning the repository and running the following:
+<!-- and the Elsevier extension which can be installed as follows:
 
-```r
-requirements_txt = readLines("requirements.txt")
-py_install(requirements_txt, pip = TRUE)
+``` bash
+quarto add quarto-journals/elsevier 
 ```
-
-```{r}
-#| include: false
-requirements_txt = readLines("requirements.txt")
-# Check if Python is installed:
-if (!requireNamespace("reticulate")) {
-  install.packages("reticulate")
-}
-reticulate::install_python()
-reticulate::py_install(requirements_txt, pip = TRUE)
-```
-
-```{r}
-library(sf)
-library(tmap)
-library(dplyr)
-library(ggplot2)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
-tmap_mode("plot")
-# Install Python dependencies with reticulate:
-```
+-->
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
@@ -73,10 +53,10 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Introduction
 
-Datasets representing route networks are central to transport planning as key inputs *and* outputs.
-Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
-Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
-However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
+Datasets representing route networks are central to transport planning as key inputs *and* output.
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models.
+Estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs.
+However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically for visualising model outputs such as flow per time of day).[^1]
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
@@ -203,8 +183,13 @@ Topology-preserving simplification reduces the number of vertices in a linestrin
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
-
 ```{r}
+library(sf)
+library(tmap)
+library(tidyverse)
+library(reticulate)
+# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+tmap_mode("plot")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -235,9 +220,11 @@ input_simplified = left_join(
   simplification_df,
   by = join_by(id == simp_factor)
   )
-tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+m = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
   tm_facets(by = "keep", free.coords = TRUE) 
+
+m
 ```
 
 ```{r}
@@ -294,11 +281,11 @@ Two approaches to this are outlined below.
 
 ### Network Simplification
 
-There are two simplification approaches based presented either using image skeletonization or Voronoi diagram to finding a centre line.
+The paper presents two  approaches for network simplification: one involves image skeletonization, while the other utilizes Voronoi diagrams to identify central lines. The detailed steps of the methodology will be presented in the following sections.
 
 ### Create a projected combined buffered geometry:
 
-Both approaches a buffer, in this case 8.0m, is applied to the base network lines.
+In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.
 
 ```{python}
 from functools import partial
@@ -331,7 +318,7 @@ CRS = "EPSG:27700"
 buffer_size = 8.0
 
 set_precision_pointone = partial(set_precision, grid_size=0.1)
-base_nx = gp.read_file("data/rnet_princes_street.geojson").to_crs(CRS)
+base_nx = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson").to_crs(CRS)
 base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
 nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 ```
@@ -437,7 +424,7 @@ import rasterio.plot as rip
 geometry_im = rif.rasterize(nx_geometry.values, transform=r_matrix, out_shape=out_shape)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    geometry_im = remove_small_holes(geometry_im, 4).astype(np.uint8)
+    geometry_im = remove_small_holes(geometry_im, 20).astype(np.uint8)
 
 rip.show(geometry_im, cmap="Blues", title="buffer geometry")
 ```
@@ -893,23 +880,23 @@ After you have a simplified version of the network, from any source, the next st
 <!-- Tests -->
 
 ```{python}
-# import osmnx as ox
-# import geopandas as gpd
-# import momepy
-# import networkx as nx
-# import topojson as tp
+import osmnx as ox
+import geopandas as gpd
+import momepy
+import networkx as nx
+import topojson as tp
 
-# gdf = gpd.read_file('data/minimal-input.geojson')
-# # Convert to EPSG:27700
-# gdf = gdf.to_crs('EPSG:27700')
-# gdf.plot()
-# gdf_topo = tp.Topology(gdf)
-# gdf_simple = gdf_topo.toposimplify(10).to_gdf()
-# gdf_simple.plot()
-# # Convert gdf linestrings to nodes:
-# gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
-# nx.draw(gdf_nx)
-# momepy.roundabout_simplification(gdf)
+gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+# Convert to EPSG:27700
+gdf = gdf.to_crs('EPSG:27700')
+gdf.plot()
+gdf_topo = tp.Topology(gdf)
+gdf_simple = gdf_topo.toposimplify(10).to_gdf()
+gdf_simple.plot()
+# Convert gdf linestrings to nodes:
+gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
+nx.draw(gdf_nx)
+momepy.roundabout_simplification(gdf)
 ```
 
 ```{python}
@@ -930,12 +917,4 @@ After you have a simplified version of the network, from any source, the next st
 # gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')
 # nx.draw(gdf_nx)
 # momepy.roundabout_simplification(gdf)
-```
-
-
-```{r}
-#| eval: false
-#| echo: false
-renv::init()
-renv::snapshot()
 ```
