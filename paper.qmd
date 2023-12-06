@@ -6,7 +6,7 @@ title: "Route network simplification for transport planning"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 format:
   # pdf: default
-  gfm: default
+  html: default
 number-sections: true
 execute: 
   echo: false
@@ -29,12 +29,33 @@ After installing the dependencies, you can reproduce the paper by running the fo
 quarto render paper.qmd
 ```
 
-<!-- and the Elsevier extension which can be installed as follows:
+Install the dependencies by cloning the repository and running the following:
 
-``` bash
-quarto add quarto-journals/elsevier 
+```r
+requirements_txt = readLines("requirements.txt")
+py_install(requirements_txt, pip = TRUE)
 ```
--->
+
+```{r}
+#| include: false
+requirements_txt = readLines("requirements.txt")
+# Check if Python is installed:
+if (!requireNamespace("reticulate")) {
+  install.packages("reticulate")
+}
+reticulate::install_python()
+reticulate::py_install(requirements_txt, pip = TRUE)
+```
+
+```{r}
+library(sf)
+library(tmap)
+library(dplyr)
+library(ggplot2)
+# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+tmap_mode("plot")
+# Install Python dependencies with reticulate:
+```
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
@@ -51,10 +72,11 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Introduction
 
-Datasets representing route networks are central to transport planning as key inputs *and* output.
-Origin-destination, GPS, and remote sensing imagery datasets are all key inputs but rarely feature as outputs of transport models.
-Estimates of costs and benefits associated with changes to transport systems, geographic outputs at regional, local and corridor level, and visualisation of agents on the system are common outputs.
-However, route network datasets are ubiquitous as both transport model inputs (typically representing road networks) outputs (typically for visualising model outputs such as flow per time of day).[^1]
+Datasets representing route networks are central to transport planning as key inputs *and* outputs.
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
+Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
+However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
+
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
@@ -182,12 +204,6 @@ As shown in top panel of @fig-topology-preserving, topology-preserving simplicat
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
-library(sf)
-library(tmap)
-library(tidyverse)
-library(reticulate)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
-tmap_mode("plot")
 input = sf::read_sf('data/minimal-input.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
@@ -218,9 +234,11 @@ input_simplified = left_join(
   simplification_df,
   by = join_by(id == simp_factor)
   )
-tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+m = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
   tm_facets(by = "keep", free.coords = TRUE) 
+
+m
 ```
 
 ```{r}
@@ -277,18 +295,22 @@ Two approaches to this are outlined below.
 
 ### Network Simplification
 
-There are two simplification approaches based presented either using image skeletonization or Voronoi diagram to finding a centre line.
+The paper presents two  approaches for network simplification: one involves image skeletonization, while the other utilizes Voronoi diagrams to identify central lines. The detailed steps of the methodology will be presented in the following sections.
 
 ### Create a projected combined buffered geometry:
 
-Both approaches a buffer, in this case 8.0m, is applied to the base network lines.
+In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.
 
 ```{python}
 from functools import partial
-
+from shapely import box
+from shapely.ops import voronoi_diagram
 import geopandas as gp
 import matplotlib.pyplot as plt
 from shapely import get_coordinates, line_merge, set_precision, unary_union
+from shapely.geometry import MultiPoint,MultiLineString,LineString,Point
+import pandas as pd
+import numpy as np
 plt.rcParams["figure.figsize"] = (12, 12)
 
 def get_geometry_buffer(this_gf, radius=8.0):
@@ -314,32 +336,44 @@ CRS = "EPSG:27700"
 buffer_size = 8.0
 
 set_precision_pointone = partial(set_precision, grid_size=0.1)
-base_nx = gp.read_file("data/rnet_princes_street.geojson").to_crs(CRS)
+base_nx = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson").to_crs(CRS)
 base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
 nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 ```
 
-The buffered street network to be simplified is
+The street network that requires simplification and the corresponding buffered network are presented as follows:
+
 ```{python}
-#| fig-cap: Edinburgh Princes Street buffer network
+#| fig-cap: "Buffered Network Visualization of Edinburgh's Princes Street"
 #| layout-ncol: 2
 #| fig-subcap:
-#|  - base network
-#|  - buffer network
-base_nx.plot(edgecolor="blue", color="blue").grid()
-plt.show()
-nx_geometry.plot(edgecolor="black", color="blue").grid()
+#|  - Sample Street Network
+#|  - Buffered Network
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plotting the base network on the first subplot
+axs[0].set_title("Sample Street Network - Edinburgh's Princes Street")
+base_nx.plot(ax=axs[0], edgecolor="blue", color="blue")
+axs[0].grid()
+
+# Plotting the buffered network on the second subplot
+axs[1].set_title("Buffered Network of Edinburgh's Princes Street")
+nx_geometry.plot(ax=axs[1], edgecolor="black", color="blue")
+axs[1].grid()
+
 plt.show()
 ```
 
 ### Skeletonization
 
-Buffered lines are combined to form a raster image and thinned to produce to a skeletal remnant that preserves the extent and connectivity centred on a line centred on the combined buffered region, using the Edinburgh GeoJSON network as above.
+
+The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
 
 
-#### Create the affine transformation between the points in the buffer and raster image 
+#### Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
 
-A scaled affine transformations between the projected coordinate geometry and scaled raster image is calculated. 
+
+A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image. 
 
 ```{python}
 import numpy as np
@@ -386,6 +420,9 @@ r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
 
 ### Affine transforms
 
+
+The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
+
 #### Rasterio transform
 ```{python}
 from IPython.display import display, Markdown
@@ -402,11 +439,12 @@ display_matrix(or_matrix, "   ")
 display_matrix(os_matrix, "   ")
 ```
 
-In this example a scale factor of 2.0 is used.
+In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
 ### Skeletonize the buffer to a point geometry
 
-A scaled affine transformation is applied to the projected coordinate geometry to create a scaled raster image. The raster image is then cleaned to remove small holes in the image, typically where buffer lines run parallel or intersect at shallow angles.
+
+A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
 
 
 ```{python}
@@ -420,12 +458,12 @@ import rasterio.plot as rip
 geometry_im = rif.rasterize(nx_geometry.values, transform=r_matrix, out_shape=out_shape)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    geometry_im = remove_small_holes(geometry_im, 4).astype(np.uint8)
+    geometry_im = remove_small_holes(geometry_im, 20).astype(np.uint8)
 
 rip.show(geometry_im, cmap="Blues", title="buffer geometry")
 ```
 
-The image is then thinned and the resulting giving skeleton raster image.
+The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.
 
 ```{python}
 skeleton_im = skeletonize(geometry_im).astype(np.uint8)
@@ -434,7 +472,7 @@ rip.show(skeleton_im, cmap="Blues", title="skeleton geometry")
 nx_point = gp.GeoSeries(map(Point, point_im.T), crs=CRS)
 ```
 
-The point geometry can then be transformed back to a point geometry.
+The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix)
@@ -443,13 +481,15 @@ transform_point.plot(edgecolor="black", color="blue").grid()
 plt.show()
 ```
 
-The issue with this is that rather than points that lie on the simplified network, we  need a simplified set of lines not a set. This requires the line geometry to be inferred from associated points.
+The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.
 
-### Conversion from point to line geometry
+### Transforming point geometry into line geometry
 
-Creating a simplified line geometry from a skeletonized point set is arguably the most awkward step in creating a simplified network. 
+Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.
 
-First identify all adjacent points, which are points within a 1x1 px square in the raster coordinate system. Then create line segments from lines between all adjacent points, and finally combine and the resultant lines geometries.
+The process of transforming point geometry into line geometry involves several key steps. Initially, the point set, derived from a skeletonized image, is analysed to identify adjacent points. Adjacency is determined based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
+
+Once adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network structure. This conversion from point to line geometry is a pivotal aspect of network simplification.
 
 ```{python}
 from shapely import get_coordinates
@@ -528,7 +568,8 @@ def combine_line(line):
 nx_line = get_raster_line_with_knots(nx_point)
 ```
 
-To see the simplified network requires the reverse affine transformation to be applied,
+
+To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix)
@@ -538,9 +579,10 @@ plt.show()
 ```
 
 ### Knots
-Where lines intersect multiple short segment may occur which look like knots. 
 
-To remove these these short segments are clustered, a cluster centre-point calculated, end-points of longer-lines connected to the segment cluser are then moved to cluster centre-point, removing the knot. As before, prior to plotting the simplified network the reverse affine transformation is applied,
+Knots in the network often manifest as multiple short segments at intersections, resembling tangled knots.
+
+To address these, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context.
 
 ```{python}
 import networkx as nx
@@ -606,7 +648,7 @@ nx_output.plot()
 plt.show()
 ```
 ### Primal network
-There are circumstances where it may useful to see a "primal" network, that only consists of lines from start and end points,
+There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
 
 ```{python}
 def get_nx(line):
@@ -636,11 +678,12 @@ plt.show()
 
 ## Simplification via voronoi polygons
 
-In this approach lines are buffered, the buffer edges segmented into sequences of points and a centre-line derived from a set of Voronoi polygons convering these .
+In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
 
 ### Boundary
 
+The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.
 
 ```{python}
 from shapely import box
@@ -667,6 +710,10 @@ plt.show()
 ```
 
 ### Segment
+
+
+The simplified LineString geometries are then broken down into shorter segments.
+
 ```{python}
 def get_segment_nx(line, scale):
     """get_segment_nx: segment line into sections, no more than scale long
@@ -710,11 +757,13 @@ def get_segment(line, distance=50.0):
     return get_linestring(line.segmentize(distance))
 
 nx_segment = get_segment_nx(nx_boundary, scale).reset_index(drop=True)
-nx_segment.plot()
+nx_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
 plt.show()
 ```
 
 ### Point
+
+The simplified LineString geometries are converted into point geometries.
 
 ```{python}
 nx_point = nx_segment.loc[:, "geometry"].map(get_coordinates).explode()
@@ -724,6 +773,7 @@ nx_output.plot(edgecolor="blue", color="white")
 plt.show()
 ```
 ### Voronoi
+The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.
 
 ```{python}
 nx_envelope = box(*nx_point.bounds)
@@ -852,9 +902,9 @@ plt.show()
 
 ![](images/paste-1.png)
 
-## Merging simple and detailed networks
+## Integrating attributes from the detailed network into the simplified network
 
-After you have a simplified version of the network, from any source, the next step is merging the attributes.
+In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.
 
 <!-- TODO: add content to this section. -->
 
@@ -876,13 +926,14 @@ After you have a simplified version of the network, from any source, the next st
 <!-- Tests -->
 
 ```{python}
+# osmnx test:
 # import osmnx as ox
 # import geopandas as gpd
 # import momepy
 # import networkx as nx
 # import topojson as tp
 
-# gdf = gpd.read_file('data/minimal-input.geojson')
+# gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 # # Convert to EPSG:27700
 # gdf = gdf.to_crs('EPSG:27700')
 # gdf.plot()

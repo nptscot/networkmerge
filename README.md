@@ -1,25 +1,37 @@
-# Prerequisites
-
-To run the code in this repo, you need to have a working Python
-installation with the following packages installed (with pip in this
-case):
-
-``` {bash}
-#| eval: false
-pip install matplotlib pandas shapely geopandas osmnx networkx scipy folium mapclassify
-```
-
 # networkmerge
 
-Example datasets were created with the ATIP tool and taken from the NPT
-project. The example datasets can be found in the `data` folder.
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<!-- To read-in the data into Python we used the following: -->
+Welcome to the networkmerge project.
 
-This repo contains different approaches to simplify and merge networks.
+The code in this repo was developed to support the Network Planning Tool
+for Scotland, which can be found at
+[www.npt.scot](https://www.npt.scot).
 
-See [buffer-aggregate.md](buffer-aggregate.md) for a simple buffer and
-aggregate approach.
+For reproducibility and automation the code in the
+[`paper.qmd`](paper.qmd) file is run as part of a GitHub Actions
+workflow. The build status is:
 
-For an in-progress paper describing different approaches, see
-[paper.md](paper.md).
+<div>
+
+[![](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml/badge.svg)](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml)
+
+Quarto Publish
+
+</div>
+
+To install the dependencies needed to reproduce the paper, see the code
+in the [devcontainer](./.devcontainer) and
+[publish.yml](./.github/workflows/publish.yml) file (you can run the
+code in this repo in a devcontainer to avoid the installation step).
+
+After the dependencies are installed you can rebuild the paper by
+running the following command from the root directory of this repo:
+
+``` bash
+quarto render paper.qmd
+```
+
+See the rendered result, which automatically updates after each commit
+to the main branch, at
+[nptscot.github.io/networkmerge](https://nptscot.github.io/networkmerge/).
