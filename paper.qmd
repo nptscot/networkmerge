@@ -31,12 +31,33 @@ After installing the dependencies, you can reproduce the paper by running the fo
 quarto render paper.qmd
 ```
 
-<!-- and the Elsevier extension which can be installed as follows:
+Install the dependencies by cloning the repository and running the following:
 
-``` bash
-quarto add quarto-journals/elsevier 
+```r
+requirements_txt = readLines("requirements.txt")
+py_install(requirements_txt, pip = TRUE)
 ```
--->
+
+```{r}
+#| include: false
+requirements_txt = readLines("requirements.txt")
+# Check if Python is installed:
+if (!requireNamespace("reticulate")) {
+  install.packages("reticulate")
+}
+reticulate::install_python()
+reticulate::py_install(requirements_txt, pip = TRUE)
+```
+
+```{r}
+library(sf)
+library(tmap)
+library(dplyr)
+library(ggplot2)
+# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+tmap_mode("plot")
+# Install Python dependencies with reticulate:
+```
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
