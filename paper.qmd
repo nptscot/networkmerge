@@ -7,20 +7,16 @@ title: "Route network simplification for transport planning"
 bibliography: references.bib
 authors: 
   - name: Robin Lovelace
-    affiliation: 
-      - ref: 1
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
     orcid: 0000-0001-5679-6536
   - name: Zhao Wang
-    affiliation:
-      - ref: 1
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
     orcid: 0000-0002-4054-0533
   - name: Will Deakin
-    affiliation: 
-      - ref: 2
-    # orcid: 0009-0008-5656-4469
+    affiliation: Network Rail, UK
+    orcid: 0009-0008-5656-4469
   - name: Josiah Parry
-    affiliations: 
-      - ref: 3
+    affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
 affiliation: 
   - name: Leeds Institute for Transport Studies, University of Leeds, UK
