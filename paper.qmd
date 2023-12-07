@@ -4,18 +4,73 @@ title: "Route network simplification for transport planning"
 # Alternatives:
 # title: "Network simplification: application to the visualisation of transport networks"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
+bibliography: references.bib
+author: 
+  - name: Robin Lovelace
+    affiliation: 1
+    orcid: 0000-0001-5679-6536
+  - name: Zhao Wang
+    affiliation: 1
+    orcid: 0000-0002-4054-0533
+  - name: Will Deakin
+    affiliation: 2
+    # orcid: 0009-0008-5656-4469
+  - name: Josiah Parry
+    affiliation: 3
+    orcid: 0000-0001-9910-865X
+affiliation: 
+  - name: Leeds Institute for Transport Studies, University of Leeds, UK
+    index: 1
+  - name: Network Rail, UK
+    index: 2
+  - name: ESRI, USA
+    index: 3
 format:
   # pdf: default
   html: default
 number-sections: true
 execute: 
   echo: false
-  # cache: true
+  cache: true
 editor: 
   markdown: 
     wrap: sentence
-bibliography: references.bib
 ---
+
+<!-- Blurb form special issue in Journal of Physics: Complexity
+
+
+Journal of Physics: Complexity
+Focus Issue on Urban Mobility and Green Transportation in Sustainable Cities
+Guest Editors
+
+    Ruiqi Li, Beijing University of Chemical Technology, China
+    Marta C. Gonzalez, University of California, USA
+    Michael Szell, IT University of Copenhagen, Denmark
+    Luis E. Olmos, University of Medellin, Colombia 
+
+Scope
+
+Along with the rapid urbanization and car-oriented transportation systems for most cities worldwide, challenges associated with urban mobility and transportation have escalated, calling for greener and more sustainable solutions to address environmental, social, and economic concerns. For example, the flooding of car and conventional transportation system are responsible for a variety of urban illnesses, including traffic congestion, air pollution, energy deficiency, greenhouse gas emissions, loss of home value and property taxes, and deterioration of health of residents, and underscoring the urgent need for a paradigm shift towards green and sustainable alternatives.
+
+This Focus aims to explore the intersection of physics and complexity in the context of urban mobility and green transportation, shedding light on cutting-edge research that not only elucidates the fundamental principles governing these systems but also offers practical applications to create more sustainable and efficient cities. Regarding the green transportation, it can be any means of travel that does not negatively impact the environment, including (but are not limited to) bikes (dockless or docked sharing ones), ebikes (both private or sharing ones), electric vehicles. A better green transportation would involve both the infrastructure level and human behaviors level.
+
+The focus issue is concerned with all aspects of urban mobility and green transportation, topics addressed include, but are not limited to:
+
+    Empirical and theoretical study of human mobility in green transportation
+    Design and/or optimization of sidewalk, bicycle, or micromobility networks in cities
+    Road safety in green transportation system
+    Infrastructure analysis of green transportation system
+    Design and/or optimization of charging stations in cities
+    The relationship between urban form and vehicle kilometers traveled (VKT) and reduction of emissions
+    Rebalancing strategy for dockless/docked bike-sharing systems
+    Empirical and theoretical study of mobility patterns of sharing conveyances (e.g., dockless sharing bikes or sharing cars)
+    Analysis and/or optimization of ride sharing of car-pooling platforms
+    Agent-based modeling and simulation for urban mobility in green transportation
+    Implications for policymaking and urban designers
+    Measuring complexity of urban mobility
+    Green mobility and social distancing in times of pandemic -->
+
 
 # Reproducibility {.unnumbered}
 
@@ -69,6 +124,15 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 </details>
 
 # Abstract {.unnumbered}
+
+Route network datasets are central to transport models as key inputs *and* outputs.
+The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
+However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation.
+An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places.
+To address this problem, we present and compare two methods for *simplifying* route network datasets: one based on image skeletonization and the other on Voronoi diagrams.
+The methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.nptscot.scot](https://www.nptscot.scot).
+The methods are fully reproducible based on open data and open source software, enabling them to be freely used in other contexts and extended in the future.
+
 
 # Introduction
 
