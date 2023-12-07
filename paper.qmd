@@ -18,20 +18,13 @@ author:
   - name: Josiah Parry
     affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
-affiliation: 
-  - name: Leeds Institute for Transport Studies, University of Leeds, UK
-    index: 1
-  - name: Network Rail, UK
-    index: 2
-  - name: ESRI, USA
-    index: 3
 format:
   # pdf: default
   html: default
 number-sections: true
 execute: 
   echo: false
-  cache: true
+  # cache: true
 editor: 
   markdown: 
     wrap: sentence
