@@ -5,7 +5,7 @@ title: "Route network simplification for transport planning"
 # title: "Network simplification: application to the visualisation of transport networks"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 bibliography: references.bib
-authors: 
+author: 
   - name: Robin Lovelace
     affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
     orcid: 0000-0001-5679-6536
@@ -23,7 +23,7 @@ affiliation:
     index: 1
   - name: Network Rail, UK
     index: 2
-  - name: Environmental Systems Research Institute, Redlands, CA, USA
+  - name: ESRI, USA
     index: 3
 format:
   # pdf: default
@@ -36,6 +36,7 @@ editor:
   markdown: 
     wrap: sentence
 ---
+
 
 <!-- Blurb form special issue in Journal of Physics: Complexity
 
