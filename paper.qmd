@@ -4,6 +4,20 @@ title: "Route network simplification for transport planning"
 # Alternatives:
 # title: "Network simplification: application to the visualisation of transport networks"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
+bibliography: references.bib
+author: 
+  - name: Robin Lovelace
+    affiliation: 1
+    orcid: 0000-0001-5679-6536
+  - name: Zhao Wang
+    affiliation: 1
+    orcid: 0000-0002-5942-073X
+  - name: Will Deakin
+    affiliation: 2
+    orcid: 0000-0002-8861-7086
+  - name: Josiah Parry
+    affiliation: 3
+    orcid: 0000-0002-3249-736X
 format:
   # pdf: default
   html: default
@@ -14,7 +28,6 @@ execute:
 editor: 
   markdown: 
     wrap: sentence
-bibliography: references.bib
 ---
 
 <!-- Blurb form special issue in Journal of Physics: Complexity
