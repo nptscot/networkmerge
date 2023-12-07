@@ -11,20 +11,27 @@ author:
     orcid: 0000-0001-5679-6536
   - name: Zhao Wang
     affiliation: 1
-    orcid: 0000-0002-5942-073X
+    orcid: 0000-0002-4054-0533
   - name: Will Deakin
     affiliation: 2
-    orcid: 0000-0002-8861-7086
+    # orcid: TBC
   - name: Josiah Parry
     affiliation: 3
-    orcid: 0000-0002-3249-736X
+    orcid: 0000-0001-9910-865X
+affiliation: 
+  - name: Leeds Institute for Transport Studies, University of Leeds, UK
+    index: 1
+  - name: Network Rail, UK
+    index: 2
+  - name: ESRI, USA
+    index: 3
 format:
   # pdf: default
   html: default
 number-sections: true
 execute: 
   echo: false
-  # cache: true
+  cache: true
 editor: 
   markdown: 
     wrap: sentence
