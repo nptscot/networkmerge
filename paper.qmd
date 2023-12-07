@@ -23,7 +23,7 @@ affiliation:
     index: 1
   - name: Network Rail, UK
     index: 2
-  - name: ESRI, USA
+  - name: Environmental Systems Research Institute, Redlands, CA, USA
     index: 3
 format:
   # pdf: default
