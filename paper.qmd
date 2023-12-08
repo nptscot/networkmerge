@@ -401,12 +401,9 @@ nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 
 The street network that requires simplification and the corresponding buffered network are presented as follows:
 
+::: {#fig-buffered-network layout-ncol="1"}
+
 ```{python}
-#| fig-cap: "Buffered Network Visualization of Edinburgh's Princes Street"
-#| layout-ncol: 2
-#| fig-subcap:
-#|  - Sample Street Network
-#|  - Buffered Network
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
 # Plotting the base network on the first subplot
@@ -421,6 +418,10 @@ axs[1].grid()
 
 plt.show()
 ```
+
+Buffered Network Visualization of Edinburgh's Princes Street
+
+:::
 
 ### Skeletonization
 
