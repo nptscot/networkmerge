@@ -549,7 +549,10 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>nx_geometry <span class="op">=</span> get_geometry_buffer(base_nx[<span class="st">"geometry"</span>], radius<span class="op">=</span>buffer_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The street network that requires simplification and the corresponding buffered network are presented as follows:</p>
-<div>
+<div id="fig-buffered-network" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the base network on the first subplot</span></span>
@@ -563,21 +566,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].grid()</span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
+<div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1152"></p>
-<figcaption class="figure-caption">Buffered Network</figcaption>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Buffered Network Visualization of Edinburgh’s Princes Street</figcaption><p></p>
 </figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p>Buffered Network Visualization of Edinburgh’s Princes Street</p>
-</div>
-</div>
-</div>
 </div>
 </section>
 <section id="skeletonization" class="level3" data-number="4.1.4">
