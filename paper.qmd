@@ -1034,6 +1034,7 @@ In the example code, four arguments need to be carefully defined:
 
 - **`max_angle_diff`** (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such  consideration of angular alignment plays a pivotal role in maintaining the network's geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network's structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.
 
+
 ![image](https://github.com/nptscot/networkmerge/assets/74598734/9c191046-8ea5-4ed9-8430-7ffd6fe809d0)
 
 
