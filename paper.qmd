@@ -15,6 +15,7 @@ editor:
   markdown: 
     wrap: sentence
 bibliography: references.bib
+jupyter: python3
 ---
 
 # Reproducibility {.unnumbered}
@@ -343,13 +344,13 @@ nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 
 The street network that requires simplification and the corresponding buffered network are presented as follows:
 
-```{python}
+```{python, eval = False}
 #| fig-cap: "Buffered Network Visualization of Edinburgh's Princes Street"
 #| layout-ncol: 2
 #| fig-subcap:
 #|  - Sample Street Network
 #|  - Buffered Network
-fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+fig, axs = plt.subplots(1, 2, figsize=(15, 8))
 
 # Plotting the base network on the first subplot
 axs[0].set_title("Sample Street Network - Edinburgh's Princes Street")
@@ -905,6 +906,23 @@ plt.show()
 ## Integrating attributes from the detailed network into the simplified network
 
 In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.
+
+```{python, eval = false}
+rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+# Plotting both GeoJSON files side by side
+fig, axes = plt.subplots(1, 2, figsize=(15, 8))
+
+rnet_x.plot(ax=axes[0], color='blue')
+axes[0].set_title('RNet X')
+
+rnet_y.plot(ax=axes[1], color='green')
+axes[1].set_title('RNet Y')
+
+plt.tight_layout()
+plt.show()
+```
+
 
 <!-- TODO: add content to this section. -->
 
