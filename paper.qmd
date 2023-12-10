@@ -4,6 +4,20 @@ title: "Route network simplification for transport planning"
 # Alternatives:
 # title: "Network simplification: application to the visualisation of transport networks"
 # title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
+bibliography: references.bib
+author: 
+  - name: Robin Lovelace
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0001-5679-6536
+  - name: Zhao Wang
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0002-4054-0533
+  - name: Will Deakin
+    affiliation: Network Rail, UK
+    orcid: 0009-0008-5656-4469
+  - name: Josiah Parry
+    affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
+    orcid: 0000-0001-9910-865X
 format:
   # pdf: default
   html: default
@@ -14,6 +28,43 @@ execute:
 editor: 
   markdown: 
     wrap: sentence
+---
+
+
+<!-- Blurb form special issue in Journal of Physics: Complexity
+
+
+Journal of Physics: Complexity
+Focus Issue on Urban Mobility and Green Transportation in Sustainable Cities
+Guest Editors
+
+    Ruiqi Li, Beijing University of Chemical Technology, China
+    Marta C. Gonzalez, University of California, USA
+    Michael Szell, IT University of Copenhagen, Denmark
+    Luis E. Olmos, University of Medellin, Colombia 
+
+Scope
+
+Along with the rapid urbanization and car-oriented transportation systems for most cities worldwide, challenges associated with urban mobility and transportation have escalated, calling for greener and more sustainable solutions to address environmental, social, and economic concerns. For example, the flooding of car and conventional transportation system are responsible for a variety of urban illnesses, including traffic congestion, air pollution, energy deficiency, greenhouse gas emissions, loss of home value and property taxes, and deterioration of health of residents, and underscoring the urgent need for a paradigm shift towards green and sustainable alternatives.
+
+This Focus aims to explore the intersection of physics and complexity in the context of urban mobility and green transportation, shedding light on cutting-edge research that not only elucidates the fundamental principles governing these systems but also offers practical applications to create more sustainable and efficient cities. Regarding the green transportation, it can be any means of travel that does not negatively impact the environment, including (but are not limited to) bikes (dockless or docked sharing ones), ebikes (both private or sharing ones), electric vehicles. A better green transportation would involve both the infrastructure level and human behaviors level.
+
+The focus issue is concerned with all aspects of urban mobility and green transportation, topics addressed include, but are not limited to:
+
+    Empirical and theoretical study of human mobility in green transportation
+    Design and/or optimization of sidewalk, bicycle, or micromobility networks in cities
+    Road safety in green transportation system
+    Infrastructure analysis of green transportation system
+    Design and/or optimization of charging stations in cities
+    The relationship between urban form and vehicle kilometers traveled (VKT) and reduction of emissions
+    Rebalancing strategy for dockless/docked bike-sharing systems
+    Empirical and theoretical study of mobility patterns of sharing conveyances (e.g., dockless sharing bikes or sharing cars)
+    Analysis and/or optimization of ride sharing of car-pooling platforms
+    Agent-based modeling and simulation for urban mobility in green transportation
+    Implications for policymaking and urban designers
+    Measuring complexity of urban mobility
+    Green mobility and social distancing in times of pandemic -->
+
 bibliography: references.bib
 jupyter: python3
 ---
@@ -70,6 +121,15 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 </details>
 
 # Abstract {.unnumbered}
+
+Route network datasets are central to transport models as key inputs *and* outputs.
+The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
+However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation.
+An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places.
+To address this problem, we present and compare two methods for *simplifying* route network datasets: one based on image skeletonization and the other on Voronoi diagrams.
+The methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.nptscot.scot](https://www.nptscot.scot).
+The methods are fully reproducible based on open data and open source software, enabling them to be freely used in other contexts and extended in the future.
+
 
 # Introduction
 
@@ -306,6 +366,8 @@ In both approaches, the network simplification process initiates with the genera
 from functools import partial
 from shapely import box
 from shapely.ops import voronoi_diagram
+from shapely import box
+from shapely.ops import voronoi_diagram
 import geopandas as gp
 import matplotlib.pyplot as plt
 from shapely import get_coordinates, line_merge, set_precision, unary_union
@@ -365,12 +427,21 @@ axs[1].grid()
 plt.show()
 ```
 
+Buffered Network Visualization of Edinburgh's Princes Street
+
+:::
+
 ### Skeletonization
 
 
 The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
+The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
 
 
+#### Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
+
+
+A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image. 
 #### Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
 
 
@@ -424,6 +495,9 @@ r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
 
 The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
 
+
+The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
+
 #### Rasterio transform
 ```{python}
 from IPython.display import display, Markdown
@@ -441,9 +515,12 @@ display_matrix(os_matrix, "   ")
 ```
 
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
+In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
 ### Skeletonize the buffer to a point geometry
 
+
+A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
 
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
 
@@ -465,6 +542,7 @@ rip.show(geometry_im, cmap="Blues", title="buffer geometry")
 ```
 
 The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.
+The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.
 
 ```{python}
 skeleton_im = skeletonize(geometry_im).astype(np.uint8)
@@ -474,6 +552,7 @@ nx_point = gp.GeoSeries(map(Point, point_im.T), crs=CRS)
 ```
 
 The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
+The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix)
@@ -482,6 +561,7 @@ transform_point.plot(edgecolor="black", color="blue").grid()
 plt.show()
 ```
 
+The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.
 The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.
 
 ### Transforming point geometry into line geometry
@@ -650,6 +730,7 @@ plt.show()
 ```
 ### Primal network
 There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
+There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
 
 ```{python}
 def get_nx(line):
@@ -680,10 +761,12 @@ plt.show()
 ## Simplification via voronoi polygons
 
 In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
+In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
 
 ### Boundary
 
+The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.
 The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.
 
 ```{python}
@@ -711,6 +794,10 @@ plt.show()
 ```
 
 ### Segment
+
+
+The simplified LineString geometries are then broken down into shorter segments.
+
 
 
 The simplified LineString geometries are then broken down into shorter segments.
