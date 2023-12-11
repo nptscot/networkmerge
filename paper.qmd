@@ -978,22 +978,18 @@ plt.show()
 
 In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.
 
-In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. stplanr emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html). 
+In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. `stplanr` emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html). 
 
-Data Preparation:
+### Data Preparation:
 
 The core functionality of our integration process hinges on two pivotal inputs: `rnet_x` and `rnet_y`. Each plays a distinct yet complementary role in the network attribute integration:
 
-- `rnet_x` - Target Route Network: This dataset represents our primary framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. rnet_x is akin to a canvas, prepared to receive additional layers of data.
+- `rnet_x` - Target Route Network: This dataset represents our base framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. `rnet_x` is akin to a canvas, prepared to receive additional layers of data. It wroth to note that `rnet_x` need to contian a identifier columns.
 
-- `rnet_y` - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are missing from our target network. 
+- `rnet_y` - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network. 
 
-## Step 1: Coordinate Reference System Alignment
+### Step 1: Coordinate Reference System Alignment
 
-### Objective
-Uniformity in spatial referencing is crucial for accurate data analysis. 
-
-### Action
 Transform the spatial data of both `rnet_x` (the simplified network) and `rnet_y` (the detailed network) to the same coordinate reference system. For this project, we have selected EPSG:27700.
 
 ```{r}
@@ -1001,23 +997,15 @@ rnet_xp = sf::st_transform(rnet_x, "EPSG:27700")
 rnet_yp = sf::st_transform(rnet_y, "EPSG:27700")
 ```
 
-## Step 2: Defining the Function List
+### Step 2: Defining the Function List
 
-### Objective
-Customize the attribute integration process based on specific requirements.
-
-### Action
 Create a function list that dictates how each attribute is to be processed:
 - **Exclude**: "geometry" from processing.
-- **Mean Function**: Applied to attributes like "Gradient" and "Quietness".
+- **Mean Function**: Applied to attributes like "Gradient" and "Quietness". TODO expline the funtion of sum and mean
 - **Sum Function**: Used for aggregating values in columns such as "all_bicycle".
 
-## Step 3: Using `stplanr::rnet_merge` for Integration
+### Step 3: Using `stplanr::rnet_merge` for Integration
 
-### Objective
-Integrate attributes from `rnet_y` into `rnet_x` effectively.
-
-### Action
 Employ the `rnet_merge` function from the `stplanr` package. This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.
 
 ```{r}
@@ -1027,7 +1015,7 @@ In the example code, four arguments need to be carefully defined:
 
 - `dist` (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, essential for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
   
-- `segment_length` (Segment Maximum Length): This specifies the upper limit for each segment's length within the network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.
+- `segment_length` (Segment Maximum Length): This specifies the upper limit for each segment's length within the detailed network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.
   
 - `funs` (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.
 
@@ -1101,7 +1089,7 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 ```
 
 
-Once we obtained  the rnet_merged which is asimplied network but alos contians deitlas attrivbutes. We then need a series of steps to refine the data.
+Once we obtained  the rnet_merged dataset, which is a simplied network but alos contians detials attrivbutes. We then need a series of steps to refine the data.
 
 - Cleaning: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
   
@@ -1109,9 +1097,9 @@ Once we obtained  the rnet_merged which is asimplied network but alos contians d
 
 - NA Handling: A thorough examination is conducted for the presence of NA values across the columns. Any rows where all the targeted columns contain NA values are filtered out.
 
-- Spatial Subsetting: Following the removal of linestrings that contain NA attributes from the rnet_merged dataset,  we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of 'rnet_yp', termed 'rnet_y_rest', is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This  step ensures that only those components of 'rnet_y' which are spatially distinct from 'rnet_merged' are retained for further consideration.
+- Spatial Subsetting: Following the removal of linestrings that contain NA attributes from the `rnet_merged` dataset,  we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of `rnet_yp`, termed `rnet_yp_rest`, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This  step ensures that only those components of 'rnet_y' which are spatially distinct from `rnet_merged` are retained for further consideration.
 
-- Network Simplification: In the final stage of simplification, the datasets 'rnet_yp_rest' and 'rnet_merged_all' are combined to form a streamlined network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
+- Network Simplification: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
 
 By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.
 
