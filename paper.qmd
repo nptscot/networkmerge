@@ -25,6 +25,8 @@ number-sections: true
 execute: 
   echo: false
   # cache: true
+  message: false
+  warning: false
 editor: 
   markdown: 
     wrap: sentence
@@ -229,7 +231,7 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```{r}
 ```
 
-The input datasets are presented in @tbl-input-data.
+The input datasets are presented in @tbl-input-data and @fig-input-data.
 
 ::: {#tbl-input-data}
 
@@ -241,12 +243,12 @@ input_data = tibble::tribble(
   "Otley Road", nrow(rnet_otley), "A corridor in Leeds represented by a single centreline", "Propensity to Cycle Tool (derived from OSM)",
   "Armley Road", nrow(rnet_armley), "A road in Leeds represented by multiple parallel 'braided' linestrings", "Propensity to Cycle Tool (derived from OSM)"
   )
-knitr::kable(input_data)
+knitr::kable(input_data, caption = "Input datasets used in this paper.")
 ```
 
-Input datasets used in this paper.
-
 :::
+
+::: {#fig-input-data}
 
 ```{r}
 tmap_mode("plot")
@@ -255,6 +257,10 @@ tmap_arrange(
   qtm(rnet_armley)
 )
 ```
+
+Illustration of the size and level of spatial complexity of the input datasets.
+
+:::
 
 
 # Methods {#sec-methods}
