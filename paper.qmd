@@ -28,7 +28,8 @@ execute:
 editor: 
   markdown: 
     wrap: sentence
-jupyter: python3
+# # Uncomment to run with Jupyter:
+# jupyter: python3
 ---
 
 
