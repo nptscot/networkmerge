@@ -1021,6 +1021,7 @@ Employ the `rnet_merge` function from the `stplanr` package. This function is de
 ```{r}
 rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = angle) 
 ```
+
 In the example code, four arguments need to be carefully defined:
 
 - **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, essential for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
