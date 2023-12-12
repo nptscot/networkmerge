@@ -1059,7 +1059,7 @@ for (name in name_list) {
   }
 }
 
-
+dist = 20
 rnet_merged_with_angle = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = 20)
 rnet_merged_without_angle= stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs)
 
