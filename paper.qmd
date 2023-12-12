@@ -128,7 +128,7 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Abstract {.unnumbered}
 
-Route network datasets are central to transport models as key inputs *and* outputs.
+Route network datasets are central to transport models as key inputs and outputs.
 The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
 However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation.
 An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places.
