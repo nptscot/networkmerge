@@ -87,6 +87,7 @@ py_install(requirements_txt, pip = TRUE)
 ```
 
 ```{r}
+#| name: python-setup
 #| include: false
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
@@ -94,18 +95,26 @@ if (!requireNamespace("reticulate")) {
   install.packages("reticulate")
 }
 reticulate::install_python()
+# Install Python dependencies with reticulate:
 reticulate::py_install(requirements_txt, pip = TRUE)
 ```
 
 ```{r}
+#| name: r-setup
 library(sf)
 library(tmap)
 library(dplyr)
 library(ggplot2)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+library(stplanr)
+library(tidyr)
+
 tmap_mode("plot")
-# Install Python dependencies with reticulate:
+
+rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 ```
+
+
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
@@ -1029,17 +1038,6 @@ In the example code, four arguments need to be carefully defined:
 
 
 ```{r}
-library(stplanr)
-library(dplyr)
-library(sf)
-library(mapview)
-library(tmap)
-library(tidyr)
-library(geos)
-
-rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
-rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
-
 rnet_xp = st_transform(rnet_x, "EPSG:27700")
 rnet_yp = st_transform(rnet_y, "EPSG:27700")
 
