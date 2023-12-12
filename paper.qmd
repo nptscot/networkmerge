@@ -406,7 +406,7 @@ The street network that requires simplification and the corresponding buffered n
 
 ::: {#fig-buffered-network layout-ncol="1"}
 
-```{python, eval = False}
+```{python}
 #| fig-cap: "Buffered Network Visualization of Edinburgh's Princes Street"
 #| layout-ncol: 2
 #| fig-subcap:
