@@ -1019,6 +1019,7 @@ Create a function list that dictates how each attribute is to be processed:
 Employ the `rnet_merge` function from the `stplanr` package. This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.
 
 ```{r}
+dist = 20
 rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = angle) 
 ```
 
@@ -1058,7 +1059,6 @@ for (name in name_list) {
   }
 }
 
-dist = 20
 
 rnet_merged_with_angle = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = 20)
 rnet_merged_without_angle= stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs)
