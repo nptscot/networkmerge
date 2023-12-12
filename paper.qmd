@@ -231,13 +231,12 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```{r}
 ```
 
-The input datasets are presented in @tbl-input-data and @fig-input-data.
+The input datasets are presented in @tbl-input-data.
 
 ::: {#tbl-input-data}
 
 ```{r}
 #| label: tbl-input-data
-# Placeholder dataset
 input_data = tibble::tribble(
   ~Network, ~`N. segments`, ~Description, ~Source,
   "Otley Road", nrow(rnet_otley), "A corridor in Leeds represented by a single centreline", "Propensity to Cycle Tool (derived from OSM)",
@@ -246,9 +245,11 @@ input_data = tibble::tribble(
 knitr::kable(input_data)
 ```
 
-: Input datasets used in this paper. {#tbl-input-data}
+Input datasets used in this paper.
 
 :::
+
+The input datasets are illustrated in @fig-input-data.
 
 ::: {#fig-input-data}
 
