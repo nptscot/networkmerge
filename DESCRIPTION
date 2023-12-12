@@ -40,6 +40,7 @@ Imports:
     quarto,
     rmarkdown,
     ggplot2,
+    stplanr,
     rsgeo (>= 0.1.6.9000)
 Remotes:
     JosiahParry/rsgeo
