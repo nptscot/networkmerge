@@ -221,17 +221,25 @@ By reducing duplicated parallel lines and other intricacies, the outputs can ena
 
 # Data {#sec-data}
 
-The input datasets are presented in @tab-input-data.
-
-::: {#tab-input-data}
+```{r}
+rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
+rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
+```
 
 ```{r}
-#| name: tab-input-data
+```
+
+The input datasets are presented in @tbl-input-data.
+
+::: {#tbl-input-data}
+
+```{r}
+#| label: tbl-input-data
 # Placeholder dataset
 input_data = tibble::tribble(
   ~Network, ~`N. segments`, ~Description, ~Source,
-  "Otleys Road", 100, "A road in Leeds", "Propensity to Cycle Tool (derived from OSM)",
-  "Armley Road", 100, "A road in Leeds", "Propensity to Cycle Tool (derived from OSM)"
+  "Otley Road", nrow(rnet_otley), "A corridor in Leeds represented by a single centreline", "Propensity to Cycle Tool (derived from OSM)",
+  "Armley Road", nrow(rnet_armley), "A road in Leeds represented by multiple parallel 'braided' linestrings", "Propensity to Cycle Tool (derived from OSM)"
   )
 knitr::kable(input_data)
 ```
@@ -239,6 +247,14 @@ knitr::kable(input_data)
 Input datasets used in this paper.
 
 :::
+
+```{r}
+tmap_mode("plot")
+tmap_arrange(
+  qtm(rnet_otley),
+  qtm(rnet_armley)
+)
+```
 
 
 # Methods {#sec-methods}
