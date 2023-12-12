@@ -221,6 +221,26 @@ By reducing duplicated parallel lines and other intricacies, the outputs can ena
 
 # Data {#sec-data}
 
+The input datasets are presented in @tab-input-data.
+
+::: {#tab-input-data}
+
+```{r}
+#| name: tab-input-data
+# Placeholder dataset
+input_data = tibble::tribble(
+  ~Network, ~`N. segments`, ~Description, ~Source,
+  "Otleys Road", 100, "A road in Leeds", "Propensity to Cycle Tool (derived from OSM)",
+  "Armley Road", 100, "A road in Leeds", "Propensity to Cycle Tool (derived from OSM)"
+  )
+knitr::kable(input_data)
+```
+
+Input datasets used in this paper.
+
+:::
+
+
 # Methods {#sec-methods}
 
 There are two main challenges that need to be overcome to simplify transport networks, in a way that preserves their value: 
