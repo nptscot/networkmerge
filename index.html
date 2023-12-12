@@ -256,6 +256,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
     Implications for policymaking and urban designers
     Measuring complexity of urban mobility
     Green mobility and social distancing in times of pandemic -->
+<hr>
 <section id="reproducibility" class="level1 unnumbered">
 <h1 class="unnumbered">Reproducibility</h1>
 <details>
@@ -265,7 +266,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <p>Install the dependencies by cloning the repository and running the following:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell">
+<div class="cell" name="r-setup">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
@@ -291,12 +292,14 @@ Attaching package: 'dplyr'</code></pre>
     intersect, setdiff, setequal, union</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stplanr)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>tmap mode set to plotting</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python dependencies with reticulate:</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rnet_x <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>rnet_y <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To contribute to the papers written as quarto documents (with <code>.qmd</code> extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:</p>
 <pre><code>Ctrl+Shift+F4</code></pre>
@@ -305,11 +308,11 @@ Attaching package: 'dplyr'</code></pre>
 </section>
 <section id="abstract" class="level1 unnumbered">
 <h1 class="unnumbered">Abstract</h1>
-<p>Route network datasets are central to transport models as key inputs <em>and</em> outputs. The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling. However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation. An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places. To address this problem, we present and compare two methods for <em>simplifying</em> route network datasets: one based on image skeletonization and the other on Voronoi diagrams. The methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at <a href="https://www.nptscot.scot">www.nptscot.scot</a>. The methods are fully reproducible based on open data and open source software, enabling them to be freely used in other contexts and extended in the future.</p>
+<p>Route network datasets are central to transport models as key inputs and outputs. The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling. However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation. An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places. To address this problem, we present and compare two methods for <em>simplifying</em> route network datasets: one based on image skeletonization and the other on Voronoi diagrams. The methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at <a href="https://www.nptscot.scot">www.nptscot.scot</a>. The methods are fully reproducible based on open data and open source software, enabling them to be freely used in other contexts and extended in the future.</p>
 </section>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>Datasets representing route networks are central to transport planning as key inputs <em>and</em> outputs. Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system. However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Datasets representing route networks are central to modern transport planning: they are used as inputs to transport models and are vital for the visualisation and interpretation of model outputs. Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system. However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways). Usually they also contain attributes such as the type of way, it’s characteristics (e.g.&nbsp;is lit at night), and the amount of traffic using each segment.</p>
 <p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
 <p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.</p>
@@ -513,73 +516,84 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> box</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.ops <span class="im">import</span> voronoi_diagram</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gp</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> get_coordinates, line_merge, set_precision, unary_union</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> MultiPoint,MultiLineString,LineString,Point</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">12</span>)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_geometry_buffer(this_gf, radius<span class="op">=</span><span class="fl">8.0</span>):</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_geometry_buffer: return radius buffered GeoDataFrame</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">      this_gf: GeoDataFrame to</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">      radius: (default value = 8.0)</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co">      buffered GeoSeries geometry</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> gp.GeoSeries(this_gf, crs<span class="op">=</span>CRS).<span class="bu">buffer</span>(radius, join_style<span class="op">=</span><span class="st">"round"</span>, cap_style<span class="op">=</span><span class="st">"round"</span>)</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    union <span class="op">=</span> unary_union(r)</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> gp.GeoSeries(union.geoms, crs<span class="op">=</span>CRS)</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> gp.GeoSeries(union, crs<span class="op">=</span>CRS)</span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r</span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>CRS <span class="op">=</span> <span class="st">"EPSG:27700"</span></span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>buffer_size <span class="op">=</span> <span class="fl">8.0</span></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>set_precision_pointone <span class="op">=</span> partial(set_precision, grid_size<span class="op">=</span><span class="fl">0.1</span>)</span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>base_nx <span class="op">=</span> gp.read_file(<span class="st">"https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"</span>).to_crs(CRS)</span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>base_nx[<span class="st">"geometry"</span>] <span class="op">=</span> base_nx[<span class="st">"geometry"</span>].<span class="bu">map</span>(set_precision_pointone)</span>
-<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>nx_geometry <span class="op">=</span> get_geometry_buffer(base_nx[<span class="st">"geometry"</span>], radius<span class="op">=</span>buffer_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> box</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.ops <span class="im">import</span> voronoi_diagram</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gp</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely <span class="im">import</span> get_coordinates, line_merge, set_precision, unary_union</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> MultiPoint,MultiLineString,LineString,Point</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">12</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_geometry_buffer(this_gf, radius<span class="op">=</span><span class="fl">8.0</span>):</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""get_geometry_buffer: return radius buffered GeoDataFrame</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">      this_gf: GeoDataFrame to</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">      radius: (default value = 8.0)</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co">    returns:</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co">      buffered GeoSeries geometry</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> gp.GeoSeries(this_gf, crs<span class="op">=</span>CRS).<span class="bu">buffer</span>(radius, join_style<span class="op">=</span><span class="st">"round"</span>, cap_style<span class="op">=</span><span class="st">"round"</span>)</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    union <span class="op">=</span> unary_union(r)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> gp.GeoSeries(union.geoms, crs<span class="op">=</span>CRS)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> gp.GeoSeries(union, crs<span class="op">=</span>CRS)</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> r</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>CRS <span class="op">=</span> <span class="st">"EPSG:27700"</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>buffer_size <span class="op">=</span> <span class="fl">8.0</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>set_precision_pointone <span class="op">=</span> partial(set_precision, grid_size<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>base_nx <span class="op">=</span> gp.read_file(<span class="st">"https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"</span>).to_crs(CRS)</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>base_nx[<span class="st">"geometry"</span>] <span class="op">=</span> base_nx[<span class="st">"geometry"</span>].<span class="bu">map</span>(set_precision_pointone)</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>nx_geometry <span class="op">=</span> get_geometry_buffer(base_nx[<span class="st">"geometry"</span>], radius<span class="op">=</span>buffer_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The street network that requires simplification and the corresponding buffered network are presented as follows:</p>
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the base network on the first subplot</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">"Sample Street Network - Edinburgh's Princes Street"</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>base_nx.plot(ax<span class="op">=</span>axs[<span class="dv">0</span>], edgecolor<span class="op">=</span><span class="st">"blue"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].grid()</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the buffered network on the second subplot</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">"Buffered Network of Edinburgh's Princes Street"</span>)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>nx_geometry.plot(ax<span class="op">=</span>axs[<span class="dv">1</span>], edgecolor<span class="op">=</span><span class="st">"black"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].grid()</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1152"></p>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>base_nx.plot(ax<span class="op">=</span>axs[<span class="dv">0</span>], edgecolor<span class="op">=</span><span class="st">"blue"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].grid()</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the buffered network on the second subplot</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>nx_geometry.plot(ax<span class="op">=</span>axs[<span class="dv">1</span>], edgecolor<span class="op">=</span><span class="st">"black"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].grid()</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1440"></p>
+<figcaption class="figure-caption">Buffered Network</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>Buffered Network Visualization of Edinburgh’s Princes Street</p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Buffered Network Visualization of Edinburgh’s Princes Street</figcaption><p></p>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: <strong>?(caption)</strong></figcaption><p></p>
 </figure>
 </div>
 </section>
 <section id="skeletonization" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</h3>
 <p>The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.</p>
-<section id="establish-an-affine-transformation-that-maps-the-points-within-the-buffered-geometry-to-corresponding-positions-in-the-raster-image" class="level4" data-number="4.1.4.1">
-<h4 data-number="4.1.4.1" class="anchored" data-anchor-id="establish-an-affine-transformation-that-maps-the-points-within-the-buffered-geometry-to-corresponding-positions-in-the-raster-image"><span class="header-section-number">4.1.4.1</span> Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image</h4>
+<p>Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image</p>
 <p>A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -623,7 +637,6 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>r_matrix, s_matrix, out_shape <span class="op">=</span> get_affine_transform(nx_geometry, scale<span class="op">=</span><span class="fl">2.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
 </section>
 <section id="affine-transforms" class="level3" data-number="4.1.5">
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
@@ -693,7 +706,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nx_point <span class="op">=</span> gp.GeoSeries(<span class="bu">map</span>(Point, point_im.T), crs<span class="op">=</span>CRS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
+<p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process. The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>shapely_transform <span class="op">=</span> partial(affine_transform, matrix<span class="op">=</span>s_matrix)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>transform_point <span class="op">=</span> nx_point.<span class="bu">map</span>(shapely_transform).<span class="bu">map</span>(set_precision_pointone)</span>
@@ -902,7 +915,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</h2>
-<p>In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
+<p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
 <section id="boundary" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
 <p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
@@ -1151,6 +1164,119 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <section id="integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</h2>
 <p>In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.</p>
+<p>In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. <code>stplanr</code> emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html).</p>
+<p><strong>Data Preparation:</strong></p>
+<p>The core functionality of our integration process hinges on two pivotal inputs: <code>rnet_x</code> and <code>rnet_y</code>. Each plays a distinct yet complementary role in the network attribute integration:</p>
+<ul>
+<li><p><code>rnet_x</code> - Target Route Network: This dataset represents our base framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. <code>rnet_x</code> is akin to a canvas, prepared to receive additional layers of data. It wroth to note that <code>rnet_x</code> need to contian a identifier columns.</p></li>
+<li><p><code>rnet_y</code> - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network.</p></li>
+</ul>
+<p><strong>Step 1: Coordinate Reference System Alignment</strong></p>
+<p>Transform the spatial data of both <code>rnet_x</code> (the simplified network) and <code>rnet_y</code> (the detailed network) to the same coordinate reference system. For this project, we have selected EPSG:27700.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>rnet_xp <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(rnet_x, <span class="st">"EPSG:27700"</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>rnet_yp <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(rnet_y, <span class="st">"EPSG:27700"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Step 2: Defining the Function List</strong></p>
+<p>Create a function list that dictates how each attribute is to be processed:</p>
+<ul>
+<li><p><strong>Exclude</strong>: “geometry” from processing.</p></li>
+<li><p><strong>Mean Function</strong>: Applied to attributes like “Gradient” and “Quietness”. TODO expline the funtion of sum and mean</p></li>
+<li><p><strong>Sum Function</strong>: Used for aggregating values in columns such as “all_bicycle”.</p></li>
+</ul>
+<p><strong>Step 3: Using <code>stplanr::rnet_merge</code> for Integration</strong></p>
+<p>Employ the <code>rnet_merge</code> function from the <code>stplanr</code> package. This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>rnet_merged <span class="ot">=</span> stplanr<span class="sc">::</span><span class="fu">rnet_merge</span>(rnet_xp, rnet_yp, <span class="at">dist =</span> <span class="dv">20</span>, <span class="at">segment_length =</span> <span class="dv">10</span>, <span class="at">funs =</span> funs, <span class="at">max_angle_diff =</span> <span class="dv">30</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the example code, four arguments need to be carefully defined:</p>
+<ul>
+<li><p><strong><code>dist</code></strong> (Buffer Distance): This parameter defines the buffer zone around <code>rnet_xp</code> in meters, essential for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.</p></li>
+<li><p><strong><code>segment_length</code></strong> (Segment Maximum Length): This specifies the upper limit for each segment’s length within the detailed network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.</p></li>
+<li><p><strong><code>funs</code></strong> (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.</p></li>
+<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network’s geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network’s structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pics/Prevent_overestimate_of_values_on_sideroads.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rnet_xp <span class="ot">=</span> <span class="fu">st_transform</span>(rnet_x, <span class="st">"EPSG:27700"</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>rnet_yp <span class="ot">=</span> <span class="fu">st_transform</span>(rnet_y, <span class="st">"EPSG:27700"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract column names from the rnet_yp</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>name_list <span class="ot">=</span> <span class="fu">names</span>(rnet_yp)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize an empty list</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>funs <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop through each name and assign it a function based on specific conditions</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name <span class="cf">in</span> name_list) {</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (name <span class="sc">==</span> <span class="st">"geometry"</span>) {</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">next</span>  <span class="co"># Skip the current iteration</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Gradient"</span>, <span class="st">"Quietness"</span>)) {</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>    funs[[name]] <span class="ot">=</span> mean</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>    funs[[name]] <span class="ot">=</span> sum</span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>dist <span class="ot">=</span> <span class="dv">20</span></span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>rnet_merged_with_angle <span class="ot">=</span> stplanr<span class="sc">::</span><span class="fu">rnet_merge</span>(rnet_xp, rnet_yp, <span class="at">dist =</span> dist, <span class="at">segment_length =</span> <span class="dv">10</span>, <span class="at">funs =</span> funs, <span class="at">max_angle_diff =</span> <span class="dv">20</span>)</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>rnet_merged_without_angle<span class="ot">=</span> stplanr<span class="sc">::</span><span class="fu">rnet_merge</span>(rnet_xp, rnet_yp, <span class="at">dist =</span> dist, <span class="at">segment_length =</span> <span class="dv">10</span>, <span class="at">funs =</span> funs)</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Define breaks for the color scale</span></span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a>brks <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">5000</span>)</span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Set global tmap options for tighter margins</span></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(</span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">outer.margins =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">inner.margins =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the first map with scale bar</span></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">tm_shape</span>(rnet_merged_with_angle) <span class="sc">+</span> </span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tm_lines</span>(<span class="st">"value"</span>, <span class="at">palette =</span> <span class="st">"viridis"</span>, <span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">breaks =</span> brks) <span class="sc">+</span></span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tm_scale_bar</span>() <span class="sc">+</span></span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">inner.margins =</span> <span class="dv">0</span>, <span class="at">outer.margins =</span> <span class="dv">0</span>, <span class="at">asp =</span> <span class="dv">0</span>)</span>
+<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the second map</span></span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">tm_shape</span>(rnet_merged_without_angle) <span class="sc">+</span> </span>
+<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tm_lines</span>(<span class="st">"value"</span>, <span class="at">palette =</span> <span class="st">"viridis"</span>, <span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">breaks =</span> brks) <span class="sc">+</span></span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">inner.margins =</span> <span class="dv">0</span>, <span class="at">outer.margins =</span> <span class="dv">0</span>, <span class="at">asp =</span> <span class="dv">0</span>)</span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange the two maps vertically with a tight layout and synchronization</span></span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(m1, m2, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">sync =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
+<ul>
+<li><p><strong>Cleaning</strong>: The <code>rnet_merged</code> dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as ‘identifier’ and ‘length_x’.</p></li>
+<li><p><strong>Dimensionality Reduction</strong>: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size. This reduction simplifies the dataset and optimizes it for storage and processing efficiency.</p></li>
+<li><p><strong>NA Handling</strong>: A thorough examination is conducted for the presence of NA values across the columns. Any rows where all the targeted columns contain NA values are filtered out.</p></li>
+<li><p><strong>Spatial Subsetting</strong>: Following the removal of linestrings that contain NA attributes from the <code>rnet_merged</code> dataset, we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of <code>rnet_yp</code>, termed <code>rnet_yp_rest</code>, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This step ensures that only those components of <code>rnet_y</code> which are spatially distinct from <code>rnet_merged</code> are retained for further consideration.</p></li>
+<li><p><strong>Network Simplification</strong>: In the final stage of simplification, the datasets <code>rnet_yp_rest</code> and <code>rnet_merged_all</code> are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.</p></li>
+</ul>
+<p>By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>rnet_x <span class="op">=</span> gp.read_file(<span class="st">"https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>rnet_y <span class="op">=</span> gp.read_file(<span class="st">"https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson"</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting both GeoJSON files side by side</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>rnet_x.plot(ax<span class="op">=</span>axes[<span class="dv">0</span>], color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'RNet X'</span>)</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>rnet_y.plot(ax<span class="op">=</span>axes[<span class="dv">1</span>], color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'RNet Y'</span>)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <!-- TODO: add content to this section. -->
 <!-- TODO: Is this possible? -->
 <!-- ## Combined network simplification and attribute merging -->
@@ -1168,43 +1294,43 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h1 data-number="6"><span class="header-section-number">6</span> References</h1>
 <!-- Tests -->
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># osmnx test:</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import osmnx as ox</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import geopandas as gpd</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import momepy</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import networkx as nx</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co"># import topojson as tp</span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert to EPSG:27700</span></span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gdf.to_crs('EPSG:27700')</span></span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf.plot()</span></span>
-<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_topo = tp.Topology(gdf)</span></span>
-<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple = gdf_topo.toposimplify(10).to_gdf()</span></span>
-<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple.plot()</span></span>
-<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert gdf linestrings to nodes:</span></span>
-<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')</span></span>
-<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a><span class="co"># nx.draw(gdf_nx)</span></span>
-<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a><span class="co"># momepy.roundabout_simplification(gdf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># osmnx test:</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import osmnx as ox</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import geopandas as gpd</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import momepy</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import networkx as nx</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co"># import topojson as tp</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gpd.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert to EPSG:27700</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gdf.to_crs('EPSG:27700')</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf.plot()</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_topo = tp.Topology(gdf)</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple = gdf_topo.toposimplify(10).to_gdf()</span></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple.plot()</span></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert gdf linestrings to nodes:</span></span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a><span class="co"># nx.draw(gdf_nx)</span></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a><span class="co"># momepy.roundabout_simplification(gdf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import osmnx as ox</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import geopandas as gpd</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import momepy</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import networkx as nx</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import topojson as tp</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gpd.read_file('data/minimal-input.geojson')</span></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert to EPSG:27700</span></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gdf.to_crs('EPSG:27700')</span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf.plot()</span></span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_topo = tp.Topology(gdf)</span></span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple = gdf_topo.toposimplify(10).to_gdf()</span></span>
-<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple.plot()</span></span>
-<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert gdf linestrings to nodes:</span></span>
-<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')</span></span>
-<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="co"># nx.draw(gdf_nx)</span></span>
-<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="co"># momepy.roundabout_simplification(gdf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import osmnx as ox</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import geopandas as gpd</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import momepy</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import networkx as nx</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import topojson as tp</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gpd.read_file('data/minimal-input.geojson')</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert to EPSG:27700</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf = gdf.to_crs('EPSG:27700')</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf.plot()</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_topo = tp.Topology(gdf)</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple = gdf_topo.toposimplify(10).to_gdf()</span></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_simple.plot()</span></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="co"># # Convert gdf linestrings to nodes:</span></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="co"># gdf_nx = momepy.gdf_to_nx(gdf, approach='dual')</span></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="co"># nx.draw(gdf_nx)</span></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="co"># momepy.roundabout_simplification(gdf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

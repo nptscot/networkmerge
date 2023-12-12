@@ -288,6 +288,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
     Implications for policymaking and urban designers
     Measuring complexity of urban mobility
     Green mobility and social distancing in times of pandemic -->
+<hr>
 <section id="reproducibility" class="level1 unnumbered">
 <h1 class="unnumbered">Reproducibility</h1>
 <details>
@@ -297,7 +298,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <p>Install the dependencies by cloning the repository and running the following:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell">
+<div class="cell" name="r-setup">
 <div class="cell-output cell-output-stderr">
 <pre><code>Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
 </div>
@@ -330,11 +331,11 @@ Attaching package: 'dplyr'</code></pre>
 </section>
 <section id="abstract" class="level1 unnumbered">
 <h1 class="unnumbered">Abstract</h1>
-<p>Route network datasets are central to transport models as key inputs <em>and</em> outputs. The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling. However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation. An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places. To address this problem, we present and compare two methods for <em>simplifying</em> route network datasets: one based on image skeletonization and the other on Voronoi diagrams. The methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at <a href="https://www.nptscot.scot">www.nptscot.scot</a>. The methods are fully reproducible based on open data and open source software, enabling them to be freely used in other contexts and extended in the future.</p>
+<p>Route network datasets are central to transport models as key inputs and outputs. The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling. However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation. An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places. To address this problem, we present and compare two methods for <em>simplifying</em> route network datasets: one based on image skeletonization and the other on Voronoi diagrams. The methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at <a href="https://www.nptscot.scot">www.nptscot.scot</a>. The methods are fully reproducible based on open data and open source software, enabling them to be freely used in other contexts and extended in the future.</p>
 </section>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>Datasets representing route networks are central to transport planning as key inputs <em>and</em> outputs. Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system. However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Datasets representing route networks are central to modern transport planning: they are used as inputs to transport models and are vital for the visualisation and interpretation of model outputs. Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system. However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways). Usually they also contain attributes such as the type of way, it’s characteristics (e.g.&nbsp;is lit at night), and the amount of traffic using each segment.</p>
 <p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
 <p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.</p>
@@ -475,23 +476,31 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1152"></p>
+<div class="cell quarto-layout-panel quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1440"></p>
+<figcaption class="figure-caption">Buffered Network</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>Buffered Network Visualization of Edinburgh’s Princes Street</p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Buffered Network Visualization of Edinburgh’s Princes Street</figcaption><p></p>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: <strong>?(caption)</strong></figcaption><p></p>
 </figure>
 </div>
 </section>
 <section id="skeletonization" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</h3>
 <p>The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.</p>
-<section id="establish-an-affine-transformation-that-maps-the-points-within-the-buffered-geometry-to-corresponding-positions-in-the-raster-image" class="level4" data-number="4.1.4.1">
-<h4 data-number="4.1.4.1" class="anchored" data-anchor-id="establish-an-affine-transformation-that-maps-the-points-within-the-buffered-geometry-to-corresponding-positions-in-the-raster-image"><span class="header-section-number">4.1.4.1</span> Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image</h4>
+<p>Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image</p>
 <p>A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image.</p>
-</section>
 </section>
 <section id="affine-transforms" class="level3" data-number="4.1.5">
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
@@ -535,7 +544,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p><img src="paper_files/figure-html/unnamed-chunk-15-9.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
+<p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process. The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-16-11.png" class="img-fluid" width="672"></p>
@@ -577,7 +586,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</h2>
-<p>In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
+<p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
 <section id="boundary" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
 <p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
@@ -651,6 +660,51 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <section id="integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</h2>
 <p>In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.</p>
+<p>In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. <code>stplanr</code> emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html).</p>
+<p><strong>Data Preparation:</strong></p>
+<p>The core functionality of our integration process hinges on two pivotal inputs: <code>rnet_x</code> and <code>rnet_y</code>. Each plays a distinct yet complementary role in the network attribute integration:</p>
+<ul>
+<li><p><code>rnet_x</code> - Target Route Network: This dataset represents our base framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. <code>rnet_x</code> is akin to a canvas, prepared to receive additional layers of data. It wroth to note that <code>rnet_x</code> need to contian a identifier columns.</p></li>
+<li><p><code>rnet_y</code> - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network.</p></li>
+</ul>
+<p><strong>Step 1: Coordinate Reference System Alignment</strong></p>
+<p>Transform the spatial data of both <code>rnet_x</code> (the simplified network) and <code>rnet_y</code> (the detailed network) to the same coordinate reference system. For this project, we have selected EPSG:27700.</p>
+<p><strong>Step 2: Defining the Function List</strong></p>
+<p>Create a function list that dictates how each attribute is to be processed:</p>
+<ul>
+<li><p><strong>Exclude</strong>: “geometry” from processing.</p></li>
+<li><p><strong>Mean Function</strong>: Applied to attributes like “Gradient” and “Quietness”. TODO expline the funtion of sum and mean</p></li>
+<li><p><strong>Sum Function</strong>: Used for aggregating values in columns such as “all_bicycle”.</p></li>
+</ul>
+<p><strong>Step 3: Using <code>stplanr::rnet_merge</code> for Integration</strong></p>
+<p>Employ the <code>rnet_merge</code> function from the <code>stplanr</code> package. This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.</p>
+<p>In the example code, four arguments need to be carefully defined:</p>
+<ul>
+<li><p><strong><code>dist</code></strong> (Buffer Distance): This parameter defines the buffer zone around <code>rnet_xp</code> in meters, essential for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.</p></li>
+<li><p><strong><code>segment_length</code></strong> (Segment Maximum Length): This specifies the upper limit for each segment’s length within the detailed network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.</p></li>
+<li><p><strong><code>funs</code></strong> (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.</p></li>
+<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network’s geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network’s structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pics/Prevent_overestimate_of_values_on_sideroads.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
+<ul>
+<li><p><strong>Cleaning</strong>: The <code>rnet_merged</code> dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as ‘identifier’ and ‘length_x’.</p></li>
+<li><p><strong>Dimensionality Reduction</strong>: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size. This reduction simplifies the dataset and optimizes it for storage and processing efficiency.</p></li>
+<li><p><strong>NA Handling</strong>: A thorough examination is conducted for the presence of NA values across the columns. Any rows where all the targeted columns contain NA values are filtered out.</p></li>
+<li><p><strong>Spatial Subsetting</strong>: Following the removal of linestrings that contain NA attributes from the <code>rnet_merged</code> dataset, we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of <code>rnet_yp</code>, termed <code>rnet_yp_rest</code>, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This step ensures that only those components of <code>rnet_y</code> which are spatially distinct from <code>rnet_merged</code> are retained for further consideration.</p></li>
+<li><p><strong>Network Simplification</strong>: In the final stage of simplification, the datasets <code>rnet_yp_rest</code> and <code>rnet_merged_all</code> are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.</p></li>
+</ul>
+<p>By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.</p>
 <!-- TODO: add content to this section. -->
 <!-- TODO: Is this possible? -->
 <!-- ## Combined network simplification and attribute merging -->
