@@ -139,7 +139,7 @@ The methods are fully reproducible based on open data and open source software, 
 
 # Introduction
 
-Datasets representing route networks are central to transport planning as key inputs *and* outputs.
+Datasets representing route networks are central to modern transport planning: they are used as inputs to transport models and are vital for the visualisation and interpretation of model outputs.
 Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
 Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
 However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
