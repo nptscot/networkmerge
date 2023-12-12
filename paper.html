@@ -298,32 +298,6 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <p>Install the dependencies by cloning the repository and running the following:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell" name="r-setup">
-<div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Breaking News: tmap 3.x is retiring. Please test v4, e.g. with
-remotes::install_github('r-tmap/tmap')</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>tmap mode set to plotting</code></pre>
-</div>
-</div>
 <p>To contribute to the papers written as quarto documents (with <code>.qmd</code> extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:</p>
 <pre><code>Ctrl+Shift+F4</code></pre>
 <p>You can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s other features for academic writing.</p>
@@ -405,6 +379,60 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 </section>
 <section id="sec-data" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Data</h1>
+<p>The input datasets are presented in <a href="#tbl-input-data">Table&nbsp;1</a>.</p>
+<div id="tbl-input-data" class="tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p>Table&nbsp;1: Input datasets used in this paper.</p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="tbl-input-data" class="cell quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-input-data" style="flex-basis: 100.0%;justify-content: center;">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 51%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Network</th>
+<th style="text-align: right;">N. segments</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Otley Road</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">A corridor in Leeds represented by a single centreline</td>
+<td style="text-align: left;">Propensity to Cycle Tool (derived from OSM)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Armley Road</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: left;">A road in Leeds represented by multiple parallel ‘braided’ linestrings</td>
+<td style="text-align: left;">Propensity to Cycle Tool (derived from OSM)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>?(caption)</strong></p>
+</div>
+</div>
+</div>
+<p>The input datasets are illustrated in <a href="#fig-input-data">Figure&nbsp;3</a>.</p>
+<div id="fig-input-data" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<figcaption class="figure-caption">Figure&nbsp;3: Illustration of the size and level of spatial complexity of the input datasets.</figcaption>
+</figure>
+</div>
 </section>
 <section id="sec-methods" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
@@ -425,24 +453,24 @@ Two fundamental approaches to simplifying transport networks are:
 In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
 <section id="topology-preserving-simplification" class="level3" data-number="4.1.1">
 <h3 data-number="4.1.1" class="anchored" data-anchor-id="topology-preserving-simplification"><span class="header-section-number">4.1.1</span> Topology-preserving simplification</h3>
-<p>Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of <a href="#fig-topology-preserving">Figure&nbsp;3</a>, topology-preserving simplication <em>can</em> reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in <a href="#fig-topology-preserving">Figure&nbsp;3</a>.</p>
+<p>Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of <a href="#fig-topology-preserving">Figure&nbsp;4</a>, topology-preserving simplication <em>can</em> reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in <a href="#fig-topology-preserving">Figure&nbsp;4</a>.</p>
 <div id="fig-topology-preserving" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.</figcaption><p></p>
 </figure>
 </div>
 <p>The graphic below shows a 2 panel plot showing simplification with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</p>
@@ -451,16 +479,16 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="768"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="768"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of consolidation of intersections, with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Illustration of consolidation of intersections, with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</figcaption><p></p>
 </figure>
 </div>
 <p>A more aggressive approach is to simplify and alter network topology in a single step, “through the removal of duplicate or parallel edges, and combining simply-connected nodes” <span class="citation" data-cites="deakin2023">(<a href="#ref-deakin2023" role="doc-biblioref">Deakin 2023</a>)</span>. Two approaches to this are outlined below.</p>
@@ -481,7 +509,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="paper_files/figure-html/unnamed-chunk-10-5.png" class="img-fluid figure-img" width="1440"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-14-5.png" class="img-fluid figure-img" width="1440"></p>
 <figcaption class="figure-caption">Buffered Network</figcaption>
 </figure>
 </div>
@@ -492,7 +520,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: <strong>?(caption)</strong></figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: <strong>?(caption)</strong></figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -535,19 +563,19 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster’s scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-14-7.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-18-7.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-15-9.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-19-9.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process. The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-16-11.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-20-11.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.</p>
@@ -560,7 +588,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-18-13.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-22-13.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -570,7 +598,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>To address these, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster’s central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-19-15.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-23-15.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -579,7 +607,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>There are circumstances where it might be beneficial to view a “primal” network, which is exclusively composed of direct lines connecting start and end points.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-21-17.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-25-17.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -592,7 +620,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-22-19.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-26-19.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -601,7 +629,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The simplified LineString geometries are then broken down into shorter segments.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-23-21.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-27-21.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -610,7 +638,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The simplified LineString geometries are converted into point geometries.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-24-23.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-28-23.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -619,7 +647,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-25-25.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-29-25.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -627,7 +655,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-26-27.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-30-27.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -635,7 +663,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-27-29.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-31-29.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -643,7 +671,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-28-31.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-32-31.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -651,7 +679,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-29-33.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-33-33.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><img src="images/paste-1.png" class="img-fluid"></p>
@@ -693,7 +721,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
