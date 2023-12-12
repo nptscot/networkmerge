@@ -22,6 +22,17 @@ rnet_otley = rnet_wyca |>
 rnet_armley = rnet_wyca |>
   st_intersection(armley_road_buffer)
 
+# keep only connected components
+# new function for stplanr?
+filter_connected = function(x, n_groups = 1){
+  g = stplanr::rnet_group(x, = 1)
+  g_ordered = sort(table(g), decreasing = TRUE)
+  g_keep = names(g_ordered)[1:n_groups]
+  x = x[g %in% g_keep, ]
+  x
+}
+rnet_otley = filter_connected(rnet_otley)
+rnet_armley = filter_connected(rnet_armley)
 
 mapview::mapview(rnet_otley)
 mapview::mapview(rnet_armley)
