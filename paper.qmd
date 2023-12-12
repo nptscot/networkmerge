@@ -1103,7 +1103,8 @@ Once we obtained the `rnet_merged` dataset, which is a simplified network but al
 By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.
    
    
-```{python, eval = false}
+```{python}
+#| eval: false
 rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 # Plotting both GeoJSON files side by side
