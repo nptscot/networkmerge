@@ -243,8 +243,10 @@ input_data = tibble::tribble(
   "Otley Road", nrow(rnet_otley), "A corridor in Leeds represented by a single centreline", "Propensity to Cycle Tool (derived from OSM)",
   "Armley Road", nrow(rnet_armley), "A road in Leeds represented by multiple parallel 'braided' linestrings", "Propensity to Cycle Tool (derived from OSM)"
   )
-knitr::kable(input_data, caption = "Input datasets used in this paper.")
+knitr::kable(input_data)
 ```
+
+: Input datasets used in this paper. {#tbl-input-data}
 
 :::
 
