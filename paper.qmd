@@ -25,9 +25,13 @@ number-sections: true
 execute: 
   echo: false
   # cache: true
+  message: false
+  warning: false
 editor: 
   markdown: 
     wrap: sentence
+# # Uncomment to run with Jupyter:
+# jupyter: python3
 ---
 
 
@@ -64,7 +68,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
     Implications for policymaking and urban designers
     Measuring complexity of urban mobility
     Green mobility and social distancing in times of pandemic -->
-
+---
 
 # Reproducibility {.unnumbered}
 
@@ -86,6 +90,7 @@ py_install(requirements_txt, pip = TRUE)
 ```
 
 ```{r}
+#| name: python-setup
 #| include: false
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
@@ -93,18 +98,25 @@ if (!requireNamespace("reticulate")) {
   install.packages("reticulate")
 }
 reticulate::install_python()
+# Install Python dependencies with reticulate:
 reticulate::py_install(requirements_txt, pip = TRUE)
 ```
 
 ```{r}
+#| name: r-setup
 library(sf)
 library(tmap)
 library(dplyr)
 library(ggplot2)
-# reticulate::use_python(r"(C:\Users\Zhao Wang\AppData\Local\Programs\Python\Python310\python.exe)")
+library(stplanr)
+
 tmap_mode("plot")
-# Install Python dependencies with reticulate:
+
+rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 ```
+
+
 
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
@@ -119,7 +131,7 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Abstract {.unnumbered}
 
-Route network datasets are central to transport models as key inputs *and* outputs.
+Route network datasets are central to transport models as key inputs and outputs.
 The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
 However, this complexity can lead to problems when visualising the results of transport models, making network outputs difficult to interpret for strategic network planning and prioritisation.
 An example of this is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places.
@@ -130,7 +142,7 @@ The methods are fully reproducible based on open data and open source software, 
 
 # Introduction
 
-Datasets representing route networks are central to transport planning as key inputs *and* outputs.
+Datasets representing route networks are central to modern transport planning: they are used as inputs to transport models and are vital for the visualisation and interpretation of model outputs.
 Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
 Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
 However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
@@ -210,6 +222,49 @@ The methods presented in this paper are designed to take a complex network as an
 By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.
 
 # Data {#sec-data}
+
+```{r}
+rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
+rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
+```
+
+```{r}
+```
+
+The input datasets are presented in @tbl-input-data.
+
+::: {#tbl-input-data}
+
+```{r}
+#| label: tbl-input-data
+input_data = tibble::tribble(
+  ~Network, ~`N. segments`, ~Description, ~Source,
+  "Otley Road", nrow(rnet_otley), "A corridor in Leeds represented by a single centreline", "Propensity to Cycle Tool (derived from OSM)",
+  "Armley Road", nrow(rnet_armley), "A road in Leeds represented by multiple parallel 'braided' linestrings", "Propensity to Cycle Tool (derived from OSM)"
+  )
+knitr::kable(input_data)
+```
+
+Input datasets used in this paper.
+
+:::
+
+The input datasets are illustrated in @fig-input-data.
+
+::: {#fig-input-data}
+
+```{r}
+tmap_mode("plot")
+tmap_arrange(
+  qtm(rnet_otley),
+  qtm(rnet_armley)
+)
+```
+
+Illustration of the size and level of spatial complexity of the input datasets.
+
+:::
+
 
 # Methods {#sec-methods}
 
@@ -363,6 +418,8 @@ In both approaches, the network simplification process initiates with the genera
 from functools import partial
 from shapely import box
 from shapely.ops import voronoi_diagram
+from shapely import box
+from shapely.ops import voronoi_diagram
 import geopandas as gp
 import matplotlib.pyplot as plt
 from shapely import get_coordinates, line_merge, set_precision, unary_union
@@ -404,24 +461,25 @@ The street network that requires simplification and the corresponding buffered n
 ::: {#fig-buffered-network layout-ncol="1"}
 
 ```{python}
-fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+#| fig-cap: "Buffered Network Visualization of Edinburgh's Princes Street"
+#| layout-ncol: 2
+#| fig-subcap:
+#|  - Sample Street Network of Edinburgh's Princes Street and its buffer network visualization
+#|  - Buffered Network
+fig, axs = plt.subplots(1, 2, figsize=(15, 8))
 
 # Plotting the base network on the first subplot
-axs[0].set_title("Sample Street Network - Edinburgh's Princes Street")
 base_nx.plot(ax=axs[0], edgecolor="blue", color="blue")
 axs[0].grid()
 
 # Plotting the buffered network on the second subplot
-axs[1].set_title("Buffered Network of Edinburgh's Princes Street")
 nx_geometry.plot(ax=axs[1], edgecolor="black", color="blue")
 axs[1].grid()
 
 plt.show()
 ```
 
-Buffered Network Visualization of Edinburgh's Princes Street
-
-:::
+::: 
 
 ### Skeletonization
 
@@ -429,10 +487,11 @@ Buffered Network Visualization of Edinburgh's Princes Street
 The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
 
 
-#### Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
+Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
 
 
 A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image. 
+
 
 ```{python}
 import numpy as np
@@ -482,7 +541,9 @@ r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
 
 The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
 
+
 #### Rasterio transform
+
 ```{python}
 from IPython.display import display, Markdown
 def display_matrix(matrix, header):
@@ -493,17 +554,21 @@ or_matrix = pd.DataFrame(np.asarray(r_matrix).reshape(-1, 3))
 os_matrix = pd.DataFrame(np.asarray(s_matrix).reshape(3, -1).T)
 display_matrix(or_matrix, "   ")
 ```
+
 #### Shapely transform
+
 ```{python}
 display_matrix(os_matrix, "   ")
 ```
 
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
+
 ### Skeletonize the buffer to a point geometry
 
 
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
+
 
 
 ```{python}
@@ -531,6 +596,7 @@ rip.show(skeleton_im, cmap="Blues", title="skeleton geometry")
 nx_point = gp.GeoSeries(map(Point, point_im.T), crs=CRS)
 ```
 
+The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 
 ```{python}
@@ -626,7 +692,6 @@ def combine_line(line):
 
 nx_line = get_raster_line_with_knots(nx_point)
 ```
-
 
 To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
 
@@ -737,7 +802,7 @@ plt.show()
 
 ## Simplification via voronoi polygons
 
-In this approach,the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
+In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
 
 ### Boundary
@@ -772,6 +837,7 @@ plt.show()
 
 
 The simplified LineString geometries are then broken down into shorter segments.
+
 
 ```{python}
 def get_segment_nx(line, scale):
@@ -964,6 +1030,142 @@ plt.show()
 ## Integrating attributes from the detailed network into the simplified network
 
 In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.
+
+In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. `stplanr` emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html). 
+
+**Data Preparation:**
+
+The core functionality of our integration process hinges on two pivotal inputs: `rnet_x` and `rnet_y`. Each plays a distinct yet complementary role in the network attribute integration:
+
+- `rnet_x` - Target Route Network: This dataset represents our base framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. `rnet_x` is akin to a canvas, prepared to receive additional layers of data. It wroth to note that `rnet_x` need to contian a identifier columns.
+
+- `rnet_y` - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network. 
+
+**Step 1: Coordinate Reference System Alignment**
+
+Transform the spatial data of both `rnet_x` (the simplified network) and `rnet_y` (the detailed network) to the same coordinate reference system. For this project, we have selected EPSG:27700.
+
+```{r}
+rnet_xp = sf::st_transform(rnet_x, "EPSG:27700")
+rnet_yp = sf::st_transform(rnet_y, "EPSG:27700")
+```
+
+**Step 2: Defining the Function List**
+
+Create a function list that dictates how each attribute is to be processed:
+
+- **Exclude**: "geometry" from processing.
+  
+- **Mean Function**: Applied to attributes like "Gradient" and "Quietness". TODO expline the funtion of sum and mean
+  
+- **Sum Function**: Used for aggregating values in columns such as "all_bicycle".
+
+**Step 3: Using `stplanr::rnet_merge` for Integration**
+
+Employ the `rnet_merge` function from the `stplanr` package. This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.
+
+```{r}
+#| eval: false
+rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = 20, segment_length = 10, funs = funs, max_angle_diff = 30) 
+```
+
+In the example code, four arguments need to be carefully defined:
+
+- **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, essential for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
+  
+- **`segment_length`** (Segment Maximum Length): This specifies the upper limit for each segment's length within the detailed network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.
+  
+- **`funs`** (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.
+
+
+- **`max_angle_diff`** (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such  consideration of angular alignment plays a pivotal role in maintaining the network's geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network's structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.
+
+
+![image](pics/Prevent_overestimate_of_values_on_sideroads.png)
+
+
+```{r}
+rnet_xp = st_transform(rnet_x, "EPSG:27700")
+rnet_yp = st_transform(rnet_y, "EPSG:27700")
+
+# Extract column names from the rnet_yp
+name_list = names(rnet_yp)
+
+# Initialize an empty list
+funs = list()
+
+# Loop through each name and assign it a function based on specific conditions
+for (name in name_list) {
+  if (name == "geometry") {
+    next  # Skip the current iteration
+  } else if (name %in% c("Gradient", "Quietness")) {
+    funs[[name]] = mean
+  } else {
+    funs[[name]] = sum
+  }
+}
+
+dist = 20
+rnet_merged_with_angle = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = 20)
+rnet_merged_without_angle= stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs)
+
+# Define breaks for the color scale
+brks = c(0, 100, 500, 1000, 5000)
+
+# Set global tmap options for tighter margins
+tmap_options(
+  outer.margins = c(0, 0, 0, 0),
+  inner.margins = c(0, 0, 0, 0)
+)
+
+# Create the first map with scale bar
+m1 = tm_shape(rnet_merged_with_angle) + 
+     tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
+     tm_scale_bar() +
+     tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
+
+# Create the second map
+m2 = tm_shape(rnet_merged_without_angle) + 
+     tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
+     tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
+
+# Arrange the two maps vertically with a tight layout and synchronization
+tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
+```
+
+
+Once we obtained the `rnet_merged` dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:
+
+- **Cleaning**: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
+    
+- **Dimensionality Reduction**: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size. This reduction simplifies the dataset and optimizes it for storage and processing efficiency.
+
+- **NA Handling**: A thorough examination is conducted for the presence of NA values across the columns. Any rows where all the targeted columns contain NA values are filtered out.
+
+- **Spatial Subsetting**: Following the removal of linestrings that contain NA attributes from the `rnet_merged` dataset, we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of `rnet_yp`, termed `rnet_yp_rest`, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This step ensures that only those components of `rnet_y` which are spatially distinct from `rnet_merged` are retained for further consideration.
+
+- **Network Simplification**: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
+
+By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.
+   
+   
+```{python}
+#| eval: false
+rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+# Plotting both GeoJSON files side by side
+fig, axes = plt.subplots(1, 2, figsize=(15, 8))
+
+rnet_x.plot(ax=axes[0], color='blue')
+axes[0].set_title('RNet X')
+
+rnet_y.plot(ax=axes[1], color='green')
+axes[1].set_title('RNet Y')
+
+plt.tight_layout()
+plt.show()
+```
+
 
 <!-- TODO: add content to this section. -->
 
