@@ -1,0 +1,624 @@
+---
+title: "network simplification using skeletonization"
+format:
+  html: default
+number-sections: true
+execute:
+  echo: false
+editor:
+  markdown:
+    wrap: sentence
+jupyter: python3
+---
+
+# skeletonize 
+
+simplify GeoJSON network to GeoPKG layers using image skeletonization
+
+## import and set global values
+
+```{python}
+import argparse
+import datetime as dt
+import warnings
+from functools import partial
+
+import geopandas as gp
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+import pandas as pd
+import rasterio as rio
+import rasterio.features as rif
+import rasterio.plot as rip
+from pyogrio import read_dataframe, write_dataframe
+from shapely import box, get_coordinates, line_merge, set_precision, unary_union
+from shapely.affinity import affine_transform
+from shapely.geometry import LineString, MultiLineString, MultiPoint, Point
+from skimage.morphology import remove_small_holes, skeletonize
+
+TRANSFORM_ONE = np.asarray([0.0, 1.0, -1.0, 0.0, 1.0, 1.0])
+
+pd.set_option("display.max_columns", None)
+mpl.rcParams["figure.dpi"] = 1200
+#mpl.rc("font", size=14)
+#mpl.rc("axes", titlesize=8)
+#mpl.rc('xtick', labelsize=8)
+#mpl.rc('ytick', labelsize=8) 
+
+START = dt.datetime.now()
+CRS = "EPSG:27700"
+
+INPATH = "data/rnet_princes_street.geojson"
+OUTPATH = "sk-output2.gpkg"
+
+# function definition
+
+def combine_line(line):
+    """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
+
+    args:
+      line: mixed LineString GeoSeries
+
+    returns:
+      join LineString GeoSeries
+
+    """
+    r = MultiLineString(line.values)
+    return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
+
+
+def get_base_geojson(filepath):
+    """get_base_nx: return GeoDataFrame at 0.1m precision from GeoJSON
+
+    args:
+      filepath: GeoJSON path
+
+    returns:
+      GeoDataFrame at 0.1m precision
+
+    """
+    r = read_dataframe(filepath).to_crs(CRS)
+    r["geometry"] = r["geometry"].map(set_precision_pointone)
+    return r
+
+
+def get_end(geometry):
+    """get_end: return numpy array of geometry LineString end-points
+
+    args:
+      geometry: geometry LineString
+
+    returns:
+      end-point numpy arrays
+
+    """
+    r = get_coordinates(geometry)
+    return np.vstack((r[0, :], r[-1, :]))
+
+
+def get_geometry_buffer(this_gf, radius=8.0):
+    """get_geometry_buffer: return radius buffered GeoDataFrame
+
+    args:
+      this_gf: GeoDataFrame to
+      radius: (default value = 8.0)
+
+    returns:
+      buffered GeoSeries geometry
+
+    """
+    r = gp.GeoSeries(this_gf, crs=CRS).buffer(radius, join_style="mitre")
+    union = unary_union(r)
+    try:
+        r = gp.GeoSeries(union.geoms, crs=CRS)
+    except AttributeError:
+        r = gp.GeoSeries(union, crs=CRS)
+    return r
+
+
+def get_nx(line):
+    """get_nx: return primal edge network from LineString GeoDataFrame
+
+    args:
+      line: LineString GeoDataFrame
+
+    returns:
+      edge GeoDataFrames
+
+    """
+    r = line.map(get_end)
+    edge = gp.GeoSeries(r.map(LineString), crs=CRS)
+    r = np.vstack(r.to_numpy())
+    r = gp.GeoSeries(map(Point, r)).to_frame("geometry")
+    r = r.groupby(r.columns.to_list(), as_index=False).size()
+    return edge
+
+
+def get_source_target(line):
+    """get_source_target: return edge and node GeoDataFrames from LineString with unique
+    node Point and edge source and target
+
+    args:
+      line: LineString GeoDataFrame
+
+    returns:
+      edge, node: GeoDataFrames
+
+    """
+    edge = line.copy()
+    r = edge["geometry"].map(get_end)
+    r = np.stack(r)
+    node = gp.GeoSeries(map(Point, r.reshape(-1, 2)), crs=CRS).to_frame("geometry")
+    count = node.groupby("geometry").size().rename("count")
+    node = node.drop_duplicates("geometry").set_index("geometry", drop=False)
+    node = node.join(count).reset_index(drop=True).reset_index(names="node")
+    ix = node.set_index("geometry")["node"]
+    edge = edge.reset_index(names="edge")
+    edge["source"] = ix.loc[map(Point, r[:, 0])].values
+    edge["target"] = ix.loc[map(Point, r[:, 1])].values
+    return edge, node
+
+
+def log(this_string):
+    """log: print timestamp appended to 'this_string'
+
+      this_string: text to print
+
+    returns:
+      None
+
+    """
+    now = dt.datetime.now() - START
+    print(this_string + f"\t{now}")
+
+
+def get_pxsize(bound, scale=1.0):
+    """get_dimension: calculates scaled image size in px
+
+      bound: boundary corner points
+      scale: scaling factor (default = 1.0)
+
+    returns:
+      size in px
+
+    """
+    r = np.diff(bound.reshape(-1, 2), axis=0)
+    r = np.ceil(r.reshape(-1))
+    return (r[[1, 0]] * scale).astype(int)
+
+
+def get_affine_transform(this_gf, scale=1.0):
+    """get_affine_transform: return affine transformations matrices, and scaled image size
+    from GeoPandas boundary size
+
+      this_gf: GeoPanda
+      scale:  (default = 1.0)
+
+    returns:
+      rasterio and shapely affine tranformation matrices, and image size in px
+
+    """
+    bound = this_gf.total_bounds
+    s = TRANSFORM_ONE / scale
+    s[[4, 5]] = bound[[0, 3]]
+    r = s[[1, 0, 4, 3, 2, 5]]
+    r = rio.Affine(*r)
+    return r, s, get_pxsize(bound, scale)
+
+
+set_precision_pointone = partial(set_precision, grid_size=0.1)
+
+
+def get_raster_point(raster, value=1):
+    """get_raster_point: return Point GeoSeries from raster array with values >= value
+
+    args:
+      raster: raster numpy array
+      value: point threshold (default value = 1)
+    returns:
+      GeoSeries Point
+
+    """
+    r = np.stack(np.where(raster >= value))
+    return gp.GeoSeries(map(Point, r.T), crs=CRS)
+
+
+def get_nx_out(this_gf, transform, simplify=0.0):
+    """get_nx_out: return transform GeoPandas data to GeoPKG layer
+
+    args:
+      this_gf: GeoDataFrame to output
+      transform: affine transform
+
+    returns:
+      None
+
+    """
+    r = this_gf.copy()
+    try:
+        r = r.to_frame("geometry")
+    except AttributeError:
+        pass
+    geometry = r["geometry"].map(transform).map(set_precision_pointone)
+    if simplify > 0.0:
+        geometry = geometry.simplify(simplify)
+    r["geometry"] = geometry
+    return r
+
+def get_skeleton(geometry, transform, shape):
+    """get_skeleton: return skeletonized raster buffer from Shapely geometry
+
+    args:
+      geometry: Shapely geometry to convert to raster buffer
+      transform: rasterio affine transformation
+      shape: output buffer px size
+
+    returns:
+      skeltonized numpy array raster buffer
+
+    """
+    r = rif.rasterize(geometry.values, transform=transform, out_shape=shape)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        # parent, traverse = max_tree(invert(r))
+        r = remove_small_holes(r, 4).astype(np.uint8)
+    return skeletonize(r).astype(np.uint8)
+
+
+def get_connected_class(edge_list):
+    """get_connected_class: return labeled connected node pandas Series from edge list
+
+    args:
+      edge_list: source, target edge pandas DataFrame
+
+    returns:
+      labeled node pandas Series
+
+    """
+    nx_graph = nx.from_pandas_edgelist(edge_list)
+    connected = nx.connected_components(nx_graph)
+    r = {k: i for i, j in enumerate(connected) for k in j}
+    return pd.Series(r, name="class")
+
+
+def get_centre_edge(node):
+    """get_centre_edge: return centroid Point from discrete node clusters
+
+    args:
+      node: discrete node cluster GeoDataSeries
+
+    returns:
+      GeoDataCentre node cluster centroid Point
+
+    """
+    centre = node[["geometry", "class"]].groupby("class").aggregate(tuple)
+    centre = gp.GeoSeries(centre["geometry"].map(MultiPoint), crs=CRS).centroid
+    centre = centre.rename("target")
+    geometry = node[["class", "geometry"]].set_index("class").join(centre)
+    geometry = geometry.apply(LineString, axis=1)
+    r = node.rename(columns={"node": "source"}).copy()
+    r["geometry"] = geometry.values
+    return r
+
+
+def get_raster_line(point, knot=False):
+    """get_raster_line: return LineString GeoSeries from 1px line raster eliminating knots
+
+    args:
+      point: 1px raster array with knots
+
+    returns:
+      1px line LineString GeoSeries with knots removed
+
+    """
+    square = point.buffer(1, cap_style="square", mitre_limit=1)
+    ix = point.sindex.query(square, predicate="covers").T
+    ix = np.sort(ix)
+    s = pd.DataFrame(ix).drop_duplicates().reset_index(drop=True)
+    s = s.loc[np.where(s[0] != s[1])]
+    s = np.stack([point[s[0].values], point[s[1].values]]).T
+    r = gp.GeoSeries(map(LineString, s), crs=CRS)
+    edge, node = get_source_target(combine_line(r).to_frame("geometry"))
+    if knot:
+        return combine_line(edge["geometry"])
+    ix = edge.length > 2.0
+    connected = get_connected_class(edge.loc[~ix, ["source", "target"]])
+    node = node.loc[connected.index].join(connected).sort_index()
+    connected_edge = get_centre_edge(node)
+    r = combine_line(pd.concat([connected_edge["geometry"], edge.loc[ix, "geometry"]]))
+    return r[r.length > 2.0]
+
+
+def nx_out(this_gf, transform, filepath, layer, simplify=0.0):
+    """nx_out: write transform GeoPandas data to GeoPKG layer
+
+    args:
+      this_gf: GeoDataFrame to output
+      transform: affine transform
+      filepath: GeoPKG filepath
+      layer: layer name
+
+    returns:
+      None
+
+    """
+    r = this_gf.copy()
+    try:
+        r = r.to_frame("geometry")
+    except AttributeError:
+        pass
+    geometry = r["geometry"].map(transform).map(set_precision_pointone)
+    if simplify > 0.0:
+        geometry = geometry.simplify(simplify)
+    r["geometry"] = geometry
+    write_dataframe(r, filepath, layer=layer)
+
+## main function. this is a hangover from the skeltonize.py command-line tool
+
+def main(inpath, outpath, buffer_size, scale, simplify=0.0, knot=False):
+    """main: load GeoJSON file, use skeletonize buffer to simplify network, and output
+    input, simplified and primal network as GeoPKG layers
+
+    args:
+       path: GeoJSON filepath
+
+    returns:
+       None
+
+    """
+    log("start\t")
+    base_nx = get_base_geojson(inpath)
+    log("read geojson")
+    write_dataframe(base_nx, outpath, layer="input")
+    log("process\t")
+    nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
+    r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale)
+    shapely_transform = partial(affine_transform, matrix=s_matrix)
+    skeleton_im = get_skeleton(nx_geometry, r_matrix, out_shape)
+    nx_point = get_raster_point(skeleton_im)
+    nx_line = get_raster_line(nx_point, knot)
+    log("write simple")
+    nx_out(nx_line, shapely_transform, outpath, "line", simplify=simplify)
+    log("write primal")
+    nx_edge = get_nx(nx_line)
+    nx_out(nx_edge, shapely_transform, outpath, "primal", simplify=simplify)
+    log("stop\t")
+
+```
+
+```{python}
+#| eval: false
+
+## call main function. more cruft from the command lines script
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="GeoJSON network raster simplification"
+    )
+    parser.add_argument("inpath", type=str, help="GeoJSON filepath to simplify")
+    parser.add_argument(
+        "outpath",
+        nargs="?",
+        type=str,
+        help="GeoGPKG output path",
+        default="output.gpkg",
+    )
+    parser.add_argument("--scale", help="raster scale", type=float, default=1.0)
+    parser.add_argument("--simplify", help="tolerance [m]", type=float, default=0.0)
+    parser.add_argument("--buffer", help="line buffer [m]", type=float, default=8.0)
+    parser.add_argument("--knot", help="keep image knots", action="store_true")
+    args = parser.parse_args()
+    main(
+        args.inpath,
+        outpath=args.outpath,
+        buffer_size=args.buffer,
+        scale=args.scale,
+        simplify=args.simplify,
+        knot=args.knot,
+    )
+```
+
+```{python}
+## show and clip frame display function
+
+
+def show_frame(this_frame, label=None, colour="black", cmap=None, tick=True):
+    if cmap is None:
+        ax = this_frame.plot(color=colour, edgecolor="black", linewidth=0.5)
+    else:
+        name = cmap["label"]
+        map = cmap["cmap"]
+        ax = this_frame.plot(name, cmap=map, edgecolor="black", linewidth=0.5)
+    ax.xaxis.set_tick_params(labelsize=4)
+    ax.yaxis.set_tick_params(labelsize=4)
+    if not tick:
+        ax.xaxis.set_ticklabels([])
+        ax.yaxis.set_ticklabels([])
+    if label is not None:
+        plt.title = label        
+    #ax.set_ylabel('kw', fontdict={'fontsize':24})
+    plt.show()
+
+def get_clip(this_frame, centre, length):
+    p = np.asarray([centre, centre]).reshape(-1)
+    edge = p + np.asarray([-1.0, -1.0, 1.0, 1.0]) * length / 2.0
+    clip = gp.GeoSeries(box(*edge), crs=CRS)
+    return r.clip(clip)
+```
+
+```{python}
+## simplification and get data code
+
+from shapely.ops import split
+from shapely import line_interpolate_point, snap
+
+def get_split(line, point, separation=1.0e-6):
+    return list(split(snap(line, point, separation), point).geoms)
+
+EMPTY = LineString([])
+def split_ends(line, offset):
+    if line.length <= 2.0 * offset:
+        return line, EMPTY, EMPTY
+    p = line_interpolate_point(line, offset)
+    head, centre = get_split(line, p)
+    p = line_interpolate_point(centre, -offset)
+    centre, tail = get_split(centre, p)
+    return head, centre, tail
+
+inpath, outpath, buffer_size, scale = INPATH, OUTPATH, 8.0, 1.0
+
+base_nx = get_base_geojson(inpath)
+#write_dataframe(base_nx, OUTPATH, layer="input")
+#show_frame(base_nx)
+```
+
+## combine line geometry
+
+```{python}
+join_nx = combine_line(base_nx["geometry"]).to_frame("geometry")
+#write_dataframe(join_nx, OUTPATH, layer="join")
+show_frame(join_nx)
+```
+## split line buffers and count line segments
+
+```{python}
+radius = buffer_size
+this_gs = join_nx["geometry"]
+
+#split_end = partial(split_ends, offset=np.sqrt(2.0) * radius)
+split_end = partial(split_ends, offset=np.sqrt(1.5) * radius)
+
+#r = gp.GeoSeries(this_gs, crs=CRS).buffer(radius, join_style="mitre", cap_style="flat")
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="buffer")
+#show_frame(r.to_frame("geometry"))
+gf_split = pd.DataFrame(this_gs.map(split_end).to_list(), columns=["head", "centre", "tail"])
+r = gf_split[["head", "tail"]]
+r = gp.GeoSeries(list(unary_union(r.values).geoms), crs=CRS)
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="end")
+## end
+#show_frame(r.to_frame("geometry"), label="end")
+## centre
+r = gp.GeoSeries(gf_split["centre"], crs=CRS)
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="centre")
+#show_frame(r.to_frame("geometry"), label="centre")
+
+#r = gp.GeoSeries(r, crs=CRS).buffer(radius, join_style="round", cap_style="flat", mitre_limit=1.0)
+#r = gp.GeoSeries(r, crs=CRS).buffer(radius, 0, join_style="round", cap_style="flat", mitre_limit=1.0)
+r = gp.GeoSeries(gf_split["centre"], crs=CRS)
+r = gp.GeoSeries(r, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="buffer2")
+#show_frame(r.to_frame("geometry"), colour="blue")
+
+## overlapping
+combined_nx = gp.GeoSeries(unary_union(r.values).geoms, crs=CRS)
+#write_dataframe(combined_nx.to_frame("geometry"), OUTPATH, layer="buffer3")
+show_frame(r.to_frame("geometry"), colour="blue")
+```
+
+## overlap
+
+```{python}
+i, j = join_nx.sindex.query(combined_nx, predicate="intersects")
+
+join_nx["class"] = -1
+join_nx.loc[j, "class"] = combined_nx.index[i]
+count = join_nx.groupby("class").count()
+join_nx = join_nx.join(count["geometry"].rename("count"), on="class")
+ix = join_nx["class"] == -1
+join_nx.loc[ix, "count"] = 0
+#write_dataframe(join_nx, OUTPATH, layer="join2")
+show_frame(join_nx, colour="blue")
+
+## this kind of doesn't work
+#show_frame(join_nx, cmap={"label": "count", "cmap": "viridis"})
+```
+
+## buffer overlap
+
+```{python}
+ix = join_nx["count"].isin([0, 1])
+p = join_nx.loc[~ix, "geometry"].copy()
+p = p.buffer(radius, 512, join_style="round", cap_style="round")
+p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+#write_dataframe(p.to_frame("geometry"), OUTPATH, layer="buffer4")
+
+#show_frame(p.to_frame("geometry"), colour="blue")
+
+# simplify boundary
+p = p.buffer(radius / 2.0, 16, join_style="round", cap_style="round")
+#write_dataframe(p.to_frame("geometry"), OUTPATH, layer="buffer5")
+#show_frame(p.to_frame("geometry"), colour="blue")
+p = p.buffer(-radius / 2.0, 16, join_style="round", cap_style="round")
+#write_dataframe(p.to_frame("geometry"), OUTPATH, layer="buffer6")
+show_frame(p.to_frame("geometry"), colour="blue")
+```
+
+## combine buffer and network
+```{python}
+#q = join_nx.loc[ix, "geometry"].buffer(1.0, 64, join_style="mitre", cap_style="square")
+q = join_nx.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
+nx_geometry = pd.concat([p, q])
+nx_geometry = gp.GeoSeries(list(unary_union(nx_geometry.values).geoms), crs=CRS)
+#nx_geometry = nx_geometry.to_frame("geometry")
+#s["class"] = (s.index + 1).astype(str).str.zfill(2)
+#write_dataframe(nx_geometry.to_frame("geometry"), OUTPATH, layer="buffer7")
+show_frame(nx_geometry.to_frame("geometry"), colour="blue")
+```
+
+```{python}
+## skeletonize and get simple line
+#nx_geometry = get_geometry_buffer(join_nx.loc[ix, "geometry"], radius=buffer_size)
+#nx_geometry = pd.concat([s["geometry"], join_nx.loc[ix, "geometry"]])
+#write_dataframe(nx_geometry.to_frame("geometry"), outpath, layer="line3")
+r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale)
+shapely_transform = partial(affine_transform, matrix=s_matrix)
+skeleton_im = get_skeleton(nx_geometry, r_matrix, out_shape)
+#rip.show(skeleton_im, cmap="Blues", title="skeleton geometry")
+nx_point = get_raster_point(skeleton_im)
+```
+
+## detailed with and without knots
+```{python}
+knot = True
+nx_line = get_raster_line(nx_point, knot)
+r = get_nx_out(nx_line, shapely_transform)
+#show_frame(r)
+
+## show knot
+#write_dataframe(r, outpath, layer="knot")
+s = get_clip(r, [324950, 673920], 15.0)
+show_frame(s, tick=False)
+#write_dataframe(s, outpath, layer="knot2")
+#mx_point = gp.GeoSeries(mx_point, crs=CRS)
+knot = False
+nx_line = get_raster_line(nx_point, knot)
+r = get_nx_out(nx_line, shapely_transform)
+s = get_clip(r, [324950, 673920], 15.0)
+show_frame(s, tick=False)
+#log("write simple")
+#write_dataframe(join_nx[ix], outpath, layer="line3")
+#write_dataframe(mx_point.to_frame("geometry"), outpath, layer="point2")
+```
+
+## fuzzy line network without knots
+```{python}
+show_frame(r)
+s = get_clip(r, [324950, 673920], 250.0)
+```
+
+## simplify line
+
+```{python}
+r = get_nx_out(nx_line, shapely_transform, 1.0)
+#write_dataframe(r.to_frame("geometry"), outpath, layer="line3")
+show_frame(r)
+```
+
+## fuzzy and de-fuzz'd line detail
+```{python}
+show_frame(s, tick=False)
+s = get_clip(r, [324950, 673920], 250.0)
+show_frame(s, tick=False)
+```
