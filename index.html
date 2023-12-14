@@ -591,12 +591,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>base_nx[<span class="st">"geometry"</span>] <span class="op">=</span> base_nx[<span class="st">"geometry"</span>].<span class="bu">map</span>(set_precision_pointone)</span>
 <span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>nx_geometry <span class="op">=</span> get_geometry_buffer(base_nx[<span class="st">"geometry"</span>], radius<span class="op">=</span>buffer_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The street network that requires simplification and the corresponding buffered network are presented as follows:</p>
+<p>The buffered versions of the networks are presented below:</p>
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the base network on the first subplot</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>base_nx.plot(ax<span class="op">=</span>axs[<span class="dv">0</span>], edgecolor<span class="op">=</span><span class="st">"blue"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
@@ -1234,12 +1234,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <li><p><strong><code>funs</code></strong> (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.</p></li>
 <li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network’s geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network’s structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.</p></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="pics/Prevent_overestimate_of_values_on_sideroads.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">image</figcaption>
-</figure>
-</div>
+<!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>rnet_xp <span class="ot">=</span> <span class="fu">st_transform</span>(rnet_x, <span class="st">"EPSG:27700"</span>)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>rnet_yp <span class="ot">=</span> <span class="fu">st_transform</span>(rnet_y, <span class="st">"EPSG:27700"</span>)</span>
