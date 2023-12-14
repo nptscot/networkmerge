@@ -430,6 +430,30 @@ base_armley["geometry"] = base_armley["geometry"].map(set_precision_pointone)
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
 
+The buffered versions of the networks are presented below:
+
+::: {#fig-buffered-network layout-ncol="2"}
+
+```{python}
+base_otley.plot(edgecolor="blue", color="blue")
+```
+
+```{python}
+base_armley.plot(edgecolor="blue", color="blue")
+```
+
+```{python}
+otley_geometry.plot(edgecolor="black", color="blue")
+```
+
+```{python}
+armley_geometry.plot(edgecolor="black", color="blue")
+```
+
+Buffered versions of the Otley Road (left) and Armley Road (right) networks.
+
+:::
+
 ```{python}
 split_end = partial(split_ends, offset=np.sqrt(1.5) * radius)
 otley_split = pd.DataFrame(base_otley["geometry"].map(split_end).to_list(), columns=["head", "centre", "tail"])
@@ -458,30 +482,6 @@ combined_armley.plot()
 Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
 
 :::
-
-The buffered versions of the networks are presented below:
-
-::: {#fig-buffered-network layout-ncol="2"}
-
-```{python}
-base_otley.plot(edgecolor="blue", color="blue")
-```
-
-```{python}
-base_armley.plot(edgecolor="blue", color="blue")
-```
-
-```{python}
-otley_geometry.plot(edgecolor="black", color="blue")
-```
-
-```{python}
-armley_geometry.plot(edgecolor="black", color="blue")
-```
-
-Buffered versions of the Otley Road (left) and Armley Road (right) networks.
-
-::: 
 
 ### Skeletonization
 
