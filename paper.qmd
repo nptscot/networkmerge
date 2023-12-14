@@ -114,7 +114,6 @@ tmap_mode("plot")
 
 rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 
