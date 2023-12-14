@@ -893,6 +893,8 @@ nx_output.plot()
 plt.show()
 ```
 
+Simplified versions of the Otley Road (left) and Armley Road (right) networks, with knots removed.
+
 :::
 
 ### Primal network
