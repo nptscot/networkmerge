@@ -478,23 +478,30 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-panel quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="paper_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="1440"></p>
-<figcaption class="figure-caption">Buffered Network</figcaption>
-</figure>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-12-5.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p>Buffered Network Visualization of Edinburgh’s Princes Street</p>
-</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-13-7.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: <strong>?(caption)</strong></figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Buffered versions of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -537,19 +544,19 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster’s scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-13-3.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-17-9.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-14-5.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-18-11.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The rasterized skeletal image is then converted back into point geometry, completing the transformation process. The rasterized skeletal image is then converted back into point geometry, completing the transformation process.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-15-7.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-19-13.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.</p>
@@ -562,7 +569,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-17-9.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-21-15.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -572,7 +579,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>To address these, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster’s central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-18-11.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-22-17.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -581,7 +588,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>There are circumstances where it might be beneficial to view a “primal” network, which is exclusively composed of direct lines connecting start and end points.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-20-13.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-24-19.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -591,10 +598,10 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
 <section id="boundary" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
-<p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
+<p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-21-15.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-25-21.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -603,7 +610,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The simplified LineString geometries are then broken down into shorter segments.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-22-17.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-26-23.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -612,7 +619,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The simplified LineString geometries are converted into point geometries.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-23-19.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-27-25.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -621,7 +628,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-24-21.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-28-27.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -629,7 +636,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-25-23.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-29-29.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -637,7 +644,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-26-25.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-30-31.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -645,7 +652,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-27-27.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-31-33.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -653,7 +660,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-28-29.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-32-35.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><img src="images/paste-1.png" class="img-fluid"></p>
@@ -690,7 +697,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
