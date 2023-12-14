@@ -24,7 +24,6 @@ format:
 number-sections: true
 execute: 
   echo: false
-  cache: true
   message: false
   warning: false
 editor: 
@@ -599,7 +598,9 @@ def get_affine_transform(this_gf, scale=1.0):
     r = rio.Affine(*r)
     return r, s, get_pxsize(bound, scale)
 
-r_matrix, s_matrix, out_shape = get_affine_transform(otley_geometry, scale=2.0)
+r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geometry, scale=2.0)
+# For Armley:
+r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
 ```
 
 ### Affine transforms
@@ -612,8 +613,11 @@ def display_matrix(matrix, header):
     r = matrix.to_markdown(index=False, headers=header)
     display(r)
 
-or_matrix = pd.DataFrame(np.asarray(r_matrix).reshape(-1, 3))
-os_matrix = pd.DataFrame(np.asarray(s_matrix).reshape(3, -1).T)
+or_matrix_otley = pd.DataFrame(np.asarray(r_matrix_otley).reshape(-1, 3))
+os_matrix_otley = pd.DataFrame(np.asarray(s_matrix_otley).reshape(3, -1).T)
+
+or_matrix_armley = pd.DataFrame(np.asarray(r_matrix_armley).reshape(-1, 3))
+os_matrix_armley = pd.DataFrame(np.asarray(s_matrix_armley).reshape(3, -1).T)
 ```
 
 ::: {#tbl-panel layout-ncol=2}
@@ -622,17 +626,17 @@ os_matrix = pd.DataFrame(np.asarray(s_matrix).reshape(3, -1).T)
 #| output: asis
 #| label: tbl-rasterio-transform
 #| tbl-cap: Rasterio affine transformation matrix.
-display_matrix(or_matrix, "   ")
+display_matrix(or_matrix_otley, "   ")
 ```
 
 ```{python}
 #| output: asis
 #| label: tbl-shapely-transform
 #| tbl-cap: Shapely affine transformation matrix.
-display_matrix(os_matrix, "   ")
+display_matrix(os_matrix_otley, "   ")
 ```
 
-Rasterio and Shapely affine transformation matrices.
+Rasterio and Shapely affine transformation matrices for the Otley Road network.
 
 :::
 
@@ -654,7 +658,7 @@ import rasterio.plot as rip
 ::: {#fig-rasterize layout-ncol="2"}
 
 ```{python}
-otley_im = rif.rasterize(otley_geometry.values, transform=r_matrix, out_shape=out_shape)
+otley_im = rif.rasterize(otley_geometry.values, transform=r_matrix_otley, out_shape=out_shape_otley)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     otley_im = remove_small_holes(otley_im, 20).astype(np.uint8)
@@ -663,7 +667,7 @@ rip.show(otley_im, cmap="Blues", title="buffer geometry")
 ```
 
 ```{python}
-armley_im = rif.rasterize(armley_geometry.values, transform=r_matrix, out_shape=out_shape)
+armley_im = rif.rasterize(armley_geometry.values, transform=r_matrix_armley, out_shape=out_shape_otley)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     armley_im = remove_small_holes(armley_im, 20).astype(np.uint8)
@@ -696,14 +700,26 @@ Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
-The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
+The rasterized skeletal image is then converted back into point geometry, completing the vector -> raster -> vector geometry transformation process, as illustrated in @fig-skeleton-vector.
+
+::: {#fig-skeleton-vector layout-ncol="2"}
 
 ```{python}
-shapely_transform = partial(affine_transform, matrix=s_matrix)
+shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
 otley_transform = otley_point.map(shapely_transform).map(set_precision_pointone)
 otley_transform.plot(edgecolor="black", color="blue").grid()
 plt.show()
 ```
+
+```{python}
+armley_transform = armley_point.map(shapely_transform).map(set_precision_pointone)
+armley_transform.plot(edgecolor="black", color="blue").grid()
+plt.show()
+```
+
+Skeletonized versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
+
+:::
 
 The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.
 
@@ -788,7 +804,7 @@ otley_line = get_raster_line_with_knots(otley_point)
 To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
 
 ```{python}
-shapely_transform = partial(affine_transform, matrix=s_matrix)
+shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
 nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
