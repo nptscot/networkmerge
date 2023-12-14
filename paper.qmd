@@ -366,10 +366,11 @@ The paper presents two  approaches for network simplification: one involves imag
 In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.
 
 ```{python}
+#| name: python-setup-packages
 from functools import partial
 from shapely import box
-from shapely.ops import voronoi_diagram
-from shapely import box
+from shapely.ops import voronoi_diagram, split
+from shapely import box, line_interpolate_point, snap
 from shapely.ops import voronoi_diagram
 import geopandas as gp
 import matplotlib.pyplot as plt
@@ -377,6 +378,10 @@ from shapely import get_coordinates, line_merge, set_precision, unary_union
 from shapely.geometry import MultiPoint,MultiLineString,LineString,Point
 import pandas as pd
 import numpy as np
+```
+
+```{python}
+
 plt.rcParams["figure.figsize"] = (12, 12)
 
 def get_geometry_buffer(this_gf, radius=8.0):
@@ -400,6 +405,21 @@ def get_geometry_buffer(this_gf, radius=8.0):
 
 CRS = "EPSG:27700"
 buffer_size = 8.0
+radius = buffer_size
+
+def get_split(line, point, separation=1.0e-6):
+    return list(split(snap(line, point, separation), point).geoms)
+
+EMPTY = LineString([])
+def split_ends(line, offset):
+    if line.length <= 2.0 * offset:
+        return line, EMPTY, EMPTY
+    p = line_interpolate_point(line, offset)
+    head, centre = get_split(line, p)
+    p = line_interpolate_point(centre, -offset)
+    centre, tail = get_split(centre, p)
+    return head, centre, tail
+
 
 set_precision_pointone = partial(set_precision, grid_size=0.1)
 base_otley = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
@@ -413,6 +433,37 @@ armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_siz
 ```
 
 ```{python}
+split_end = partial(split_ends, offset=np.sqrt(1.5) * radius)
+otley_split = pd.DataFrame(base_otley["geometry"].map(split_end).to_list(), columns=["head", "centre", "tail"])
+armley_split = pd.DataFrame(base_armley["geometry"].map(split_end).to_list(), columns=["head", "centre", "tail"])
+```
+
+```{python}
+r = otley_split[["head", "tail"]]
+try:
+    r = gp.GeoSeries(list(unary_union(r.values).geoms), crs=CRS)
+except AttributeError:
+    r = gp.GeoSeries(list(unary_union(r.values)), crs=CRS)  
+
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="end")
+## end
+#plot(r.to_frame("geometry"), label="end")
+## centre
+r = gp.GeoSeries(otley_split["centre"], crs=CRS)
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="centre")
+#plot(r.to_frame("geometry"), label="centre")
+
+#r = gp.GeoSeries(r, crs=CRS).buffer(radius, join_style="round", cap_style="flat", mitre_limit=1.0)
+#r = gp.GeoSeries(r, crs=CRS).buffer(radius, 0, join_style="round", cap_style="flat", mitre_limit=1.0)
+r = gp.GeoSeries(otley_split["centre"], crs=CRS)
+r = gp.GeoSeries(r, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
+#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="buffer2")
+#plot(r.to_frame("geometry"), colour="blue")
+
+## overlapping
+combined_nx = gp.GeoSeries(unary_union(r.values).geoms, crs=CRS)
+#write_dataframe(combined_nx.to_frame("geometry"), OUTPATH, layer="buffer3")
+r.plot()
 ```
 
 The buffered versions of the networks are presented below:
