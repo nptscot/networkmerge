@@ -599,7 +599,7 @@ def get_affine_transform(this_gf, scale=1.0):
     return r, s, get_pxsize(bound, scale)
 
 r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geometry, scale=2.0)
-# For Armley:
+# For Armle
 r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
 ```
 
@@ -700,36 +700,37 @@ Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
-The rasterized skeletal image is then converted back into point geometry, completing the vector -> raster -> vector geometry transformation process, as illustrated in @fig-skeleton-vector.
+The rasterized skeletal image is then converted back into point geometry, completing the vector -> raster -> vector geometry transformation process.
 
-::: {#fig-skeleton-vector layout-ncol="2"}
+<!-- Figure commented out as not necessary and similar to the subsequent figure: -->
+<!-- ::: {#fig-skeleton-vector layout-ncol="2"} -->
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
 otley_transform = otley_point.map(shapely_transform).map(set_precision_pointone)
 otley_transform.plot(edgecolor="black", color="blue").grid()
-plt.show()
+# plt.show()
 ```
 
 ```{python}
 armley_transform = armley_point.map(shapely_transform).map(set_precision_pointone)
 armley_transform.plot(edgecolor="black", color="blue").grid()
-plt.show()
+# plt.show()
 ```
 
-Skeletonized versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
+<!-- Skeletonized versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
 
-:::
+::: -->
 
-The challenge with this approach is that instead of generating points situated on the simplified network, it yields a mere set of points. What is required for effective analysis is a simplified set of line geometries, not just isolated points. This necessitates the inference of line geometry from the associated set of points.
-
-### Transforming point geometry into line geometry
-
+The challenge with this approach is that instead of generating points situated on the simplified network, it returns a set of points rather than line geometries. This necessitates the inference of line geometry from the associated set of points.
 Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.
 
-The process of transforming point geometry into line geometry involves several key steps. Initially, the point set, derived from a skeletonized image, is analysed to identify adjacent points. Adjacency is determined based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
+The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
+After adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network.
+<!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
+To visualize the simplified network in its original spatial context, the reverse affine transformation is applied. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
+The resulting simplified network is illustrated in @fig-skeleton-line.
 
-Once adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network structure. This conversion from point to line geometry is a pivotal aspect of network simplification.
 
 ```{python}
 from shapely import get_coordinates
@@ -801,7 +802,7 @@ def combine_line(line):
 otley_line = get_raster_line_with_knots(otley_point)
 ```
 
-To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
+::: {#fig-skeleton-line layout-ncol="2"}
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
@@ -809,6 +810,17 @@ nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
+
+```{python}
+shapely_transform = partial(affine_transform, matrix=s_matrix_armley)
+nx_output = armley_line.map(shapely_transform).map(set_precision_pointone)
+nx_output.plot()
+plt.show()
+```
+
+Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
+
+:::
 
 ### Knots
 
