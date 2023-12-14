@@ -477,7 +477,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>input <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/rnet_armley.geojson'</span>)</span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>input <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/rnet_otley.geojson'</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>input_projected <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(input, <span class="st">"EPSG:27700"</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>simplification_levels <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span>, <span class="fl">0.001</span>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ordered factor of simplification levels:</span></span>
@@ -514,27 +514,26 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>m_otley <span class="ot">=</span> <span class="fu">tm_shape</span>(input_simplified, <span class="at">bbox =</span> tmaptools<span class="sc">::</span><span class="fu">bb</span>(input_simplified, <span class="fl">1.1</span>)) <span class="sc">+</span></span>
 <span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
 <span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"keep"</span>, <span class="at">free.coords =</span> <span class="cn">TRUE</span>) </span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a><span class="co"># m_armley</span></span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for Armley:</span></span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>input <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/rnet_armley.geojson'</span>)</span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>input_projected <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(input, <span class="st">"EPSG:27700"</span>) </span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"data/input_simplified_armley.geojson"</span>)) {</span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>  input_simplified <span class="ot">=</span> <span class="fu">smplfy</span>(input_projected, simplification_levels)</span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">write_sf</span>(input_simplified, <span class="st">"data/input_simplified_armley.geojson"</span>, <span class="at">delete_dsn =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>  input_simplified <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/input_simplified_armley.geojson'</span>)</span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>input_simplified <span class="ot">=</span> <span class="fu">left_join</span>(</span>
-<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>  input_simplified,</span>
-<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  simplification_df,</span>
-<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(id <span class="sc">==</span> simp_factor)</span>
-<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>m_armley <span class="ot">=</span> <span class="fu">tm_shape</span>(input_simplified, <span class="at">bbox =</span> tmaptools<span class="sc">::</span><span class="fu">bb</span>(input_simplified, <span class="fl">1.1</span>)) <span class="sc">+</span></span>
-<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
-<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"keep"</span>, <span class="at">free.coords =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="co"># m_otley</span></span>
-<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(m_otley, m_armley)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for Armley:</span></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>input <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/rnet_armley.geojson'</span>)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>input_projected <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(input, <span class="st">"EPSG:27700"</span>) </span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"data/input_simplified_armley.geojson"</span>)) {</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>  input_simplified <span class="ot">=</span> <span class="fu">smplfy</span>(input_projected, simplification_levels)</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">write_sf</span>(input_simplified, <span class="st">"data/input_simplified_armley.geojson"</span>, <span class="at">delete_dsn =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>  input_simplified <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">'data/input_simplified_armley.geojson'</span>)</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>input_simplified <span class="ot">=</span> <span class="fu">left_join</span>(</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>  input_simplified,</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>  simplification_df,</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(id <span class="sc">==</span> simp_factor)</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>m_armley <span class="ot">=</span> <span class="fu">tm_shape</span>(input_simplified, <span class="at">bbox =</span> tmaptools<span class="sc">::</span><span class="fu">bb</span>(input_simplified, <span class="fl">1.1</span>)) <span class="sc">+</span></span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"keep"</span>, <span class="at">free.coords =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a><span class="co"># m_otley</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(m_otley, m_armley)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </div>
