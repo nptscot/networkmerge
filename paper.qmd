@@ -24,7 +24,7 @@ format:
 number-sections: true
 execute: 
   echo: false
-  cache: true
+  cache: refresh
   message: false
   warning: false
 editor: 
@@ -293,7 +293,7 @@ As shown in top panel of @fig-topology-preserving, topology-preserving simplicat
 ::: {#fig-topology-preserving layout-ncol="1"}
 
 ```{r}
-input = sf::read_sf('data/rnet_armley.geojson')
+input = sf::read_sf('data/rnet_otley.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
 # ordered factor of simplification levels:
@@ -330,7 +330,6 @@ input_simplified = left_join(
 m_otley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
   tm_facets(by = "keep", free.coords = TRUE) 
-# m_armley
 
 # Same for Armley:
 input = sf::read_sf('data/rnet_armley.geojson')
