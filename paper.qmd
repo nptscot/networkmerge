@@ -396,7 +396,7 @@ CRS = "EPSG:27700"
 buffer_size = 8.0
 
 set_precision_pointone = partial(set_precision, grid_size=0.1)
-base_nx = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson").to_crs(CRS)
+base_nx = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
 base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
 nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 ```
@@ -428,15 +428,12 @@ plt.show()
 
 ### Skeletonization
 
-
 The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
 
 
 Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
 
-
 A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image. 
-
 
 ```{python}
 import numpy as np
@@ -483,9 +480,7 @@ r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
 
 ### Affine transforms
 
-
 The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
-
 
 #### Rasterio transform
 
@@ -508,13 +503,9 @@ display_matrix(os_matrix, "   ")
 
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
-
 ### Skeletonize the buffer to a point geometry
 
-
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
-
-
 
 ```{python}
 import warnings
@@ -716,7 +707,9 @@ nx_output = nx_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
+
 ### Primal network
+
 There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
 
 ```{python}
