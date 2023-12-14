@@ -114,6 +114,7 @@ tmap_mode("plot")
 
 rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 
@@ -285,32 +286,6 @@ Two fundamental approaches to simplifying transport networks are:
 In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
 
 ### Topology-preserving simplification
-
-```{r}
-#| include: false
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
-
-```
-
-```{r}
-#| eval: false
-#| echo: false
-# Create input dataset:
-network = sf::read_sf("https://raw.githubusercontent.com/nptscot/networkmerge/e6f25a7214c15c9c2d5e2cb99a5e4bd4dd92c1b5/data/minimal-example-2-scotthall-road.geojson")
-network$description = as.numeric(network$description)
-network = network["description"]
-network$value = c(1, 2)
-network = stplanr::overline(network, attrib = "value")
-network
-sf::write_sf(network, "data/minimal-input.geojson")
-plot(network[1, "value"])
-plot(network[2, "value"])
-network_merged = network
-network_merged$value[2] = network_merged$value[1] + network_merged$value[2]
-network_merged = network_merged[-1, ]
-plot(network_merged)
-sf::write_sf(network_merged, "data/minimal-output.geojson")
-```
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
