@@ -32,16 +32,16 @@ import pandas as pd
 import rasterio as rio
 import rasterio.features as rif
 import rasterio.plot as rip
-from pyogrio import read_dataframe, write_dataframe
-from shapely import box, get_coordinates, line_merge, set_precision, unary_union
+from shapely import box, get_coordinates, is_ccw, line_merge, make_valid, polygonize
+from shapely import set_precision, unary_union
 from shapely.affinity import affine_transform
-from shapely.geometry import LineString, MultiLineString, MultiPoint, Point
+from shapely.geometry import LineString, MultiLineString, MultiPoint, Point, Polygon
 from skimage.morphology import remove_small_holes, skeletonize
 
 TRANSFORM_ONE = np.asarray([0.0, 1.0, -1.0, 0.0, 1.0, 1.0])
 
 pd.set_option("display.max_columns", None)
-mpl.rcParams["figure.dpi"] = 1200
+mpl.rcParams["figure.dpi"] = 600
 #mpl.rc("font", size=14)
 #mpl.rc("axes", titlesize=8)
 #mpl.rc('xtick', labelsize=8)
@@ -51,6 +51,8 @@ START = dt.datetime.now()
 CRS = "EPSG:27700"
 
 INPATH = "data/rnet_princes_street.geojson"
+INPATH = "data/rnet_otley.geojson"
+#INPATH = "data/rnet_armley.geojson"
 OUTPATH = "sk-output2.gpkg"
 
 # function definition
@@ -79,7 +81,7 @@ def get_base_geojson(filepath):
       GeoDataFrame at 0.1m precision
 
     """
-    r = read_dataframe(filepath).to_crs(CRS)
+    r = gp.read_file(filepath).to_crs(CRS)
     r["geometry"] = r["geometry"].map(set_precision_pointone)
     return r
 
@@ -353,39 +355,54 @@ def nx_out(this_gf, transform, filepath, layer, simplify=0.0):
     if simplify > 0.0:
         geometry = geometry.simplify(simplify)
     r["geometry"] = geometry
-    write_dataframe(r, filepath, layer=layer)
+    r.to_file(filepath, layer=layer)
 
+
+def scrub_frame(this_gf, area):
+    r = this_gf.boundary.explode(index_parts=True)
+    ix = r.map(Polygon).area > area
+    r = r[ix]
+    ix = is_ccw(r)
+    outer = unary_union(make_valid(polygonize(r[~ix].values)))
+    hole = unary_union(make_valid(polygonize(r[ix].values)))
+    try:
+        return gp.GeoSeries(outer.difference(hole).geoms, crs=CRS)
+    except AttributeError:
+        gp.GeoSeries(outer.difference(hole), crs=CRS)
+```
+
+```{python}
+#| eval: false
 ## main function. this is a hangover from the skeltonize.py command-line tool
 
-def main(inpath, outpath, buffer_size, scale, simplify=0.0, knot=False):
-    """main: load GeoJSON file, use skeletonize buffer to simplify network, and output
-    input, simplified and primal network as GeoPKG layers
-
-    args:
-       path: GeoJSON filepath
-
-    returns:
-       None
-
-    """
-    log("start\t")
-    base_nx = get_base_geojson(inpath)
-    log("read geojson")
-    write_dataframe(base_nx, outpath, layer="input")
-    log("process\t")
-    nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
-    r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale)
-    shapely_transform = partial(affine_transform, matrix=s_matrix)
-    skeleton_im = get_skeleton(nx_geometry, r_matrix, out_shape)
-    nx_point = get_raster_point(skeleton_im)
-    nx_line = get_raster_line(nx_point, knot)
-    log("write simple")
-    nx_out(nx_line, shapely_transform, outpath, "line", simplify=simplify)
-    log("write primal")
-    nx_edge = get_nx(nx_line)
-    nx_out(nx_edge, shapely_transform, outpath, "primal", simplify=simplify)
-    log("stop\t")
-
+#def main(inpath, outpath, buffer_size, scale, simplify=0.0, knot=False):
+#    """main: load GeoJSON file, use skeletonize buffer to simplify network, and output
+#    input, simplified and primal network as GeoPKG layers
+#
+#    args:
+#       path: GeoJSON filepath
+#
+#    returns:
+#       None
+#
+#    """
+#    log("start\t")
+#    base_nx = get_base_geojson(inpath)
+#    log("read geojson")
+#    base_nx.to_frame(outpath, layer="input")
+#    log("process\t")
+#    nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
+#    r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale)
+#    shapely_transform = partial(affine_transform, matrix=s_matrix)
+#    skeleton_im = get_skeleton(nx_geometry, r_matrix, out_shape)
+#    nx_point = get_raster_point(skeleton_im)
+#    nx_line = get_raster_line(nx_point, knot)
+#    log("write simple")
+#    nx_out(nx_line, shapely_transform, outpath, "line", simplify=simplify)
+#    log("write primal")
+#    nx_edge = get_nx(nx_line)
+#    nx_out(nx_edge, shapely_transform, outpath, "primal", simplify=simplify)
+#    log("stop\t")
 ```
 
 ```{python}
@@ -393,36 +410,35 @@ def main(inpath, outpath, buffer_size, scale, simplify=0.0, knot=False):
 
 ## call main function. more cruft from the command lines script
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="GeoJSON network raster simplification"
-    )
-    parser.add_argument("inpath", type=str, help="GeoJSON filepath to simplify")
-    parser.add_argument(
-        "outpath",
-        nargs="?",
-        type=str,
-        help="GeoGPKG output path",
-        default="output.gpkg",
-    )
-    parser.add_argument("--scale", help="raster scale", type=float, default=1.0)
-    parser.add_argument("--simplify", help="tolerance [m]", type=float, default=0.0)
-    parser.add_argument("--buffer", help="line buffer [m]", type=float, default=8.0)
-    parser.add_argument("--knot", help="keep image knots", action="store_true")
-    args = parser.parse_args()
-    main(
-        args.inpath,
-        outpath=args.outpath,
-        buffer_size=args.buffer,
-        scale=args.scale,
-        simplify=args.simplify,
-        knot=args.knot,
-    )
+#if __name__ == "__main__":
+#    parser = argparse.ArgumentParser(
+#        description="GeoJSON network raster simplification"
+#    )
+#    parser.add_argument("inpath", type=str, help="GeoJSON filepath to simplify")
+#    parser.add_argument(
+#        "outpath",
+#        nargs="?",
+#        type=str,
+#        help="GeoGPKG output path",
+#        default="output.gpkg",
+#    )
+#    parser.add_argument("--scale", help="raster scale", type=float, default=1.0)
+#    parser.add_argument("--simplify", help="tolerance [m]", type=float, default=0.0)
+#    parser.add_argument("--buffer", help="line buffer [m]", type=float, default=8.0)
+#    parser.add_argument("--knot", help="keep image knots", action="store_true")
+#    args = parser.parse_args()
+#    main(
+#        args.inpath,
+#        outpath=args.outpath,
+#        buffer_size=args.buffer,
+#        scale=args.scale,
+#        simplify=args.simplify,
+#        knot=args.knot,
+#    )
 ```
 
 ```{python}
 ## show and clip frame display function
-
 
 def show_frame(this_frame, label=None, colour="black", cmap=None, tick=True):
     if cmap is None:
@@ -495,7 +511,11 @@ split_end = partial(split_ends, offset=np.sqrt(1.5) * radius)
 #show_frame(r.to_frame("geometry"))
 gf_split = pd.DataFrame(this_gs.map(split_end).to_list(), columns=["head", "centre", "tail"])
 r = gf_split[["head", "tail"]]
-r = gp.GeoSeries(list(unary_union(r.values).geoms), crs=CRS)
+try:
+    r = gp.GeoSeries(list(unary_union(r.values).geoms), crs=CRS)
+except AttributeError:
+    r = gp.GeoSeries(list(unary_union(r.values)), crs=CRS)  
+
 #write_dataframe(r.to_frame("geometry"), OUTPATH, layer="end")
 ## end
 #show_frame(r.to_frame("geometry"), label="end")
@@ -541,16 +561,20 @@ show_frame(join_nx, colour="blue")
 ix = join_nx["count"].isin([0, 1])
 p = join_nx.loc[~ix, "geometry"].copy()
 p = p.buffer(radius, 512, join_style="round", cap_style="round")
-p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+try:
+    p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+except AttributeError:
+    p = gp.GeoSeries(unary_union(p.values), crs=CRS)
 #write_dataframe(p.to_frame("geometry"), OUTPATH, layer="buffer4")
 
 #show_frame(p.to_frame("geometry"), colour="blue")
 
 # simplify boundary
-p = p.buffer(radius / 2.0, 16, join_style="round", cap_style="round")
+#p = scrub_frame(p, radius*radius)
+#p = p.buffer(radius / 2.0, 16, join_style="round", cap_style="round")
 #write_dataframe(p.to_frame("geometry"), OUTPATH, layer="buffer5")
 #show_frame(p.to_frame("geometry"), colour="blue")
-p = p.buffer(-radius / 2.0, 16, join_style="round", cap_style="round")
+#p = p.buffer(-radius / 2.0, 16, join_style="round", cap_style="round")
 #write_dataframe(p.to_frame("geometry"), OUTPATH, layer="buffer6")
 show_frame(p.to_frame("geometry"), colour="blue")
 ```
@@ -560,7 +584,10 @@ show_frame(p.to_frame("geometry"), colour="blue")
 #q = join_nx.loc[ix, "geometry"].buffer(1.0, 64, join_style="mitre", cap_style="square")
 q = join_nx.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
 nx_geometry = pd.concat([p, q])
-nx_geometry = gp.GeoSeries(list(unary_union(nx_geometry.values).geoms), crs=CRS)
+try:
+    nx_geometry = gp.GeoSeries(list(unary_union(nx_geometry.values).geoms), crs=CRS)
+except AttributeError:
+    nx_geometry = gp.GeoSeries(unary_union(nx_geometry.values), crs=CRS)
 #nx_geometry = nx_geometry.to_frame("geometry")
 #s["class"] = (s.index + 1).astype(str).str.zfill(2)
 #write_dataframe(nx_geometry.to_frame("geometry"), OUTPATH, layer="buffer7")
