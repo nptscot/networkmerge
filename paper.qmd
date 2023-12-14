@@ -708,13 +708,13 @@ The rasterized skeletal image is then converted back into point geometry, comple
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
 otley_transform = otley_point.map(shapely_transform).map(set_precision_pointone)
-otley_transform.plot(edgecolor="black", color="blue").grid()
+# otley_transform.plot(edgecolor="black", color="blue").grid()
 # plt.show()
 ```
 
 ```{python}
 armley_transform = armley_point.map(shapely_transform).map(set_precision_pointone)
-armley_transform.plot(edgecolor="black", color="blue").grid()
+# armley_transform.plot(edgecolor="black", color="blue").grid()
 # plt.show()
 ```
 
@@ -800,6 +800,7 @@ def combine_line(line):
     return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
 
 otley_line = get_raster_line_with_knots(otley_point)
+armley_line = get_raster_line_with_knots(armley_point)
 ```
 
 ::: {#fig-skeleton-line layout-ncol="2"}
