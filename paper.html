@@ -535,14 +535,15 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="affine-transforms" class="level3" data-number="4.1.5">
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
-<p>The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table <strong>?@tbl-rasterio-transform</strong> and Table <strong>?@tbl-shapely-transform</strong>.</p>
-<div id="tbl-rasterio-transform" class="tbl-parent quarto-layout-panel anchored">
+<p>The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table <a href="#tbl-panel">Table&nbsp;2</a>.</p>
+<div id="tbl-panel" class="tbl-parent quarto-layout-panel anchored">
 <div class="panel-caption table-caption">
-<p>Rasterio affine transformation matrix.</p>
+<p>Table&nbsp;2: Rasterio and Shapely affine transformation matrices.</p>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-rasterio-transform" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-panel" style="flex-basis: 50.0%;justify-content: center;">
 <table class="table">
+<caption>(a) Rasterio affine transformation matrix.</caption>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">0.5</td>
@@ -562,15 +563,9 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </tbody>
 </table>
 </div>
-</div>
-</div>
-<div id="tbl-shapely-transform" class="tbl-parent quarto-layout-panel anchored">
-<div class="panel-caption table-caption">
-<p>Shapely affine transformation matrix.</p>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-shapely-transform" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-panel" style="flex-basis: 50.0%;justify-content: center;">
 <table class="table">
+<caption>(b) Shapely affine transformation matrix.</caption>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">0</td>
