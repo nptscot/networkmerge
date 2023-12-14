@@ -6,7 +6,7 @@ number-sections: true
 This website hosts the networkmerge paper which presents methods for simplifying route networks for transport planning.
 The methods were developed for the Network Planning Tool for Scotland which is publicly available at <https://npt.scot>.
 
-![](images/paste-2.png)
+[![](images/paste-2.png)](paper.html)
 
 It was produced with Quarto, which was also used to support the academic paper shown below.
 See <https://quarto.org/docs/websites> for further information.
