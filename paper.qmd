@@ -291,8 +291,9 @@ Topology-preserving simplification reduces the number of vertices in a linestrin
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
+
 ```{r}
-input = sf::read_sf('data/minimal-input.geojson')
+input = sf::read_sf('data/rnet_armley.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
 # ordered factor of simplification levels:
@@ -314,72 +315,41 @@ smplfy = function(x_list, keep) {
     )
   do.call(rbind, x_list)
 }
-# input_simplified = smplfy(input_projected, simplification_levels)
+input_simplified = smplfy(input_projected, simplification_levels)
 # sf::write_sf(input_simplified, "data/input_simplified1.geojson")
-input_simplified = sf::read_sf('data/input_simplified1.geojson')
+# input_simplified = sf::read_sf('data/rnet_otley.geojson')
 input_simplified = left_join(
   input_simplified,
   simplification_df,
   by = join_by(id == simp_factor)
   )
-m = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+m_armley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
   tm_facets(by = "keep", free.coords = TRUE) 
+# m_armley
 
-m
-```
-
-```{r}
-input = sf::read_sf('data/rnet_princes_street_minimal.geojson')
-input_projected = sf::st_transform(input, "EPSG:27700")
-# input_simplified = smplfy(input_projected, simplification_levels)
+# Same for otley:
+input = sf::read_sf('data/rnet_otley.geojson')
+input_projected = sf::st_transform(input, "EPSG:27700") 
+input_simplified = smplfy(input_projected, simplification_levels)
 # sf::write_sf(input_simplified, "data/input_simplified2.geojson", delete_dsn = TRUE)
-input_simplified2 = sf::read_sf('data/input_simplified2.geojson')
+# input_simplified = sf::read_sf('data/input_simplified2.geojson')
 input_simplified = left_join(
-  input_simplified2,
+  input_simplified,
   simplification_df,
   by = join_by(id == simp_factor)
   )
-tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+m_otley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
-  tm_facets(by = "keep", free.coords = TRUE) 
+  tm_facets(by = "keep", free.coords = TRUE)
+# m_otley
+tmap_arrange(m_otley, m_armley)
 ```
 
 Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 
 :::
-
-The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
-
-::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
-```{python}
-#| warning: false
-import osmnx as ox
-# Get all streets within 50 m of Princes Street, Edinburgh:
-# Get point that is on Princes Street:
-# ox.geocode_to_gdf("Princes Street Edinburgh")
-G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
-ox.plot_graph(G);
-# Plot the graph in an interactive map:
-# ox.plot_graph_folium(G)
-# project to 27700
-```
-
-```{python}
-import osmnx as ox
-G_projected = ox.project_graph(G, 'EPSG:27700')
-# simplify:
-G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
-# plot G_simplified as GeoPandas in Quarto:
-ox.plot_graph(G_simplified);
-```
-
-Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
-:::
-
-A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
-Two approaches to this are outlined below.
 
 ### Network Simplification
 
@@ -1201,3 +1171,39 @@ plt.show()
 # nx.draw(gdf_nx)
 # momepy.roundabout_simplification(gdf)
 ```
+
+
+<!-- Out-takes, to tidy-up/include later:
+
+:::
+
+The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
+
+::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
+```{python}
+#| echo: false
+#| eval: false
+#| warning: false
+import osmnx as ox
+# Get all streets within 50 m of Princes Street, Edinburgh:
+# Get point that is on Princes Street:
+# ox.geocode_to_gdf("Princes Street Edinburgh")
+G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
+ox.plot_graph(G);
+# Plot the graph in an interactive map:
+# ox.plot_graph_folium(G)
+# project to 27700
+
+import osmnx as ox
+G_projected = ox.project_graph(G, 'EPSG:27700')
+# simplify:
+G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
+# plot G_simplified as GeoPandas in Quarto:
+ox.plot_graph(G_simplified);
+```
+
+Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
+:::
+
+A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+Two approaches to this are outlined below. -->
