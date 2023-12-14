@@ -3,7 +3,11 @@ bibliography: references.bib
 number-sections: true
 ---
 
-This website hosts the networkmerge paper, results of which are publicly available at <https://npt.scot>.
+This website hosts the networkmerge paper which presents methods for simplifying route networks for transport planning.
+The methods were developed for the Network Planning Tool for Scotland which is publicly available at <https://npt.scot>.
+
+![](images/paste-2.png)
+
 It was produced with Quarto, which was also used to support the academic paper shown below.
 See <https://quarto.org/docs/websites> for further information.
 
@@ -11,9 +15,4 @@ The paper is re-built automatically when the source code is updated:
 
 [![Quarto Publish](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml/badge.svg)](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml)
 
-
 See [github.com/nptscot/networkmerge](https://github.com/nptscot) for the source code underlying this website.
-
-{{< include paper.qmd >}}
-
-
