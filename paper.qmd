@@ -24,7 +24,7 @@ format:
 number-sections: true
 execute: 
   echo: false
-  # cache: refresh
+  # cache: true
   message: false
   warning: false
 editor: 
@@ -402,34 +402,40 @@ CRS = "EPSG:27700"
 buffer_size = 8.0
 
 set_precision_pointone = partial(set_precision, grid_size=0.1)
-base_nx = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
-base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
-nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
+base_otley = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
+base_otley["geometry"] = base_otley["geometry"].map(set_precision_pointone)
+otley_geometry = get_geometry_buffer(base_otley["geometry"], radius=buffer_size)
+
+# Same for Armley:
+base_armley = gp.read_file("./data/rnet_armley.geojson").to_crs(CRS)
+base_armley["geometry"] = base_armley["geometry"].map(set_precision_pointone)
+armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
+```
+
+```{python}
 ```
 
 The buffered versions of the networks are presented below:
 
-::: {#fig-buffered-network layout-ncol="1"}
+::: {#fig-buffered-network layout-ncol="2"}
 
 ```{python}
-#| fig-cap: "Buffered Network Visualization of Edinburgh's Princes Street"
-#| layout-ncol: 2
-#| fig-subcap:
-#|  - Sample Street Network of Edinburgh's Princes Street and its buffer network visualization
-#|  - Buffered Network
-fig, axs = plt.subplots(2, 1, figsize=(15, 8))
-
-# Plotting the base network on the first subplot
-base_nx.plot(ax=axs[0], edgecolor="blue", color="blue")
-axs[0].grid()
-
-# Plotting the buffered network on the second subplot
-nx_geometry.plot(ax=axs[1], edgecolor="black", color="blue")
-axs[1].grid()
-
-plt.show()
-
+base_otley.plot(edgecolor="blue", color="blue")
 ```
+
+```{python}
+base_armley.plot(edgecolor="blue", color="blue")
+```
+
+```{python}
+otley_geometry.plot(edgecolor="black", color="blue")
+```
+
+```{python}
+armley_geometry.plot(edgecolor="black", color="blue")
+```
+
+Buffered versions of the Otley Road (left) and Armley Road (right) networks.
 
 ::: 
 
@@ -482,7 +488,7 @@ def get_affine_transform(this_gf, scale=1.0):
     r = rio.Affine(*r)
     return r, s, get_pxsize(bound, scale)
 
-r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
+r_matrix, s_matrix, out_shape = get_affine_transform(otley_geometry, scale=2.0)
 ```
 
 ### Affine transforms
@@ -522,7 +528,7 @@ from shapely.affinity import affine_transform
 from shapely.geometry import Point
 import rasterio.plot as rip
 
-geometry_im = rif.rasterize(nx_geometry.values, transform=r_matrix, out_shape=out_shape)
+geometry_im = rif.rasterize(otley_geometry.values, transform=r_matrix, out_shape=out_shape)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     geometry_im = remove_small_holes(geometry_im, 20).astype(np.uint8)
@@ -752,7 +758,7 @@ In this approach, the network lines are first buffered as described above. The e
 
 ### Boundary
 
-The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (nx_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.
+The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.
 
 ```{python}
 from shapely import box
@@ -773,7 +779,7 @@ def get_geometry_line(this_buffer):
     r = this_buffer.boundary.explode(index_parts=False).reset_index(drop=True)
     return gp.GeoSeries(r.simplify(tolerance=0.5), crs=CRS)
 
-nx_boundary = get_geometry_line(nx_geometry)
+nx_boundary = get_geometry_line(otley_geometry)
 nx_boundary.plot()
 plt.show()
 ```
@@ -941,7 +947,7 @@ def set_geometry(line, square):
     r = np.stack([source, target]).T
     return gp.GeoSeries(map(LineString, r), crs=CRS)
 
-#nx_line = get_voronoi_line(nx_voronoi, nx_boundary, nx_geometry, buffer_size)
+#nx_line = get_voronoi_line(nx_voronoi, nx_boundary, otley_geometry, buffer_size)
 
 offset = buffer_size / 2.0
 nx_line = filter_distance(nx_voronoi, nx_boundary, offset)
@@ -951,7 +957,7 @@ plt.show()
 
 ### Voronoi line
 ```{python}
-nx_line = filter_buffer(nx_line, nx_geometry)
+nx_line = filter_buffer(nx_line, otley_geometry)
 nx_edge, nx_node = get_source_target(nx_line.to_frame("geometry"))
 ix = nx_node["count"] < 4
 nx_square = nx_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
