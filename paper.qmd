@@ -923,14 +923,12 @@ def get_nx(line):
 otley_edge = get_nx(otley_line)
 nx_output = otley_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
-plt.show()
 ```
 
 ```{python}
 armley_edge = get_nx(armley_line)
 nx_output = armley_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
-plt.show()
 ```
 
 Primal networks for the Otley Road (left) and Armley Road (right) networks.
@@ -1022,6 +1020,7 @@ nx_output = gp.GeoSeries(otley_point, crs=CRS)
 nx_output.plot(edgecolor="blue", color="white")
 plt.show()
 ```
+
 ### Voronoi
 The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.
 
