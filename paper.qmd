@@ -606,9 +606,7 @@ r_matrix, s_matrix, out_shape = get_affine_transform(otley_geometry, scale=2.0)
 
 ### Affine transforms
 
-The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
-
-#### Rasterio transform
+The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-rasterio-transform and Table @tbl-shapely-transform.
 
 ```{python}
 from IPython.display import display, Markdown
@@ -623,6 +621,7 @@ os_matrix = pd.DataFrame(np.asarray(s_matrix).reshape(3, -1).T)
 ::: {#tbl-rasterio-transform}
 
 ```{python}
+#| output: asis
 display_matrix(or_matrix, "   ")
 ```
 
@@ -630,11 +629,17 @@ Rasterio affine transformation matrix.
 
 :::
 
-#### Shapely transform
+
+::: {#tbl-shapely-transform}
 
 ```{python}
+#| output: asis
 display_matrix(os_matrix, "   ")
 ```
+
+Shapely affine transformation matrix.
+
+:::
 
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
@@ -993,6 +998,7 @@ plt.show()
 ### Voronoi simplified network
 
 ```{python}
+#| eval: false
 def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
     """get_voronoi_line: returns cleaned simplified line by filtering Voronoi lines by distance,
     contained within network buffer Polygons, and combining overlapping end-points
@@ -1079,6 +1085,7 @@ plt.show()
 
 ### Voronoi line
 ```{python}
+#| eval: false
 nx_line = filter_buffer(nx_line, otley_geometry)
 nx_edge, nx_node = get_source_target(nx_line.to_frame("geometry"))
 ix = nx_node["count"] < 4
@@ -1093,12 +1100,13 @@ plt.show()
 
 ### Primal network
 ```{python}
+#| eval: false
 nx_edge = get_nx(nx_line)
 nx_edge.plot()
 plt.show()
 ```
 
-![](images/paste-1.png)
+<!-- ![](images/paste-1.png) -->
 
 ## Integrating attributes from the detailed network into the simplified network
 
