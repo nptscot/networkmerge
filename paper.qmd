@@ -409,6 +409,19 @@ radius = buffer_size
 def get_split(line, point, separation=1.0e-6):
     return list(split(snap(line, point, separation), point).geoms)
 
+def combine_line(line):
+    """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
+
+    args:
+      line: mixed LineString GeoSeries
+
+    returns:
+      join LineString GeoSeries
+
+    """
+    r = MultiLineString(line.values)
+    return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
+
 EMPTY = LineString([])
 def split_ends(line, offset):
     if line.length <= 2.0 * offset:
@@ -422,11 +435,13 @@ def split_ends(line, offset):
 set_precision_pointone = partial(set_precision, grid_size=0.1)
 base_otley = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
 base_otley["geometry"] = base_otley["geometry"].map(set_precision_pointone)
+base_otley = combine_line(base_otley["geometry"]).to_frame("geometry")
 otley_geometry = get_geometry_buffer(base_otley["geometry"], radius=buffer_size)
 
 # Same for Armley:
 base_armley = gp.read_file("./data/rnet_armley.geojson").to_crs(CRS)
 base_armley["geometry"] = base_armley["geometry"].map(set_precision_pointone)
+base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
 
@@ -481,7 +496,61 @@ combined_armley.plot()
 
 Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
 
-:::
+```{python}
+i, j = base_otley.sindex.query(combined_armley, predicate="intersects")
+
+base_otley["class"] = -1
+base_otley.loc[j, "class"] = combined_otley.index[i]
+count = base_otley.groupby("class").count()
+base_otley = base_otley.join(count["geometry"].rename("count"), on="class")
+ix = base_otley["class"] == -1
+base_otley.loc[ix, "count"] = 0
+
+i, j = base_armley.sindex.query(combined_armley, predicate="intersects")
+
+base_armley["class"] = -1
+base_armley.loc[j, "class"] = combined_armley.index[i]
+count = base_armley.groupby("class").count()
+base_armley = base_armley.join(count["geometry"].rename("count"), on="class")
+ix = base_armley["class"] == -1
+base_armley.loc[ix, "count"] = 0
+```
+
+```{python}
+ix = base_otley["count"].isin([0, 1])
+p = base_otley.loc[~ix, "geometry"].copy()
+p = p.buffer(radius, 512, join_style="round", cap_style="round")
+try:
+    p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+except AttributeError:
+    p = gp.GeoSeries(unary_union(p.values), crs=CRS)
+
+q = base_otley.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
+otley_geometry = pd.concat([p, q])
+try:
+    otley_geometry = gp.GeoSeries(list(unary_union(otley_geometry.values).geoms), crs=CRS)
+except AttributeError:
+    otley_geometry = gp.GeoSeries(unary_union(otley_geometry.values), crs=CRS)
+otley_geometry.plot()
+```
+
+```{python}
+ix = base_armley["count"].isin([0, 1])
+p = base_armley.loc[~ix, "geometry"].copy()
+p = p.buffer(radius, 512, join_style="round", cap_style="round")
+try:
+    p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+except AttributeError:
+    p = gp.GeoSeries(unary_union(p.values), crs=CRS)
+
+q = base_armley.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
+armley_geometry = pd.concat([p, q])
+try:
+    armley_geometry = gp.GeoSeries(list(unary_union(armley_geometry.values).geoms), crs=CRS)
+except AttributeError:
+    armley_geometry = gp.GeoSeries(unary_union(armley_geometry.values), crs=CRS)
+armley_geometry.plot()
+```
 
 ### Skeletonization
 
