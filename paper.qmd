@@ -898,6 +898,10 @@ plt.show()
 ### Primal network
 
 There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
+This primal network represents an extreme form of simplification, of great potential value in situations in which the network's overall structure and compression ratios are priorities.
+The primal networks for the Otley Road and Armley Road networks are illustrated in @fig-primal.
+
+::: {#fig-primal layout-ncol="2"}
 
 ```{python}
 def get_nx(line):
@@ -921,6 +925,17 @@ nx_output = otley_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
+
+```{python}
+armley_edge = get_nx(armley_line)
+nx_output = armley_edge.map(shapely_transform).map(set_precision_pointone)
+nx_output.plot()
+plt.show()
+```
+
+Primal networks for the Otley Road (left) and Armley Road (right) networks.
+
+:::
 
 ## Simplification via voronoi polygons
 
