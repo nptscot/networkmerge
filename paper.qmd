@@ -420,7 +420,6 @@ def split_ends(line, offset):
     centre, tail = get_split(centre, p)
     return head, centre, tail
 
-
 set_precision_pointone = partial(set_precision, grid_size=0.1)
 base_otley = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
 base_otley["geometry"] = base_otley["geometry"].map(set_precision_pointone)
@@ -439,31 +438,20 @@ armley_split = pd.DataFrame(base_armley["geometry"].map(split_end).to_list(), co
 ```
 
 ```{python}
-r = otley_split[["head", "tail"]]
-try:
-    r = gp.GeoSeries(list(unary_union(r.values).geoms), crs=CRS)
-except AttributeError:
-    r = gp.GeoSeries(list(unary_union(r.values)), crs=CRS)  
-
-#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="end")
-## end
-#plot(r.to_frame("geometry"), label="end")
-## centre
-r = gp.GeoSeries(otley_split["centre"], crs=CRS)
-#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="centre")
-#plot(r.to_frame("geometry"), label="centre")
-
-#r = gp.GeoSeries(r, crs=CRS).buffer(radius, join_style="round", cap_style="flat", mitre_limit=1.0)
-#r = gp.GeoSeries(r, crs=CRS).buffer(radius, 0, join_style="round", cap_style="flat", mitre_limit=1.0)
-r = gp.GeoSeries(otley_split["centre"], crs=CRS)
-r = gp.GeoSeries(r, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
-#write_dataframe(r.to_frame("geometry"), OUTPATH, layer="buffer2")
-#plot(r.to_frame("geometry"), colour="blue")
-
 ## overlapping
-combined_nx = gp.GeoSeries(unary_union(r.values).geoms, crs=CRS)
-#write_dataframe(combined_nx.to_frame("geometry"), OUTPATH, layer="buffer3")
-r.plot()
+otley_centre = gp.GeoSeries(otley_split["centre"], crs=CRS)
+otley_centre = gp.GeoSeries(otley_centre, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
+
+combined_otley = gp.GeoSeries(unary_union(otley_centre.values).geoms, crs=CRS)
+combined_otley.plot()
+```
+
+```{python}
+## overlapping
+armley_centre = gp.GeoSeries(armley_split["centre"], crs=CRS)
+armley_centre = gp.GeoSeries(armley_centre, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
+combined_armley = gp.GeoSeries(unary_union(armley_centre.values).geoms, crs=CRS)
+combined_armley.plot()
 ```
 
 The buffered versions of the networks are presented below:
