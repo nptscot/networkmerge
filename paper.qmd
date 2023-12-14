@@ -514,6 +514,8 @@ ix = base_armley["class"] == -1
 base_armley.loc[ix, "count"] = 0
 ```
 
+::: {#fig-otley-armley-classes layout-ncol="2"}
+
 ```{python}
 ix = base_otley["count"].isin([0, 1])
 p = base_otley.loc[~ix, "geometry"].copy()
@@ -549,6 +551,10 @@ except AttributeError:
     armley_segment = gp.GeoSeries(unary_union(armley_segment.values), crs=CRS)
 armley_segment.plot()
 ```
+
+Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+
+:::
 
 ### Skeletonization
 
@@ -634,7 +640,7 @@ In these matrices, the first two columns represent the scaling and rotation comp
 
 ### Skeletonize the buffer to a point geometry
 
-A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
+A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize. This step ensures a more coherent and accurate representation in the raster image.
 
 ```{python}
 import warnings
@@ -643,7 +649,11 @@ from skimage.morphology import remove_small_holes, skeletonize
 from shapely.affinity import affine_transform
 from shapely.geometry import Point
 import rasterio.plot as rip
+```
 
+::: {#fig-rasterize layout-ncol="2"}
+
+```{python}
 otley_im = rif.rasterize(otley_geometry.values, transform=r_matrix, out_shape=out_shape)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -651,7 +661,22 @@ with warnings.catch_warnings():
 
 rip.show(otley_im, cmap="Blues", title="buffer geometry")
 ```
-The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.
+
+```{python}
+armley_im = rif.rasterize(armley_geometry.values, transform=r_matrix, out_shape=out_shape)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    armley_im = remove_small_holes(armley_im, 20).astype(np.uint8)
+rip.show(armley_im, cmap="Blues", title="buffer geometry")
+```
+
+Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
+
+:::
+
+The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton.
+
+::: {#fig-thin-skeleton layout-ncol="2"}
 
 ```{python}
 otley_skeleton = skeletonize(otley_im).astype(np.uint8)
@@ -659,6 +684,17 @@ rip.show(otley_skeleton, cmap="Blues", title="skeleton geometry")
 otley_p = np.stack(np.where(otley_skeleton >= 1))
 otley_point = gp.GeoSeries(map(Point, otley_p.T), crs=CRS)
 ```
+
+```{python}
+armley_skeleton = skeletonize(armley_im).astype(np.uint8)
+rip.show(armley_skeleton, cmap="Blues", title="skeleton geometry")
+armley_p = np.stack(np.where(armley_skeleton >= 1))
+armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
+```
+
+Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
+
+:::
 
 The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 
