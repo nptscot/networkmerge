@@ -436,6 +436,8 @@ otley_split = pd.DataFrame(base_otley["geometry"].map(split_end).to_list(), colu
 armley_split = pd.DataFrame(base_armley["geometry"].map(split_end).to_list(), columns=["head", "centre", "tail"])
 ```
 
+::: {#fig-split-ends layout-ncol="2"}
+
 ```{python}
 ## overlapping
 otley_centre = gp.GeoSeries(otley_split["centre"], crs=CRS)
@@ -452,6 +454,10 @@ armley_centre = gp.GeoSeries(armley_centre, crs=CRS).buffer(radius, 0, join_styl
 combined_armley = gp.GeoSeries(unary_union(armley_centre.values).geoms, crs=CRS)
 combined_armley.plot()
 ```
+
+Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+
+:::
 
 The buffered versions of the networks are presented below:
 
