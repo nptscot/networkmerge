@@ -41,3 +41,21 @@ mapview::mapview(rnet_armley)
 
 write_sf(rnet_otley, "data/rnet_otley.geojson")
 write_sf(rnet_armley, "data/rnet_armley.geojson")
+
+# Scott Hall Road
+
+
+network = sf::read_sf("https://raw.githubusercontent.com/nptscot/networkmerge/e6f25a7214c15c9c2d5e2cb99a5e4bd4dd92c1b5/data/minimal-example-2-scotthall-road.geojson")
+network$description = as.numeric(network$description)
+network = network["description"]
+network$value = c(1, 2)
+network = stplanr::overline(network, attrib = "value")
+network
+sf::write_sf(network, "data/minimal-input.geojson")
+plot(network[1, "value"])
+plot(network[2, "value"])
+network_merged = network
+network_merged$value[2] = network_merged$value[1] + network_merged$value[2]
+network_merged = network_merged[-1, ]
+plot(network_merged)
+sf::write_sf(network_merged, "data/minimal-output.geojson")

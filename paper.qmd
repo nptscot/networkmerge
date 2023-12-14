@@ -24,7 +24,7 @@ format:
 number-sections: true
 execute: 
   echo: false
-  # cache: true
+  cache: true
   message: false
   warning: false
 editor: 
@@ -114,6 +114,7 @@ tmap_mode("plot")
 
 rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 
@@ -286,38 +287,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 
 ### Topology-preserving simplification
 
-```{r}
-#| include: false
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
-
-```
-
-```{r}
-#| eval: false
-#| echo: false
-# Create input dataset:
-network = sf::read_sf("https://raw.githubusercontent.com/nptscot/networkmerge/e6f25a7214c15c9c2d5e2cb99a5e4bd4dd92c1b5/data/minimal-example-2-scotthall-road.geojson")
-network$description = as.numeric(network$description)
-network = network["description"]
-network$value = c(1, 2)
-network = stplanr::overline(network, attrib = "value")
-network
-sf::write_sf(network, "data/minimal-input.geojson")
-plot(network[1, "value"])
-plot(network[2, "value"])
-network_merged = network
-network_merged$value[2] = network_merged$value[1] + network_merged$value[2]
-network_merged = network_merged[-1, ]
-plot(network_merged)
-sf::write_sf(network_merged, "data/minimal-output.geojson")
-```
-
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
+
 ```{r}
-input = sf::read_sf('data/minimal-input.geojson')
+input = sf::read_sf('data/rnet_armley.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
 simplification_levels = c(1, 0.5, 0.1, 0.001)
 # ordered factor of simplification levels:
@@ -339,72 +315,48 @@ smplfy = function(x_list, keep) {
     )
   do.call(rbind, x_list)
 }
-# input_simplified = smplfy(input_projected, simplification_levels)
-# sf::write_sf(input_simplified, "data/input_simplified1.geojson")
-input_simplified = sf::read_sf('data/input_simplified1.geojson')
+if (!file.exists("data/input_simplified_otley.geojson")) {
+  input_simplified = smplfy(input_projected, simplification_levels)
+  sf::write_sf(input_simplified, "data/input_simplified_otley.geojson", delete_dsn = TRUE)
+} else {
+  input_simplified = sf::read_sf('data/input_simplified_otley.geojson')
+}
+
 input_simplified = left_join(
   input_simplified,
   simplification_df,
   by = join_by(id == simp_factor)
   )
-m = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+m_otley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
   tm_facets(by = "keep", free.coords = TRUE) 
+# m_armley
 
-m
-```
-
-```{r}
-input = sf::read_sf('data/rnet_princes_street_minimal.geojson')
-input_projected = sf::st_transform(input, "EPSG:27700")
-# input_simplified = smplfy(input_projected, simplification_levels)
-# sf::write_sf(input_simplified, "data/input_simplified2.geojson", delete_dsn = TRUE)
-input_simplified2 = sf::read_sf('data/input_simplified2.geojson')
+# Same for Armley:
+input = sf::read_sf('data/rnet_armley.geojson')
+input_projected = sf::st_transform(input, "EPSG:27700") 
+if (!file.exists("data/input_simplified_armley.geojson")) {
+  input_simplified = smplfy(input_projected, simplification_levels)
+  sf::write_sf(input_simplified, "data/input_simplified_armley.geojson", delete_dsn = TRUE)
+} else {
+  input_simplified = sf::read_sf('data/input_simplified_armley.geojson')
+}
 input_simplified = left_join(
-  input_simplified2,
+  input_simplified,
   simplification_df,
   by = join_by(id == simp_factor)
   )
-tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+m_armley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
-  tm_facets(by = "keep", free.coords = TRUE) 
+  tm_facets(by = "keep", free.coords = TRUE)
+# m_otley
+tmap_arrange(m_otley, m_armley)
 ```
 
 Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 
 :::
-
-The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
-
-::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
-```{python}
-#| warning: false
-import osmnx as ox
-# Get all streets within 50 m of Princes Street, Edinburgh:
-# Get point that is on Princes Street:
-# ox.geocode_to_gdf("Princes Street Edinburgh")
-G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
-ox.plot_graph(G);
-# Plot the graph in an interactive map:
-# ox.plot_graph_folium(G)
-# project to 27700
-```
-
-```{python}
-import osmnx as ox
-G_projected = ox.project_graph(G, 'EPSG:27700')
-# simplify:
-G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
-# plot G_simplified as GeoPandas in Quarto:
-ox.plot_graph(G_simplified);
-```
-
-Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
-:::
-
-A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
-Two approaches to this are outlined below.
 
 ### Network Simplification
 
@@ -451,7 +403,7 @@ CRS = "EPSG:27700"
 buffer_size = 8.0
 
 set_precision_pointone = partial(set_precision, grid_size=0.1)
-base_nx = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson").to_crs(CRS)
+base_nx = gp.read_file("./data/rnet_otley.geojson").to_crs(CRS)
 base_nx["geometry"] = base_nx["geometry"].map(set_precision_pointone)
 nx_geometry = get_geometry_buffer(base_nx["geometry"], radius=buffer_size)
 ```
@@ -483,15 +435,12 @@ plt.show()
 
 ### Skeletonization
 
-
 The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
 
 
 Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
 
-
 A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image. 
-
 
 ```{python}
 import numpy as np
@@ -538,9 +487,7 @@ r_matrix, s_matrix, out_shape = get_affine_transform(nx_geometry, scale=2.0)
 
 ### Affine transforms
 
-
 The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation.
-
 
 #### Rasterio transform
 
@@ -563,13 +510,9 @@ display_matrix(os_matrix, "   ")
 
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
-
 ### Skeletonize the buffer to a point geometry
 
-
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles. This step ensures a more coherent and accurate representation in the raster image.
-
-
 
 ```{python}
 import warnings
@@ -771,7 +714,9 @@ nx_output = nx_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
+
 ### Primal network
+
 There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
 
 ```{python}
@@ -1226,3 +1171,39 @@ plt.show()
 # nx.draw(gdf_nx)
 # momepy.roundabout_simplification(gdf)
 ```
+
+
+<!-- Out-takes, to tidy-up/include later:
+
+:::
+
+The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
+
+::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
+```{python}
+#| echo: false
+#| eval: false
+#| warning: false
+import osmnx as ox
+# Get all streets within 50 m of Princes Street, Edinburgh:
+# Get point that is on Princes Street:
+# ox.geocode_to_gdf("Princes Street Edinburgh")
+G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
+ox.plot_graph(G);
+# Plot the graph in an interactive map:
+# ox.plot_graph_folium(G)
+# project to 27700
+
+import osmnx as ox
+G_projected = ox.project_graph(G, 'EPSG:27700')
+# simplify:
+G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
+# plot G_simplified as GeoPandas in Quarto:
+ox.plot_graph(G_simplified);
+```
+
+Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
+:::
+
+A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
+Two approaches to this are outlined below. -->
