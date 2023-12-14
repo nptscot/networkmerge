@@ -4,10 +4,14 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
 
 # Set target options:
 pkgs = packages = c(
-  "rmarkdown", "tidyverse", "geos"
+  "rmarkdown",
+  "tidyverse",
+  "geos",
+  "rmapshaper"
 )
 remotes::install_cran(pkgs)
 
 if(TRUE){ # Repeated builds can it GitHub API limit, set to TRUE to check for package updates
   remotes::install_dev("rsgeo")
+  remotes::install_dev("stplanr")
 }
