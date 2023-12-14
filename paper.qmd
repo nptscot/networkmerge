@@ -24,7 +24,7 @@ format:
 number-sections: true
 execute: 
   echo: false
-  # cache: true
+  cache: true
   message: false
   warning: false
 editor: 
@@ -315,31 +315,38 @@ smplfy = function(x_list, keep) {
     )
   do.call(rbind, x_list)
 }
-input_simplified = smplfy(input_projected, simplification_levels)
-# sf::write_sf(input_simplified, "data/input_simplified1.geojson")
-# input_simplified = sf::read_sf('data/rnet_otley.geojson')
-input_simplified = left_join(
-  input_simplified,
-  simplification_df,
-  by = join_by(id == simp_factor)
-  )
-m_armley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
-  tm_lines() +
-  tm_facets(by = "keep", free.coords = TRUE) 
-# m_armley
+if (!file.exists("data/input_simplified_otley.geojson")) {
+  input_simplified = smplfy(input_projected, simplification_levels)
+  sf::write_sf(input_simplified, "data/input_simplified_otley.geojson", delete_dsn = TRUE)
+} else {
+  input_simplified = sf::read_sf('data/input_simplified_otley.geojson')
+}
 
-# Same for otley:
-input = sf::read_sf('data/rnet_otley.geojson')
-input_projected = sf::st_transform(input, "EPSG:27700") 
-input_simplified = smplfy(input_projected, simplification_levels)
-# sf::write_sf(input_simplified, "data/input_simplified2.geojson", delete_dsn = TRUE)
-# input_simplified = sf::read_sf('data/input_simplified2.geojson')
 input_simplified = left_join(
   input_simplified,
   simplification_df,
   by = join_by(id == simp_factor)
   )
 m_otley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
+  tm_lines() +
+  tm_facets(by = "keep", free.coords = TRUE) 
+# m_armley
+
+# Same for Armley:
+input = sf::read_sf('data/rnet_armley.geojson')
+input_projected = sf::st_transform(input, "EPSG:27700") 
+if (!file.exists("data/input_simplified_armley.geojson")) {
+  input_simplified = smplfy(input_projected, simplification_levels)
+  sf::write_sf(input_simplified, "data/input_simplified_armley.geojson", delete_dsn = TRUE)
+} else {
+  input_simplified = sf::read_sf('data/input_simplified_armley.geojson')
+}
+input_simplified = left_join(
+  input_simplified,
+  simplification_df,
+  by = join_by(id == simp_factor)
+  )
+m_armley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1)) +
   tm_lines() +
   tm_facets(by = "keep", free.coords = TRUE)
 # m_otley
