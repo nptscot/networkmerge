@@ -24,7 +24,7 @@ format:
 number-sections: true
 execute: 
   echo: false
-  # cache: true
+  cache: true
   message: false
   warning: false
 editor: 
@@ -491,6 +491,8 @@ combined_armley.plot()
 ```
 
 Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+
+:::
 
 ```{python}
 i, j = base_otley.sindex.query(combined_otley, predicate="intersects")
