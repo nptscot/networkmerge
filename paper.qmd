@@ -385,14 +385,12 @@ plt.rcParams["figure.figsize"] = (12, 12)
 
 def get_geometry_buffer(this_gf, radius=8.0):
     """get_geometry_buffer: return radius buffered GeoDataFrame
-
     args:
       this_gf: GeoDataFrame to
       radius: (default value = 8.0)
 
     returns:
       buffered GeoSeries geometry
-
     """
     r = gp.GeoSeries(this_gf, crs=CRS).buffer(radius, join_style="round", cap_style="round")
     union = unary_union(r)
@@ -411,13 +409,10 @@ def get_split(line, point, separation=1.0e-6):
 
 def combine_line(line):
     """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
-
     args:
       line: mixed LineString GeoSeries
-
     returns:
       join LineString GeoSeries
-
     """
     r = MultiLineString(line.values)
     return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
@@ -439,6 +434,7 @@ base_otley = combine_line(base_otley["geometry"]).to_frame("geometry")
 otley_geometry = get_geometry_buffer(base_otley["geometry"], radius=buffer_size)
 
 # Same for Armley:
+
 base_armley = gp.read_file("./data/rnet_armley.geojson").to_crs(CRS)
 base_armley["geometry"] = base_armley["geometry"].map(set_precision_pointone)
 base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
@@ -497,7 +493,7 @@ combined_armley.plot()
 Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
 
 ```{python}
-i, j = base_otley.sindex.query(combined_armley, predicate="intersects")
+i, j = base_otley.sindex.query(combined_otley, predicate="intersects")
 
 base_otley["class"] = -1
 base_otley.loc[j, "class"] = combined_otley.index[i]
@@ -526,11 +522,11 @@ except AttributeError:
     p = gp.GeoSeries(unary_union(p.values), crs=CRS)
 
 q = base_otley.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
-otley_geometry = pd.concat([p, q])
+otley_segment = pd.concat([p, q])
 try:
-    otley_geometry = gp.GeoSeries(list(unary_union(otley_geometry.values).geoms), crs=CRS)
+    otley_segment = gp.GeoSeries(list(unary_union(otley_segment.values).geoms), crs=CRS)
 except AttributeError:
-    otley_geometry = gp.GeoSeries(unary_union(otley_geometry.values), crs=CRS)
+    otley_segment = gp.GeoSeries(unary_union(otley_segment.values), crs=CRS)
 otley_geometry.plot()
 ```
 
@@ -544,12 +540,12 @@ except AttributeError:
     p = gp.GeoSeries(unary_union(p.values), crs=CRS)
 
 q = base_armley.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
-armley_geometry = pd.concat([p, q])
+armley_segment = pd.concat([p, q])
 try:
-    armley_geometry = gp.GeoSeries(list(unary_union(armley_geometry.values).geoms), crs=CRS)
+    armley_segment = gp.GeoSeries(list(unary_union(armley_geometry.values).geoms), crs=CRS)
 except AttributeError:
-    armley_geometry = gp.GeoSeries(unary_union(armley_geometry.values), crs=CRS)
-armley_geometry.plot()
+    armley_segment = gp.GeoSeries(unary_union(armley_segment.values), crs=CRS)
+armley_segment.plot()
 ```
 
 ### Skeletonization
@@ -569,13 +565,10 @@ import rasterio.features as rif
 
 def get_pxsize(bound, scale=1.0):
     """get_pxsize: calculates scaled image size in px
-
       bound: boundary corner points
       scale: scaling factor (default = 1.0)
-
     returns:
       size in px
-
     """
     r = np.diff(bound.reshape(-1, 2), axis=0)
     r = np.ceil(r.reshape(-1))
@@ -585,13 +578,10 @@ def get_pxsize(bound, scale=1.0):
 def get_affine_transform(this_gf, scale=1.0):
     """get_affine_transform: return affine transformations matrices, and scaled image size
     from GeoPandas boundary size
-
       this_gf: GeoPanda
       scale:  (default = 1.0)
-
     returns:
       rasterio and shapely affine tranformation matrices, and image size in px
-
     """
     TRANSFORM_ONE = np.asarray([0.0, 1.0, -1.0, 0.0, 1.0, 1.0])
     bound = this_gf.total_bounds
@@ -652,30 +642,28 @@ from shapely.affinity import affine_transform
 from shapely.geometry import Point
 import rasterio.plot as rip
 
-geometry_im = rif.rasterize(otley_geometry.values, transform=r_matrix, out_shape=out_shape)
+otley_im = rif.rasterize(otley_geometry.values, transform=r_matrix, out_shape=out_shape)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    geometry_im = remove_small_holes(geometry_im, 20).astype(np.uint8)
+    otley_im = remove_small_holes(otley_im, 20).astype(np.uint8)
 
-rip.show(geometry_im, cmap="Blues", title="buffer geometry")
+rip.show(otley_im, cmap="Blues", title="buffer geometry")
 ```
-
 The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network.
 
 ```{python}
-skeleton_im = skeletonize(geometry_im).astype(np.uint8)
-point_im = np.stack(np.where(skeleton_im >= 1))
-rip.show(skeleton_im, cmap="Blues", title="skeleton geometry")
-nx_point = gp.GeoSeries(map(Point, point_im.T), crs=CRS)
+otley_skeleton = skeletonize(otley_im).astype(np.uint8)
+rip.show(otley_skeleton, cmap="Blues", title="skeleton geometry")
+otley_p = np.stack(np.where(otley_skeleton >= 1))
+otley_point = gp.GeoSeries(map(Point, otley_p.T), crs=CRS)
 ```
 
-The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 The rasterized skeletal image is then converted back into point geometry, completing the transformation process.
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix)
-transform_point = nx_point.map(shapely_transform).map(set_precision_pointone)
-transform_point.plot(edgecolor="black", color="blue").grid()
+otley_transform = otley_point.map(shapely_transform).map(set_precision_pointone)
+otley_transform.plot(edgecolor="black", color="blue").grid()
 plt.show()
 ```
 
@@ -695,13 +683,11 @@ from shapely.geometry import LineString, MultiLineString
 
 def get_raster_line_with_knots(point):
     """get_raster_line_with_knots: return LineString GeoSeries from 1px line points with knots
-
     args:
       point: 1px point GeoSeries array with knots
 
     returns:
       1px line LineString GeoSeries with knots removed
-
     """
     square = point.buffer(1, cap_style="square", mitre_limit=1)
     ix = point.sindex.query(square, predicate="covers").T
@@ -715,13 +701,11 @@ def get_raster_line_with_knots(point):
 
 def get_end(geometry):
     """get_end: return numpy array of geometry LineString end-points
-
     args:
       geometry: geometry LineString
 
     returns:
       end-point numpy arrays
-
     """
     r = get_coordinates(geometry)
     return np.vstack((r[0, :], r[-1, :]))
@@ -735,7 +719,6 @@ def get_source_target(line):
 
     returns:
       edge, node: GeoDataFrames
-
     """
     edge = line.copy()
     r = edge["geometry"].map(get_end)
@@ -752,10 +735,8 @@ def get_source_target(line):
 
 def combine_line(line):
     """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
-
     args:
       line: mixed LineString GeoSeries
-
     returns:
       join LineString GeoSeries
 
@@ -763,14 +744,14 @@ def combine_line(line):
     r = MultiLineString(line.values)
     return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
 
-nx_line = get_raster_line_with_knots(nx_point)
+otley_line = get_raster_line_with_knots(otley_point)
 ```
 
 To visualize the simplified network in its original spatial context, it is necessary to apply the reverse affine transformation. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix)
-nx_output = nx_line.map(shapely_transform).map(set_precision_pointone)
+nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
@@ -787,13 +768,10 @@ from shapely.geometry import MultiPoint
 
 def get_raster_line_without_knot(this_line):
     """get_raster_line_without_knot: remove knots from LineString GeoSeries
-
     args:
       this_line: LineString GeoSeries array with knots
-
     returns:
       LineString GeoSeries with knots removed
-
     """
     edge, node = get_source_target(this_line)
     ix = edge.length > 2.0
@@ -806,13 +784,10 @@ def get_raster_line_without_knot(this_line):
 
 def get_connected_class(edge):
     """get_connected_class: return labeled connected node pandas Series from edge list
-
     args:
       edge_list: source, target edge pandas DataFrame
-
     returns:
       labeled node pandas Series
-
     """
     nx_graph = nx.from_pandas_edgelist(edge)
     connected = nx.connected_components(nx_graph)
@@ -821,13 +796,10 @@ def get_connected_class(edge):
 
 def get_centre(node):
     """get_centre_edge: return centroid Point from discrete node clusters
-
     args:
       node: discrete node cluster GeoDataSeries
-
     returns:
       GeoDataCentre node cluster centroid Point
-
     """
     centre = node[["geometry", "class"]].groupby("class").aggregate(tuple)
     centre = gp.GeoSeries(centre["geometry"].map(MultiPoint), crs=CRS).centroid
@@ -838,9 +810,8 @@ def get_centre(node):
     r["geometry"] = geometry.values
     return r
 
-
-nx_line = get_raster_line_without_knot(nx_line.to_frame("geometry"))
-nx_output = nx_line.map(shapely_transform).map(set_precision_pointone)
+otley_line = get_raster_line_without_knot(otley_line.to_frame("geometry"))
+nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
@@ -852,13 +823,10 @@ There are circumstances where it might be beneficial to view a "primal" network,
 ```{python}
 def get_nx(line):
     """get_nx: return primal edge and node network from LineString GeoDataFrame
-
     args:
       line: LineString GeoDataFrame
-
     returns:
       edge, node GeoDataFrames
-
     """
     r = line.map(get_end)
     edge = gp.GeoSeries(r.map(LineString), crs=CRS)
@@ -869,8 +837,8 @@ def get_nx(line):
 ```
 
 ```{python}
-nx_edge = get_nx(nx_line)
-nx_output = nx_edge.map(shapely_transform).map(set_precision_pointone)
+otley_edge = get_nx(otley_line)
+nx_output = otley_edge.map(shapely_transform).map(set_precision_pointone)
 nx_output.plot()
 plt.show()
 ```
@@ -878,7 +846,6 @@ plt.show()
 ## Simplification via voronoi polygons
 
 In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
-
 
 ### Boundary
 
@@ -889,22 +856,20 @@ from shapely import box
 from shapely.ops import voronoi_diagram
 
 scale = 5.0
-tolerance=1.0
+tolerance = 0.1
 
 def get_geometry_line(this_buffer):
     """get_geometry_line: returns LineString boundary from geometry
-
     args:
       this_buffer: geometry to find LineString
-
     returns:
        simplified LineString boundary
     """
     r = this_buffer.boundary.explode(index_parts=False).reset_index(drop=True)
     return gp.GeoSeries(r.simplify(tolerance=0.5), crs=CRS)
 
-nx_boundary = get_geometry_line(otley_geometry)
-nx_boundary.plot()
+otley_boundary = get_geometry_line(otley_geometry)
+otley_boundary.plot()
 plt.show()
 ```
 
@@ -913,18 +878,14 @@ plt.show()
 
 The simplified LineString geometries are then broken down into shorter segments.
 
-
 ```{python}
 def get_segment_nx(line, scale):
     """get_segment_nx: segment line into sections, no more than scale long
-
     args:
       line:  line to segment
       scale: length to segment line
-
     returns:
       segmented LineStrings
-
     """
     set_segment = partial(get_segment, distance=scale)
     r = line.map(set_segment).explode().rename("geometry")
@@ -932,10 +893,8 @@ def get_segment_nx(line, scale):
 
 def get_linestring(line):
     """get_linestring: return LineString GeoSeries from line coordinates
-
     args:
       line:
-
     returns:
        LineString GeoSeries
     """
@@ -945,19 +904,16 @@ def get_linestring(line):
 
 def get_segment(line, distance=50.0):
     """get_segment: segment LineString GeoSeries into distance length segments
-
     args:
       line: GeoSeries LineString
       length: segmentation distance (default value = 50.0)
-
     returns:
       GeoSeries of LineStrings of up to length distance
-
     """
     return get_linestring(line.segmentize(distance))
 
-nx_segment = get_segment_nx(nx_boundary, scale).reset_index(drop=True)
-nx_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
+otley_segment = get_segment_nx(otley_boundary, scale).reset_index(drop=True)
+otley_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
 plt.show()
 ```
 
@@ -966,9 +922,9 @@ plt.show()
 The simplified LineString geometries are converted into point geometries.
 
 ```{python}
-nx_point = nx_segment.loc[:, "geometry"].map(get_coordinates).explode()
-nx_point = MultiPoint(nx_point[::2].map(Point).values)
-nx_output = gp.GeoSeries(nx_point, crs=CRS)
+otley_point = otley_segment.loc[:, "geometry"].map(get_coordinates).explode()
+otley_point = MultiPoint(otley_point[::2].map(Point).values)
+nx_output = gp.GeoSeries(otley_point, crs=CRS)
 nx_output.plot(edgecolor="blue", color="white")
 plt.show()
 ```
@@ -976,26 +932,25 @@ plt.show()
 The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.
 
 ```{python}
-nx_envelope = box(*nx_point.bounds)
-nx_voronoi = voronoi_diagram(nx_point, envelope=nx_envelope, tolerance=tolerance, edges=True)
-nx_voronoi = gp.GeoSeries(map(set_precision_pointone, nx_voronoi.geoms), crs=CRS)
-nx_voronoi.plot()
+otley_envelope = box(*otley_point.bounds)
+otley_voronoi = voronoi_diagram(otley_point, envelope=otley_envelope, tolerance=tolerance, edges=True)
+otley_voronoi = gp.GeoSeries(map(set_precision_pointone, otley_voronoi.geoms), crs=CRS)
+otley_voronoi.plot()
 plt.show()
 ```
 
 ### Voronoi 2
 ```{python}
-nx_voronoi = nx_voronoi.explode(index_parts=False).clip(nx_envelope)
-ix = ~nx_voronoi.is_empty & (nx_voronoi.type == "LineString")
-nx_voronoi = nx_voronoi[ix].reset_index(drop=True)
-nx_voronoi.plot()
+otley_voronoi = otley_voronoi.explode(index_parts=False).clip(otley_envelope)
+ix = ~otley_voronoi.is_empty & (otley_voronoi.type == "LineString")
+otley_voronoi = otley_voronoi[ix].reset_index(drop=True)
+otley_voronoi.plot()
 plt.show()
 ```
 
 ### Voronoi simplified network
 
 ```{python}
-#| eval: false
 def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
     """get_voronoi_line: returns cleaned simplified line by filtering Voronoi lines by distance,
     contained within network buffer Polygons, and combining overlapping end-points
@@ -1005,10 +960,8 @@ def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
       boundary:    network buffer LineString
       geometry:    network buffer Polygon
       buffer_size: network buffer distance [m]
-
     returns:
       simplified simplified network line
-
     """
     offset = buffer_size / 2.0
     r = filter_distance(voronoi, boundary, offset)
@@ -1023,12 +976,10 @@ def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
 
 def filter_distance(line, boundary, offset):
     """filter_distance: filter line closer than distance offset from boundary
-
     args:
       line:     LineStrings to simplify
       boundary: boundary LineString
       offset:
-
     returns:
       simplified LineStrings
     """
@@ -1040,16 +991,15 @@ def filter_distance(line, boundary, offset):
 
 def filter_buffer(line, geometry):
     """filter_buffer: filter keeping lines within boundary Polygon
-
     args:
       line:     LineStrings to simplify
       geometry: boundary Polygon
-
     returns:
       filtered LineStrings
     """
     (_, ix) = line.sindex.query(geometry, predicate="contains_properly")
     return combine_line(line.loc[ix]).simplify(1.0)
+
 
 def set_geometry(line, square):
     """set_geometry: return LineString simplified by combining overlapping end-points
@@ -1057,10 +1007,8 @@ def set_geometry(line, square):
     args:
       line:     LineStrings to simplify
       square:   overlapping squares
-
     returns:
       simplified LineStrings
-
     """
     r = line.reset_index(drop=True)
     centroid = square.centroid.map(set_precision_pointone).set_crs(CRS)
@@ -1075,31 +1023,29 @@ def set_geometry(line, square):
 #nx_line = get_voronoi_line(nx_voronoi, nx_boundary, otley_geometry, buffer_size)
 
 offset = buffer_size / 2.0
-nx_line = filter_distance(nx_voronoi, nx_boundary, offset)
-nx_line.plot()
+otley_line = filter_distance(otley_voronoi, otley_boundary, offset)
+otley_line.plot()
 plt.show()
 ```
 
 ### Voronoi line
 ```{python}
-#| eval: false
-nx_line = filter_buffer(nx_line, otley_geometry)
-nx_edge, nx_node = get_source_target(nx_line.to_frame("geometry"))
-ix = nx_node["count"] < 4
-nx_square = nx_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
-nx_square = gp.GeoSeries(unary_union(nx_square.values).geoms, crs=CRS)
-nx_line = nx_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
-nx_line = set_geometry(nx_line, nx_square)
-nx_line = combine_line(nx_line)
-nx_line.plot()
+otley_line = filter_buffer(otley_line, otley_geometry)
+otley_edge, otley_node = get_source_target(otley_line.to_frame("geometry"))
+ix = otley_node["count"] < 4
+otley_square = otley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
+otley_square = gp.GeoSeries(unary_union(otley_square.values).geoms, crs=CRS)
+otley_line = otley_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
+otley_line = set_geometry(otley_line, otley_square)
+otley_line = combine_line(otley_line)
+otley_line.plot()
 plt.show()
 ```
 
 ### Primal network
 ```{python}
-#| eval: false
-nx_edge = get_nx(nx_line)
-nx_edge.plot()
+otley_edge = get_nx(otley_line)
+otley_edge.plot()
 plt.show()
 ```
 
@@ -1228,7 +1174,6 @@ By meticulously following these steps, we ensure that the integration of attribu
    
    
 ```{python}
-#| eval: false
 rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 # Plotting both GeoJSON files side by side
@@ -1243,7 +1188,6 @@ axes[1].set_title('RNet Y')
 plt.tight_layout()
 plt.show()
 ```
-
 
 <!-- TODO: add content to this section. -->
 
@@ -1333,6 +1277,7 @@ G_projected = ox.project_graph(G, 'EPSG:27700')
 G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
 # plot G_simplified as GeoPandas in Quarto:
 ox.plot_graph(G_simplified);
+plt.show()
 ```
 
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
@@ -1340,3 +1285,4 @@ Illustration of consolidation of intersections, with the `consolidate_intersecti
 
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
 Two approaches to this are outlined below. -->
+
