@@ -961,14 +961,27 @@ def get_geometry_line(this_buffer):
     """
     r = this_buffer.boundary.explode(index_parts=False).reset_index(drop=True)
     return gp.GeoSeries(r.simplify(tolerance=0.5), crs=CRS)
+```
 
+::: {#fig-boundary layout-ncol="2"}
+
+```{python}
 otley_boundary = get_geometry_line(otley_geometry)
 otley_boundary.plot()
 plt.show()
 ```
 
-### Segment
+```{python}
+armley_boundary = get_geometry_line(armley_geometry)
+armley_boundary.plot()
+plt.show()
+```
 
+Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.
+
+:::
+
+### Segment
 
 The simplified LineString geometries are then broken down into shorter segments.
 
@@ -1005,22 +1018,34 @@ def get_segment(line, distance=50.0):
       GeoSeries of LineStrings of up to length distance
     """
     return get_linestring(line.segmentize(distance))
+```
 
+::: {#fig-segment layout-ncol="2"}
+
+```{python}
 otley_segment = get_segment_nx(otley_boundary, scale).reset_index(drop=True)
 otley_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
 plt.show()
 ```
 
-### Point
+```{python}
+armley_segment = get_segment_nx(armley_boundary, scale).reset_index(drop=True)
+armley_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
+plt.show()
+```
 
-The simplified LineString geometries are converted into point geometries.
+Segmented boundaries of the Otley Road (left) and Armley Road (right) networks.
+
+:::
+
+As with the skeletonize approach, the the simplified LineString geometries are converted into point geometries.
 
 ```{python}
 otley_point = otley_segment.loc[:, "geometry"].map(get_coordinates).explode()
 otley_point = MultiPoint(otley_point[::2].map(Point).values)
 nx_output = gp.GeoSeries(otley_point, crs=CRS)
-nx_output.plot(edgecolor="blue", color="white")
-plt.show()
+# nx_output.plot(edgecolor="blue", color="white")
+# plt.show()
 ```
 
 ### Voronoi
