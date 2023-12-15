@@ -183,11 +183,6 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#boundary" id="toc-boundary" class="nav-link" data-scroll-target="#boundary"><span class="header-section-number">4.2.1</span> Boundary</a></li>
   <li><a href="#segment" id="toc-segment" class="nav-link" data-scroll-target="#segment"><span class="header-section-number">4.2.2</span> Segment</a></li>
-  <li><a href="#voronoi" id="toc-voronoi" class="nav-link" data-scroll-target="#voronoi"><span class="header-section-number">4.2.3</span> Voronoi</a></li>
-  <li><a href="#voronoi-2" id="toc-voronoi-2" class="nav-link" data-scroll-target="#voronoi-2"><span class="header-section-number">4.2.4</span> Voronoi 2</a></li>
-  <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.5</span> Voronoi simplified network</a></li>
-  <li><a href="#voronoi-line" id="toc-voronoi-line" class="nav-link" data-scroll-target="#voronoi-line"><span class="header-section-number">4.2.6</span> Voronoi line</a></li>
-  <li><a href="#primal-network-1" id="toc-primal-network-1" class="nav-link" data-scroll-target="#primal-network-1"><span class="header-section-number">4.2.7</span> Primal network</a></li>
   </ul></li>
   <li><a href="#integrating-attributes-from-the-detailed-network-into-the-simplified-network" id="toc-integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="nav-link" data-scroll-target="#integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</a></li>
   </ul></li>
@@ -751,46 +746,97 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </figure>
 </div>
 <p>As with the skeletonize approach, the the simplified LineString geometries are converted into point geometries.</p>
-</section>
-<section id="voronoi" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.3</span> Voronoi</h3>
-<p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.</p>
-<div class="cell">
+<!-- ### Voronoi -->
+<p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope, as illustrated in the figures below.</p>
+<div id="fig-voronoi" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-47-45.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-48-45.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</section>
-<section id="voronoi-2" class="level3" data-number="4.2.4">
-<h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.4</span> Voronoi 2</h3>
-<div class="cell">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-48-47.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-49-47.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</section>
-<section id="voronoi-simplified-network" class="level3" data-number="4.2.5">
-<h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.5</span> Voronoi simplified network</h3>
-<div class="cell">
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</figure>
+</div>
+<!-- ### Voronoi 2 -->
+<div id="fig-voronoi-2" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-49-49.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-50-49.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</section>
-<section id="voronoi-line" class="level3" data-number="4.2.6">
-<h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.6</span> Voronoi line</h3>
-<div class="cell">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-50-51.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-51-51.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</section>
-<section id="primal-network-1" class="level3" data-number="4.2.7">
-<h3 data-number="4.2.7" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.7</span> Primal network</h3>
-<div class="cell">
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: Caption TBC.</figcaption><p></p>
+</figure>
+</div>
+<!-- ### Voronoi simplified network -->
+<div id="fig-voronoi-simplified" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-51-53.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-53-53.png" class="img-fluid figure-img" width="672"></p>
 </div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-54-55.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;17: Caption TBC.</figcaption><p></p>
+</figure>
+</div>
+<!-- ### Voronoi line -->
+<div id="fig-voronoi-line" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-55-57.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-56-59.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;18: Caption TBC.</figcaption><p></p>
+</figure>
+</div>
+<!-- ### Primal network -->
+<p>The primal network associated with the voronoi approach is illustrated in <a href="#fig-primal-voronoi">Figure&nbsp;19</a>.</p>
+<div id="fig-primal-voronoi" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-57-61.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-58-63.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;19: Caption TBC.</figcaption><p></p>
+</figure>
 </div>
 <!-- ![](images/paste-1.png) -->
 </section>
@@ -826,7 +872,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
@@ -840,7 +886,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid" width="1440"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid" width="1440"></p>
 </div>
 </div>
 <!-- TODO: add content to this section. -->
