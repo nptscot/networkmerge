@@ -659,18 +659,24 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div id="fig-knots" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-35-29.png" class="img-fluid figure-img" width="672"></p>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-knot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/knot-output.png" class="img-fluid figure-img" data-ref-parent="fig-knots"></p>
+<figcaption class="figure-caption">(a)</figcaption>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-36-31.png" class="img-fluid figure-img" width="672"></p>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-noknot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/noknot-output.png" class="img-fluid figure-img" data-ref-parent="fig-knots"></p>
+<figcaption class="figure-caption">(b)</figcaption>
+</figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;11: Simplified versions of the Otley Road (left) and Armley Road (right) networks, with knots removed.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;11: Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in <a href="#fig-knots">Figure&nbsp;11</a>.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -682,12 +688,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-38-33.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-36-29.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-39-35.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-37-31.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
@@ -707,12 +713,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-41-37.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-39-33.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-42-39.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-40-35.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
@@ -728,12 +734,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-44-41.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-42-37.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-45-43.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-43-39.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
@@ -741,9 +747,28 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </figure>
 </div>
 <p>As with the skeletonize approach, the the simplified LineString geometries are converted into point geometries.</p>
+<!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
 <!-- ### Voronoi -->
 <p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope, as illustrated in the figures below.</p>
 <div id="fig-voronoi" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-46-41.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-47-43.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</figure>
+</div>
+<!-- ### Voronoi 2 -->
+<div id="fig-voronoi-2" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -757,29 +782,29 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;15: Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
-</figure>
-</div>
-<!-- ### Voronoi 2 -->
-<div id="fig-voronoi-2" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-50-49.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-51-51.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;16: Caption TBC.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
 <!-- ### Voronoi simplified network -->
 <div id="fig-voronoi-simplified" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-51-49.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-52-51.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;17: Caption TBC.</figcaption><p></p>
+</figure>
+</div>
+<!-- ### Voronoi line -->
+<div id="fig-voronoi-line" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -793,24 +818,6 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;17: Caption TBC.</figcaption><p></p>
-</figure>
-</div>
-<!-- ### Voronoi line -->
-<div id="fig-voronoi-line" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-55-57.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-56-59.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
 <p></p><figcaption class="figure-caption">Figure&nbsp;18: Caption TBC.</figcaption><p></p>
 </figure>
 </div>
@@ -821,12 +828,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-57-61.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-55-57.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-58-63.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-56-59.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
@@ -867,7 +874,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-59-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
@@ -881,7 +888,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid" width="1440"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid" width="1440"></p>
 </div>
 </div>
 <!-- TODO: add content to this section. -->
