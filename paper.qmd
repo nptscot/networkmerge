@@ -903,8 +903,6 @@ There are circumstances where it might be beneficial to view a "primal" network,
 This primal network represents an extreme form of simplification, of great potential value in situations in which the network's overall structure and compression ratios are priorities.
 The primal networks for the Otley Road and Armley Road networks are illustrated in @fig-primal.
 
-::: {#fig-primal layout-ncol="2"}
-
 ```{python}
 def get_nx(line):
     """get_nx: return primal edge and node network from LineString GeoDataFrame
@@ -920,6 +918,8 @@ def get_nx(line):
     r = r.groupby(r.columns.to_list(), as_index=False).size()
     return edge
 ```
+
+::: {#fig-primal layout-ncol="2"}
 
 ```{python}
 otley_edge = get_nx(otley_line)
