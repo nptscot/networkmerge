@@ -804,7 +804,6 @@ armley_line = get_raster_line_with_knots(armley_point)
 ```
 
 ::: {#fig-skeleton-line layout-ncol="2"}
-
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
 nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
@@ -878,23 +877,11 @@ def get_centre(node):
 ```
 
 ::: {#fig-knots layout-ncol="2"}
+![](images/knot-output.png){#fig-knot}
 
-```{python}
-otley_line = get_raster_line_without_knot(otley_line.to_frame("geometry"))
-nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
-nx_output.plot()
-plt.show()
-```
+![](images/noknot-output.png){#fig-noknot}
 
-```{python}
-armley_line = get_raster_line_without_knot(armley_line.to_frame("geometry"))
-nx_output = armley_line.map(shapely_transform).map(set_precision_pointone)
-nx_output.plot()
-plt.show()
-```
-
-Simplified versions of the Otley Road (left) and Armley Road (right) networks, with knots removed.
-
+Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in @fig-knots.
 :::
 
 ### Primal network
@@ -1055,7 +1042,7 @@ nx_output = gp.GeoSeries(armley_point, crs=CRS)
 # nx_output.plot(edgecolor="blue", color="white")
 # plt.show()
 ```
-
+<!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
 <!-- ### Voronoi -->
 
 The Voronoi diagram is generated from nx_point within the bounds of nx_envelope, as illustrated in the figures below.
@@ -1102,9 +1089,10 @@ armley_voronoi.plot()
 plt.show()
 ```
 
-Caption TBC.
+Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 
 :::
+
 
 <!-- ### Voronoi simplified network -->
 
