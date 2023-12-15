@@ -183,12 +183,11 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#boundary" id="toc-boundary" class="nav-link" data-scroll-target="#boundary"><span class="header-section-number">4.2.1</span> Boundary</a></li>
   <li><a href="#segment" id="toc-segment" class="nav-link" data-scroll-target="#segment"><span class="header-section-number">4.2.2</span> Segment</a></li>
-  <li><a href="#point" id="toc-point" class="nav-link" data-scroll-target="#point"><span class="header-section-number">4.2.3</span> Point</a></li>
-  <li><a href="#voronoi" id="toc-voronoi" class="nav-link" data-scroll-target="#voronoi"><span class="header-section-number">4.2.4</span> Voronoi</a></li>
-  <li><a href="#voronoi-2" id="toc-voronoi-2" class="nav-link" data-scroll-target="#voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</a></li>
-  <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</a></li>
-  <li><a href="#voronoi-line" id="toc-voronoi-line" class="nav-link" data-scroll-target="#voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</a></li>
-  <li><a href="#primal-network-1" id="toc-primal-network-1" class="nav-link" data-scroll-target="#primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</a></li>
+  <li><a href="#voronoi" id="toc-voronoi" class="nav-link" data-scroll-target="#voronoi"><span class="header-section-number">4.2.3</span> Voronoi</a></li>
+  <li><a href="#voronoi-2" id="toc-voronoi-2" class="nav-link" data-scroll-target="#voronoi-2"><span class="header-section-number">4.2.4</span> Voronoi 2</a></li>
+  <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.5</span> Voronoi simplified network</a></li>
+  <li><a href="#voronoi-line" id="toc-voronoi-line" class="nav-link" data-scroll-target="#voronoi-line"><span class="header-section-number">4.2.6</span> Voronoi line</a></li>
+  <li><a href="#primal-network-1" id="toc-primal-network-1" class="nav-link" data-scroll-target="#primal-network-1"><span class="header-section-number">4.2.7</span> Primal network</a></li>
   </ul></li>
   <li><a href="#integrating-attributes-from-the-detailed-network-into-the-simplified-network" id="toc-integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="nav-link" data-scroll-target="#integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</a></li>
   </ul></li>
@@ -713,68 +712,84 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <section id="boundary" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
 <p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
-<div class="cell">
+<div id="fig-boundary" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-40-37.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-41-37.png" class="img-fluid figure-img" width="672"></p>
 </div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-42-39.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;13: Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</figure>
 </div>
 </section>
 <section id="segment" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="segment"><span class="header-section-number">4.2.2</span> Segment</h3>
 <p>The simplified LineString geometries are then broken down into shorter segments.</p>
-<div class="cell">
+<div id="fig-segment" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-41-39.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-44-41.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</section>
-<section id="point" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="point"><span class="header-section-number">4.2.3</span> Point</h3>
-<p>The simplified LineString geometries are converted into point geometries.</p>
-<div class="cell">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-42-41.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-45-43.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: Segmented boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</figure>
+</div>
+<p>As with the skeletonize approach, the the simplified LineString geometries are converted into point geometries.</p>
 </section>
-<section id="voronoi" class="level3" data-number="4.2.4">
-<h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.4</span> Voronoi</h3>
+<section id="voronoi" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="voronoi"><span class="header-section-number">4.2.3</span> Voronoi</h3>
 <p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-43-43.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-47-45.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="voronoi-2" class="level3" data-number="4.2.5">
-<h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.5</span> Voronoi 2</h3>
+<section id="voronoi-2" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="voronoi-2"><span class="header-section-number">4.2.4</span> Voronoi 2</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-44-45.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-48-47.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="voronoi-simplified-network" class="level3" data-number="4.2.6">
-<h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.6</span> Voronoi simplified network</h3>
+<section id="voronoi-simplified-network" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.5</span> Voronoi simplified network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-45-47.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-49-49.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="voronoi-line" class="level3" data-number="4.2.7">
-<h3 data-number="4.2.7" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.7</span> Voronoi line</h3>
+<section id="voronoi-line" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="voronoi-line"><span class="header-section-number">4.2.6</span> Voronoi line</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-46-49.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-50-51.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="primal-network-1" class="level3" data-number="4.2.8">
-<h3 data-number="4.2.8" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.8</span> Primal network</h3>
+<section id="primal-network-1" class="level3" data-number="4.2.7">
+<h3 data-number="4.2.7" class="anchored" data-anchor-id="primal-network-1"><span class="header-section-number">4.2.7</span> Primal network</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-47-51.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-51-53.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <!-- ![](images/paste-1.png) -->
@@ -811,7 +826,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Once we obtained the <code>rnet_merged</code> dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:</p>
@@ -825,7 +840,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid" width="1440"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid" width="1440"></p>
 </div>
 </div>
 <!-- TODO: add content to this section. -->
