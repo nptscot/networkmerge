@@ -179,15 +179,17 @@ div.csl-indent {
   <li><a href="#knots" id="toc-knots" class="nav-link" data-scroll-target="#knots"><span class="header-section-number">4.1.7</span> Knots</a></li>
   <li><a href="#primal-network" id="toc-primal-network" class="nav-link" data-scroll-target="#primal-network"><span class="header-section-number">4.1.8</span> Primal network</a></li>
   </ul></li>
-  <li><a href="#simplification-via-voronoi-polygons" id="toc-simplification-via-voronoi-polygons" class="nav-link" data-scroll-target="#simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</a>
+  <li><a href="#simplification-via-voronoi-polygons" id="toc-simplification-via-voronoi-polygons" class="nav-link" data-scroll-target="#simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via Voronoi polygons</a>
   <ul class="collapse">
-  <li><a href="#boundary" id="toc-boundary" class="nav-link" data-scroll-target="#boundary"><span class="header-section-number">4.2.1</span> Boundary</a></li>
-  <li><a href="#segment" id="toc-segment" class="nav-link" data-scroll-target="#segment"><span class="header-section-number">4.2.2</span> Segment</a></li>
+  <li><a href="#boundary-segmentation" id="toc-boundary-segmentation" class="nav-link" data-scroll-target="#boundary-segmentation"><span class="header-section-number">4.2.1</span> Boundary Segmentation</a></li>
+  <li><a href="#voronoi-diagram" id="toc-voronoi-diagram" class="nav-link" data-scroll-target="#voronoi-diagram"><span class="header-section-number">4.2.2</span> Voronoi diagram</a></li>
+  <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.3</span> Voronoi simplified network</a></li>
   </ul></li>
   <li><a href="#integrating-attributes-from-the-detailed-network-into-the-simplified-network" id="toc-integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="nav-link" data-scroll-target="#integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</a></li>
   </ul></li>
-  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">5</span> Discussion</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6</span> References</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">6</span> Discussion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">7</span> References</a></li>
   </ul>
 </nav>
     </div>
@@ -306,7 +308,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways). Usually they also contain attributes such as the type of way, it’s characteristics (e.g.&nbsp;is lit at night), and the amount of traffic using each segment.</p>
 <p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
 <p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.</p>
-<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;5</a> we discuss the results and outline future work.</p>
+<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;6</a> we discuss the results and outline future work.</p>
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
@@ -703,11 +705,11 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 </section>
 <section id="simplification-via-voronoi-polygons" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via voronoi polygons</h2>
-<p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
-<section id="boundary" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary"><span class="header-section-number">4.2.1</span> Boundary</h3>
-<p>The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.</p>
+<h2 data-number="4.2" class="anchored" data-anchor-id="simplification-via-voronoi-polygons"><span class="header-section-number">4.2</span> Simplification via Voronoi polygons</h2>
+<p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
+<section id="boundary-segmentation" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary-segmentation"><span class="header-section-number">4.2.1</span> Boundary Segmentation</h3>
+<p>The boundary of the buffered input geometry is calculated and simplified, giving a simplified GeoSeries of LineStrings, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatinal objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (otley_boundary), highlighting its practical application in spatial analysis and network simplification. The simplified LineString geometries are then broken down into shorter segments.</p>
 <div id="fig-boundary" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -725,10 +727,6 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p></p><figcaption class="figure-caption">Figure&nbsp;13: Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
-</section>
-<section id="segment" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2" class="anchored" data-anchor-id="segment"><span class="header-section-number">4.2.2</span> Segment</h3>
-<p>The simplified LineString geometries are then broken down into shorter segments.</p>
 <div id="fig-segment" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -743,30 +741,36 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;14: Segmented boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
-<p>As with the skeletonize approach, the the simplified LineString geometries are converted into point geometries.</p>
-<!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
-<!-- ### Voronoi -->
-<p>The Voronoi diagram is generated from nx_point within the bounds of nx_envelope, as illustrated in the figures below.</p>
-<div id="fig-voronoi" class="quarto-layout-panel">
+<p>The simplified <code>LineString</code> geometries are converted into point geometries, detail <a href="#fig-voronoi-point">Figure&nbsp;15</a>.</p>
+<div id="fig-voronoi-point" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-46-41.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-44-41.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-47-43.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-45-43.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;15: Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: Detail point segement of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
+<!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
+</section>
+<section id="voronoi-diagram" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="voronoi-diagram"><span class="header-section-number">4.2.2</span> Voronoi diagram</h3>
+<p>The corresponding Voronoi diagrams is generated and clipped to the bounds of input geometry, as illustrated in <a href="#fig-voronoi-2">Figure&nbsp;16</a> figures below.</p>
+<!-- ::: {#fig-voronoi layout-ncol="2"} -->
+<!-- Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
+
+<!-- ::: -->
 <!-- ### Voronoi 2 -->
 <div id="fig-voronoi-2" class="quarto-layout-panel">
 <figure class="figure">
@@ -786,6 +790,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </figure>
 </div>
 <!-- ### Voronoi simplified network -->
+<p>The centre-line is derived based by excluding lines making up the Voronoi diagrams that are at a distance of more than half-the-buffer-size from the buffer-edge, and is completely within the buffered geometry <a href="#fig-voronoi-simplified">Figure&nbsp;17</a>.</p>
 <div id="fig-voronoi-simplified" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -800,10 +805,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;17: Caption TBC.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;17: Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.</figcaption><p></p>
 </figure>
 </div>
-<!-- ### Voronoi line -->
+</section>
+<section id="voronoi-simplified-network" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.3</span> Voronoi simplified network</h3>
+<p>The centre-line network as shown in <a href="#fig-voronoi-line">Figure&nbsp;18</a> is then generated by removing knot-like features from the resulting network.</p>
 <div id="fig-voronoi-line" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -818,7 +826,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;18: Caption TBC.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;18: Simplified versions of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
 <!-- ### Primal network -->
@@ -837,7 +845,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;19: Caption TBC.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;19: Figure 12: Primal networks for the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
 <!-- ![](images/paste-1.png) -->
@@ -896,15 +904,93 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <!-- ## Combined network simplification and attribute merging -->
 </section>
 </section>
-<section id="sec-discussion" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Discussion</h1>
+<section id="results" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Results</h1>
+<p>Some results</p>
+<p>#<code>{python} #base_edinburgh = gp.read_file("./data/rnet_princes_street.geojson").to_crs(CRS) #base_leeds = gp.read_file("./data/rnet_leeds_rail.geojson").to_crs(CRS) #</code></p>
+<div id="fig-results" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-61-3.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-62-5.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-63-7.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-64-9.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-65-11.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-66-13.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-67-15.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-68-17.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-69-19.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-70-21.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-71-23.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-72-25.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;20: Results diagrams</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="sec-discussion" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Discussion</h1>
 <ul>
 <li><p>Optimisation</p></li>
 <li><p>Packaging</p></li>
 <li></li>
 </ul>
 </section>
-<section id="references" class="level1" data-number="6">
+<section id="references" class="level1" data-number="7">
 
 <!-- Tests -->
 <!-- Out-takes, to tidy-up/include later:
@@ -929,7 +1015,7 @@ Two approaches to this are outlined below. -->
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">6 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">7 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-lovelace2017" class="csl-entry" role="listitem">
 Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
 </div>
