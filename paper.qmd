@@ -1048,8 +1048,19 @@ nx_output = gp.GeoSeries(otley_point, crs=CRS)
 # plt.show()
 ```
 
-### Voronoi
-The Voronoi diagram is generated from nx_point within the bounds of nx_envelope.
+```{python}
+armley_point = armley_segment.loc[:, "geometry"].map(get_coordinates).explode()
+armley_point = MultiPoint(armley_point[::2].map(Point).values)
+nx_output = gp.GeoSeries(armley_point, crs=CRS)
+# nx_output.plot(edgecolor="blue", color="white")
+# plt.show()
+```
+
+<!-- ### Voronoi -->
+
+The Voronoi diagram is generated from nx_point within the bounds of nx_envelope, as illustrated in the figures below.
+
+::: {#fig-voronoi layout-ncol="2"}
 
 ```{python}
 otley_envelope = box(*otley_point.bounds)
@@ -1059,7 +1070,22 @@ otley_voronoi.plot()
 plt.show()
 ```
 
-### Voronoi 2
+```{python}
+armley_envelope = box(*armley_point.bounds)
+armley_voronoi = voronoi_diagram(armley_point, envelope=armley_envelope, tolerance=tolerance, edges=True)
+armley_voronoi = gp.GeoSeries(map(set_precision_pointone, armley_voronoi.geoms), crs=CRS)
+armley_voronoi.plot()
+plt.show()
+```
+
+Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
+
+:::
+
+<!-- ### Voronoi 2 -->
+
+::: {#fig-voronoi-2 layout-ncol="2"}
+
 ```{python}
 otley_voronoi = otley_voronoi.explode(index_parts=False).clip(otley_envelope)
 ix = ~otley_voronoi.is_empty & (otley_voronoi.type == "LineString")
@@ -1068,7 +1094,19 @@ otley_voronoi.plot()
 plt.show()
 ```
 
-### Voronoi simplified network
+```{python}
+armley_voronoi = armley_voronoi.explode(index_parts=False).clip(armley_envelope)
+ix = ~armley_voronoi.is_empty & (armley_voronoi.type == "LineString")
+armley_voronoi = armley_voronoi[ix].reset_index(drop=True)
+armley_voronoi.plot()
+plt.show()
+```
+
+Caption TBC.
+
+:::
+
+<!-- ### Voronoi simplified network -->
 
 ```{python}
 def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
@@ -1143,12 +1181,30 @@ def set_geometry(line, square):
 #nx_line = get_voronoi_line(nx_voronoi, nx_boundary, otley_geometry, buffer_size)
 
 offset = buffer_size / 2.0
+```
+
+::: {#fig-voronoi-simplified layout-ncol="2"}
+
+```{python}
 otley_line = filter_distance(otley_voronoi, otley_boundary, offset)
 otley_line.plot()
 plt.show()
 ```
 
-### Voronoi line
+```{python}
+armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
+armley_line.plot()
+plt.show()
+```
+
+Caption TBC.
+
+:::
+
+<!-- ### Voronoi line -->
+
+::: {#fig-voronoi-line layout-ncol="2"}
+
 ```{python}
 otley_line = filter_buffer(otley_line, otley_geometry)
 otley_edge, otley_node = get_source_target(otley_line.to_frame("geometry"))
@@ -1162,12 +1218,45 @@ otley_line.plot()
 plt.show()
 ```
 
-### Primal network
+```{python}
+armley_line = filter_buffer(armley_line, armley_geometry)
+armley_edge, armley_node = get_source_target(armley_line.to_frame("geometry"))
+ix = armley_node["count"] < 4
+armley_square = armley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
+armley_square = gp.GeoSeries(unary_union(armley_square.values).geoms, crs=CRS)
+armley_line = armley_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
+armley_line = set_geometry(armley_line, armley_square)
+armley_line = combine_line(armley_line)
+armley_line.plot()
+plt.show()
+```
+
+Caption TBC.
+
+:::
+
+
+<!-- ### Primal network -->
+
+The primal network associated with the voronoi approach is illustrated in @fig-primal-voronoi.
+
+::: {#fig-primal-voronoi layout-ncol="2"}
+
 ```{python}
 otley_edge = get_nx(otley_line)
 otley_edge.plot()
 plt.show()
 ```
+
+```{python}
+armley_edge = get_nx(armley_line)
+armley_edge.plot()
+plt.show()
+```
+
+Caption TBC.
+
+:::
 
 <!-- ![](images/paste-1.png) -->
 
