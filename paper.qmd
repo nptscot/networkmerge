@@ -530,7 +530,7 @@ try:
     otley_segment = gp.GeoSeries(list(unary_union(otley_segment.values).geoms), crs=CRS)
 except AttributeError:
     otley_segment = gp.GeoSeries(unary_union(otley_segment.values), crs=CRS)
-otley_geometry.plot()
+otley_segment.plot()
 ```
 
 ```{python}
@@ -658,20 +658,20 @@ import rasterio.plot as rip
 ::: {#fig-rasterize layout-ncol="2"}
 
 ```{python}
-otley_im = rif.rasterize(otley_geometry.values, transform=r_matrix_otley, out_shape=out_shape_otley)
+otley_im = rif.rasterize(otley_segment.values, transform=r_matrix_otley, out_shape=out_shape_otley)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     otley_im = remove_small_holes(otley_im, 20).astype(np.uint8)
 
-rip.show(otley_im, cmap="Blues", title="buffer geometry")
+rip.show(otley_im, cmap="Greys", title="buffer geometry")
 ```
 
 ```{python}
-armley_im = rif.rasterize(armley_geometry.values, transform=r_matrix_armley, out_shape=out_shape_otley)
+armley_im = rif.rasterize(armley_segment.values, transform=r_matrix_armley, out_shape=out_shape_otley)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     armley_im = remove_small_holes(armley_im, 20).astype(np.uint8)
-rip.show(armley_im, cmap="Blues", title="buffer geometry")
+rip.show(armley_im, cmap="Greys", title="buffer geometry")
 ```
 
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
@@ -684,14 +684,14 @@ The image undergoes a thinning process, yielding a skeletal raster image as the 
 
 ```{python}
 otley_skeleton = skeletonize(otley_im).astype(np.uint8)
-rip.show(otley_skeleton, cmap="Blues", title="skeleton geometry")
+rip.show(otley_skeleton, cmap="Greys", title="skeleton geometry")
 otley_p = np.stack(np.where(otley_skeleton >= 1))
 otley_point = gp.GeoSeries(map(Point, otley_p.T), crs=CRS)
 ```
 
 ```{python}
 armley_skeleton = skeletonize(armley_im).astype(np.uint8)
-rip.show(armley_skeleton, cmap="Blues", title="skeleton geometry")
+rip.show(armley_skeleton, cmap="Greys", title="skeleton geometry")
 armley_p = np.stack(np.where(armley_skeleton >= 1))
 armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
 ```
@@ -806,16 +806,14 @@ armley_line = get_raster_line_with_knots(armley_point)
 ::: {#fig-skeleton-line layout-ncol="2"}
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
-nx_output = otley_line.map(shapely_transform).map(set_precision_pointone)
-nx_output.plot()
-plt.show()
+otley_sk = otley_line.map(shapely_transform).map(set_precision_pointone)
+otley_sk.plot()
 ```
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_armley)
-nx_output = armley_line.map(shapely_transform).map(set_precision_pointone)
-nx_output.plot()
-plt.show()
+armley_sk = armley_line.map(shapely_transform).map(set_precision_pointone)
+armley_sk.plot()
 ```
 
 Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
@@ -910,27 +908,27 @@ def get_nx(line):
 
 ```{python}
 otley_edge = get_nx(otley_line)
-nx_output = otley_edge.map(shapely_transform).map(set_precision_pointone)
-nx_output.plot()
+otley_edge_sk = otley_edge.map(shapely_transform).map(set_precision_pointone)
+otley_edge_sk.plot()
 ```
 
 ```{python}
 armley_edge = get_nx(armley_line)
-nx_output = armley_edge.map(shapely_transform).map(set_precision_pointone)
-nx_output.plot()
+armley_edge_sk = armley_edge.map(shapely_transform).map(set_precision_pointone)
+armley_edge_sk.plot()
 ```
 
 Primal networks for the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
-## Simplification via voronoi polygons
+## Simplification via Voronoi polygons
 
-In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a center-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
+In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
-### Boundary
+### Boundary Segmentation
 
-The get_geometry_line funtion is defined to convert a given geometry into a simplified LineString boundary. The function first extracts the boundary of the input geometry and then simplifies it using a set tolerance level. The result is a GeoSeries of the simplified LineString, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatial objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (nx_boundary), highlighting its practical application in spatial analysis and network simplification.
+The boundary of the buffered input geometry is calculated and simplified, giving a simplified GeoSeries of LineStrings, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatinal objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (otley_boundary), highlighting its practical application in spatial analysis and network simplification. The simplified LineString geometries are then broken down into shorter segments.
 
 ```{python}
 from shapely import box
@@ -938,6 +936,9 @@ from shapely.ops import voronoi_diagram
 
 scale = 5.0
 tolerance = 0.1
+
+otley_clip = box(426800, 437400, 427000, 437600)
+armley_clip = box(427200, 433500, 427400, 433700)
 
 def get_geometry_line(this_buffer):
     """get_geometry_line: returns LineString boundary from geometry
@@ -955,22 +956,16 @@ def get_geometry_line(this_buffer):
 ```{python}
 otley_boundary = get_geometry_line(otley_geometry)
 otley_boundary.plot()
-plt.show()
 ```
 
 ```{python}
 armley_boundary = get_geometry_line(armley_geometry)
 armley_boundary.plot()
-plt.show()
 ```
 
 Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.
 
 :::
-
-### Segment
-
-The simplified LineString geometries are then broken down into shorter segments.
 
 ```{python}
 def get_segment_nx(line, scale):
@@ -1011,63 +1006,76 @@ def get_segment(line, distance=50.0):
 
 ```{python}
 otley_segment = get_segment_nx(otley_boundary, scale).reset_index(drop=True)
-otley_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
-plt.show()
+ax = otley_segment.clip(otley_clip).plot(edgecolor="red", linestyle='--', linewidth=1)
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 armley_segment = get_segment_nx(armley_boundary, scale).reset_index(drop=True)
-armley_segment.plot(edgecolor="red", linestyle='--', linewidth=1)
-plt.show()
+ax = armley_segment.clip(armley_clip).plot(edgecolor="red", linestyle='--', linewidth=1)
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
 ```
 
-Segmented boundaries of the Otley Road (left) and Armley Road (right) networks.
+Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
-As with the skeletonize approach, the the simplified LineString geometries are converted into point geometries.
+The simplified `LineString` geometries are converted into point geometries, detail @fig-voronoi-point.
+
+::: {#fig-voronoi-point layout-ncol="2"}
 
 ```{python}
 otley_point = otley_segment.loc[:, "geometry"].map(get_coordinates).explode()
 otley_point = MultiPoint(otley_point[::2].map(Point).values)
 nx_output = gp.GeoSeries(otley_point, crs=CRS)
-# nx_output.plot(edgecolor="blue", color="white")
-# plt.show()
+ax = nx_output.clip(otley_clip).plot(edgecolor="blue", color="white")
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 armley_point = armley_segment.loc[:, "geometry"].map(get_coordinates).explode()
 armley_point = MultiPoint(armley_point[::2].map(Point).values)
 nx_output = gp.GeoSeries(armley_point, crs=CRS)
-# nx_output.plot(edgecolor="blue", color="white")
-# plt.show()
+ax = nx_output.clip(armley_clip).plot(edgecolor="blue", color="white")
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
 ```
+
+Detail point segement of the Otley Road (left) and Armley Road (right) networks.
+
+:::
+
+
 <!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
-<!-- ### Voronoi -->
+### Voronoi diagram
 
-The Voronoi diagram is generated from nx_point within the bounds of nx_envelope, as illustrated in the figures below.
+The corresponding Voronoi diagrams is generated and clipped to the bounds of input geometry, as illustrated in @fig-voronoi-2 figures below.
 
-::: {#fig-voronoi layout-ncol="2"}
-
+<!-- ::: {#fig-voronoi layout-ncol="2"} -->
 ```{python}
 otley_envelope = box(*otley_point.bounds)
 otley_voronoi = voronoi_diagram(otley_point, envelope=otley_envelope, tolerance=tolerance, edges=True)
 otley_voronoi = gp.GeoSeries(map(set_precision_pointone, otley_voronoi.geoms), crs=CRS)
-otley_voronoi.plot()
-plt.show()
+#ax = otley_voronoi.plot()
+#ax.xaxis.set_ticklabels([])
+#ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 armley_envelope = box(*armley_point.bounds)
 armley_voronoi = voronoi_diagram(armley_point, envelope=armley_envelope, tolerance=tolerance, edges=True)
 armley_voronoi = gp.GeoSeries(map(set_precision_pointone, armley_voronoi.geoms), crs=CRS)
-armley_voronoi.plot()
-plt.show()
+#ax = armley_voronoi.plot()
+#ax.xaxis.set_ticklabels([])
+#ax.yaxis.set_ticklabels([])
 ```
 
-Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
+<!-- Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 
-:::
+<!-- ::: -->
 
 <!-- ### Voronoi 2 -->
 
@@ -1077,26 +1085,29 @@ Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 otley_voronoi = otley_voronoi.explode(index_parts=False).clip(otley_envelope)
 ix = ~otley_voronoi.is_empty & (otley_voronoi.type == "LineString")
 otley_voronoi = otley_voronoi[ix].reset_index(drop=True)
-otley_voronoi.plot()
-plt.show()
+ax = otley_voronoi.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 armley_voronoi = armley_voronoi.explode(index_parts=False).clip(armley_envelope)
 ix = ~armley_voronoi.is_empty & (armley_voronoi.type == "LineString")
 armley_voronoi = armley_voronoi[ix].reset_index(drop=True)
-armley_voronoi.plot()
-plt.show()
+ax = armley_voronoi.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
 ```
 
 Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
-
 <!-- ### Voronoi simplified network -->
 
 ```{python}
+offset = buffer_size / 2.0
+
 def get_voronoi_line(voronoi, boundary, geometry, buffer_size):
     """get_voronoi_line: returns cleaned simplified line by filtering Voronoi lines by distance,
     contained within network buffer Polygons, and combining overlapping end-points
@@ -1167,29 +1178,29 @@ def set_geometry(line, square):
     return gp.GeoSeries(map(LineString, r), crs=CRS)
 
 #nx_line = get_voronoi_line(nx_voronoi, nx_boundary, otley_geometry, buffer_size)
-
-offset = buffer_size / 2.0
 ```
+
+The centre-line is derived based by excluding lines making up the Voronoi diagrams that are at a distance of more than half-the-buffer-size from the buffer-edge, and is completely within the buffered geometry @fig-voronoi-simplified.
 
 ::: {#fig-voronoi-simplified layout-ncol="2"}
 
 ```{python}
 otley_line = filter_distance(otley_voronoi, otley_boundary, offset)
 otley_line.plot()
-plt.show()
 ```
 
 ```{python}
 armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 armley_line.plot()
-plt.show()
 ```
 
-Caption TBC.
+Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.   
 
 :::
 
-<!-- ### Voronoi line -->
+### Voronoi simplified network
+
+The centre-line network as shown in @fig-voronoi-line is then generated by removing knot-like features from the resulting network.
 
 ::: {#fig-voronoi-line layout-ncol="2"}
 
@@ -1203,7 +1214,6 @@ otley_line = otley_edge["geometry"].map(get_linestring).explode().to_frame("geom
 otley_line = set_geometry(otley_line, otley_square)
 otley_line = combine_line(otley_line)
 otley_line.plot()
-plt.show()
 ```
 
 ```{python}
@@ -1216,10 +1226,9 @@ armley_line = armley_edge["geometry"].map(get_linestring).explode().to_frame("ge
 armley_line = set_geometry(armley_line, armley_square)
 armley_line = combine_line(armley_line)
 armley_line.plot()
-plt.show()
 ```
 
-Caption TBC.
+Simplified versions of the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
@@ -1233,16 +1242,14 @@ The primal network associated with the voronoi approach is illustrated in @fig-p
 ```{python}
 otley_edge = get_nx(otley_line)
 otley_edge.plot()
-plt.show()
 ```
 
 ```{python}
 armley_edge = get_nx(armley_line)
 armley_edge.plot()
-plt.show()
 ```
 
-Caption TBC.
+Figure 12: Primal networks for the Otley Road (left) and Armley Road (right) networks.
 
 :::
 
@@ -1393,6 +1400,104 @@ plt.show()
 <!-- ## Combined network simplification and attribute merging -->
 
 
+# Results
+Some results
+
+#```{python}
+#base_edinburgh = gp.read_file("./data/rnet_princes_street.geojson").to_crs(CRS)
+#base_leeds = gp.read_file("./data/rnet_leeds_rail.geojson").to_crs(CRS)
+#```
+
+
+::: {#fig-results layout-ncol="3" layout-nrow="4"}
+```{python}
+# 1 1
+ax = armley_sk.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 1 2
+ax = armley_line.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 1 3
+ax = otley_line.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 2 1
+ax = armley_line.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 2 2
+ax = armley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 2 3
+ax = otley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 3 1
+ax = armley_edge_sk.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 3 2
+ax = armley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 3 3
+ax = otley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 4 1
+ax = armley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 4 2
+ax = armley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+```{python}
+# 4 3
+ax = otley_edge.plot()
+ax.xaxis.set_ticklabels([])
+ax.yaxis.set_ticklabels([])
+```
+
+Results diagrams
+
+:::
+
 # Discussion {#sec-discussion}
 
 -   Optimisation
@@ -1482,4 +1587,3 @@ Illustration of consolidation of intersections, with the `consolidate_intersecti
 
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
 Two approaches to this are outlined below. -->
-
