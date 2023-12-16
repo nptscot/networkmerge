@@ -1222,6 +1222,27 @@ def set_geometry(line, square):
     r = np.stack([source, target]).T
     return gp.GeoSeries(map(LineString, r), crs=CRS)
 
+def get_voronoi(this_buffer, tolerance, scale):
+    """voronoi_nx: return Voronoi polygon using segmented points from the buffer
+
+    args:
+      this_buffer: segmented
+      tolerance:   distance to snap input vertices
+      scale:       distance between segment boundary points
+
+    returns:
+      Voronoi polygon
+    """
+    segment = get_segment_nx(this_buffer, scale).reset_index(drop=True)
+    point = segment.loc[:, "geometry"].map(get_coordinates).explode()
+    point = MultiPoint(point[::2].map(Point).values)
+    boundary = box(*point.bounds)
+    r = voronoi_diagram(point, envelope=boundary, tolerance=tolerance, edges=True)
+    r = gp.GeoSeries(map(set_precision_pointone, r.geoms), crs=CRS)
+    r = r.explode(index_parts=False).clip(boundary)
+    ix = ~r.is_empty & (r.type == "LineString")
+    return r[ix].reset_index(drop=True)
+
 #nx_line = get_voronoi_line(nx_voronoi, nx_boundary, otley_geometry, buffer_size)
 ```
 
@@ -1446,7 +1467,8 @@ plt.show()
 
 
 # Results
-Some results
+Some results in column order Armley, Edinburgh, Doncaster rail. 
+Rows 1 input, 2 skeltonized, 3 voronoi, 4 primal skeletonized, 5 primal voronoi
 
 ```{python}
 base_edinburgh = gp.read_file("./data/rnet_princes_street.geojson").to_crs(CRS)
@@ -1478,6 +1500,20 @@ doncaster_sk = doncaster_line.map(shapely_transform).map(set_precision_pointone)
 
 doncaster_edge = get_nx(doncaster_line)
 doncaster_edge_sk = doncaster_edge.map(shapely_transform).map(set_precision_pointone)
+```
+
+```{python}
+edinburgh_boundary = get_geometry_line(edinburgh_geometry)
+edinburgh_voronoi = get_voronoi(edinburgh_boundary, tolerance, scale)
+edinburgh_line = get_voronoi_line(edinburgh_voronoi, edinburgh_boundary, edinburgh_geometry, radius)
+edinburgh_line = edinburgh_line.simplify(1.0)
+edinburgh_edge = get_nx(edinburgh_line)
+
+doncaster_boundary = get_geometry_line(doncaster_geometry)
+doncaster_voronoi = get_voronoi(doncaster_boundary, tolerance, scale)
+doncaster_line = get_voronoi_line(doncaster_voronoi, doncaster_boundary, doncaster_geometry, radius)
+doncaster_line = doncaster_line.simplify(1.0)
+doncaster_edge = get_nx(doncaster_line)
 ```
 
 ::: {#fig-results layout-ncol="3" layout-nrow="5"}
@@ -1525,42 +1561,42 @@ ax.yaxis.set_ticklabels([])
 
 ```{python}
 # 3 1
-ax = armley_edge_sk.plot()
+ax = armley_line.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 # 3 2
-ax = edinburgh_edge_sk.plot()
+ax = edinburgh_line.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 # 3 3
-ax = doncaster_edge_sk.plot()
+ax = doncaster_line.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 # 4 1 Voronoi
-ax = armley_line.plot()
+ax = armley_edge_sk.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 # 4 2
-ax = armley_line.plot()
+ax = edinburgh_edge_sk.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 # 4 3
-ax = armley_line.plot()
+ax = doncaster_edge_sk.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
@@ -1574,14 +1610,14 @@ ax.yaxis.set_ticklabels([])
 
 ```{python}
 # 5 2
-ax = armley_edge.plot()
+ax = edinburgh_edge.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
 
 ```{python}
 # 5 3
-ax = armley_edge.plot()
+ax = doncaster_edge.plot()
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
 ```
