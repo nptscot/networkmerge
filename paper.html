@@ -188,8 +188,8 @@ div.csl-indent {
   <li><a href="#integrating-attributes-from-the-detailed-network-into-the-simplified-network" id="toc-integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="nav-link" data-scroll-target="#integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a></li>
-  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">7</span> Discussion</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">8</span> References</a></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">6</span> Discussion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">7</span> References</a></li>
   </ul>
 </nav>
     </div>
@@ -308,7 +308,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways). Usually they also contain attributes such as the type of way, it’s characteristics (e.g.&nbsp;is lit at night), and the amount of traffic using each segment.</p>
 <p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
 <p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section.</p>
-<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;7</a> we discuss the results and outline future work.</p>
+<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;6</a> we discuss the results and outline future work.</p>
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
@@ -469,6 +469,11 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <section id="create-a-projected-combined-buffered-geometry" class="level3" data-number="4.1.3">
 <h3 data-number="4.1.3" class="anchored" data-anchor-id="create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</h3>
 <p>In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.</p>
+<div class="cell" name="python-setup-packages">
+<div class="cell-output cell-output-stdout">
+<pre><code>Matplotlib is building the font cache; this may take a moment.</code></pre>
+</div>
+</div>
 <p>The buffered versions of the networks are presented below:</p>
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="figure">
@@ -910,10 +915,6 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <div id="fig-results" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<section id="section" class="level1 quarto-layout-cell" data-number="6" style="flex-basis: 33.3%;justify-content: center;">
-<h1 data-number="6"><span class="header-section-number">6</span> 0 1</h1>
-<p>ax = base_armley.plot() ax.xaxis.set_ticklabels([]) ax.yaxis.set_ticklabels([]) ```</p>
-</section>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-62-3.png" class="img-fluid figure-img" width="672"></p>
@@ -924,13 +925,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p><img src="paper_files/figure-html/unnamed-chunk-63-5.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-64-7.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-65-9.png" class="img-fluid figure-img" width="672"></p>
@@ -941,13 +942,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p><img src="paper_files/figure-html/unnamed-chunk-66-11.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-67-13.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-68-15.png" class="img-fluid figure-img" width="672"></p>
@@ -958,13 +959,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p><img src="paper_files/figure-html/unnamed-chunk-69-17.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-70-19.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-71-21.png" class="img-fluid figure-img" width="672"></p>
@@ -975,13 +976,13 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p><img src="paper_files/figure-html/unnamed-chunk-72-23.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-73-25.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
 <p><img src="paper_files/figure-html/unnamed-chunk-74-27.png" class="img-fluid figure-img" width="672"></p>
@@ -992,20 +993,25 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p><img src="paper_files/figure-html/unnamed-chunk-75-29.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-76-31.png" class="img-fluid figure-img" width="672"></p>
+</div>
+</div>
 </div>
 <p></p><figcaption class="figure-caption">Figure&nbsp;20: Results diagrams</figcaption><p></p>
 </figure>
 </div>
 </section>
-<section id="sec-discussion" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Discussion</h1>
+<section id="sec-discussion" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Discussion</h1>
 <ul>
 <li><p>Optimisation</p></li>
 <li><p>Packaging</p></li>
 <li></li>
 </ul>
 </section>
-<section id="references" class="level1" data-number="8">
+<section id="references" class="level1" data-number="7">
 
 <!-- Tests -->
 <!-- Out-takes, to tidy-up/include later:
@@ -1030,7 +1036,7 @@ Two approaches to this are outlined below. -->
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">8 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">7 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-lovelace2017" class="csl-entry" role="listitem">
 Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
 </div>
