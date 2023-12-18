@@ -130,13 +130,16 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Abstract {.unnumbered}
 
+
 Route network datasets are central to transport models as key inputs and outputs.
 The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
-However, this complexity often complicates the visualization of transport model results, leading to potential misinterpretation in strategic network planning and investment decisions.
-A common issue is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts such as incorrect flow values inferred from the corridor, potentially leading to the misinterpretation of results and investment in the wrong places.
-To address this challenges, we present and compare two methods for *simplifying* route network datasets: image skeletonization and Voronoi diagram-based approaches.
+However, this complexity can affect the visualisation of model results.
+A common issue is the presence of multiple parallel ways on the same corridor.
+This can lead to incorrect traffic flow values inferred from visual inspection of results, misinterpretation of model outputs and, potentially, investment in the wrong places.
+To address this challenges, we present and compare two methods for *simplifying* route network datasets: 1) image skeletonization and 2) Voronoi diagram-centreline identification approaches.
 These methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.nptscot.scot](https://www.nptscot.scot).
-Being developed with open data and open-source software, these methods are not only reproducible but also adaptable for future extensions in various contexts.
+Being developed with open data and open-source software, these methods are not only reproducible but also adaptable, enbabling their use in new contexts.
+
 
 # Introduction
 
