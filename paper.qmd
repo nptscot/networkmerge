@@ -805,12 +805,14 @@ armley_line = get_raster_line_with_knots(armley_point)
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
 otley_sk = otley_line.map(shapely_transform).map(set_precision_pointone)
+otley_sk = otley_sk.set_crs(CRS)
 otley_sk.plot()
 ```
 
 ```{python}
 shapely_transform = partial(affine_transform, matrix=s_matrix_armley)
 armley_sk = armley_line.map(shapely_transform).map(set_precision_pointone)
+armley_sk = armley_sk.set_crs(CRS)
 armley_sk.plot()
 ```
 
@@ -906,14 +908,12 @@ def get_nx(line):
 
 ::: {#fig-primal layout-ncol="2"}
 ```{python}
-otley_edge = get_nx(otley_line)
-otley_edge_sk = otley_edge.map(shapely_transform).map(set_precision_pointone)
+otley_edge_sk = get_nx(otley_sk)
 otley_edge_sk.plot()
 ```
 
 ```{python}
-armley_edge = get_nx(armley_line)
-armley_edge_sk = armley_edge.map(shapely_transform).map(set_precision_pointone)
+armley_edge_sk = get_nx(armley_sk)
 armley_edge_sk.plot()
 ```
 
@@ -1555,49 +1555,84 @@ Some results in column order Armley, Edinburgh, Doncaster rail.
 Rows 1 input, 2 skeltonized, 3 voronoi, 4 primal skeletonized, 5 primal voronoi
 
 ```{python}
-base_edinburgh = gp.read_file("./data/rnet_princes_street.geojson").to_crs(CRS)
-edinburgh_geometry = get_geometry_buffer(base_edinburgh["geometry"], radius)
-r_matrix_edinburgh, s_matrix_edinburgh, out_shape_edinburgh = get_affine_transform(edinburgh_geometry, scale=2.0)
-shapely_transform = partial(affine_transform, matrix=s_matrix_edinburgh)
-edinburgh_skeleton = get_skeleton(edinburgh_geometry, r_matrix_edinburgh, out_shape_edinburgh)
+PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
+             "armley_line,edinburgh_line,doncaster_line,armley_edge_sk,edinburgh_edge_sk,"
+             "doncaster_edge_sk,armley_edge,edinburgh_edge,doncaster_edge").split(",")
 
-edinburgh_p = np.stack(np.where(edinburgh_skeleton >= 1))
-edinburgh_point = gp.GeoSeries(map(Point, edinburgh_p.T), crs=CRS)
-edinburgh_line = get_raster_line(edinburgh_point)
-shapely_transform = partial(affine_transform, matrix=s_matrix_edinburgh)
-edinburgh_sk = edinburgh_line.map(shapely_transform).map(set_precision_pointone)
-
-edinburgh_edge = get_nx(edinburgh_line)
-edinburgh_edge_sk = edinburgh_edge.map(shapely_transform).map(set_precision_pointone)
-
-base_doncaster = gp.read_file("./data/rnet_doncaster_rail.geojson").to_crs(CRS)
-doncaster_geometry = get_geometry_buffer(base_doncaster["geometry"], radius)
-r_matrix_doncaster, s_matrix_doncaster, out_shape_doncaster = get_affine_transform(doncaster_geometry, scale=2.0)
-shapely_transform = partial(affine_transform, matrix=s_matrix_doncaster)
-doncaster_skeleton = get_skeleton(doncaster_geometry, r_matrix_doncaster, out_shape_doncaster)
-
-doncaster_p = np.stack(np.where(doncaster_skeleton >= 1))
-doncaster_point = gp.GeoSeries(map(Point, doncaster_p.T), crs=CRS)
-doncaster_line = get_raster_line(doncaster_point)
-shapely_transform = partial(affine_transform, matrix=s_matrix_doncaster)
-doncaster_sk = doncaster_line.map(shapely_transform).map(set_precision_pointone)
-
-doncaster_edge = get_nx(doncaster_line)
-doncaster_edge_sk = doncaster_edge.map(shapely_transform).map(set_precision_pointone)
+from pathlib import Path
+for variable in PLOT_DATA:
+    filepath = Path(f"data/rnet_{variable}.geojson")
+    if variable in globals():
+        continue
+    if filepath.exists():
+        data = gp.read_file(filepath)
+        globals()[variable] = data
 ```
 
 ```{python}
-edinburgh_boundary = get_geometry_line(edinburgh_geometry)
-edinburgh_voronoi = get_voronoi(edinburgh_boundary, tolerance, scale)
-edinburgh_line = get_voronoi_line(edinburgh_voronoi, edinburgh_boundary, edinburgh_geometry, radius)
-edinburgh_line = edinburgh_line.simplify(1.0)
-edinburgh_edge = get_nx(edinburgh_line)
+if "edinburgh_sk" not in globals():
+    base_edinburgh = gp.read_file("./data/rnet_princes_street.geojson").to_crs(CRS)
+    edinburgh_geometry = get_geometry_buffer(base_edinburgh["geometry"], radius)
+    r_matrix_edinburgh, s_matrix_edinburgh, out_shape_edinburgh = get_affine_transform(
+        edinburgh_geometry, scale=2.0
+    )
+    shapely_transform = partial(affine_transform, matrix=s_matrix_edinburgh)
+    edinburgh_skeleton = get_skeleton(
+        edinburgh_geometry, r_matrix_edinburgh, out_shape_edinburgh
+    )
+    edinburgh_p = np.stack(np.where(edinburgh_skeleton >= 1))
+    edinburgh_point = gp.GeoSeries(map(Point, edinburgh_p.T), crs=CRS)
+    edinburgh_line = get_raster_line(edinburgh_point)
+    edinburgh_sk = edinburgh_line.map(shapely_transform).map(set_precision_pointone)
+    edinburgh_sk = gp.GeoSeries(edinburgh_sk, crs=CRS)
+    edinburgh_edge_sk = get_nx(edinburgh_sk)
 
-doncaster_boundary = get_geometry_line(doncaster_geometry)
-doncaster_voronoi = get_voronoi(doncaster_boundary, tolerance, scale)
-doncaster_line = get_voronoi_line(doncaster_voronoi, doncaster_boundary, doncaster_geometry, radius)
-doncaster_line = doncaster_line.simplify(1.0)
-doncaster_edge = get_nx(doncaster_line)
+if "doncaster_sk" not in globals():
+    base_doncaster = gp.read_file("./data/rnet_doncaster_rail.geojson").to_crs(CRS)
+    doncaster_geometry = get_geometry_buffer(base_doncaster["geometry"], radius)
+    r_matrix_doncaster, s_matrix_doncaster, out_shape_doncaster = get_affine_transform(
+        doncaster_geometry, scale=2.0
+    )
+    shapely_transform = partial(affine_transform, matrix=s_matrix_doncaster)
+    doncaster_skeleton = get_skeleton(
+        doncaster_geometry, r_matrix_doncaster, out_shape_doncaster
+    )
+    doncaster_p = np.stack(np.where(doncaster_skeleton >= 1))
+    doncaster_point = gp.GeoSeries(map(Point, doncaster_p.T), crs=CRS)
+    doncaster_line = get_raster_line(doncaster_point)
+    doncaster_sk = doncaster_line.map(shapely_transform).map(set_precision_pointone)
+    doncaster_sk = gp.GeoSeries(doncaster_sk, crs=CRS)
+    doncaster_edge_sk = get_nx(doncaster_sk)
+```
+
+```{python}
+if "edinburgh_edge" not in globals():
+    edinburgh_boundary = get_geometry_line(edinburgh_geometry)
+    edinburgh_voronoi = get_voronoi(edinburgh_boundary, tolerance, scale)
+    edinburgh_line = get_voronoi_line(
+        edinburgh_voronoi, edinburgh_boundary, edinburgh_geometry, radius
+    )
+    edinburgh_line = edinburgh_line.simplify(1.0)
+    edinburgh_edge = get_nx(edinburgh_line)
+
+if "doncaster_edge" not in globals():
+    doncaster_boundary = get_geometry_line(doncaster_geometry)
+    doncaster_voronoi = get_voronoi(doncaster_boundary, tolerance, scale)
+    doncaster_line = get_voronoi_line(
+        doncaster_voronoi, doncaster_boundary, doncaster_geometry, radius
+    )
+    doncaster_line = doncaster_line.simplify(1.0)
+    doncaster_edge = get_nx(doncaster_line)
+```
+
+```{python}
+for variable in PLOT_DATA:
+    filepath = Path(f"data/rnet_{variable}.geojson")
+    if filepath.exists():
+        continue
+    if variable in globals():
+        data = globals()[variable]
+        data.to_file(filepath)
 ```
 
 ::: {#fig-results layout-ncol="3" layout-nrow="5"}
