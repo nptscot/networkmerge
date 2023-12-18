@@ -1367,7 +1367,7 @@ The network joining function can also take a number of arguments that define how
 -   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, for determining the proximity at which features from both networks are considered for merging.
     Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
 
--   **`segment_length`** (`segment_length`): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be  key for achieving higher accuracy in attribute integration.
+-   **`segment_length`** (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be  key for achieving higher accuracy in attribute integration.
 <!-- Todo: discuss possibility of cutting lines at buffer intersections. -->
 
 -   **`funs`** (Function List): Comprises a series of functions assigned to process each attribute during the merge.
