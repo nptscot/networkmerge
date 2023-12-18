@@ -1325,13 +1325,8 @@ In this case there is no definitive key, meaning that network joining can be reg
 **Data Preparation:**
 
 The main inputs of the network merging function are two route networks: `rnet_x` (the simple network geometry) and `rnet_y` (the original network with a more complex geometry and attributes that need to be translated onto the new network).
-`rnet_x` can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins  
-    It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry.
-    `rnet_x` is akin to a canvas, prepared to receive additional layers of data.
-    It wroth to note that `rnet_x` need to contian a identifier columns.
-
--   `rnet_y` - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail.
-    It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network.
+`rnet_x` can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins [@ballesteros2011].
+`rnet_y` in this case represents the detailed network with attributes such as model outputs representing transport flows to be translated onto the new network.
 
 **Step 1: Coordinate Reference System Alignment**
 
