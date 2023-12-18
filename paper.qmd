@@ -33,7 +33,7 @@ editor:
 # jupyter: python3
 ---
 
-
+```{=html}
 <!-- Blurb form special issue in Journal of Physics: Complexity
 
 
@@ -67,7 +67,9 @@ The focus issue is concerned with all aspects of urban mobility and green transp
     Implications for policymaking and urban designers
     Measuring complexity of urban mobility
     Green mobility and social distancing in times of pandemic -->
----
+```
+
+------------------------------------------------------------------------
 
 # Reproducibility {.unnumbered}
 
@@ -83,7 +85,7 @@ quarto render paper.qmd
 
 Install the dependencies by cloning the repository and running the following:
 
-```r
+``` r
 requirements_txt = readLines("requirements.txt")
 py_install(requirements_txt, pip = TRUE)
 ```
@@ -115,8 +117,6 @@ rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 ```
 
-
-
 To contribute to the papers written as quarto documents (with `.qmd` extensions) like this one, we recommend using the Quarto extension for VS Code.
 You can go into the visual editor with the following shortcut:
 
@@ -130,7 +130,6 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 
 # Abstract {.unnumbered}
 
-
 Route network datasets are central to transport models as key inputs and outputs.
 The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
 However, this complexity can affect the visualisation of model results.
@@ -140,14 +139,14 @@ To address this challenges, we present and compare two methods for *simplifying*
 These methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.nptscot.scot](https://www.nptscot.scot).
 Being developed with open data and open-source software, these methods are not only reproducible but also adaptable, enbabling their use in new contexts.
 
-
 # Introduction
 
 Datasets representing route networks are central to modern transport planning: they are used as inputs to transport models and are vital for the visualisation and interpretation of model outputs.
-Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models. 
+Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models.
 Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
-However, route network datasets are ubiquitous as both transport model inputs and outputs. As inputs, they typically represent road networks. Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
-
+However, route network datasets are ubiquitous as both transport model inputs and outputs.
+As inputs, they typically represent road networks.
+Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
@@ -159,9 +158,7 @@ Usually they also contain attributes such as the type of way, it's characteristi
 File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
 A more recent approach is to represent transport networks in standard geographic file formats.
 In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow.
-Making transport datasets compliant with the 'simple features' geographic data specification in this way has advantages,
-<!-- compared with the proliferation of formats used by proprietary software, -->
-enabling more easier sharing of datasets between people and programs.
+Making transport datasets compliant with the 'simple features' geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs.
 The simple features standard is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage.
 For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.
 
@@ -175,10 +172,13 @@ The aim of this paper is to articulate the problem of complex route networks, pr
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 In @sec-discussion we discuss the results and outline future work.
 
+```{=html}
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
-<!-- Todo: add papers on network cleaning and simplification. --> 
+```
+<!-- Todo: add papers on network cleaning and simplification. -->
+
 <!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
 
 # Prior work and problem definition {#sec-problem}
@@ -235,7 +235,6 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 The input datasets are presented in @tbl-input-data.
 
 ::: {#tbl-input-data}
-
 ```{r}
 #| label: tbl-input-data
 input_data = tibble::tribble(
@@ -247,13 +246,11 @@ knitr::kable(input_data)
 ```
 
 Input datasets used in this paper.
-
 :::
 
 The input datasets are illustrated in @fig-input-data.
 
 ::: {#fig-input-data}
-
 ```{r}
 tmap_mode("plot")
 tmap_arrange(
@@ -263,19 +260,18 @@ tmap_arrange(
 ```
 
 Illustration of the size and level of spatial complexity of the input datasets.
-
 :::
-
 
 # Methods {#sec-methods}
 
-There are two main challenges that need to be overcome to simplify transport networks, in a way that preserves their value: 
+There are two main challenges that need to be overcome to simplify transport networks, in a way that preserves their value:
 
-1. Simplifying the *geometry*
-2. Assigning attributes to the simplified network
+1.  Simplifying the *geometry*
+2.  Assigning attributes to the simplified network
 
 ## Simplifying the geometry
 
+```{=html}
 <!-- 
 
 Two fundamental approaches to simplifying transport networks are:
@@ -284,14 +280,13 @@ Two fundamental approaches to simplifying transport networks are:
 -   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
 
 In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
-
+```
 ### Topology-preserving simplification
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
-
 ```{r}
 input = sf::read_sf('data/rnet_otley.geojson')
 input_projected = sf::st_transform(input, "EPSG:27700")
@@ -354,16 +349,18 @@ tmap_arrange(m_otley, m_armley)
 
 Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
-
 :::
 
 ### Network Simplification
 
-The paper presents two  approaches for network simplification: one involves image skeletonization, while the other utilizes Voronoi diagrams to identify central lines. The detailed steps of the methodology will be presented in the following sections.
+The paper presents two approaches for network simplification: one involves image skeletonization, while the other utilizes Voronoi diagrams to identify central lines.
+The detailed steps of the methodology will be presented in the following sections.
 
 ### Create a projected combined buffered geometry:
 
-In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.
+In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function.
+A buffer size of 8 meters is selected for this purpose.
+These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.
 
 ```{python}
 #| name: python-setup-packages
@@ -445,7 +442,6 @@ armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_siz
 The buffered versions of the networks are presented below:
 
 ::: {#fig-buffered-network layout-ncol="2"}
-
 ```{python}
 base_otley.plot(edgecolor="blue", color="blue")
 ```
@@ -463,7 +459,6 @@ armley_geometry.plot(edgecolor="black", color="blue")
 ```
 
 Buffered versions of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 ```{python}
@@ -473,7 +468,6 @@ armley_split = pd.DataFrame(base_armley["geometry"].map(split_end).to_list(), co
 ```
 
 ::: {#fig-split-ends layout-ncol="2"}
-
 ```{python}
 ## overlapping
 otley_centre = gp.GeoSeries(otley_split["centre"], crs=CRS)
@@ -492,7 +486,6 @@ combined_armley.plot()
 ```
 
 Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 ```{python}
@@ -516,7 +509,6 @@ base_armley.loc[ix, "count"] = 0
 ```
 
 ::: {#fig-otley-armley-classes layout-ncol="2"}
-
 ```{python}
 ix = base_otley["count"].isin([0, 1])
 p = base_otley.loc[~ix, "geometry"].copy()
@@ -554,17 +546,17 @@ armley_segment.plot()
 ```
 
 Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 ### Skeletonization
 
-The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.
-
+The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant.
+This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region.
+This process is demonstrated using the Sample Street Network.
 
 Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image
 
-A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image. 
+A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image.
 
 ```{python}
 import numpy as np
@@ -607,7 +599,8 @@ r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley
 
 ### Affine transforms
 
-The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-panel.
+The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
+The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-panel.
 
 ```{python}
 from IPython.display import display, Markdown
@@ -622,8 +615,7 @@ or_matrix_armley = pd.DataFrame(np.asarray(r_matrix_armley).reshape(-1, 3))
 os_matrix_armley = pd.DataFrame(np.asarray(s_matrix_armley).reshape(3, -1).T)
 ```
 
-::: {#tbl-panel layout-ncol=2}
-
+::: {#tbl-panel layout-ncol="2"}
 ```{python}
 #| output: asis
 #| label: tbl-rasterio-transform
@@ -639,14 +631,17 @@ display_matrix(os_matrix_otley, "   ")
 ```
 
 Rasterio and Shapely affine transformation matrices for the Otley Road network.
-
 :::
 
-In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
+In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation.
+The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
 ### Skeletonize the buffer to a point geometry
 
-A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster's scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize. This step ensures a more coherent and accurate representation in the raster image.
+A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image.
+This transformation adjusts the geometry to match the raster's scale and orientation.
+Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize.
+This step ensures a more coherent and accurate representation in the raster image.
 
 ```{python}
 import warnings
@@ -658,7 +653,6 @@ import rasterio.plot as rip
 ```
 
 ::: {#fig-rasterize layout-ncol="2"}
-
 ```{python}
 otley_im = rif.rasterize(otley_segment.values, transform=r_matrix_otley, out_shape=out_shape_otley)
 with warnings.catch_warnings():
@@ -677,13 +671,12 @@ rip.show(armley_im, cmap="Greys", title="buffer geometry")
 ```
 
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
-
 :::
 
-The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton.
+The image undergoes a thinning process, yielding a skeletal raster image as the result.
+This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton.
 
 ::: {#fig-thin-skeleton layout-ncol="2"}
-
 ```{python}
 otley_skeleton = skeletonize(otley_im).astype(np.uint8)
 rip.show(otley_skeleton, cmap="Greys", title="skeleton geometry")
@@ -699,12 +692,12 @@ armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
 ```
 
 Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
-The rasterized skeletal image is then converted back into point geometry, completing the vector -> raster -> vector geometry transformation process.
+The rasterized skeletal image is then converted back into point geometry, completing the vector -\> raster -\> vector geometry transformation process.
 
 <!-- Figure commented out as not necessary and similar to the subsequent figure: -->
+
 <!-- ::: {#fig-skeleton-vector layout-ncol="2"} -->
 
 ```{python}
@@ -720,19 +713,22 @@ armley_transform = armley_point.map(shapely_transform).map(set_precision_pointon
 # plt.show()
 ```
 
+```{=html}
 <!-- Skeletonized versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
 
 ::: -->
-
-The challenge with this approach is that instead of generating points situated on the simplified network, it returns a set of points rather than line geometries. This necessitates the inference of line geometry from the associated set of points.
+```
+The challenge with this approach is that instead of generating points situated on the simplified network, it returns a set of points rather than line geometries.
+This necessitates the inference of line geometry from the associated set of points.
 Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.
 
 The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
-After adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network.
-<!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
-To visualize the simplified network in its original spatial context, the reverse affine transformation is applied. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
+After adjacent points are identified, line segments are created by connecting these points.
+The final and crucial step is the amalgamation of these individual line segments.
+This combination results in a continuous line geometry that represents the simplified network.
+<!-- This conversion from point to line geometry is a pivotal aspect of network simplification. --> To visualize the simplified network in its original spatial context, the reverse affine transformation is applied.
+This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
 The resulting simplified network is illustrated in @fig-skeleton-line.
-
 
 ```{python}
 from shapely import get_coordinates
@@ -819,13 +815,15 @@ armley_sk.plot()
 ```
 
 Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
-
 :::
 
 ### Knots
 
 Knots in the network are multiple short segments at intersections, resembling tangled knots.
-To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in @fig-knots.
+To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined.
+The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point.
+This process effectively removes the knot-like appearance.
+As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in @fig-knots.
 
 ```{python}
 import networkx as nx
@@ -907,7 +905,6 @@ def get_nx(line):
 ```
 
 ::: {#fig-primal layout-ncol="2"}
-
 ```{python}
 otley_edge = get_nx(otley_line)
 otley_edge_sk = otley_edge.map(shapely_transform).map(set_precision_pointone)
@@ -921,16 +918,21 @@ armley_edge_sk.plot()
 ```
 
 Primal networks for the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 ## Simplification via Voronoi polygons
 
-In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
+In this approach, the network lines are first buffered as described above.
+The edges of these buffers are then segmented into sequences of points.
+From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points.
+This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
 ### Boundary Segmentation
 
-The boundary of the buffered input geometry is calculated and simplified, giving a simplified GeoSeries of LineStrings, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatinal objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (otley_boundary), highlighting its practical application in spatial analysis and network simplification. The simplified LineString geometries are then broken down into shorter segments.
+The boundary of the buffered input geometry is calculated and simplified, giving a simplified GeoSeries of LineStrings, correctly aligned with a specified coordinate reference system (CRS).
+This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatinal objects.
+The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (otley_boundary), highlighting its practical application in spatial analysis and network simplification.
+The simplified LineString geometries are then broken down into shorter segments.
 
 ```{python}
 from shapely import box
@@ -954,7 +956,6 @@ def get_geometry_line(this_buffer):
 ```
 
 ::: {#fig-boundary layout-ncol="2"}
-
 ```{python}
 otley_boundary = get_geometry_line(otley_geometry)
 otley_boundary.plot()
@@ -966,7 +967,6 @@ armley_boundary.plot()
 ```
 
 Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 ```{python}
@@ -1050,7 +1050,6 @@ def get_raster_line(point, knot=False):
 ```
 
 ::: {#fig-segment layout-ncol="2"}
-
 ```{python}
 otley_segment = get_segment_nx(otley_boundary, scale).reset_index(drop=True)
 ax = otley_segment.clip(otley_clip).plot(edgecolor="red", linestyle='--', linewidth=1)
@@ -1066,13 +1065,11 @@ ax.yaxis.set_ticklabels([])
 ```
 
 Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 The simplified `LineString` geometries are converted into point geometries, detail @fig-voronoi-point.
 
 ::: {#fig-voronoi-point layout-ncol="2"}
-
 ```{python}
 otley_point = otley_segment.loc[:, "geometry"].map(get_coordinates).explode()
 otley_point = MultiPoint(otley_point[::2].map(Point).values)
@@ -1092,16 +1089,16 @@ ax.yaxis.set_ticklabels([])
 ```
 
 Detail point segement of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
-
 <!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
+
 ### Voronoi diagram
 
 The corresponding Voronoi diagrams is generated and clipped to the bounds of input geometry, as illustrated in @fig-voronoi-2 figures below.
 
 <!-- ::: {#fig-voronoi layout-ncol="2"} -->
+
 ```{python}
 otley_envelope = box(*otley_point.bounds)
 otley_voronoi = voronoi_diagram(otley_point, envelope=otley_envelope, tolerance=tolerance, edges=True)
@@ -1120,14 +1117,14 @@ armley_voronoi = gp.GeoSeries(map(set_precision_pointone, armley_voronoi.geoms),
 #ax.yaxis.set_ticklabels([])
 ```
 
+```{=html}
 <!-- Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 
 <!-- ::: -->
-
+```
 <!-- ### Voronoi 2 -->
 
 ::: {#fig-voronoi-2 layout-ncol="2"}
-
 ```{python}
 otley_voronoi = otley_voronoi.explode(index_parts=False).clip(otley_envelope)
 ix = ~otley_voronoi.is_empty & (otley_voronoi.type == "LineString")
@@ -1147,7 +1144,6 @@ ax.yaxis.set_ticklabels([])
 ```
 
 Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 <!-- ### Voronoi simplified network -->
@@ -1251,7 +1247,6 @@ def get_voronoi(this_buffer, tolerance, scale):
 The centre-line is derived based by excluding lines making up the Voronoi diagrams that are at a distance of more than half-the-buffer-size from the buffer-edge, and is completely within the buffered geometry @fig-voronoi-simplified.
 
 ::: {#fig-voronoi-simplified layout-ncol="2"}
-
 ```{python}
 otley_line = filter_distance(otley_voronoi, otley_boundary, offset)
 otley_line.plot()
@@ -1262,8 +1257,7 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 armley_line.plot()
 ```
 
-Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.   
-
+Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.
 :::
 
 ### Voronoi simplified network
@@ -1271,7 +1265,6 @@ Voronoi diagram lines with lines that are completely within the buffer geometry 
 The centre-line network as shown in @fig-voronoi-line is then generated by removing knot-like features from the resulting network.
 
 ::: {#fig-voronoi-line layout-ncol="2"}
-
 ```{python}
 otley_line = filter_buffer(otley_line, otley_geometry)
 otley_edge, otley_node = get_source_target(otley_line.to_frame("geometry"))
@@ -1297,16 +1290,13 @@ armley_line.plot()
 ```
 
 Simplified versions of the Otley Road (left) and Armley Road (right) networks.
-
 :::
-
 
 <!-- ### Primal network -->
 
 The primal network associated with the voronoi approach is illustrated in @fig-primal-voronoi.
 
 ::: {#fig-primal-voronoi layout-ncol="2"}
-
 ```{python}
 otley_edge = get_nx(otley_line)
 otley_edge.plot()
@@ -1318,28 +1308,35 @@ armley_edge.plot()
 ```
 
 Figure 12: Primal networks for the Otley Road (left) and Armley Road (right) networks.
-
 :::
 
 <!-- ![](images/paste-1.png) -->
 
-## Integrating attributes from the detailed network into the simplified network
+## Joining route networks
 
-In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.
+After a simplified network has been generated, using a the methods outlined in the previous section or through a separate process, the next step is to translate the values of attributes from the detailed network to the simplified network.
+This 'joining' step is vital for using simplified networks as the basis for presenting model outputs.
+In instances where a simplified version of the network is readily available, such as the Ordnance Survey's Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time.
+We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package [@lovelace2019].
 
-In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. `stplanr` emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html). 
+The process is analogous to joining two datasets based on a common 'key' variable.
+In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
 
 **Data Preparation:**
 
-The core functionality of our integration process hinges on two pivotal inputs: `rnet_x` and `rnet_y`. Each plays a distinct yet complementary role in the network attribute integration:
+The main inputs of the network merging function are two route networks: `rnet_x` (the simple network geometry) and `rnet_y` (the original network with a more complex geometry and attributes that need to be translated onto the new network).
+`rnet_x` can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins  
+    It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry.
+    `rnet_x` is akin to a canvas, prepared to receive additional layers of data.
+    It wroth to note that `rnet_x` need to contian a identifier columns.
 
-- `rnet_x` - Target Route Network: This dataset represents our base framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. `rnet_x` is akin to a canvas, prepared to receive additional layers of data. It wroth to note that `rnet_x` need to contian a identifier columns.
-
-- `rnet_y` - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network. 
+-   `rnet_y` - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail.
+    It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network.
 
 **Step 1: Coordinate Reference System Alignment**
 
-Transform the spatial data of both `rnet_x` (the simplified network) and `rnet_y` (the detailed network) to the same coordinate reference system. For this project, we have selected EPSG:27700.
+Transform the spatial data of both `rnet_x` (the simplified network) and `rnet_y` (the detailed network) to the same coordinate reference system.
+For this project, we have selected EPSG:27700.
 
 ```{r}
 rnet_xp = sf::st_transform(rnet_x, "EPSG:27700")
@@ -1350,15 +1347,17 @@ rnet_yp = sf::st_transform(rnet_y, "EPSG:27700")
 
 Create a function list that dictates how each attribute is to be processed:
 
-- **Exclude**: "geometry" from processing.
-  
-- **Mean Function**: Applied to attributes like "Gradient" and "Quietness". TODO expline the funtion of sum and mean
-  
-- **Sum Function**: Used for aggregating values in columns such as "all_bicycle".
+-   **Exclude**: "geometry" from processing.
+
+-   **Mean Function**: Applied to attributes like "Gradient" and "Quietness".
+    TODO expline the funtion of sum and mean
+
+-   **Sum Function**: Used for aggregating values in columns such as "all_bicycle".
 
 **Step 3: Using `stplanr::rnet_merge` for Integration**
 
-Employ the `rnet_merge` function from the `stplanr` package. This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.
+Employ the `rnet_merge` function from the `stplanr` package.
+This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system.
 
 ```{r}
 #| eval: false
@@ -1367,14 +1366,22 @@ rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = 20, segment_length = 
 
 In the example code, four arguments need to be carefully defined:
 
-- **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, essential for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
-  
-- **`segment_length`** (Segment Maximum Length): This specifies the upper limit for each segment's length within the detailed network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.
-  
-- **`funs`** (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.
+-   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, essential for determining the proximity at which features from both networks are considered for merging.
+    Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
 
- 
-When attribute$value corresponds to the sum function, it is crucial to ensure accuracy and relevance in the results. The complexity of the original network, characterized by multiple lines, implies a diverse distribution of attributes. A weighted sum method is essential here, as it ensures that each attribute from the parallel lines is accurately represented in the aggregate value for the single line in the simplified network. This approach accounts for the varying significance and characteristics of each line in the complex network, ensuring that more influential lines have a proportionate impact on the final aggregated value. The formula for the weighted sum is:
+-   **`segment_length`** (Segment Maximum Length): This specifies the upper limit for each segment's length within the detailed network, here set to 10 meters.
+    Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer.
+    This granularity is key for achieving higher accuracy in attribute integration.
+
+-   **`funs`** (Function List): Comprises a series of functions assigned to process each attribute during the merge.
+    This may involve applying statistical operations, such as calculating the mean or sum of various attributes.
+    The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.
+
+When attribute\$value corresponds to the sum function, it is crucial to ensure accuracy and relevance in the results.
+The complexity of the original network, characterized by multiple lines, implies a diverse distribution of attributes.
+A length-weighted sum method is used in this case, to ensure that results are not affected by many small but less important segments in the complex geometry.
+This approach accounts for the varying significance and characteristics of each line in the complex network, ensuring that more influential lines have a proportionate impact on the final aggregated value.
+The formula for the weighted sum is:
 
 $$
 \text{Weighted Sum} = \sum (x_i \times w_i)
@@ -1382,13 +1389,18 @@ $$
 
 Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line.
 
-Normalization is the next crucial step. It adjusts the aggregated values from the complex network, making them suitable for representation in the simplified network. This process is vital in ensuring that the simplification does not distort the true values of attributes and relationships as they exist in the complex network. Normalization helps translate the data into a form that is consistent and meaningful within the context of the simplified representation. The normalization formula is:
+The optional normalization step adjusts the values associated with each simplified feature such that the total flow on complex and simplified networks are equal.
+Normalization captures the fact that simplified networks are likely to have a smaller total length and be less circuitous.
+The normalization formula is:
 
 $$
 \text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
 $$
 
-The adjustment for overestimation, achieved through the over_estimate factor, becomes indispensable in this context. It serves as a corrective mechanism to align the summed and normalized values from the complex network, such as parallel lines, with the single line of the simplified network. This factor ensures that the attribute values are not only aggregated but also scaled appropriately to match the simplified network's representation. The formula for adjustment of overestimation is:
+The adjustment for overestimation, achieved through the over_estimate factor, becomes indispensable in this context.
+It serves as a corrective mechanism to align the summed and normalized values from the complex network, such as parallel lines, with the single line of the simplified network.
+This factor ensures that the attribute values are not only aggregated but also scaled appropriately to match the simplified network's representation.
+The formula for adjustment of overestimation is:
 
 $$
 \text{over\_estimate} = \frac{\sum(\text{Aggregated Value} \times \text{Length of Single Line})}{\sum(\text{Original Value} \times \text{Length of Lines in Complex Network})}
@@ -1398,19 +1410,25 @@ $$
 \text{Adjusted Value} = \frac{\text{Normalized Value}}{\text{over\_estimate}}
 $$
 
-In essence, when transferring attribute values from a complex network to a simplified single-line network, employing a strategic approach is crucial. This approach includes using weighted summation to accurately aggregate values from multiple sources, normalization to ensure these values are meaningful within the simplified network, and an adjustment for overestimation to ensure the final values are proportionate and representative of the original network's attributes. This meticulous process ensures that the simplified network accurately reflects the complexity and nuances of the original network.
+In essence, when transferring attribute values from a complex network to a simplified single-line network, employing a strategic approach is crucial.
+This approach includes using weighted summation to accurately aggregate values from multiple sources, normalization to ensure these values are meaningful within the simplified network, and an adjustment for overestimation to ensure the final values are proportionate and representative of the original network's attributes.
+This meticulous process ensures that the simplified network accurately reflects the complexity and nuances of the original network.
 
-- **`max_angle_diff`** (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such  consideration of angular alignment plays a pivotal role in maintaining the network's geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network's structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.
+-   **`max_angle_diff`** (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network's geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network's structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.
 
+To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y.
+The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj\$angle_x.
+In this study, the line_bearing function is defined to calculate the angle.
+As shown below,
 
-To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y. The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj$angle_x. In this study, the line_bearing function is defined to calculate the angle. As shown below,
-
-```
+```         
 rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)
 ```
-The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line. Below is the detailed formula:
 
-1. **Convert Latitudes and Longitudes to Radians**:
+The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line.
+Below is the detailed formula:
+
+1.  **Convert Latitudes and Longitudes to Radians**:
 
 $$
 \text{lat}_1 = \text{lat}_1 \times \frac{\pi}{180}
@@ -1428,8 +1446,8 @@ $$
 \text{lon}_2 = \text{lon}_2 \times \frac{\pi}{180}
 $$
 
-2. **Calculate Bearing**:
-   
+2.  **Calculate Bearing**:
+
 $$
 \Delta lon = lon_2 - lon_1
 $$
@@ -1438,7 +1456,7 @@ $$
 \theta = atan2(\sin(\Delta lon) \times \cos(lat_2), \cos(lat_1) \times \sin(lat_2) - \sin(lat_1) \times \cos(lat_2) \times \cos(\Delta lon))
 $$
 
-3. **Convert Bearing from Radians to Degrees and Normalize Bidirectional Bearing to [0, 180) Degrees**:
+3.  **Convert Bearing from Radians to Degrees and Normalize Bidirectional Bearing to \[0, 180) Degrees**:
 
 $$
 \theta = \theta \times \frac{180}{\pi}
@@ -1448,10 +1466,11 @@ $$
 \theta = \theta \mod 180
 $$
 
-In this bidirectional adjustment, the bearing is normalized to a range of [0, 180) degrees. This means that opposite directions along a line yield the same bearing value. This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction.
+In this bidirectional adjustment, the bearing is normalized to a range of \[0, 180) degrees.
+This means that opposite directions along a line yield the same bearing value.
+This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction.
 
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
-
 
 ```{r}
 rnet_xp = st_transform(rnet_x, "EPSG:27700")
@@ -1502,22 +1521,26 @@ m2 = tm_shape(rnet_merged_without_angle) +
 tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 ```
 
-
 Once we obtained the `rnet_merged` dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:
 
-- **Cleaning**: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
-    
-- **Dimensionality Reduction**: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size. This reduction simplifies the dataset and optimizes it for storage and processing efficiency.
+-   **Cleaning**: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed.
+    This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
 
-- **NA Handling**: A thorough examination is conducted for the presence of NA values across the columns. Any rows where all the targeted columns contain NA values are filtered out.
+-   **Dimensionality Reduction**: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size.
+    This reduction simplifies the dataset and optimizes it for storage and processing efficiency.
 
-- **Spatial Subsetting**: Following the removal of linestrings that contain NA attributes from the `rnet_merged` dataset, we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of `rnet_yp`, termed `rnet_yp_rest`, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This step ensures that only those components of `rnet_y` which are spatially distinct from `rnet_merged` are retained for further consideration.
+-   **NA Handling**: A thorough examination is conducted for the presence of NA values across the columns.
+    Any rows where all the targeted columns contain NA values are filtered out.
 
-- **Network Simplification**: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
+-   **Spatial Subsetting**: Following the removal of linestrings that contain NA attributes from the `rnet_merged` dataset, we proceed to create a geometric buffer zone.
+    This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer.
+    A subset of `rnet_yp`, termed `rnet_yp_rest`, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area.
+    This step ensures that only those components of `rnet_y` which are spatially distinct from `rnet_merged` are retained for further consideration.
+
+-   **Network Simplification**: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
 
 By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.
-   
-   
+
 ```{python}
 rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
@@ -1540,9 +1563,9 @@ plt.show()
 
 <!-- ## Combined network simplification and attribute merging -->
 
-
 # Results
-Some results in column order Armley, Edinburgh, Doncaster rail. 
+
+Some results in column order Armley, Edinburgh, Doncaster rail.
 Rows 1 input, 2 skeltonized, 3 voronoi, 4 primal skeletonized, 5 primal voronoi
 
 ```{python}
@@ -1698,7 +1721,6 @@ ax.yaxis.set_ticklabels([])
 ```
 
 Results diagrams
-
 :::
 
 # Discussion {#sec-discussion}
@@ -1754,7 +1776,7 @@ Results diagrams
 # momepy.roundabout_simplification(gdf)
 ```
 
-
+````{=html}
 <!-- Out-takes, to tidy-up/include later:
 
 :::
@@ -1790,3 +1812,4 @@ Illustration of consolidation of intersections, with the `consolidate_intersecti
 
 A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
 Two approaches to this are outlined below. -->
+````
