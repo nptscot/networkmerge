@@ -1312,23 +1312,27 @@ In the example code, four arguments need to be carefully defined:
  
 When attribute$value corresponds to the sum function, it is crucial to ensure accuracy and relevance in the results. The complexity of the original network, characterized by multiple lines, implies a diverse distribution of attributes. A weighted sum method is essential here, as it ensures that each attribute from the parallel lines is accurately represented in the aggregate value for the single line in the simplified network. This approach accounts for the varying significance and characteristics of each line in the complex network, ensuring that more influential lines have a proportionate impact on the final aggregated value. The formula for the weighted sum is:
 
-```
-Weighted Sum = ∑ (xi × wi)
-```
+$$
+\text{Weighted Sum} = \sum (x_i \times w_i)
+$$
+
 Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line.
 
 Normalization is the next crucial step. It adjusts the aggregated values from the complex network, making them suitable for representation in the simplified network. This process is vital in ensuring that the simplification does not distort the true values of attributes and relationships as they exist in the complex network. Normalization helps translate the data into a form that is consistent and meaningful within the context of the simplified representation. The normalization formula is:
 
-```
-Normalized Value = Weighted Sum / ∑ wi
-```
+$$
+\text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
+$$
 
 The adjustment for overestimation, achieved through the over_estimate factor, becomes indispensable in this context. It serves as a corrective mechanism to align the summed and normalized values from the complex network, such as parallel lines, with the single line of the simplified network. This factor ensures that the attribute values are not only aggregated but also scaled appropriately to match the simplified network's representation. The formula for adjustment of overestimation is:
 
-```
-over_estimate = ∑(Aggregated Value × Length of Single Line) / ∑(Original Value × Length of Lines in Complex Network)
-Adjusted Value = Normalized Value / over_estimate
-```
+$$
+\text{over\_estimate} = \frac{\sum(\text{Aggregated Value} \times \text{Length of Single Line})}{\sum(\text{Original Value} \times \text{Length of Lines in Complex Network})}
+$$
+
+$$
+\text{Adjusted Value} = \frac{\text{Normalized Value}}{\text{over\_estimate}}
+$$
 
 In essence, when transferring attribute values from a complex network to a simplified single-line network, employing a strategic approach is crucial. This approach includes using weighted summation to accurately aggregate values from multiple sources, normalization to ensure these values are meaningful within the simplified network, and an adjustment for overestimation to ensure the final values are proportionate and representative of the original network's attributes. This meticulous process ensures that the simplified network accurately reflects the complexity and nuances of the original network.
 
@@ -1337,34 +1341,49 @@ In essence, when transferring attribute values from a complex network to a simpl
 
 To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y. The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj$angle_x. In this study, the line_bearing function is defined to calculate the angle. As shown below,
 
-```{r}
-rnet$angle <- line_bearing(rnet_y, bidirectional = TRUE)
+```
+rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)
 ```
 The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line. Below is the detailed formula:
 
 1. **Convert Latitudes and Longitudes to Radians**:
-   ```
-   lat1 = lat1 × π / 180
-   lat2 = lat2 × π / 180
-   lon1 = lon1 × π / 180
-   lon2 = lon2 × π / 180
-   ```
+
+$$
+\text{lat}_1 = \text{lat}_1 \times \frac{\pi}{180}
+$$
+
+$$
+\text{lat}_2 = \text{lat}_2 \times \frac{\pi}{180}
+$$
+
+$$
+\text{lon}_1 = \text{lon}_1 \times \frac{\pi}{180}
+$$
+
+$$
+\text{lon}_2 = \text{lon}_2 \times \frac{\pi}{180}
+$$
 
 2. **Calculate Bearing**:
-   ```
-   Δlon = lon2 - lon1
-   θ = atan2(sin(Δlon) × cos(lat2), cos(lat1) × sin(lat2) - sin(lat1) × cos(lat2) × cos(Δlon))
-   ```
+   
+$$
+\Delta lon = lon_2 - lon_1
+$$
 
-3. **Convert Bearing from Radians to Degrees**:
-   ```
-   θ = θ × 180 / π
-   ```
+$$
+\theta = atan2(\sin(\Delta lon) \times \cos(lat_2), \cos(lat_1) \times \sin(lat_2) - \sin(lat_1) \times \cos(lat_2) \times \cos(\Delta lon))
+$$
 
-4. **Normalize Bidirectional Bearing to [0, 180) Degrees**:
-   ```
-   θ = θ mod 180
-   ```
+3. **Convert Bearing from Radians to Degrees and Normalize Bidirectional Bearing to [0, 180) Degrees**:
+
+$$
+\theta = \theta \times \frac{180}{\pi}
+$$
+
+$$
+\theta = \theta \mod 180
+$$
+
 In this bidirectional adjustment, the bearing is normalized to a range of [0, 180) degrees. This means that opposite directions along a line yield the same bearing value. This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction.
 
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
