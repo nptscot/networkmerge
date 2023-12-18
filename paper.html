@@ -187,7 +187,7 @@ div.csl-indent {
   <li><a href="#voronoi-diagram" id="toc-voronoi-diagram" class="nav-link" data-scroll-target="#voronoi-diagram"><span class="header-section-number">4.2.2</span> Voronoi diagram</a></li>
   <li><a href="#voronoi-simplified-network" id="toc-voronoi-simplified-network" class="nav-link" data-scroll-target="#voronoi-simplified-network"><span class="header-section-number">4.2.3</span> Voronoi simplified network</a></li>
   </ul></li>
-  <li><a href="#integrating-attributes-from-the-detailed-network-into-the-simplified-network" id="toc-integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="nav-link" data-scroll-target="#integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</a></li>
+  <li><a href="#joining-route-networks" id="toc-joining-route-networks" class="nav-link" data-scroll-target="#joining-route-networks"><span class="header-section-number">4.3</span> Joining route networks</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a></li>
   <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">6</span> Discussion</a></li>
@@ -853,16 +853,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <!-- ![](images/paste-1.png) -->
 </section>
 </section>
-<section id="integrating-attributes-from-the-detailed-network-into-the-simplified-network" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="integrating-attributes-from-the-detailed-network-into-the-simplified-network"><span class="header-section-number">4.3</span> Integrating attributes from the detailed network into the simplified network</h2>
-<p>In instances where a simplified version of the network is readily available, such as OS Open Roads, the steps for network simplification can be bypassed. Instead, the focus shifts to integrating attributes from the detailed network into the simplified network. This approach streamlines the process, leveraging pre-existing simplified network data while enriching it with detailed attributes.</p>
-<p>In this section, we focus on integrating attributes from a detailed route network into a simplified one. We achieve this using the stplanr package in R, a powerful tool designed specifically for transport planning. <code>stplanr</code> emphasizes spatial transport data and is particularly adept at handling non-motorized modes of transportation. More about stplanr can be found on its CRAN page [] (https://cran.r-project.org/web/packages/stplanr/index.html).</p>
+<section id="joining-route-networks" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="joining-route-networks"><span class="header-section-number">4.3</span> Joining route networks</h2>
+<p>After a simplified network has been generated, using a the methods outlined in the previous section or through a separate process, the next step is to translate the values of attributes from the detailed network to the simplified network. This ‘joining’ step is vital for using simplified networks as the basis for presenting model outputs. In instances where a simplified version of the network is readily available, such as the Ordnance Survey’s Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time. We have implemented the steps presented in this section in the <code>rnet_merge()</code> function in the <code>stplanr</code> R package <span class="citation" data-cites="lovelace2019">(<a href="#ref-lovelace2019" role="doc-biblioref">Lovelace, Ellison, and Morgan 2019</a>)</span>.</p>
+<p>The process is analogous to joining two datasets based on a common ‘key’ variable. In this case there is no definitive key, meaning that network joining can be regarded as a ‘fuzzy’ or ‘keyless’ join process <span class="citation" data-cites="suri wachowicz2019">(<a href="#ref-suri" role="doc-biblioref">Suri et al., n.d.</a>; <a href="#ref-wachowicz2019" role="doc-biblioref">Wachowicz and Mrozek 2019</a>)</span>: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.</p>
 <p><strong>Data Preparation:</strong></p>
-<p>The core functionality of our integration process hinges on two pivotal inputs: <code>rnet_x</code> and <code>rnet_y</code>. Each plays a distinct yet complementary role in the network attribute integration:</p>
-<ul>
-<li><p><code>rnet_x</code> - Target Route Network: This dataset represents our base framework. It is a streamlined, simplified version of a more intricate network, serving as the foundational geometry. <code>rnet_x</code> is akin to a canvas, prepared to receive additional layers of data. It wroth to note that <code>rnet_x</code> need to contian a identifier columns.</p></li>
-<li><p><code>rnet_y</code> - Source of Additional Attributes: In contrast to rnet_x, rnet_y brings depth and detail. It is the repository of rich, comprehensive attributes that are waiting for transfer to our target network.</p></li>
-</ul>
+<p>The main inputs of the network merging function are two route networks: <code>rnet_x</code> (the simple network geometry) and <code>rnet_y</code> (the original network with a more complex geometry and attributes that need to be translated onto the new network). <code>rnet_x</code> can also be referred to as the ‘target’ object, following the terminology used to describe database and ‘spatial similarity’ joins <span class="citation" data-cites="ballesteros2011">(<a href="#ref-ballesteros2011" role="doc-biblioref">Ballesteros, Cary, and Rishe 2011</a>)</span>. <code>rnet_y</code> in this case represents the detailed network with attributes such as model outputs representing transport flows to be translated onto the new network.</p>
 <p><strong>Step 1: Coordinate Reference System Alignment</strong></p>
 <p>Transform the spatial data of both <code>rnet_x</code> (the simplified network) and <code>rnet_y</code> (the detailed network) to the same coordinate reference system. For this project, we have selected EPSG:27700.</p>
 <p><strong>Step 2: Defining the Function List</strong></p>
@@ -880,12 +876,12 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <li><p><strong><code>segment_length</code></strong> (Segment Maximum Length): This specifies the upper limit for each segment’s length within the detailed network, here set to 10 meters. Segmenting the network in this manner enhances manageability and contributes to more precise localization of lines within the specified buffer. This granularity is key for achieving higher accuracy in attribute integration.</p></li>
 <li><p><strong><code>funs</code></strong> (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.</p></li>
 </ul>
-<p>When attribute$value corresponds to the sum function, it is crucial to ensure accuracy and relevance in the results. The complexity of the original network, characterized by multiple lines, implies a diverse distribution of attributes. A weighted sum method is essential here, as it ensures that each attribute from the parallel lines is accurately represented in the aggregate value for the single line in the simplified network. This approach accounts for the varying significance and characteristics of each line in the complex network, ensuring that more influential lines have a proportionate impact on the final aggregated value. The formula for the weighted sum is:</p>
+<p>When attribute$value corresponds to the sum function, it is crucial to ensure accuracy and relevance in the results. The complexity of the original network, characterized by multiple lines, implies a diverse distribution of attributes. A length-weighted sum method is used in this case, to ensure that results are not affected by many small but less important segments in the complex geometry. This approach accounts for the varying significance and characteristics of each line in the complex network, ensuring that more influential lines have a proportionate impact on the final aggregated value. The formula for the weighted sum is:</p>
 <p><span class="math display">\[
 \text{Weighted Sum} = \sum (x_i \times w_i)
 \]</span></p>
 <p>Where <code>xi</code> represents the attribute value for the i-th line in the complex network, and <code>wi</code> is the length weight for the i-th line.</p>
-<p>Normalization is the next crucial step. It adjusts the aggregated values from the complex network, making them suitable for representation in the simplified network. This process is vital in ensuring that the simplification does not distort the true values of attributes and relationships as they exist in the complex network. Normalization helps translate the data into a form that is consistent and meaningful within the context of the simplified representation. The normalization formula is:</p>
+<p>The optional normalization step adjusts the values associated with each simplified feature such that the total flow on complex and simplified networks are equal. Normalization captures the fact that simplified networks are likely to have a smaller total length and be less circuitous. The normalization formula is:</p>
 <p><span class="math display">\[
 \text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
 \]</span></p>
@@ -1078,6 +1074,7 @@ The graphic below shows a 2 panel plot showing simplification with the `consolid
 
 :::
 
+
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
 :::
 
@@ -1090,11 +1087,23 @@ Two approaches to this are outlined below. -->
 
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">7 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ballesteros2011" class="csl-entry" role="listitem">
+Ballesteros, Jaime, Ariel Cary, and Naphtali Rishe. 2011. <span>“SpSJoin: Parallel Spatial Similarity Joins.”</span> In, 481484. GIS ’11. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2093973.2094054">https://doi.org/10.1145/2093973.2094054</a>.
+</div>
+<div id="ref-lovelace2019" class="csl-entry" role="listitem">
+Lovelace, Robin, Richard Ellison, and Malcolm Morgan. 2019. <em>Stplanr: Sustainable Transport Planning</em>.
+</div>
 <div id="ref-lovelace2017" class="csl-entry" role="listitem">
 Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
 </div>
 <div id="ref-morgan2020" class="csl-entry" role="listitem">
 Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nationally Scalable Methods for Interactive and Online Visualisation of Transport Behaviour at the Road Network Level.”</span> <em>Environment &amp; Planning B: Planning &amp; Design</em>, July. <a href="https://doi.org/10.1177/2399808320942779">https://doi.org/10.1177/2399808320942779</a>.
+</div>
+<div id="ref-suri" class="csl-entry" role="listitem">
+Suri, Sahaana, Ihab F. Ilyas, Christopher Ré, and Theodoros Rekatsinas. n.d. <span>“Ember: No-Code Context Enrichment via Similarity-Based Keyless Joins.”</span> <a href="https://doi.org/10.48550/arXiv.2106.01501">https://doi.org/10.48550/arXiv.2106.01501</a>.
+</div>
+<div id="ref-wachowicz2019" class="csl-entry" role="listitem">
+Wachowicz, Anna, and Dariusz Mrozek. 2019. <span>“Fuzzy Join as a Preparation Step for the Analysis of Training Data.”</span> In, edited by Stanisław Kozielski, Dariusz Mrozek, Paweł Kasprowski, Bożena Małysiak-Mrozek, and Daniel Kostrzewa, 263–73. Communications in Computer and Information Science. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-030-19093-4_20">https://doi.org/10.1007/978-3-030-19093-4_20</a>.
 </div>
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
