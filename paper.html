@@ -880,65 +880,82 @@ This function is designed to merge route network data, taking into account the p
 <ul>
 <li><p><strong><code>dist</code></strong> (Buffer Distance): This parameter defines the buffer zone around <code>rnet_xp</code> in meters, for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.</p></li>
 <li><p><strong><code>segment_length</code></strong> (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in <code>rnet_y</code> before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration. <!-- Todo: discuss possibility of cutting lines at buffer intersections. --></p></li>
-<li><p><strong><code>funs</code></strong> (Function List): Comprises a series of functions assigned to process each attribute during the merge. This may involve applying statistical operations, such as calculating the mean or sum of various attributes. The choice of function for each attribute is determined based on the nature of the data and the specific analytical requirements.</p></li>
+<li><p><strong><code>funs</code></strong> (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each. Any function can be used, with sum and mean being typical values.</p></li>
+<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network’s geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network’s structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.</p></li>
 </ul>
-<p>When attribute$value corresponds to the sum function, it is crucial to ensure accuracy and relevance in the results. The complexity of the original network, characterized by multiple lines, implies a diverse distribution of attributes. A length-weighted sum method is used in this case, to ensure that results are not affected by many small but less important segments in the complex geometry. This approach accounts for the varying significance and characteristics of each line in the complex network, ensuring that more influential lines have a proportionate impact on the final aggregated value. The formula for the weighted sum is:</p>
-<p><span class="math display">\[
+<!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
+The formula for the weighted sum is:
+
+$$
 \text{Weighted Sum} = \sum (x_i \times w_i)
-\]</span></p>
-<p>Where <code>xi</code> represents the attribute value for the i-th line in the complex network, and <code>wi</code> is the length weight for the i-th line.</p>
-<p>The optional normalization step adjusts the values associated with each simplified feature such that the total flow on complex and simplified networks are equal. Normalization captures the fact that simplified networks are likely to have a smaller total length and be less circuitous. The normalization formula is:</p>
+$$
+
+Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line. -->
+<p>An optional normalization step adjusts the values associated with each simplified feature such that the total flow on complex and simplified networks are equal. Normalization captures the fact that simplified networks are likely to have a smaller total length and be less circuitous. The normalization formula is:</p>
 <p><span class="math display">\[
 \text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
 \]</span></p>
-<p>The adjustment for overestimation, achieved through the over_estimate factor, becomes indispensable in this context. It serves as a corrective mechanism to align the summed and normalized values from the complex network, such as parallel lines, with the single line of the simplified network. This factor ensures that the attribute values are not only aggregated but also scaled appropriately to match the simplified network’s representation. The formula for adjustment of overestimation is:</p>
+<p>The formula is as follows:</p>
 <p><span class="math display">\[
 \text{over\_estimate} = \frac{\sum(\text{Aggregated Value} \times \text{Length of Single Line})}{\sum(\text{Original Value} \times \text{Length of Lines in Complex Network})}
 \]</span></p>
 <p><span class="math display">\[
 \text{Adjusted Value} = \frac{\text{Normalized Value}}{\text{over\_estimate}}
 \]</span></p>
-<p>In essence, when transferring attribute values from a complex network to a simplified single-line network, employing a strategic approach is crucial. This approach includes using weighted summation to accurately aggregate values from multiple sources, normalization to ensure these values are meaningful within the simplified network, and an adjustment for overestimation to ensure the final values are proportionate and representative of the original network’s attributes. This meticulous process ensures that the simplified network accurately reflects the complexity and nuances of the original network.</p>
-<ul>
-<li><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network’s geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network’s structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.</li>
-</ul>
-<p>To calculate max_angle_diff, it’s necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x<span class="math inline">\(angle_x and rnet_y\)</span>angle_y. The difference in these angles is then computed as rnetj<span class="math inline">\(angle_diff &lt;- rnetj\)</span>angle_y - rnetj$angle_x. In this study, the line_bearing function is defined to calculate the angle. As shown below,</p>
-<pre><code>rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)</code></pre>
-<p>The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line. Below is the detailed formula:</p>
-<ol type="1">
-<li><strong>Convert Latitudes and Longitudes to Radians</strong>:</li>
-</ol>
-<p><span class="math display">\[
+<!-- Content for long form appendix?: -->
+<!-- To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y.
+The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj\$angle_x.
+In this study, the line_bearing function is defined to calculate the angle.
+As shown below,
+
+```         
+rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)
+```
+
+The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line.
+Below is the detailed formula:
+
+1.  **Convert Latitudes and Longitudes to Radians**:
+
+$$
 \text{lat}_1 = \text{lat}_1 \times \frac{\pi}{180}
-\]</span></p>
-<p><span class="math display">\[
+$$
+
+$$
 \text{lat}_2 = \text{lat}_2 \times \frac{\pi}{180}
-\]</span></p>
-<p><span class="math display">\[
+$$
+
+$$
 \text{lon}_1 = \text{lon}_1 \times \frac{\pi}{180}
-\]</span></p>
-<p><span class="math display">\[
+$$
+
+$$
 \text{lon}_2 = \text{lon}_2 \times \frac{\pi}{180}
-\]</span></p>
-<ol start="2" type="1">
-<li><strong>Calculate Bearing</strong>:</li>
-</ol>
-<p><span class="math display">\[
+$$
+
+2.  **Calculate Bearing**:
+
+$$
 \Delta lon = lon_2 - lon_1
-\]</span></p>
-<p><span class="math display">\[
+$$
+
+$$
 \theta = atan2(\sin(\Delta lon) \times \cos(lat_2), \cos(lat_1) \times \sin(lat_2) - \sin(lat_1) \times \cos(lat_2) \times \cos(\Delta lon))
-\]</span></p>
-<ol start="3" type="1">
-<li><strong>Convert Bearing from Radians to Degrees and Normalize Bidirectional Bearing to [0, 180) Degrees</strong>:</li>
-</ol>
-<p><span class="math display">\[
+$$
+
+3.  **Convert Bearing from Radians to Degrees and Normalize Bidirectional Bearing to \[0, 180) Degrees**:
+
+$$
 \theta = \theta \times \frac{180}{\pi}
-\]</span></p>
-<p><span class="math display">\[
+$$
+
+$$
 \theta = \theta \mod 180
-\]</span></p>
-<p>In this bidirectional adjustment, the bearing is normalized to a range of [0, 180) degrees. This means that opposite directions along a line yield the same bearing value. This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line’s travel direction.</p>
+$$
+
+In this bidirectional adjustment, the bearing is normalized to a range of \[0, 180) degrees.
+This means that opposite directions along a line yield the same bearing value.
+This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. -->
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 <div class="cell">
 <div class="cell-output-display">
@@ -972,85 +989,85 @@ This function is designed to merge route network data, taking into account the p
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-63-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-65-3.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-64-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-66-5.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-65-7.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-67-7.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-66-9.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-68-9.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-67-11.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-69-11.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-68-13.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-70-13.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-69-15.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-71-15.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-70-17.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-72-17.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-71-19.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-73-19.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-72-21.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-74-21.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-73-23.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-75-23.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-74-25.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-76-25.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-75-27.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-77-27.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-76-29.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-78-29.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-77-31.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-79-31.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
