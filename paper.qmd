@@ -1372,7 +1372,7 @@ The network joining function can also take a number of arguments that define how
 
 -   **`funs`** (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each. Any function can be used, with sum and mean being typical values.
 
--   **`max_angle_diff`** (Maximum Angular Difference): This parameter is crucial in regulating the maximum allowable angular deviation between segments and target lines during the merging process. With a set threshold of 20 degrees, it ensures that merging is confined to segments with similar orientations. Such consideration of angular alignment plays a pivotal role in maintaining the network's geometric integrity. It notably helps in preventing inappropriate attribute transfers, such as avoiding the assignment of values from a road that is perpendicular to another, like in T junction scenarios. By enforcing this restriction on angular differences, the integrity and coherence of the route network's structure are preserved, ensuring the merged network accurately reflects the true spatial layout and connectivity of the routes.
+-   **`max_angle_diff`** (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads.
 
 <!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
 The formula for the weighted sum is:
@@ -1507,7 +1507,7 @@ m2 = tm_shape(rnet_merged_without_angle) +
 tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 ```
 
-Once we obtained the `rnet_merged` dataset, which is a simplified network but also contains detailed attributes, we then need a series of steps to refine the data:
+After the joining process has completed, a series of post-processing steps can refine the results:
 
 -   **Cleaning**: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed.
     This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
@@ -1525,7 +1525,7 @@ Once we obtained the `rnet_merged` dataset, which is a simplified network but al
 
 -   **Network Simplification**: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
 
-By meticulously following these steps, we ensure that the integration of attributes is not only accurate but also tailored to the specific needs of our analysis.
+These steps can be tailored to the specific needs of the analysis.
 
 ```{python}
 rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
