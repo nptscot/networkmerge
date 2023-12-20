@@ -141,12 +141,11 @@ Being developed with open data and open-source software, these methods are not o
 
 # Introduction
 
-Datasets representing route networks are central to modern transport planning: they are used as inputs to transport models and are vital for the visualisation and interpretation of model outputs.
-Origin-destination, GPS, and remote sensing imagery datasets are all key inputs to transport models but are seldom the outputs of these models.
-Rather, outputs of these models are often estimates of costs and benefits to proposed changes to transport systems, geographic datasets at regional, local and corridors levels, or visualizations of agents on the system.
-However, route network datasets are ubiquitous as both transport model inputs and outputs.
-As inputs, they typically represent road networks.
-Alternatively, when provided as model outputs, they tend represent metrics such as flow per time of day and are intended to be use as an input for data visualisualization.[^1]
+Datasets representing route networks are important in every stage of modern data-driven transport planning.
+A wide range of data types can be used as inputs and outputs transport models, including route network datasets, origin-destination data, movement patterns captured by global positioning systems (GPS), and information on surface characteristics derived from remote sensing imagery.[^1]
+Of these, route network datasets are unusual because they are commonly used as both inputs and outputs of transport models.
+Methods to modify and potentially enhance route network datasets, for different use cases, could therefore have widely applicable benefits.
+
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
@@ -154,6 +153,8 @@ This raises questions about what transport network datasets are, and how they ca
 An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other *ways* (to use the OpenStreetMap terminology) along which people and goods can travel.
 More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways).
 Usually they also contain attributes such as the type of way, it's characteristics (e.g. is lit at night), and the amount of traffic using each segment.
+As inputs, route networks typically represent road or other transport networks along which vehicles travel.
+When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level.
 
 File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
 A more recent approach is to represent transport networks in standard geographic file formats.
