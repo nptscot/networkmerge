@@ -146,15 +146,15 @@ A wide range of data types can be used as inputs and outputs transport models, i
 Of these, route network datasets are unusual because they are commonly used as both inputs and outputs of transport models.
 Methods to modify and potentially enhance route network datasets, for different use cases, could therefore have widely applicable benefits.
 
-
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
 
 This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making.
 An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other *ways* (to use the OpenStreetMap terminology) along which people and goods can travel.
-More formally, transport network datasets must contain, at a minimum, geographic information on the coordinates of vertices (points along ways) and edges (the straight lines between vertices representing ways).
-Usually they also contain attributes such as the type of way, it's characteristics (e.g. is lit at night), and the amount of traffic using each segment.
+More formally, transport network datasets are *spatial networks* "for which the nodes are located in a space equipped with a metric", space typically being two-dimensional space and the main metric being Euclidean (or weighted Euclidean) distances [@barthélemy2011].
+Transport networks must contain spatial information on the coordinates of vertices (points along ways) and edges that connect them (the straight lines between vertices representing ways).
+Transport networks can also contain 'attribute data' such as the type of way (e.g. road, rail, cycle), its physical characteristics (e.g. is lit at night), and usage data, e.g. the amount of daily traffic using each segment.
 As inputs, route networks typically represent road or other transport networks along which vehicles travel.
-When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level.
+When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level [@sutton1998].
 
 File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
 A more recent approach is to represent transport networks in standard geographic file formats.
@@ -1331,9 +1331,10 @@ The main inputs of the network merging function are two route networks: `rnet_x`
 
 <!-- **Step 1: Coordinate Reference System Alignment** -->
 
+```{=html}
 <!-- Transform the spatial data of both `rnet_x` (the simplified network) and `rnet_y` (the detailed network) to the same coordinate reference system.
 For this project, we have selected EPSG:27700. -->
-
+```
 ```{r}
 #| echo: false
 #| eval: false
@@ -1343,6 +1344,7 @@ rnet_yp = sf::st_transform(rnet_y, "EPSG:27700")
 
 <!-- **Step 2: Defining the Function List** -->
 
+```{=html}
 <!-- Create a function list that dictates how each attribute is to be processed:
 
 -   **Exclude**: "geometry" from processing.
@@ -1356,7 +1358,7 @@ rnet_yp = sf::st_transform(rnet_y, "EPSG:27700")
 
 Employ the `rnet_merge` function from the `stplanr` package.
 This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system. -->
-
+```
 ```{r}
 #| eval: false
 #| echo: false
@@ -1368,13 +1370,17 @@ The network joining function can also take a number of arguments that define how
 -   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, for determining the proximity at which features from both networks are considered for merging.
     Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
 
--   **`segment_length`** (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be  key for achieving higher accuracy in attribute integration.
-<!-- Todo: discuss possibility of cutting lines at buffer intersections. -->
+-   **`segment_length`** (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split.
+    Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration.
+    <!-- Todo: discuss possibility of cutting lines at buffer intersections. -->
 
--   **`funs`** (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each. Any function can be used, with sum and mean being typical values.
+-   **`funs`** (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each.
+    Any function can be used, with sum and mean being typical values.
 
--   **`max_angle_diff`** (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads.
+-   **`max_angle_diff`** (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries.
+    A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads.
 
+```{=html}
 <!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
 The formula for the weighted sum is:
 
@@ -1383,7 +1389,7 @@ $$
 $$
 
 Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line. -->
-
+```
 An optional normalization step adjusts the values associated with each simplified feature such that the total flow on complex and simplified networks are equal.
 Normalization captures the fact that simplified networks are likely to have a smaller total length and be less circuitous.
 The normalization formula is:
@@ -1403,6 +1409,8 @@ $$
 $$
 
 <!-- Content for long form appendix?: -->
+
+````{=html}
 <!-- To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y.
 The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj\$angle_x.
 In this study, the line_bearing function is defined to calculate the angle.
@@ -1456,6 +1464,7 @@ $$
 In this bidirectional adjustment, the bearing is normalized to a range of \[0, 180) degrees.
 This means that opposite directions along a line yield the same bearing value.
 This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. -->
+````
 
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 
