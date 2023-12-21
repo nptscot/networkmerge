@@ -1319,9 +1319,12 @@ Figure 12: Primal networks for the Otley Road (left) and Armley Road (right) net
 ## Joining route networks
 
 After a simplified network has been generated, using a the methods outlined in the previous section or through a separate process, the next step is to translate the values of attributes from the detailed network to the simplified network.
+The process can also be referred to as 'conflation' and 'integration': "Conflation is desired because the source file may be attribute rich (street names, address ranges, zip codes) but positionally poor: the target file may be positionally precise but attribute poor ... There are two aspects to network data integration, namely: the integration of the geometry, such as the link and node feature elements; and integration of the attributes, such as the highway data" [@sutton1998].
+In this case we seek to integrate the attributes from the source detailed network with the simplified target geometry.
+
 This 'joining' step is vital for using simplified networks as the basis for presenting model outputs.
 In instances where a simplified version of the network is readily available, such as the Ordnance Survey's Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time.
-We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package [@lovelace2019].
+We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package.
 
 The process is analogous to joining two datasets based on a common 'key' variable.
 In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
