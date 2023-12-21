@@ -189,9 +189,14 @@ div.csl-indent {
   </ul></li>
   <li><a href="#joining-route-networks" id="toc-joining-route-networks" class="nav-link" data-scroll-target="#joining-route-networks"><span class="header-section-number">4.3</span> Joining route networks</a></li>
   </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a></li>
-  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">6</span> Discussion</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">7</span> References</a></li>
+  <li><a href="#results---comparative-analysis-of-simplified-route-networks" id="toc-results---comparative-analysis-of-simplified-route-networks" class="nav-link" data-scroll-target="#results---comparative-analysis-of-simplified-route-networks"><span class="header-section-number">5</span> Results - Comparative Analysis of Simplified Route Networks</a></li>
+  <li><a href="#todo-improve-the-figure-layout" id="toc-todo-improve-the-figure-layout" class="nav-link" data-scroll-target="#todo-improve-the-figure-layout"><span class="header-section-number">6</span> TODO: improve the figure layout</a></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">7</span> Discussion and Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">7.1</span> Discussion</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7.2</span> Conclusion</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">8</span> References</a></li>
   </ul>
 </nav>
     </div>
@@ -310,7 +315,7 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets are <em>spatial networks</em> “for which the nodes are located in a space equipped with a metric”, space typically being two-dimensional space and the main metric being Euclidean (or weighted Euclidean) distances <span class="citation" data-cites="barthélemy2011">(<a href="#ref-barthélemy2011" role="doc-biblioref">Barthélemy 2011</a>)</span>. Transport networks must contain spatial information on the coordinates of vertices (points along ways) and edges that connect them (the straight lines between vertices representing ways). Transport networks can also contain ‘attribute data’ such as the type of way (e.g.&nbsp;road, rail, cycle), its physical characteristics (e.g.&nbsp;is lit at night), and usage data, e.g.&nbsp;the amount of daily traffic using each segment. As inputs, route networks typically represent road or other transport networks along which vehicles travel. When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>.</p>
 <p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. A more recent approach is to represent transport networks in standard geographic file formats. In this approach, used in the present paper, transport networks are represented as a series of non-overlapping linestrings, with attributes such as way type and flow. Making transport datasets compliant with the ‘simple features’ geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling more easier sharing of datasets between people and programs. The simple features standard is formalised by the International Organization for Standardization in <a href="https://www.iso.org/standard/40114.html">ISO 19125-1:2004</a> and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.</p>
 <p>A problem associated with the trend towards geographic representation of route networks is increasing file sizes and complexity. With the increasing availability of high resolution imagery, citizens (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping more and more detail. Overall this is a good thing for transport planning research, but excess complexity and intricacy can lead to problems, as outlined in the next section. The problem of network simplification is not new. It can be seen as one approach to solving a broader issue of ‘map generalization’ that allows “different representations of the spatial features” of transport network datasets (or any geographic dataset) depending on the scale of analysis <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>. For example, strategic network planning tools (which are the use case motivating the methods presented in this paper) — which will typically involve maps with a scale of 1:10,000+ — do not need to show the same level of detail as a junction design tool that is based on more zoomed-in representations of transport networks, e.g.&nbsp;less than 1:2000.</p>
-<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;6</a> we discuss the results and outline future work.</p>
+<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;7</a> we discuss the results and outline future work.</p>
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
@@ -376,7 +381,7 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 </section>
 <section id="sec-data" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Data</h1>
-<p>The input datasets are presented in <a href="#tbl-input-data">Table&nbsp;1</a>.</p>
+<p>In this study, we focus on two exemplary input datasets, as outlined in <a href="#tbl-input-data">Table&nbsp;1</a>, both of which are sourced from the Propensity to Cycle Tool (PCT). The PCT derives its data from OpenStreetMap (OSM), each illustrating varying levels of complexity. This variety allows us to explore and understand the nuances involved in simplifying route networks for more efficient urban transport planning.</p>
 <div id="tbl-input-data" class="tbl-parent quarto-layout-panel anchored">
 <div class="panel-caption table-caption">
 <p>Table&nbsp;1: Input datasets used in this paper.</p>
@@ -419,7 +424,7 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 </div>
 </div>
 </div>
-<p>The input datasets are illustrated in <a href="#fig-input-data">Figure&nbsp;3</a>.</p>
+<p>The selection of these two datasets, Otley Road and Armley Road, are illustrated in <a href="#fig-input-data">Figure&nbsp;3</a>. They represent the spectrum of complexities found in urban route networks, from the simple to the intricate. By analyzing these contrasting road structures, we aim to develop a comprehensive approach to route network simplification, catering to the varying demands of urban transport systems.</p>
 <div id="fig-input-data" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <div class="cell">
@@ -440,6 +445,7 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 </ol>
 <section id="simplifying-the-geometry" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="simplifying-the-geometry"><span class="header-section-number">4.1</span> Simplifying the geometry</h2>
+<p>In this section, we will focuses on route network simplification in transport planning. This section outlines methods for reducing network complexity while preserving essential topological features. It begins with topology-preserving simplification, highlighting the importance of maintaining network integrity. Advanced techniques like image skeletonization and Voronoi diagram-centreline identification are then explored, detailing their roles in transforming and condensing network structures. The section further delves into the detailed creation of projected combined buffered geometries, essential for processing intersecting or adjacent network segments. It also examines the crucial role of affine transformations in accurately aligning geometric data. Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network’s appearance. The concept of a primal network that represents a high level of simplification is explored as well.</p>
 <!-- 
 
 Two fundamental approaches to simplifying transport networks are:
@@ -470,8 +476,8 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="create-a-projected-combined-buffered-geometry" class="level3" data-number="4.1.3">
 <h3 data-number="4.1.3" class="anchored" data-anchor-id="create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.1.3</span> Create a projected combined buffered geometry:</h3>
-<p>In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. A buffer size of 8 meters is selected for this purpose. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.</p>
-<p>The buffered versions of the networks are presented below:</p>
+<p>In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. For our purposes, we have chosen a buffer size of 8 meters. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.</p>
+<p><a href="#fig-buffered-network">Figure&nbsp;5</a> displays the buffered versions of the Otley Road (on the left) and Armley Road (on the right) networks. It visually illustrates how the application of an 8-meter buffer transforms the initial geometries of these roads. This representation is pivotal for understanding the spatial extension and the overlapping areas created by the buffer zones around each road network, setting the stage for subsequent analysis and simplification processes​.</p>
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -501,6 +507,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p></p><figcaption class="figure-caption">Figure&nbsp;5: Buffered versions of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
+<p>In <a href="#fig-split-ends">Figure&nbsp;6</a>, truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks are presented. This visualization demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.</p>
 <div id="fig-split-ends" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -518,6 +525,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p></p><figcaption class="figure-caption">Figure&nbsp;6: Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
+<p><a href="#fig-otley-armley-classes">Figure&nbsp;7</a> shows the segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks. It effectively highlights the contrast between the more intricate and the simpler sections within these networks.</p>
 <div id="fig-otley-armley-classes" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -538,9 +546,8 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="skeletonization" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="skeletonization"><span class="header-section-number">4.1.4</span> Skeletonization</h3>
-<p>The buffered lines are merged to create a raster image, which is then subjected to a thinning process to yield a skeletal remnant. This remnant retains both the extent and connectivity of the original network, centered around a line that aligns with the combined buffered region. This process is demonstrated using the Sample Street Network.</p>
-<p>Establish an affine transformation that maps the points within the buffered geometry to corresponding positions in the raster image</p>
-<p>A scaled affine transformation is calculated to align the projected coordinate geometry with the corresponding scaled raster image.</p>
+<p>In the skeletonization process, the buffered lines of the network are first transformed into a raster image. Subsequently, this raster image is processed through a thinning algorithm to produce a skeletal representation of the original network. This skeletal structure preserves the overall extent and connectivity of the initial network, with a central line that closely follows the contours of the combined buffered area.</p>
+<p>To correlate the points in the buffered geometry with their respective positions in the raster image, we implement an affine transformation. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image. Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format.</p>
 </section>
 <section id="affine-transforms" class="level3" data-number="4.1.5">
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.1.5</span> Affine transforms</h3>
@@ -711,7 +718,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
 <section id="boundary-segmentation" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="boundary-segmentation"><span class="header-section-number">4.2.1</span> Boundary Segmentation</h3>
-<p>The boundary of the buffered input geometry is calculated and simplified, giving a simplified GeoSeries of LineStrings, correctly aligned with a specified coordinate reference system (CRS). This functionality is particularly useful in geographic information systems (GIS) for delineating and visualizing precise boundaries of spatinal objects. The code demonstrates its utility by applying the function to a geometry (otley_geometry) and visualizing the resultant simplified boundaries (otley_boundary), highlighting its practical application in spatial analysis and network simplification. The simplified LineString geometries are then broken down into shorter segments.</p>
+<p>In <a href="#fig-boundary">Figure&nbsp;13</a>, the boundary of the buffered input geometry (otley_geometry) is calculated and then simplified. This process yields a simplified GeoSeries consisting of LineStrings, all of which are precisely aligned with the specified coordinate reference system (CRS). This step illustrates the transformation from the initial buffer geometries, named ‘otley_buffer’ and ‘Armley_buffer’, to their more refined and simplified versions, ‘otley_boundary’ and ‘Armley_boundary’, respectively. These refined boundaries provide an accurate representation and visualization of the exact limits of the spatial objects involved.</p>
 <div id="fig-boundary" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -729,6 +736,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p></p><figcaption class="figure-caption">Figure&nbsp;13: Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
+<p><a href="#fig-segment">Figure&nbsp;14</a> showcase the conversion of segmented LineString geometries into point geometries. This essential transformation forms the basis for constructing Voronoi diagrams.</p>
 <div id="fig-segment" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -746,7 +754,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 <p></p><figcaption class="figure-caption">Figure&nbsp;14: Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
-<p>The simplified <code>LineString</code> geometries are converted into point geometries, detail <a href="#fig-voronoi-point">Figure&nbsp;15</a>.</p>
+<p><a href="#fig-voronoi-point">Figure&nbsp;15</a>, the process of converting the segmented LineString geometries into point geometries is illustrated. This transformation is essential for the creation of Voronoi diagrams.</p>
 <div id="fig-voronoi-point" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -768,7 +776,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="voronoi-diagram" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="voronoi-diagram"><span class="header-section-number">4.2.2</span> Voronoi diagram</h3>
-<p>The corresponding Voronoi diagrams is generated and clipped to the bounds of input geometry, as illustrated in <a href="#fig-voronoi-2">Figure&nbsp;16</a> figures below.</p>
+<p>In <a href="#fig-voronoi-2">Figure&nbsp;16</a>, the generation and clipping of the corresponding Voronoi diagrams to the bounds of the input geometry is depicted.</p>
 <!-- ::: {#fig-voronoi layout-ncol="2"} -->
 <!-- Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 
@@ -792,7 +800,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </figure>
 </div>
 <!-- ### Voronoi simplified network -->
-<p>The centre-line is derived based by excluding lines making up the Voronoi diagrams that are at a distance of more than half-the-buffer-size from the buffer-edge, and is completely within the buffered geometry <a href="#fig-voronoi-simplified">Figure&nbsp;17</a>.</p>
+<p><a href="#fig-voronoi-simplified">Figure&nbsp;17</a> shows the Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer’s width from the buffer edge. This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines.</p>
 <div id="fig-voronoi-simplified" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -813,7 +821,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="voronoi-simplified-network" class="level3" data-number="4.2.3">
 <h3 data-number="4.2.3" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.2.3</span> Voronoi simplified network</h3>
-<p>The centre-line network as shown in <a href="#fig-voronoi-line">Figure&nbsp;18</a> is then generated by removing knot-like features from the resulting network.</p>
+<p>The center-line network depicted in <a href="#fig-voronoi-line">Figure&nbsp;18</a> is created through a process that involves the removal of knot-like features from the resultant network. This step refines the geometry of network, ensuring a more streamlined and accurate representation of the transport routes.</p>
 <div id="fig-voronoi-line" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -832,7 +840,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </figure>
 </div>
 <!-- ### Primal network -->
-<p>The primal network associated with the voronoi approach is illustrated in <a href="#fig-primal-voronoi">Figure&nbsp;19</a>.</p>
+<p><a href="#fig-primal-voronoi">Figure&nbsp;19</a> illustrates the primal network derived from the Voronoi approach. This representation highlights the fundamental structure of the network, showcasing its simplified and efficient layout that results from the Voronoi-based simplification process. The figure demonstrates how the primal network captures the essential connectivity and layout of the transport routes.</p>
 <div id="fig-primal-voronoi" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -847,7 +855,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;19: Figure 12: Primal networks for the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;19: Primal networks for the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
 <!-- ![](images/paste-1.png) -->
@@ -855,7 +863,7 @@ In this paper we will focus on the former approach, which assumes that a simplif
 </section>
 <section id="joining-route-networks" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="joining-route-networks"><span class="header-section-number">4.3</span> Joining route networks</h2>
-<p>After a simplified network has been generated, using a the methods outlined in the previous section or through a separate process, the next step is to translate the values of attributes from the detailed network to the simplified network. The process can also be referred to as ‘conflation’ and ‘integration’: “Conflation is desired because the source file may be attribute rich (street names, address ranges, zip codes) but positionally poor: the target file may be positionally precise but attribute poor … There are two aspects to network data integration, namely: the integration of the geometry, such as the link and node feature elements; and integration of the attributes, such as the highway data” <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>. In this case we seek to integrate the attributes from the source detailed network with the simplified target geometry.</p>
+<p>After generating a simplified network using the methods described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one. This process is commonly referred to as ‘conflation’ and ‘integration’. Conflation is essential because while the source file (detailed network) might be rich in attributes like street names, address ranges, and zip codes, it may lack positional accuracy. Conversely, the target file (simplified network) is likely to be positionally precise but deficient in detailed attributes. As noted by <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>, network data integration encompasses two key aspects: the geometric integration, involving the link and node feature elements, and the integration of attributes such as highway data. In our context, the aim is to merge the detailed attributes from the source network with the geometrically simplified target network, ensuring a comprehensive and accurate representation in the simplified version.</p>
 <p>This ‘joining’ step is vital for using simplified networks as the basis for presenting model outputs. In instances where a simplified version of the network is readily available, such as the Ordnance Survey’s Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time. We have implemented the steps presented in this section in the <code>rnet_merge()</code> function in the <code>stplanr</code> R package.</p>
 <p>The process is analogous to joining two datasets based on a common ‘key’ variable. In this case there is no definitive key, meaning that network joining can be regarded as a ‘fuzzy’ or ‘keyless’ join process <span class="citation" data-cites="suri wachowicz2019">(<a href="#ref-suri" role="doc-biblioref">Suri et al., n.d.</a>; <a href="#ref-wachowicz2019" role="doc-biblioref">Wachowicz and Mrozek 2019</a>)</span>: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.</p>
 <!-- **Data Preparation:** -->
@@ -882,8 +890,23 @@ This function is designed to merge route network data, taking into account the p
 <li><p><strong><code>dist</code></strong> (Buffer Distance): This parameter defines the buffer zone around <code>rnet_xp</code> in meters, for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.</p></li>
 <li><p><strong><code>segment_length</code></strong> (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in <code>rnet_y</code> before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration. <!-- Todo: discuss possibility of cutting lines at buffer intersections. --></p></li>
 <li><p><strong><code>funs</code></strong> (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each. Any function can be used, with sum and mean being typical values.</p></li>
-<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads.</p></li>
+<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads. <a href="#fig-max_angle_diff">Figure&nbsp;20</a> demonstrates the impact of this parameter in preventing the overestimation of values on side roads.</p></li>
 </ul>
+<div id="fig-max_angle_diff" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pics/Prevent overestimate of values on sideroads.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side roads</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;20: The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side Roads.</figcaption><p></p>
+</figure>
+</div>
 <!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
 The formula for the weighted sum is:
 
@@ -892,17 +915,20 @@ $$
 $$
 
 Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line. -->
-<p>An optional normalization step adjusts the values associated with each simplified feature such that the total flow on complex and simplified networks are equal. Normalization captures the fact that simplified networks are likely to have a smaller total length and be less circuitous. The normalization formula is:</p>
+<p>An optional normalization step adjusts the values associated with each feature in the simplified network. This adjustment ensures that the total flow values of both the complex and simplified networks are equivalent. The need for normalization arises from the fact that simplified networks typically have a reduced total length and are less circuitous compared to their complex counterparts.</p>
+<p>The normalization process is governed by the following formula:</p>
 <p><span class="math display">\[
 \text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
 \]</span></p>
-<p>The formula is as follows:</p>
+<p>Additionally, to account for potential overestimation of values in the simplified network, the following formula is applied:</p>
 <p><span class="math display">\[
 \text{over\_estimate} = \frac{\sum(\text{Aggregated Value} \times \text{Length of Single Line})}{\sum(\text{Original Value} \times \text{Length of Lines in Complex Network})}
 \]</span></p>
+<p>The final step involves adjusting the normalized value to correct any overestimation, as calculated above:</p>
 <p><span class="math display">\[
 \text{Adjusted Value} = \frac{\text{Normalized Value}}{\text{over\_estimate}}
 \]</span></p>
+<p>Through these steps, the normalized and adjusted values more accurately reflect the true distribution and intensity of flows within the simplified network, preserving the overall data integrity.</p>
 <!-- Content for long form appendix?: -->
 <!-- To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y.
 The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj\$angle_x.
@@ -960,11 +986,6 @@ In this bidirectional adjustment, the bearing is normalized to a range of \[0, 1
 This means that opposite directions along a line yield the same bearing value.
 This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. -->
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-59-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 <p>After the joining process has completed, a series of post-processing steps can refine the results:</p>
 <ul>
 <li><p><strong>Cleaning</strong>: The <code>rnet_merged</code> dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as ‘identifier’ and ‘length_x’.</p></li>
@@ -973,120 +994,131 @@ This approach is particularly useful in scenarios where the directionality of th
 <li><p><strong>Spatial Subsetting</strong>: Following the removal of linestrings that contain NA attributes from the <code>rnet_merged</code> dataset, we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of <code>rnet_yp</code>, termed <code>rnet_yp_rest</code>, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This step ensures that only those components of <code>rnet_y</code> which are spatially distinct from <code>rnet_merged</code> are retained for further consideration.</p></li>
 <li><p><strong>Network Simplification</strong>: In the final stage of simplification, the datasets <code>rnet_yp_rest</code> and <code>rnet_merged_all</code> are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.</p></li>
 </ul>
-<p>These steps can be tailored to the specific needs of the analysis.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid" width="1440"></p>
-</div>
-</div>
+<p>These post-processing steps are adaptable and can be customized according to the specific requirements of the analysis.</p>
 <!-- TODO: add content to this section. -->
 <!-- TODO: Is this possible? -->
 <!-- ## Combined network simplification and attribute merging -->
 </section>
 </section>
-<section id="results" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Results</h1>
-<p>Some results in column order Armley, Edinburgh, Doncaster rail. Rows 1 input, 2 skeltonized, 3 voronoi, 4 primal skeletonized, 5 primal voronoi</p>
+<section id="results---comparative-analysis-of-simplified-route-networks" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Results - Comparative Analysis of Simplified Route Networks</h1>
+<p>In this section, we present a comparative analysis of the results from the applied simplification techniques across different routes. The section is organized in a matrix format, displaying results from three distinct locations: Armley, Edinburgh, and Doncaster rail. Each column is dedicated to one of these locations, and the rows are organized to showcase different stages of network simplification, providing a systematic and comparative view of the impact of methodology.</p>
+<p><em>Results Organization</em></p>
+<ul>
+<li><p>Row 1 - Input： This row presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.</p></li>
+<li><p>Row 2 - Skeletonized： The second row shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.</p></li>
+<li><p>Row 3 - Voronoi： Here, we display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.</p></li>
+<li><p>Row 4 - Primal Skeletonized： This row demonstrates the networks post-application of a primal approach to the skeletonized data, offering insights into the primary routes and connections.</p></li>
+<li><p>Row 5 - Primal Voronoi： The final row exhibits the results of applying a primal approach to the Voronoi-simplified networks, highlighting the straightforward paths within the Voronoi framework.</p></li>
+</ul>
+</section>
+<section id="todo-improve-the-figure-layout" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> TODO: improve the figure layout</h1>
 <div id="fig-results" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-65-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-66-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-66-3.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-67-7.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-67-5.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-68-9.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-68-7.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-69-11.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-69-9.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-70-13.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-70-11.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-71-15.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-71-13.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-72-17.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-72-15.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-73-19.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-73-17.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-74-21.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-74-19.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-75-23.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-75-21.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-76-25.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-76-23.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-77-27.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-77-25.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-78-29.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-78-27.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-79-31.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-79-29.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;20: Results diagrams</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;21: Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.</figcaption><p></p>
 </figure>
 </div>
 </section>
-<section id="sec-discussion" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Discussion</h1>
-<ul>
-<li><p>Optimisation</p></li>
-<li><p>Packaging</p></li>
-<li></li>
-</ul>
+<section id="sec-discussion" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Discussion and Conclusion</h1>
+<p>In this study, we have explored the complexities of urban route networks and the pressing need for their simplification to enhance transport planning efficiency. The research centered around the application and comparison of two methods for route network simplification: image skeletonization and Voronoi diagram-centreline identification. Through the analysis of two diverse datasets, Otley Road and Armley Road, we not only demonstrated the utility and efficacy of these methods in managing different levels of network complexities but also proposed a meticulous process for efficiently merging attributes from a complex network to a simplified one. This process, complemented by a rigorous “sanity” check, ensures that the essential characteristics of the original network are accurately retained, thereby upholding the integrity and effectiveness of transport planning based on these simplified models.</p>
+<section id="discussion" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="discussion"><span class="header-section-number">7.1</span> Discussion</h2>
+<p>The results obtained from applying these methods have highlighted several key insights. First, the importance of maintaining the integrity and topological accuracy of the original network in the simplification process cannot be overstated. Both methods successfully reduced the complexity of the network representations while preserving essential spatial and connectivity characteristics. This balance is crucial for ensuring that the simplified networks remain true to their real-world counterparts, thus maintaining the reliability of transport planning models and decisions based on these models.</p>
+<p>Furthermore, the comparative analysis of the two methods revealed their respective strengths and potential applications. The image skeletonization approach excelled in producing more streamlined network representations, particularly effective in contexts where a high-level overview of the network is required. On the other hand, the Voronoi diagram-centreline identification method provided a more nuanced simplification, capturing the central alignment of the route networks, making it suitable for detailed analysis and planning at a more granular level.</p>
 </section>
-<section id="references" class="level1" data-number="7">
+<section id="conclusion" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">7.2</span> Conclusion</h2>
+<p>Conclusively, the study underscores the significance of route network simplification in the transport planning. The methodologies tackle the increasing intricacy of urban route networks. By simplifying these networks, we can achieve more efficient and actionable insights for urban transport planning. This not only aids in better visualization and interpretation of transport models but also harmonizes the complexity of urban networks with the clarity needed for effective planning and decision-making.</p>
+</section>
+</section>
+<section id="references" class="level1" data-number="8">
 
 <!-- Tests -->
 <!-- Out-takes, to tidy-up/include later:
@@ -1112,7 +1144,7 @@ Two approaches to this are outlined below. -->
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">7 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">8 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-ballesteros2011" class="csl-entry" role="listitem">
 Ballesteros, Jaime, Ariel Cary, and Naphtali Rishe. 2011. <span>“SpSJoin: Parallel Spatial Similarity Joins.”</span> In, 481484. GIS ’11. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2093973.2094054">https://doi.org/10.1145/2093973.2094054</a>.
 </div>
