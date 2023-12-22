@@ -1586,26 +1586,75 @@ rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.
 
 <!-- ## Combined network simplification and attribute merging -->
 
-# Results - Comparative Analysis of Simplified Route Networks
+# Evaluation of Proposed Route network simplification 
 
-In this section, we present a comparative analysis of the results from the applied simplification techniques across different routes. The section is organized in a matrix format, displaying results from three distinct locations: Armley, Edinburgh, and Doncaster rail. Each column is dedicated to one of these locations, and the rows are organized to showcase different stages of network simplification, providing a systematic and comparative view of the impact of methodology.
+In this section, we delve into the practical application of our proposed route network simplification techniques, focusing on a complex urban road network situated in the heart of Edinburgh. @tbl-new-datasets presents the key characteristics of the Edinburgh city centre, offering insights into its geometric structure and complexity.
 
-*Results Organization*
 
-- Row 1 - Input：
-This row presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.
+::: {#tbl-new-datasets}
+```{r}
+#| label: tbl-new-datasets
+dataset_table = tribble(
+  ~Dataset,               ~GeometryType, ~NumberOfSegments, ~NumberOfNodes, ~Complexity,
+  "Edinburgh City Centre", "LineString", 1144,              4603,           5265832
+  # "Doncaster Rail Network","LineString", 693,               11728,          8127504
+)
 
-- Row 2 - Skeletonized：
-The second row shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.
+knitr::kable(dataset_table)
+```
 
-- Row 3 - Voronoi：
-Here, we display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
+Characteristics of Datasets: Edinburgh city centre and the Doncaster rail network.
+:::
 
-- Row 4 - Primal Skeletonized：
-This row demonstrates the networks post-application of a primal approach to the skeletonized data, offering insights into the primary routes and connections.
+<!-- ```{python}
+import geopandas as gpd
 
-- Row 5 - Primal Voronoi：
-The final row exhibits the results of applying a primal approach to the Voronoi-simplified networks, highlighting the straightforward paths within the Voronoi framework.
+# Load the geojson files
+princes_street_geojson = gpd.read_file('data/rnet_princes_street.geojson')
+doncaster_rail_geojson = gpd.read_file('data/rnet_doncaster_rail.geojson')
+
+# Function to calculate the number of nodes in a LineString/MultiLineString geometry
+def count_nodes(geometry):
+    # For LineString, count start and end points
+    if geometry.type == 'LineString':
+        return len(geometry.coords)
+    # For MultiLineString, count start and end points of each component LineString
+    elif geometry.type == 'MultiLineString':
+        return sum(len(line.coords) for line in geometry)
+    else:
+        return 0
+
+# Calculate the characteristics for each dataset
+princes_street_info = {
+    "Geometry Type": princes_street_geojson.geometry.iloc[0].type,
+    "Number of Segments": princes_street_geojson.shape[0],
+    "Number of Nodes": princes_street_geojson.geometry.apply(count_nodes).sum(),
+    # Complexity could be defined in many ways, here we use a simple measure: segments * nodes
+    "Complexity": princes_street_geojson.shape[0] * princes_street_geojson.geometry.apply(count_nodes).sum()
+}
+
+doncaster_rail_info = {
+    "Geometry Type": doncaster_rail_geojson.geometry.iloc[0].type,
+    "Number of Segments": doncaster_rail_geojson.shape[0],
+    "Number of Nodes": doncaster_rail_geojson.geometry.apply(count_nodes).sum(),
+    # Complexity could be defined in many ways, here we use a simple measure: segments * nodes
+    "Complexity": doncaster_rail_geojson.shape[0] * doncaster_rail_geojson.geometry.apply(count_nodes).sum()
+}
+
+# princes_street_info, doncaster_rail_info
+``` -->
+
+@fig-results presents different stages of network simplification, providing a comparative view of the impact of methodology.
+
+- Input figure presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.
+
+- Skeletonized figure shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.
+
+- Vorono figure display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
+
+- Primal Skeletonized demonstrates the networks post-application of a primal approach to the skeletonized data, offering insights into the primary routes and connections.
+
+- Primal Voronoi exhibits the results of applying a primal approach to the Voronoi-simplified networks, highlighting the straightforward paths within the Voronoi framework.
 
 
 ```{python}
@@ -1689,147 +1738,55 @@ for variable in PLOT_DATA:
         data.to_file(filepath)
 ```
 
-# TODO: improve the figure layout
 
-::: {#fig-results layout-ncol="3" layout-nrow="5"}
-```{python}
-# 1 1
-ax.figure.set_size_inches(10, 10)
-ax = base_armley.plot(color='blue')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-ax.set_ylabel('Input', rotation=0, size='large', labelpad=40)
-```
+<!-- TODO: improve the figure layout. -->
+
+::: {#fig-results layout-ncol="1" layout-nrow="1"}
 
 ```{python}
-# 1 2
-ax.figure.set_size_inches(10, 10)
-ax = base_edinburgh.plot(color='blue')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
+import matplotlib.pyplot as plt
 
-```{python}
-# 1 3
-ax.figure.set_size_inches(10, 10)
-ax = base_doncaster.plot(color='blue')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
+# Create a figure with 5 subplots in one row
+fig, axs = plt.subplots(1, 5, figsize=(25, 5))  # Adjust the size as needed
 
-```{python}
-# 2 1
-ax.figure.set_size_inches(10, 10)
-ax = armley_sk.plot(color='green')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-ax.set_ylabel('Skeletonized', rotation=0, size='large', labelpad=40)
-```
+# Plot 1: Input
+axs[0] = base_edinburgh.plot(ax=axs[0], color='blue')
+axs[0].grid(True, color='grey', linestyle='--', linewidth=0.5)
+axs[0].xaxis.set_ticklabels([])
+axs[0].yaxis.set_ticklabels([])
+axs[0].set_title('Input')
 
-```{python}
-# 2 2
-ax.figure.set_size_inches(10, 10)
-ax = edinburgh_sk.plot(color='green')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
+# Plot 2: Skeletonized
+axs[1] = edinburgh_sk.plot(ax=axs[1], color='green')
+axs[1].grid(True, color='grey', linestyle='--', linewidth=0.5)
+axs[1].xaxis.set_ticklabels([])
+axs[1].yaxis.set_ticklabels([])
+axs[1].set_title('Skeletonized')
 
-```{python}
-# 2 3
-ax.figure.set_size_inches(10, 10)
-ax = doncaster_sk.plot(color='green')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
+# Plot 3: Voronoi
+axs[2] = edinburgh_line.plot(ax=axs[2], color='orange')
+axs[2].grid(True, color='grey', linestyle='--', linewidth=0.5)
+axs[2].xaxis.set_ticklabels([])
+axs[2].yaxis.set_ticklabels([])
+axs[2].set_title('Voronoi')
 
-```{python}
-# 3 1
-ax.figure.set_size_inches(10, 10)
-ax = armley_line.plot(color='orange')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-ax.set_ylabel('Voronoi', rotation=0, size='large', labelpad=40)
-```
+# Plot 4: Primal Skeletonized
+axs[3] = edinburgh_edge_sk.plot(ax=axs[3], color='orchid')
+axs[3].grid(True, color='grey', linestyle='--', linewidth=0.5)
+axs[3].xaxis.set_ticklabels([])
+axs[3].yaxis.set_ticklabels([])
+axs[3].set_title('Primal Skeletonized')
 
-```{python}
-# 3 2
-ax.figure.set_size_inches(10, 10)
-ax = edinburgh_line.plot(color='orange')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
+# Plot 5: Primal Voronoi
+axs[4] = edinburgh_edge.plot(ax=axs[4], color='tomato')
+axs[4].grid(True, color='grey', linestyle='--', linewidth=0.5)
+axs[4].xaxis.set_ticklabels([])
+axs[4].yaxis.set_ticklabels([])
+axs[4].set_title('Primal Voronoi')
 
-```{python}
-# 3 3
-ax.figure.set_size_inches(10, 10)
-ax = doncaster_line.plot(color='orange')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
+plt.tight_layout()
+plt.show()
 
-```{python}
-# 4 1 Voronoi
-ax.figure.set_size_inches(10, 10)
-ax = armley_edge_sk.plot(color='orchid')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-ax.set_ylabel('Primal Skeletonized', rotation=0, size='large', labelpad=40)
-```
-
-```{python}
-# 4 2
-ax.figure.set_size_inches(10, 10)
-ax = edinburgh_edge_sk.plot(color='orchid')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
-
-```{python}
-# 4 3
-ax.figure.set_size_inches(10, 10)
-ax = doncaster_edge_sk.plot(color='orchid')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
-
-```{python}
-# 5 1 Voronoi primal
-ax.figure.set_size_inches(10, 10)
-ax = armley_edge.plot(color='tomato')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-ax.set_ylabel('Primal Voronoi', rotation=0, size='large', labelpad=40)
-```
-
-```{python}
-# 5 2
-ax.figure.set_size_inches(10, 10)
-ax = edinburgh_edge.plot(color='tomato')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
-```
-
-```{python}
-# 5 3
-ax.figure.set_size_inches(10, 10)
-ax = doncaster_edge.plot(color='tomato')
-ax.grid(True, color='grey', linestyle='--', linewidth=0.5)
-ax.xaxis.set_ticklabels([])
-ax.yaxis.set_ticklabels([])
 ```
 
 Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.
