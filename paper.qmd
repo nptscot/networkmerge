@@ -1588,7 +1588,7 @@ rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.
 
 # Evaluation of Proposed Route network simplification 
 
-In this section, we delve into the practical application of our proposed route network simplification techniques, focusing on a complex urban road network situated in the heart of Edinburgh. @tbl-new-datasets presents the key characteristics of the Edinburgh city centre, offering insights into its geometric structure and complexity.
+In this section, we delve into the practical application of our proposed route network simplification techniques, focusing on a complex urban road network situated in the heart of Edinburgh. The key characteristics of the Edinburgh city center are detailed in @tbl-new-datasets.
 
 
 ::: {#tbl-new-datasets}
@@ -1644,7 +1644,7 @@ doncaster_rail_info = {
 # princes_street_info, doncaster_rail_info
 ``` -->
 
-@fig-results presents different stages of network simplification, providing a comparative view of the impact of methodology.
+@fig-results  illustrate  various stages of network simplification, providing a comparative view of the impact of our methodology.
 
 - Input figure presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.
 
@@ -1790,6 +1790,63 @@ plt.show()
 ```
 
 Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.
+:::
+
+@fig-apply_results presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method. It is observed that the attribute `value` from the original network has been correctly transferred to the simplified network via a `sum` calculation process. This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.
+
+::: {#fig-apply_results}
+
+```{r}
+rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
+rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
+
+rnet_xp = st_transform(rnet_x, "EPSG:27700")
+rnet_yp = st_transform(rnet_y, "EPSG:27700")
+
+# Extract column names from the rnet_yp
+name_list = names(rnet_yp)
+
+# Initialize an empty list
+funs = list()
+
+# Loop through each name and assign it a function based on specific conditions
+for (name in name_list) {
+  if (name == "geometry") {
+    next  # Skip the current iteration
+  } else if (name %in% c("Gradient", "Quietness")) {
+    funs[[name]] = mean
+  } else {
+    funs[[name]] = sum
+  }
+}
+
+dist = 20
+rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = 10)
+
+# Define breaks for the color scale
+brks = c(0, 100, 500, 1000, 2000,5000,8000,10000)
+
+# Set global tmap options for tighter margins
+tmap_options(
+  outer.margins = c(0, 0, 0, 0),
+  inner.margins = c(0, 0, 0, 0)
+)
+
+# Create the first map with scale bar
+m1 = tm_shape(rnet_merged) + 
+     tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
+     tm_scale_bar() +
+     tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
+
+# Create the second map
+m2 = tm_shape(rnet_yp) + 
+     tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
+     tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
+
+# Arrange the two maps vertically with a tight layout and synchronization
+tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
+```
+Comparasion of Orginal Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down).
 :::
 
 # Discussion and Conclusion {#sec-discussion}
