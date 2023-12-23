@@ -1,0 +1,189 @@
+---
+title: "Route network simplification for transport planning"
+#  methods and applications"
+# Alternatives:
+# title: "Network simplification: application to the visualisation of transport networks"
+# title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
+bibliography: references.bib
+author: 
+  - name: Robin Lovelace
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0001-5679-6536
+  - name: Zhao Wang
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0002-4054-0533
+  - name: Will Deakin
+    affiliation: Network Rail, UK
+    orcid: 0009-0008-5656-4469
+  - name: Josiah Parry
+    affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
+    orcid: 0000-0001-9910-865X
+format:
+  # pdf: default
+  html: default
+number-sections: true
+execute: 
+  echo: false
+  message: false
+  warning: false
+editor: 
+  markdown: 
+    wrap: sentence
+# # Uncomment to run with Jupyter:
+# jupyter: python3
+---
+
+```{python}
+from pathlib import Path
+
+import geopandas as gp
+import matplotlib.pyplot as plt
+
+PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
+             "armley_line,edinburgh_line,doncaster_line,armley_edge_sk,edinburgh_edge_sk,"
+             "doncaster_edge_sk,armley_edge,edinburgh_edge,doncaster_edge").split(",")
+
+for variable in PLOT_DATA:
+    filepath = Path(f"data/rnet_{variable}.geojson")
+    if variable in globals():
+        continue
+    if filepath.exists():
+        data = gp.read_file(filepath)
+        globals()[variable] = data
+```
+
+::: {#fig-results layout-ncol="1" layout-nrow="1"}
+```{python}
+# import matplotlib.pyplot as plt
+
+# Create a figure with 5 subplots in one row
+#plt.rcParams["figure.dpi"] = 300
+#fig, ax = plt.subplots(3, 1, figsize=(8.5, 5.31), dpi=300.0)  # Adjust the size as needed
+fig, ax = plt.subplots(3, 1, dpi=300.0)  # Adjust the size as needed
+#fig, ax = plt.subplots(3, 1, figsize=(6, 4), dpi=300.0)  # Adjust the size as needed
+
+# Plot 1: Input
+ax[0] = base_edinburgh.plot(ax=ax[0], color="blue", linewidth=1.0)
+ax[0].grid(True, color="grey", linestyle="--", linewidth=0.5)
+ax[0].xaxis.set_ticklabels([])
+ax[0].yaxis.set_ticklabels([])
+ax[0].set_title("Input", y=1.0, pad=-6)
+ax[0].title.set_fontsize(4)
+
+# Plot 2: Skeletonized
+ax[1] = edinburgh_sk.plot(ax=ax[1], color="green", linewidth=1.0)
+ax[1].grid(True, color="grey", linestyle="--", linewidth=0.5)
+ax[1].xaxis.set_ticklabels([])
+ax[1].yaxis.set_ticklabels([])
+ax[1].set_title("Skeletonized", y=1.0, pad=-6)
+ax[1].title.set_fontsize(4)
+
+# Plot 3: Voronoi
+ax[2] = edinburgh_line.plot(ax=ax[2], color="orange", linewidth=1.0)
+ax[2].grid(True, color="grey", linestyle="--", linewidth=0.5)
+ax[2].xaxis.set_ticklabels([])
+ax[2].yaxis.set_ticklabels([])
+ax[2].set_title("Voronoi", y=1.0, pad=-6)
+ax[2].title.set_fontsize(4)
+
+plt.tight_layout(w_pad=16.0, h_pad=0.0)
+plt.show()
+```
+
+Matrix of Route Network Simplification Stages in Edinburgh.
+:::
+
+::: {#fig-results-primal layout-ncol="1" layout-nrow="1"}
+```{python}
+fig, ax = plt.subplots(2, 1, figsize=(5.67, 5.31), dpi=300.0)  # Adjust the size as needed
+# Plot 1: Input
+# ax[0] = base_edinburgh.plot(ax=ax[0], color="blue")
+# ax[0].grid(True, color="grey", linestyle="--", linewidth=0.5)
+# ax[0].xaxis.set_ticklabels([])
+# ax[0].yaxis.set_ticklabels([])
+#ax[0].set_title("Input")
+
+
+# Plot 4: Primal Skeletonized
+ax[0] = edinburgh_edge_sk.plot(ax=ax[0], color="orchid")
+ax[0].grid(True, color="grey", linestyle="--", linewidth=0.67)
+ax[0].xaxis.set_ticklabels([])
+ax[0].yaxis.set_ticklabels([])
+ax[0].set_title("Primal Skeletonized", y=1.0, pad=-9)
+ax[0].title.set_fontsize(8)
+
+# Plot 5: Primal Voronoi
+ax[1] = edinburgh_edge.plot(ax=ax[1], color="tomato")
+ax[1].grid(True, color="grey", linestyle="--", linewidth=0.67)
+ax[1].xaxis.set_ticklabels([])
+ax[1].yaxis.set_ticklabels([])
+ax[1].set_title("Primal Voronoi", y=1.0, pad=-9)
+ax[1].title.set_fontsize(8)
+#ax[2].xaxis.set_ticklabels([])
+#ax[2].yaxis.set_ticklabels([])
+
+plt.tight_layout(w_pad=1.0, h_pad=0.0)
+#plt.tight_layout()
+plt.show()
+```
+
+Matrix of Route Network Primal Simplification Stages in Edinburgh.
+:::
+
+::: {#fig-results layout-ncol="1" layout-nrow="1"}
+```{python}
+# import matplotlib.pyplot as plt
+
+# Create a figure with 5 subplots in one row
+#plt.rcParams["figure.dpi"] = 300
+#fig, ax = plt.subplots(3, 1, figsize=(8.5, 5.31), dpi=300.0)  # Adjust the size as needed
+fig, ax = plt.subplots(2, 2, dpi=300.0)  # Adjust the size as needed
+#fig, ax = plt.subplots(3, 1, figsize=(6, 4), dpi=300.0)  # Adjust the size as needed
+
+# # Plot 1: Input
+# ax[0] = base_edinburgh.plot(ax=ax[0], color="blue", linewidth=1.0)
+# ax[0].grid(True, color="grey", linestyle="--", linewidth=0.5)
+# ax[0].xaxis.set_ticklabels([])
+# ax[0].yaxis.set_ticklabels([])
+# ax[0].set_title("Input", y=1.0, pad=-6)
+# ax[0].title.set_fontsize(4)
+
+# Plot 2: Skeletonized
+ax[0, 0] = edinburgh_sk.plot(ax=ax[0, 0], color="green", linewidth=1.0)
+ax[0, 0].grid(True, color="grey", linestyle="--", linewidth=0.5)
+ax[0, 0].xaxis.set_ticklabels([])
+ax[0, 0].yaxis.set_ticklabels([])
+ax[0, 0].set_title("Skeletonized", y=1.0, pad=-9)
+ax[0, 0].title.set_fontsize(8)
+
+# Plot 3: Voronoi
+ax[0, 1] = edinburgh_line.plot(ax=ax[0, 1], color="orange", linewidth=1.0)
+ax[0, 1].grid(True, color="grey", linestyle="--", linewidth=0.5)
+ax[0, 1].xaxis.set_ticklabels([])
+ax[0, 1].yaxis.set_ticklabels([])
+ax[0, 1].set_title("Voronoi", y=1.0, pad=-9)
+ax[0, 1].title.set_fontsize(8)
+
+# Plot 4: Primal Skeletonized
+ax[1, 0] = edinburgh_edge_sk.plot(ax=ax[1, 0], color="orchid")
+ax[1, 0].grid(True, color="grey", linestyle="--", linewidth=0.67)
+ax[1, 0].xaxis.set_ticklabels([])
+ax[1, 0].yaxis.set_ticklabels([])
+ax[1, 0].set_title("Primal Skeletonized", y=1.0, pad=-9)
+ax[1, 0].title.set_fontsize(8)
+
+# Plot 5: Primal Voronoi
+ax[1, 1] = edinburgh_edge.plot(ax=ax[1, 1], color="tomato")
+ax[1, 1].grid(True, color="grey", linestyle="--", linewidth=0.67)
+ax[1, 1].xaxis.set_ticklabels([])
+ax[1, 1].yaxis.set_ticklabels([])
+ax[1, 1].set_title("Primal Voronoi", y=1.0, pad=-9)
+ax[1, 1].title.set_fontsize(8)
+
+plt.tight_layout(w_pad=1.0, h_pad=0.0)
+#plt.tight_layout()
+plt.show()
+```
+
+Matrix of Route Network Simplification Stages in Edinburgh.
+:::
