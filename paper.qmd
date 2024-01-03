@@ -144,9 +144,14 @@ Being developed with open data and open-source software, these methods are not o
 Datasets representing route networks are important in every stage of modern data-driven transport planning.
 A wide range of data types can be used as inputs and outputs transport models, including route network datasets, origin-destination data, movement patterns captured by global positioning systems (GPS), and information on surface characteristics derived from remote sensing imagery.[^1]
 Of these, route network datasets are unusual because they are commonly used as both inputs and outputs of transport models.
-Methods to modify and potentially enhance route network datasets, for different use cases, could therefore have widely applicable benefits.
 
 [^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
+
+As highlighted in the field of transport geography, network data models serve as digital representations of transportation networks, crucial for planning and operational purposes. These models, enriched through graph theory, encapsulate the complex, multi-modal nature of transportation data across various jurisdictions [^2]. The shapefile data model, developed by ESRI in the 1990s, has become a pivotal standard in storing vector information for network data models, facilitating the creation and analysis of network information [^2].
+
+[^2]: See the [online documentation] (https://transportgeography.org/contents/methods/network-data-models/) 
+
+In terms of topological representation, network data models necessitate a node and a link table for accurate topology construction. These tables are integral to defining network topology as structured by graph theory, although further developments are often required for applications in cartography and routing [^2]. This highlights the importance of an accurate and efficient topological representation in route network datasets, which can significantly impact their usability in transport planning.
 
 This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making.
 An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other *ways* (to use the OpenStreetMap terminology) along which people and goods can travel.
