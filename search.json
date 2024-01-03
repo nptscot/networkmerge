@@ -39,7 +39,7 @@
     "href": "paper.html#footnotes",
     "title": "Route network simplification for transport planning",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\nSee the online documentation of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.↩︎\nThe simple features standard is formalised by the International Organization for Standardization in ISO 19125-1:2004 and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage. For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.↩︎"
+    "text": "Footnotes\n\n\nSee the online documentation.↩︎"
   },
   {
     "objectID": "index.html",
