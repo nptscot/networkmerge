@@ -1669,7 +1669,7 @@ doncaster_rail_info = {
 
 -   Skeletonized figure shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.
 
--   Vorono figure display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
+-   Voronoi figure display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
 
 -   Primal Skeletonized demonstrates the networks post-application of a primal approach to the skeletonized data, offering insights into the primary routes and connections.
 
