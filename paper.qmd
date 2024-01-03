@@ -166,15 +166,17 @@ Geographic file formats implementing the 'simple features' standard described in
 With the increasing availability of high resolution geographic datasets and performant hardware and software, people (e.g. via OpenStreetMap) and national mapping agencies are mapping in more and more detail.
 Sustainable transport planning can benefit from the influx of data, but excess complexity and intricacy of street network geometries can lead to problems in analyzing and visualizing transportation networks. A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.  Consequently, the necessity for network simplification becomes evident, aligning with wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
 25 years since Sutton's paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge.
-Progress towards solving this knotty problem has included new methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018]. 
 
-In Geographic Information Systems (GIS), vector simplification and smoothing are essential techniques for refining and optimizing vector data representations, yet they are not without their limitations. Vector simplification, which includes methods like the Douglas-Peucker algorithm [@liu2020vector] and the Visvalingam-Whyatt algorithm [@de2014efficient], is focused on reducing the number of vertices in a line or polygon feature. While effective in preserving the overall shape and geographical accuracy, this method can struggle with reducing the complexity of the route layout. It might oversimplify intricate network structures, potentially leading to a loss of critical information or misinterpretation of network connectivity.
+Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms [@liu2020vector; @de2014efficient].
+These methods reduce the number of vertices in a line or polygon features.
+While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
+Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.
 
-Vector smoothing, encompassing techniques such as Chaikin’s algorithm, Bezier curves [@pradhan2023modified], and Kernel-based smoothing [@duong2022statistical], aims to create more visually appealing lines or polygons by mitigating sharp angles and irregularities. However, this approach can sometimes result in the distortion of spatial relationships within the network. It might smooth out important details that are critical for accurate analysis, especially in highly detailed or complex network structures. Furthermore, both vector simplification and smoothing, in their pursuit of creating more manageable and aesthetically pleasing representations, can inadvertently overlook the functional aspects of transportation networks, such as traffic flow patterns and junction intricacies.
+Recent progress towards solving the knotty problem problem of network simplification for transport planning has included methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018]. 
+However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
 
 
-
-As highlighted in previous research, network simplification has many real world applications.
+Flexibility is important due to the wide range of transport planning use cases.
 Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g. maps for junction design may have scales of 1:1000.
 Other use cases, such as strategic network planning tools and 'planning support systems' [@page2020], typically involve zoomed-out representations of street networks at scales of 1:10,000+ beyond which dual carriageways are not relevant and can distort visualisation of networks.
 
@@ -184,11 +186,10 @@ The aim of this paper is to articulate the problem of complex route networks, pr
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 In @sec-discussion we discuss the results and outline future work.
 
-```{=html}
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
-```
+
 <!-- Todo: add papers on network cleaning and simplification. -->
 
 <!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
