@@ -169,7 +169,10 @@ The problem of network simplification is not new.
 It can be seen as a component of wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
 25 years since Sutton's paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge.
 Progress towards solving this knotty problem has included new methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
-For example, strategic network planning tools (which are the use case motivating the methods presented in this paper) — which will typically involve maps with a scale of 1:10,000+ — do not need to show the same level of detail as a junction design tool that is based on more zoomed-in representations of transport networks, e.g. less than 1:2000.
+
+As highlighted in previous research, network simplification has many real world applications.
+Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g. maps for junction design may have scales of 1:1000.
+Other use cases, such as strategic network planning tools and 'planning support systems' [@page2020], typically involve zoomed-out representations of street networks at scales of 1:10,000+ beyond which dual carriageways are not relevant and can distort visualisation of networks.
 
 The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning.
 @sec-problem outlines the problem of complex route networks.
