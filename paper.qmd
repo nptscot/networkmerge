@@ -242,11 +242,8 @@ rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
 rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
-```{r}
-```
-
-In this study, we focus on two exemplary input datasets, as outlined in @tbl-input-data, both of which are sourced from the Propensity to Cycle Tool (PCT).
-The PCT derives its data from OpenStreetMap (OSM), each illustrating varying levels of complexity.
+In this study, we focus on two exemplary input datasets, as outlined in @tbl-input-data, both of which are sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM).
+Each input dataset illustrates varying levels of complexity.
 This variety allows us to explore and understand the nuances involved in simplifying route networks for more efficient urban transport planning.
 
 ::: {#tbl-input-data}
