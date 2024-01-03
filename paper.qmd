@@ -1318,8 +1318,7 @@ Simplified versions of the Otley Road (left) and Armley Road (right) networks.
 <!-- ### Primal network -->
 
 @fig-primal-voronoi illustrates the primal network derived from the Voronoi approach.
-This representation highlights the fundamental structure of the network, showcasing its simplified and efficient layout that results from the Voronoi-based simplification process.
-The figure demonstrates how the primal network captures the essential connectivity and layout of the transport routes.
+This representation highlights the fundamental structure of the network, showcasing a simplified and efficient layout that results from the Voronoi-based simplification process and how the primal network captures the essential connectivity and layout of the transport routes.
 
 ::: {#fig-primal-voronoi layout-ncol="2"}
 ```{python}
