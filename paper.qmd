@@ -286,7 +286,7 @@ There are two main challenges that need to be overcome to simplify transport net
 Sections @sec-topology-preserving-simplification to @sec-simplification-via-voronoi-polygons describe methods for simplifying the geometry of the network.
 The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network.
-This is covered in @sec-assigning-attributes-to-the-simplified-network.
+This is covered in @sec-joining-route-networks.
 
 <!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
