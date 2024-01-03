@@ -160,7 +160,7 @@ File formats for representing route networks include Transportation Network Test
 Another approach, used in this paper, is to represent transport networks in standard geographic file formats, as a series of linestrings with attributes such as way type and flow.
 Making transport datasets compliant with the 'simple features' geographic data specification in this way has advantages, <!-- compared with the proliferation of formats used by proprietary software, --> enabling easier sharing of datasets.[^2]
 
-[^2]:  The simple features standard is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage.
+[^2]: The simple features standard is formalised by the International Organization for Standardization in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html) and implemented in a wide range of file formats such as ESRIs shapefile, GeoJSON, and the open standard for geographic data, GeoPackage.
     For ease of data sharing, we share transport networks used in this paper as plain text GeoJSON files.
 
 With the increasing availability of high resolution geographic datasets and performant hardware and software, citizens (e.g. via OpenStreetMap) and national mapping agencies are mapping more and more detail.
@@ -189,7 +189,7 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 
 <!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
 
-# Prior work and problem definition {#sec-problem}
+# Problem definition {#sec-problem}
 
 @morgan2020 presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
 The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings.
