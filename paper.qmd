@@ -161,7 +161,7 @@ As inputs, route networks typically represent road or other transport networks a
 When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level [@sutton1998].
 
 File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
-Geographic file formats implementing the 'simple features' standard described in [ISO 19125-1:2004](https://www.iso.org/standard/40114.html), such as `.shp` and `.geojson`, can also be used to represent route networks.
+Geographic file formats implementing the 'Simple Features Access' standard developed by the Open Geospatial Consortium ([OGC](https://www.ogc.org/standard/sfa/)), such as `.shp` and `.geojson`, can also be used to represent route networks.
 
 With the increasing availability of high resolution geographic datasets and performant hardware and software, people (e.g. via OpenStreetMap) and national mapping agencies are mapping in more and more detail.
 Sustainable transport planning can benefit from the influx of data, but excess complexity and intricacy of street network geometries can lead to problems in analyzing and visualizing transportation networks. A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.  Consequently, the necessity for network simplification becomes evident, aligning with wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
@@ -242,11 +242,8 @@ rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
 rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
-```{r}
-```
-
-In this study, we focus on two exemplary input datasets, as outlined in @tbl-input-data, both of which are sourced from the Propensity to Cycle Tool (PCT).
-The PCT derives its data from OpenStreetMap (OSM), each illustrating varying levels of complexity.
+In this study, we focus on two exemplary input datasets, as outlined in @tbl-input-data, both of which are sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM).
+Each input dataset illustrates varying levels of complexity.
 This variety allows us to explore and understand the nuances involved in simplifying route networks for more efficient urban transport planning.
 
 ::: {#tbl-input-data}
@@ -286,28 +283,16 @@ There are two main challenges that need to be overcome to simplify transport net
 1.  Simplifying the *geometry*
 2.  Assigning attributes to the simplified network
 
-## Simplifying the geometry
+Sections @sec-topology-preserving-simplification to @sec-simplification-via-voronoi-polygons describe methods for simplifying the geometry of the network.
+The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network.
+This is covered in @sec-joining-route-networks.
 
-In this section, we will focuses on route network simplification in transport planning.
-This section outlines methods for reducing network complexity while preserving essential topological features.
-It begins with topology-preserving simplification, highlighting the importance of maintaining network integrity.
-Advanced techniques like image skeletonization and Voronoi diagram-centreline identification are then explored, detailing their roles in transforming and condensing network structures.
-The section further delves into the detailed creation of projected combined buffered geometries, essential for processing intersecting or adjacent network segments.
-It also examines the crucial role of affine transformations in accurately aligning geometric data.
+<!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
-The concept of a primal network that represents a high level of simplification is explored as well.
+The concept of a primal network that represents a high level of simplification is explored as well. -->
 
-```{=html}
-<!-- 
-
-Two fundamental approaches to simplifying transport networks are:
-
--   Simplifying the geometry of the network, by removing redundant vertices and edges and/or by merging parallel ways and *then* merging the attributes of the original network onto the simplified network.
--   Iteratively removing edges and updating the attributes of the remaining edges by routing through the network.
-
-In this paper we will focus on the former approach, which assumes that a simplified geographic representation of the network is available. -->
-```
-### Topology-preserving simplification
+## Topology-preserving simplification {#sec-topology-preserving-simplification}
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
@@ -377,10 +362,7 @@ Illustration of topology-preserving simplification, using the `mapshaper` JavaSc
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 :::
 
-### Network Simplification
-
-The paper presents two approaches for network simplification: one involves image skeletonization, while the other utilizes Voronoi diagrams to identify central lines.
-The detailed steps of the methodology will be presented in the following sections.
+## Simplification via skeletonization {#sec-simplification-via-skeletonization}
 
 ### Create a projected combined buffered geometry:
 
@@ -955,7 +937,7 @@ armley_edge_sk.plot()
 Primal networks for the Otley Road (left) and Armley Road (right) networks.
 :::
 
-## Simplification via Voronoi polygons
+## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
 In this approach, the network lines are first buffered as described above.
 The edges of these buffers are then segmented into sequences of points.
@@ -1336,8 +1318,7 @@ Simplified versions of the Otley Road (left) and Armley Road (right) networks.
 <!-- ### Primal network -->
 
 @fig-primal-voronoi illustrates the primal network derived from the Voronoi approach.
-This representation highlights the fundamental structure of the network, showcasing its simplified and efficient layout that results from the Voronoi-based simplification process.
-The figure demonstrates how the primal network captures the essential connectivity and layout of the transport routes.
+This representation highlights the fundamental structure of the network, showcasing a simplified and efficient layout that results from the Voronoi-based simplification process and how the primal network captures the essential connectivity and layout of the transport routes.
 
 ::: {#fig-primal-voronoi layout-ncol="2"}
 ```{python}
@@ -1355,7 +1336,7 @@ Primal networks for the Otley Road (left) and Armley Road (right) networks.
 
 <!-- ![](images/paste-1.png) -->
 
-## Joining route networks
+## Joining route networks {#sec-joining-route-networks}
 
 After generating a simplified network using the methods described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one.
 This process is commonly referred to as 'conflation' and 'integration'.
@@ -1687,7 +1668,7 @@ doncaster_rail_info = {
 
 -   Skeletonized figure shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.
 
--   Vorono figure display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
+-   Voronoi figure display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
 
 -   Primal Skeletonized demonstrates the networks post-application of a primal approach to the skeletonized data, offering insights into the primary routes and connections.
 
