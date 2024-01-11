@@ -1198,13 +1198,20 @@ Note that the values on Princes Street (highlighted) are hard to interpret witho
 :::
 
 
-We do not claim that our work represents the last word on this knotty problem: there is much to do, including:
+We're confident that there will be more research and open source software addressing knotty problem.
+there is much to do, including:
 
 -   Packaging the code so it's more easy to use elsewhere
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
--   Optimisation, which may have been described as the 'root of all evil', but which is important for working with national or global datasets.
+-   Optimisation, which may have been described as the 'root of all evil', but which is important for working with national or global datasets
+
+-   Testing the approach on other datasets, including those with different spatial scales and network types
+
+Each of these areas represents an interesting geographical and computational challenge. More importantly, solving them has the potential to improve the quality of transport planning and policy making, demonstrating the value of geocomputation for public benefit.
+
+
 
 # References
 
