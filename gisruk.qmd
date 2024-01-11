@@ -27,6 +27,8 @@ format:
     keep-tex: true
 bibliography: bibliography.bib
 ---
+
+````{=html}
 <!-- 
 # Introduction to guidelines {#sec-introduction}
 
@@ -109,7 +111,7 @@ Acknowledgement should be made of any funding bodies who have supported the work
 # Biographies {.appendix .unnumbered}
 
 All contributing authors should include a biography of no more than 50 words each outlining their career stage and research interests. -->
-
+````
 
 ```{r}
 #| name: python-setup
@@ -146,20 +148,22 @@ For some use cases, including strategic network planning, it is important to hav
 
 Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms [@de2014efficient].
 These methods reduce the number of vertices in a line or polygon features, but do not remove parallel ways.
-More sophisticated methods to help simplify complex networks include the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018]. 
+More sophisticated methods to help simplify complex networks include the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
 However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
 
 The aim of this paper is to present new ways to simplify transport networks, with implementations in open source software for reproducible research.
 
+```{=html}
 <!-- @sec-problem outlines the problem of complex route networks.
 @sec-data describes the input datasets.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 In @sec-discussion we discuss the results and outline future work. -->
-
+```
+```{=html}
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
-
+```
 <!-- Todo: add papers on network cleaning and simplification. -->
 
 <!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
@@ -189,21 +193,23 @@ rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
 rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
-
 # Methods {#sec-methods}
 
 The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 
+```{=html}
 <!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
 The concept of a primal network that represents a high level of simplification is explored as well. -->
-
+```
+```{=html}
 <!-- ## Topology-preserving simplification {#sec-topology-preserving-simplification}
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
 As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving. -->
-
+```
 <!-- ::: {#fig-topology-preserving layout-ncol="1"} -->
+
 ```{r}
 #| include: false
 input = sf::read_sf('data/rnet_otley.geojson')
@@ -265,14 +271,14 @@ m_armley = tm_shape(input_simplified, bbox = tmaptools::bb(input_simplified, 1.1
 tmap_arrange(m_otley, m_armley)
 ```
 
+```{=html}
 <!-- Illustration of topology-preserving simplification, using the `mapshaper` JavaScript package.
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 ::: -->
-
+```
 ## Simplification via skeletonization {#sec-simplification-via-skeletonization}
 
 <!-- ### Create a projected combined buffered geometry: -->
-
 
 ```{python}
 #| name: python-setup-packages
@@ -359,6 +365,7 @@ armley_split = pd.DataFrame(base_armley["geometry"].map(split_end).to_list(), co
 ```
 
 <!-- ::: {#fig-split-ends layout-ncol="2"} -->
+
 ```{python}
 #| include: false
 ## overlapping
@@ -399,9 +406,10 @@ ix = base_armley["class"] == -1
 base_armley.loc[ix, "count"] = 0
 ```
 
+```{=html}
 <!-- @fig-otley-armley-classes shows the segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
 It effectively highlights the contrast between the more intricate and the simpler sections within these networks. -->
-
+```
 ```{python}
 #| include: false
 ix = base_otley["count"].isin([0, 1])
@@ -446,12 +454,13 @@ The skeletonization approach is based on the idea of creating a buffer around th
 The buffered lines of the network are first transformed into a raster image.
 Subsequently, this raster image is processed through a thinning algorithm to produce a skeletal representation of the original network.
 
+```{=html}
 <!-- This skeletal structure preserves the overall extent and connectivity of the initial network, with a central line that closely follows the contours of the combined buffered area.
 
 To correlate the points in the buffered geometry with their respective positions in the raster image, we implement an affine transformation.
 This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
 Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format. -->
-
+```
 ```{python}
 #| include: false
 import numpy as np
@@ -492,11 +501,12 @@ r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geo
 r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
 ```
 
+```{=html}
 <!-- ### Affine transforms
 
 The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
 The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-panel. -->
-
+```
 ```{python}
 #| include: false
 from IPython.display import display, Markdown
@@ -510,7 +520,6 @@ os_matrix_otley = pd.DataFrame(np.asarray(s_matrix_otley).reshape(3, -1).T)
 or_matrix_armley = pd.DataFrame(np.asarray(r_matrix_armley).reshape(-1, 3))
 os_matrix_armley = pd.DataFrame(np.asarray(s_matrix_armley).reshape(3, -1).T)
 ```
-
 
 ```{python}
 import warnings
@@ -540,10 +549,10 @@ with warnings.catch_warnings():
 rip.show(armley_im, cmap="Greys", title="buffer geometry")
 ```
 
-
+```{=html}
 <!-- The image undergoes a thinning process, yielding a skeletal raster image as the result.
 This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. -->
-
+```
 ```{python}
 #| include: false
 otley_skeleton = skeletonize(otley_im).astype(np.uint8)
@@ -668,8 +677,6 @@ armley_sk.plot()
 Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
 :::
 
-
-
 ```{python}
 #| include: false
 import networkx as nx
@@ -720,14 +727,13 @@ def get_centre(node):
     return r
 ```
 
-
-
+```{=html}
 <!-- ### Primal network
 
 There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
 This primal network represents an extreme form of simplification, of great potential value in situations in which the network's overall structure and compression ratios are priorities.
 The primal networks for the Otley Road and Armley Road networks are illustrated in @fig-primal. -->
-
+```
 ```{python}
 #| include: false
 def get_nx(line):
@@ -789,11 +795,12 @@ def get_geometry_line(this_buffer):
     return gp.GeoSeries(r.simplify(tolerance=0.5), crs=CRS)
 ```
 
+```{=html}
 <!-- In @fig-boundary, the boundary of the buffered input geometry (otley_geometry) is calculated and then simplified.
 This process yields a simplified GeoSeries consisting of LineStrings, all of which are precisely aligned with the specified coordinate reference system (CRS).
 This step illustrates the transformation from the initial buffer geometries, named 'otley_buffer' and 'Armley_buffer', to their more refined and simplified versions, 'otley_boundary' and 'Armley_boundary', respectively.
 These refined boundaries provide an accurate representation and visualization of the exact limits of the spatial objects involved. -->
-
+```
 ```{python}
 #| include: false
 otley_boundary = get_geometry_line(otley_geometry)
@@ -889,10 +896,12 @@ def get_raster_line(point, knot=False):
     return r[r.length > 2.0]
 ```
 
+```{=html}
 <!-- @fig-segment showcase the conversion of segmented LineString geometries into point geometries.
 This essential transformation forms the basis for constructing Voronoi diagrams. -->
-
+```
 <!-- ::: {#fig-segment layout-ncol="2"} -->
+
 ```{python}
 #| include: false
 otley_segment = get_segment_nx(otley_boundary, scale).reset_index(drop=True)
@@ -910,12 +919,15 @@ ax.yaxis.set_ticklabels([])
 ```
 
 <!-- Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks. -->
+
 <!-- ::: -->
 
 <!-- @fig-voronoi-point, the process of converting the segmented LineString geometries into point geometries is illustrated. -->
+
 <!-- This transformation is essential for the creation of Voronoi diagrams. -->
 
 <!-- ::: {#fig-voronoi-point layout-ncol="2"} -->
+
 ```{python}
 #| include: false
 otley_point = otley_segment.loc[:, "geometry"].map(get_coordinates).explode()
@@ -937,6 +949,7 @@ ax.yaxis.set_ticklabels([])
 ```
 
 <!-- Detail point segement of the Otley Road (left) and Armley Road (right) networks. -->
+
 <!-- ::: -->
 
 <!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
@@ -966,7 +979,6 @@ armley_voronoi = gp.GeoSeries(map(set_precision_pointone, armley_voronoi.geoms),
 ```
 
 ::: {#fig-voronoi-2 layout-ncol="2"}
-
 ```{python}
 otley_voronoi = otley_voronoi.explode(index_parts=False).clip(otley_envelope)
 ix = ~otley_voronoi.is_empty & (otley_voronoi.type == "LineString")
@@ -1087,9 +1099,11 @@ def get_voronoi(this_buffer, tolerance, scale):
 ```
 
 <!-- @fig-voronoi-simplified shows the Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer's width from the buffer edge. -->
+
 <!-- This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines. -->
 
 <!-- ::: {#fig-voronoi-simplified layout-ncol="2"} -->
+
 ```{python}
 #| include: false
 otley_line = filter_distance(otley_voronoi, otley_boundary, offset)
@@ -1103,11 +1117,13 @@ armley_line.plot()
 ```
 
 <!-- Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge. -->
+
 <!-- ::: -->
 
+```{=html}
 <!-- The center-line network depicted in @fig-voronoi-line is created through a process that involves the removal of knot-like features from the resultant network.
 This step refines the geometry of network, ensuring a more streamlined and accurate representation of the transport routes. -->
-
+```
 ::: {#fig-voronoi-line layout-ncol="2"}
 ```{python}
 otley_line = filter_buffer(otley_line, otley_geometry)
@@ -1138,9 +1154,10 @@ Simplified versions of the Otley Road (left) and Armley Road (right) networks ge
 
 <!-- ### Primal network -->
 
+```{=html}
 <!-- @fig-primal-voronoi illustrates the primal network derived from the Voronoi approach.
 This representation highlights the fundamental structure of the network, showcasing a simplified and efficient layout that results from the Voronoi-based simplification process and how the primal network captures the essential connectivity and layout of the transport routes. -->
-
+```
 ```{python}
 #| include: false
 otley_edge = get_nx(otley_line)
@@ -1162,6 +1179,49 @@ armley_edge.plot()
 We have demonstrated two approaches to simplify a transport network, based on 'skeletonization' and Voronoi polygons.
 Both approaches are based on the idea of creating a buffer around the network and then simplifying the buffer, and both offer flexibility to the user by specifying the buffer size and other parameters.
 
-The code is open and reproducible, hosted on the [nptscot](https://github.com/nptscot) GitHub organisation. The approach demonstrates the ideal outlined by Stan Openshaw that geocomputation should be used for public benefit 
+The code is open and reproducible, hosted on the [nptscot](https://github.com/nptscot) GitHub organisation.
+The approach demonstrates the ideal outlined by Stan Openshaw that geocomputation should be used for public benefit [@openshaw2000]: the methods were developed not just because they are interesting and not previously tackled in the academic literature implemented in open source software with reproducible code.
+They were developed in response to a request by practitioners using early versions of the Transport Scotland funded Network Planning Tool for Scotland.
+The approach is now deployed in a publicly accessible web application hosted at www.npt.scot, as illustrated in @fig-npt.
+
+::: {#fig-npt layout-ncol="2"}
+
+![](images/paste-4.png)
+
+![](images/paste-3.png)
+
+The Network Planning Tool for Scotland, showing the network results for central Edinburgh without simplification (left) and with simplification (right).
+Note that the values on Princes Street (highlighted) are hard to interpret without simplification.
+
+:::
+
+
+We do not claim that our work represents the last word on this knotty problem: there is much to do, including:
+
+-   Packaging the code so it's more easy to use elsewhere
+
+-   Testing the impact of different parameters to find appropriate settings for different use cases
+
+-   Optimisation, which may have been described as the 'root of all evil', but which is important for working with national or global datasets.
 
 # References
+
+
+# Acknowledgements {.appendix .unnumbered}
+
+<!-- Acknowledgement should be made of any funding bodies who have supported the work reported in the paper, of those who have given permission for their work to be reproduced or of individuals whose particular assistance is due recognition. Acknowledge data providers here where appropriate. -->
+Thanks to Transport Scotland for funding the development of the Network Planning Tool for Scotland, and to the many users who have provided feedback on the tool.
+Thanks to Sustrans Scotland, and Matt Davis and Angus Calder in particular, for collaborating on the project.
+
+
+# Biographies {.appendix .unnumbered}
+
+<!-- All contributing authors should include a biography of no more than 50 words each outlining their career stage and research interests. -->
+
+Robin Lovelace is Associate Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England. Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation. 
+
+Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS). Zhao specializes in machine learning, data science and geocomputation for transport planning and engineering.
+
+Will Deakin ...
+
+Josiah Parry ...
