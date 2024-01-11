@@ -1,0 +1,106 @@
+---
+conference: GISRUK 2023
+title: Reproducible methods for network simplification for data visualisation and transport planning
+author: 
+  - name: Robin Lovelace
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0001-5679-6536
+  - name: Zhao Wang
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0002-4054-0533
+  - name: Will Deakin
+    affiliation: Network Rail, UK
+    orcid: 0009-0008-5656-4469
+  - name: Josiah Parry
+    affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
+    orcid: 0000-0001-9910-865X
+abstract: |
+  Summary of no more than 100 words. Also select 5 keywords or short phrases relevant to the work and list them below in the keywords list.
+keywords: [template, demo]
+bibliography: bibliography.bib
+format:
+  gisruk-pdf:
+    keep-tex: true
+---
+
+# Introduction to guidelines {#sec-introduction}
+
+The purpose of providing this template is to standardise the format of the abstracts submitted to GISRUK 2023. These notes are based on author guidelines previously produced for the GISRUK conference series which in turn were based on other guidelines.
+
+The pages should have margins of 2.5 cm all round. The base font should be Times New Roman 11pt, or closest equivalent and text should be single spaced. Each section of the paper should be numbered. Section headings should be left-justified and given in bold type. The title should be 16pt and the authors 14pt. The first line of each paragraph in each section should NOT be indented.
+
+## Sub-sections {#sec-subsections}
+
+Sub-sections should also be numbered as shown here. The sub-section heading should be left-justified and given in bold type (11pt).
+
+# Figures, Tables and Equations {#sec-fig-tab-eq}
+
+Tables should be as below (or as close as possible) and should be referenced as @tbl-conferences in the text.
+
+| Year | Host                                 |
+|-----:|--------------------------------------|
+| 2015 | University of Leeds                  |
+| 2016 | University of Greenwich              |
+| 2017 | University of Manchester             |
+| 2018 | University of Leicester              |
+| 2019 | University of Newcastle              |
+| 2020 | UCL & Birkbeck, University of London |
+| 2021 | Cardiff University                   |
+| 2022 | University of Liverpool              |
+| 2023 | University of Glasgow                |
+
+: GISRUK Conferences {#tbl-conferences}
+
+Equations should be centred on the page and numbered consecutively in the right-hand margin, as below. They should be referred to in the text as @eq-l-function.
+
+$$
+L=\sqrt{\frac{K(d)}{\pi}}-d
+$$ {#eq-l-function}
+
+Figures should be presented as part of the paper and should be referred to as @fig-l-function in the text.
+
+```{r}
+#| label: fig-l-function
+#| fig-cap: Example of L-function plot.
+#| echo: false
+#| message: FALSE
+#| warning: FALSE
+#| results: 'hide'
+#| fig.height:  5
+#| fig.width:  5
+#| fig-pos: tbh
+
+library(spatstat)
+
+data.frame(
+  x = c(
+    rnorm(100, mean = 10, sd = 5),
+    runif(400, min = 0, max = 100)
+    ),
+  y = c(
+    rnorm(100, mean = 10, sd = 5),
+    runif(400, min = 0, max = 100)
+    )
+  ) |>
+  as.matrix() |>
+  as.ppp(c(0,100,0,100)) |>
+  envelope(Lest, correction="border") |>
+  plot(main = "Random points plus cluster (with sd = 5)")
+```
+
+
+# References and Citations {#sec-cite}
+
+A list of references cited should be provided at the end of the paper using the Harvard format as shown below. Citations of these within the text should be given as follows: papers such as an interesting one by @doi:10.1080/13658810600661607 and also interesting books [@cargill2021writing].
+
+# File format and length {#sec-file-format-len}
+
+Abstracts should be submitted in unrestricted pdf format. Authors are requested to keep to the word limit of 1500 words. The word limit includes the main body of the abstract and everything within (including captions etc.,) and the references. Not included in the word count is the title, author list, date, summary, keywords and author biographies
+
+# Acknowledgements {.appendix .unnumbered}
+
+Acknowledgement should be made of any funding bodies who have supported the work reported in the paper, of those who have given permission for their work to be reproduced or of individuals whose particular assistance is due recognition. Acknowledge data providers here where appropriate.
+
+# Biographies {.appendix .unnumbered}
+
+All contributing authors should include a biography of no more than 50 words each outlining their career stage and research interests.
