@@ -751,19 +751,21 @@ def get_nx(line):
     return edge
 ```
 
-::: {#fig-primal layout-ncol="2"}
+<!-- ::: {#fig-primal layout-ncol="2"} -->
 ```{python}
+#| include: false
 otley_edge_sk = get_nx(otley_sk)
 otley_edge_sk.plot()
 ```
 
 ```{python}
+#| include: false
 armley_edge_sk = get_nx(armley_sk)
 armley_edge_sk.plot()
 ```
 
-Primal networks for the Otley Road (left) and Armley Road (right) networks.
-:::
+<!-- Primal networks for the Otley Road (left) and Armley Road (right) networks. -->
+<!-- ::: -->
 
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
