@@ -1208,6 +1208,9 @@ We do not claim that our work represents the last word on this knotty problem: t
 
 # References
 
+::: {#refs}
+
+:::
 
 # Acknowledgements {.appendix .unnumbered}
 
@@ -1227,3 +1230,4 @@ Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS). Zh
 Will Deakin ...
 
 Josiah Parry ...
+
