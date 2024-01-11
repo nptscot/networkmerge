@@ -1186,7 +1186,7 @@ The approach demonstrates the ideal outlined by Stan Openshaw that geocomputatio
 They were developed in response to a request by practitioners using early versions of the Transport Scotland funded Network Planning Tool for Scotland.
 The approach is now deployed in a publicly accessible web application hosted at www.npt.scot, as illustrated in @fig-npt.
 
-::: {#fig-npt layout-ncol="2"}
+::: {#fig-npt layout="[40,-2,40]"}
 
 ![](images/paste-4.png)
 
