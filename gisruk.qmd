@@ -1234,7 +1234,7 @@ Robin Lovelace is Associate Professor of Transport Data Science at the Leeds Ins
 
 Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS). Zhao specializes in machine learning, data science and geocomputation for transport planning and engineering.
 
-Will Deakin ...
+Will Deakin is the Trains Portfolio Architect in IT Delivery at Network Rail, the British national rail infrastructure manager. Will is a passionate advocate of the use of data science, visualisation and open data to help support reproducible and fact based policy making.
 
-Josiah Parry ...
+Josiah Parry is a Senior Product Engineer at Environmental Systems Research Institute, Inc (Esri) and an open source software developer.
 
