@@ -1,0 +1,28 @@
+title: GISRUK
+author: Stefano De Sabbata
+version: 0.1.1
+quarto-required: ">=1.2.0"
+contributes:
+  formats:
+    common:
+      toc: false
+    pdf:
+      documentclass: article
+      fontsize: 11pt
+      number-sections: true
+      geometry:
+        - left = 25mm
+        - right = 25mm
+        - top = 25mm
+        - bottom = 25mm
+        - includehead = true
+        - includefoot = true
+      hyperrefoptions:
+        - pdfborder = {0 0 0}
+      include-in-header:
+        - packages.tex
+      template-partials: 
+        - partials/title.tex
+        - partials/before-body.tex
+      cite-method: biblatex
+      biblio-style: apa

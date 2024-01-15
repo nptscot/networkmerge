@@ -1,0 +1,18 @@
+% Modified from the original GISRUK LaTeX template and
+% the quarto-journals template (MIT license)
+% https://github.com/quarto-journals
+
+$if(title)$
+\maketitle
+$endif$
+
+\begin{abstract}
+\centering
+
+$abstract$
+
+\vspace{5mm}
+
+{\bf KEYWORDS:} $for(keywords/allbutlast)$$keywords$ \unskip, $endfor$ $for(keywords/last)$$keywords$$endfor$
+
+\end{abstract}
