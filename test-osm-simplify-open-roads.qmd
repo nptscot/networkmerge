@@ -1,0 +1,41 @@
+---
+output: gfm
+---
+
+```{r}
+library(sf)
+sf::sf_use_s2(FALSE)
+library(tmap)
+tmap_mode("view")
+remotes::install_dev("stplanr")
+library(stplanr)
+```
+
+The OS open roads dataset is as follows:
+
+
+```{r}
+open_roads = sf::read_sf("./data/OS_3km.geojson")
+summary(duplicated(open_roads$geometry))
+plot(open_roads$geometry)
+open_roads = sf::st_make_valid(open_roads)
+# m = qtm(open_roads)
+# tmap_save(m, "open_roads.html")
+# browseURL("open_roads.html")
+```
+
+We can get some OSM data of the same area as follows:
+
+```{r}
+case_study_area = open_roads |>
+  sf::st_union() |>
+  sf::st_convex_hull() |>
+  sf::st_transform("EPSG:4326")
+osm_roads = osmextract::oe_get_network(
+  "Edinburgh",
+  mode = "driving",
+  boundary = case_study_area,
+  boundary_type = "clip"
+)
+plot(osm_roads$geometry)
+```
