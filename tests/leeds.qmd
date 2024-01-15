@@ -1,0 +1,590 @@
+---
+format: gfm
+---
+
+The aim of the code below is to test ways to simplify road network data, starting with an example representing Leeds.
+
+The input dataset is as follows, from the [nptscot/coherentnet](https://github.com/nptscot/coherentnet) repository:
+
+
+```{r}
+library(sf)
+library(dplyr)
+```
+
+
+```{r}
+# Get raw data from https://github.com/nptscot/coherentnet/blob/main/data/osm_leeds.geojson
+leeds = sf::read_sf("https://raw.githubusercontent.com/nptscot/coherentnet/main/data/osm_leeds.geojson")
+names(leeds)
+if (!file.exists("osm_leeds.geojson")) {
+  download.file("https://raw.githubusercontent.com/nptscot/coherentnet/main/data/osm_leeds.geojson", "osm_leeds.geojson")
+}
+```
+
+
+
+
+```{python}
+#| name: python-setup-packages
+from functools import partial
+from shapely import box
+from shapely.ops import voronoi_diagram, split
+from shapely import box, line_interpolate_point, snap
+from shapely.ops import voronoi_diagram
+import geopandas as gp
+import matplotlib.pyplot as plt
+from shapely import get_coordinates, line_merge, set_precision, unary_union
+from shapely.geometry import MultiPoint,MultiLineString,LineString,Point
+import pandas as pd
+import numpy as np
+```
+
+```{python}
+
+plt.rcParams["figure.figsize"] = (12, 12)
+
+def get_geometry_buffer(this_gf, radius=8.0):
+    """get_geometry_buffer: return radius buffered GeoDataFrame
+    args:
+      this_gf: GeoDataFrame to
+      radius: (default value = 8.0)
+
+    returns:
+      buffered GeoSeries geometry
+    """
+    r = gp.GeoSeries(this_gf, crs=CRS).buffer(radius, join_style="round", cap_style="round")
+    union = unary_union(r)
+    try:
+        r = gp.GeoSeries(union.geoms, crs=CRS)
+    except AttributeError:
+        r = gp.GeoSeries(union, crs=CRS)
+    return r
+
+CRS = "EPSG:27700"
+buffer_size = 8.0
+radius = buffer_size
+
+def get_split(line, point, separation=1.0e-6):
+    return list(split(snap(line, point, separation), point).geoms)
+
+def combine_line(line):
+    """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
+    args:
+      line: mixed LineString GeoSeries
+    returns:
+      join LineString GeoSeries
+    """
+    r = MultiLineString(line.values)
+    return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
+
+EMPTY = LineString([])
+def split_ends(line, offset):
+    if line.length <= 2.0 * offset:
+        return line, EMPTY, EMPTY
+    p = line_interpolate_point(line, offset)
+    head, centre = get_split(line, p)
+    p = line_interpolate_point(centre, -offset)
+    centre, tail = get_split(centre, p)
+    return head, centre, tail
+
+set_precision_pointone = partial(set_precision, grid_size=0.1)
+base_otley = gp.read_file("osm_leeds.geojson").to_crs(CRS)
+base_otley["geometry"] = base_otley["geometry"].map(set_precision_pointone)
+base_otley = combine_line(base_otley["geometry"]).to_frame("geometry")
+otley_geometry = get_geometry_buffer(base_otley["geometry"], radius=buffer_size)
+
+# Same for Armley:
+
+base_armley = gp.read_file("osm_leeds.geojson").to_crs(CRS)
+base_armley["geometry"] = base_armley["geometry"].map(set_precision_pointone)
+base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
+armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
+```
+
+@fig-buffered-network displays the buffered versions of the Otley Road (on the left) and Armley Road (on the right) networks.
+It visually illustrates how the application of an 8-meter buffer transforms the initial geometries of these roads.
+This representation is pivotal for understanding the spatial extension and the overlapping areas created by the buffer zones around each road network, setting the stage for subsequent analysis and simplification processes​.
+
+::: {#fig-buffered-network layout-ncol="2"}
+```{python}
+base_otley.plot(edgecolor="blue", color="blue")
+```
+
+```{python}
+base_armley.plot(edgecolor="blue", color="blue")
+```
+
+```{python}
+otley_geometry.plot(edgecolor="black", color="blue")
+```
+
+```{python}
+armley_geometry.plot(edgecolor="black", color="blue")
+```
+
+Buffered versions of the Otley Road (left) and Armley Road (right) networks.
+:::
+
+```{python}
+split_end = partial(split_ends, offset=np.sqrt(1.5) * radius)
+otley_split = pd.DataFrame(base_otley["geometry"].map(split_end).to_list(), columns=["head", "centre", "tail"])
+armley_split = pd.DataFrame(base_armley["geometry"].map(split_end).to_list(), columns=["head", "centre", "tail"])
+```
+
+In @fig-split-ends, truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks are presented.
+This visualization demonstrates the process of cutting and segmenting the buffer geometries.
+It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.
+
+::: {#fig-split-ends layout-ncol="2"}
+```{python}
+## overlapping
+otley_centre = gp.GeoSeries(otley_split["centre"], crs=CRS)
+otley_centre = gp.GeoSeries(otley_centre, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
+
+combined_otley = gp.GeoSeries(unary_union(otley_centre.values).geoms, crs=CRS)
+combined_otley.plot()
+```
+
+```{python}
+## overlapping
+armley_centre = gp.GeoSeries(armley_split["centre"], crs=CRS)
+armley_centre = gp.GeoSeries(armley_centre, crs=CRS).buffer(radius, 0, join_style="round", cap_style="round")
+combined_armley = gp.GeoSeries(unary_union(armley_centre.values).geoms, crs=CRS)
+combined_armley.plot()
+```
+
+Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+:::
+
+```{python}
+i, j = base_otley.sindex.query(combined_otley, predicate="intersects")
+
+base_otley["class"] = -1
+base_otley.loc[j, "class"] = combined_otley.index[i]
+count = base_otley.groupby("class").count()
+base_otley = base_otley.join(count["geometry"].rename("count"), on="class")
+ix = base_otley["class"] == -1
+base_otley.loc[ix, "count"] = 0
+
+i, j = base_armley.sindex.query(combined_armley, predicate="intersects")
+
+base_armley["class"] = -1
+base_armley.loc[j, "class"] = combined_armley.index[i]
+count = base_armley.groupby("class").count()
+base_armley = base_armley.join(count["geometry"].rename("count"), on="class")
+ix = base_armley["class"] == -1
+base_armley.loc[ix, "count"] = 0
+```
+
+@fig-otley-armley-classes shows the segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+It effectively highlights the contrast between the more intricate and the simpler sections within these networks.
+
+::: {#fig-otley-armley-classes layout-ncol="2"}
+```{python}
+ix = base_otley["count"].isin([0, 1])
+p = base_otley.loc[~ix, "geometry"].copy()
+p = p.buffer(radius, 512, join_style="round", cap_style="round")
+try:
+    p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+except AttributeError:
+    p = gp.GeoSeries(unary_union(p.values), crs=CRS)
+
+q = base_otley.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
+otley_segment = pd.concat([p, q])
+try:
+    otley_segment = gp.GeoSeries(list(unary_union(otley_segment.values).geoms), crs=CRS)
+except AttributeError:
+    otley_segment = gp.GeoSeries(unary_union(otley_segment.values), crs=CRS)
+otley_segment.plot()
+```
+
+```{python}
+ix = base_armley["count"].isin([0, 1])
+p = base_armley.loc[~ix, "geometry"].copy()
+p = p.buffer(radius, 512, join_style="round", cap_style="round")
+try:
+    p = gp.GeoSeries(list(unary_union(p.values).geoms), crs=CRS)
+except AttributeError:
+    p = gp.GeoSeries(unary_union(p.values), crs=CRS)
+
+q = base_armley.loc[ix, "geometry"].buffer(0.612, 64, join_style="mitre", cap_style="round")
+armley_segment = pd.concat([p, q])
+try:
+    armley_segment = gp.GeoSeries(list(unary_union(armley_geometry.values).geoms), crs=CRS)
+except AttributeError:
+    armley_segment = gp.GeoSeries(unary_union(armley_segment.values), crs=CRS)
+armley_segment.plot()
+```
+
+Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+:::
+
+### Skeletonization
+
+In the skeletonization process, the buffered lines of the network are first transformed into a raster image.
+Subsequently, this raster image is processed through a thinning algorithm to produce a skeletal representation of the original network.
+This skeletal structure preserves the overall extent and connectivity of the initial network, with a central line that closely follows the contours of the combined buffered area.
+
+To correlate the points in the buffered geometry with their respective positions in the raster image, we implement an affine transformation.
+This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format.
+
+```{python}
+import numpy as np
+import pandas as pd
+import rasterio as rio
+import rasterio.features as rif
+
+def get_pxsize(bound, scale=1.0):
+    """get_pxsize: calculates scaled image size in px
+      bound: boundary corner points
+      scale: scaling factor (default = 1.0)
+    returns:
+      size in px
+    """
+    r = np.diff(bound.reshape(-1, 2), axis=0)
+    r = np.ceil(r.reshape(-1))
+    return (r[[1, 0]] * scale).astype(int)
+
+
+def get_affine_transform(this_gf, scale=1.0):
+    """get_affine_transform: return affine transformations matrices, and scaled image size
+    from GeoPandas boundary size
+      this_gf: GeoPanda
+      scale:  (default = 1.0)
+    returns:
+      rasterio and shapely affine tranformation matrices, and image size in px
+    """
+    TRANSFORM_ONE = np.asarray([0.0, 1.0, -1.0, 0.0, 1.0, 1.0])
+    bound = this_gf.total_bounds
+    s = TRANSFORM_ONE / scale
+    s[[4, 5]] = bound[[0, 3]]
+    r = s[[1, 0, 4, 3, 2, 5]]
+    r = rio.Affine(*r)
+    return r, s, get_pxsize(bound, scale)
+
+r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geometry, scale=2.0)
+# For Armle
+r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
+```
+
+### Affine transforms
+
+The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
+The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-panel.
+
+```{python}
+from IPython.display import display, Markdown
+def display_matrix(matrix, header):
+    r = matrix.to_markdown(index=False, headers=header)
+    display(r)
+
+or_matrix_otley = pd.DataFrame(np.asarray(r_matrix_otley).reshape(-1, 3))
+os_matrix_otley = pd.DataFrame(np.asarray(s_matrix_otley).reshape(3, -1).T)
+
+or_matrix_armley = pd.DataFrame(np.asarray(r_matrix_armley).reshape(-1, 3))
+os_matrix_armley = pd.DataFrame(np.asarray(s_matrix_armley).reshape(3, -1).T)
+```
+
+::: {#tbl-panel layout-ncol="2"}
+```{python}
+#| output: asis
+#| label: tbl-rasterio-transform
+#| tbl-cap: Rasterio affine transformation matrix.
+display_matrix(or_matrix_otley, "   ")
+```
+
+```{python}
+#| output: asis
+#| label: tbl-shapely-transform
+#| tbl-cap: Shapely affine transformation matrix.
+display_matrix(os_matrix_otley, "   ")
+```
+
+Rasterio and Shapely affine transformation matrices for the Otley Road network.
+:::
+
+In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation.
+The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
+
+### Skeletonize the buffer to a point geometry
+
+A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image.
+This transformation adjusts the geometry to match the raster's scale and orientation.
+Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize.
+This step ensures a more coherent and accurate representation in the raster image.
+
+```{python}
+import warnings
+
+from skimage.morphology import remove_small_holes, skeletonize
+from shapely.affinity import affine_transform
+from shapely.geometry import Point
+import rasterio.plot as rip
+```
+
+::: {#fig-rasterize layout-ncol="2"}
+```{python}
+otley_im = rif.rasterize(otley_segment.values, transform=r_matrix_otley, out_shape=out_shape_otley)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    otley_im = remove_small_holes(otley_im, 20).astype(np.uint8)
+
+rip.show(otley_im, cmap="Greys", title="buffer geometry")
+```
+
+```{python}
+armley_im = rif.rasterize(armley_segment.values, transform=r_matrix_armley, out_shape=out_shape_otley)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    armley_im = remove_small_holes(armley_im, 20).astype(np.uint8)
+rip.show(armley_im, cmap="Greys", title="buffer geometry")
+```
+
+Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
+:::
+
+The image undergoes a thinning process, yielding a skeletal raster image as the result.
+This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton.
+
+::: {#fig-thin-skeleton layout-ncol="2"}
+```{python}
+otley_skeleton = skeletonize(otley_im).astype(np.uint8)
+rip.show(otley_skeleton, cmap="Greys", title="skeleton geometry")
+otley_p = np.stack(np.where(otley_skeleton >= 1))
+otley_point = gp.GeoSeries(map(Point, otley_p.T), crs=CRS)
+```
+
+```{python}
+armley_skeleton = skeletonize(armley_im).astype(np.uint8)
+rip.show(armley_skeleton, cmap="Greys", title="skeleton geometry")
+armley_p = np.stack(np.where(armley_skeleton >= 1))
+armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
+```
+
+Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
+:::
+
+The rasterized skeletal image is then converted back into point geometry, completing the vector -\> raster -\> vector geometry transformation process.
+
+<!-- Figure commented out as not necessary and similar to the subsequent figure: -->
+
+<!-- ::: {#fig-skeleton-vector layout-ncol="2"} -->
+
+```{python}
+shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
+otley_transform = otley_point.map(shapely_transform).map(set_precision_pointone)
+# otley_transform.plot(edgecolor="black", color="blue").grid()
+# plt.show()
+```
+
+```{python}
+armley_transform = armley_point.map(shapely_transform).map(set_precision_pointone)
+# armley_transform.plot(edgecolor="black", color="blue").grid()
+# plt.show()
+```
+
+```{=html}
+<!-- Skeletonized versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
+
+::: -->
+```
+The challenge with this approach is that instead of generating points situated on the simplified network, it returns a set of points rather than line geometries.
+This necessitates the inference of line geometry from the associated set of points.
+Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.
+
+The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
+After adjacent points are identified, line segments are created by connecting these points.
+The final and crucial step is the amalgamation of these individual line segments.
+This combination results in a continuous line geometry that represents the simplified network.
+<!-- This conversion from point to line geometry is a pivotal aspect of network simplification. --> To visualize the simplified network in its original spatial context, the reverse affine transformation is applied.
+This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
+The resulting simplified network is illustrated in @fig-skeleton-line.
+
+```{python}
+from shapely import get_coordinates
+from shapely.geometry import LineString, MultiLineString
+
+def get_raster_line_with_knots(point):
+    """get_raster_line_with_knots: return LineString GeoSeries from 1px line points with knots
+    args:
+      point: 1px point GeoSeries array with knots
+
+    returns:
+      1px line LineString GeoSeries with knots removed
+    """
+    square = point.buffer(1, cap_style="square", mitre_limit=1)
+    ix = point.sindex.query(square, predicate="covers").T
+    ix = np.sort(ix)
+    s = pd.DataFrame(ix).drop_duplicates().reset_index(drop=True)
+    s = s.loc[np.where(s[0] != s[1])]
+    s = np.stack([point[s[0].values], point[s[1].values]]).T
+    r = gp.GeoSeries(map(LineString, s), crs=CRS)
+    edge, node = get_source_target(combine_line(r).to_frame("geometry"))
+    return combine_line(edge["geometry"])
+
+def get_end(geometry):
+    """get_end: return numpy array of geometry LineString end-points
+    args:
+      geometry: geometry LineString
+
+    returns:
+      end-point numpy arrays
+    """
+    r = get_coordinates(geometry)
+    return np.vstack((r[0, :], r[-1, :]))
+
+def get_source_target(line):
+    """get_source_target: return edge and node GeoDataFrames from LineString with unique
+    node Point and edge source and target
+
+    args:
+      line: LineString GeoDataFrame
+
+    returns:
+      edge, node: GeoDataFrames
+    """
+    edge = line.copy()
+    r = edge["geometry"].map(get_end)
+    r = np.stack(r)
+    node = gp.GeoSeries(map(Point, r.reshape(-1, 2)), crs=CRS).to_frame("geometry")
+    count = node.groupby("geometry").size().rename("count")
+    node = node.drop_duplicates("geometry").set_index("geometry", drop=False)
+    node = node.join(count).reset_index(drop=True).reset_index(names="node")
+    ix = node.set_index("geometry")["node"]
+    edge = edge.reset_index(names="edge")
+    edge["source"] = ix.loc[map(Point, r[:, 0])].values
+    edge["target"] = ix.loc[map(Point, r[:, 1])].values
+    return edge, node
+
+def combine_line(line):
+    """combine_line: return LineString GeoSeries combining lines with intersecting endpoints
+    args:
+      line: mixed LineString GeoSeries
+    returns:
+      join LineString GeoSeries
+
+    """
+    r = MultiLineString(line.values)
+    return gp.GeoSeries(line_merge(r).geoms, crs=CRS)
+
+otley_line = get_raster_line_with_knots(otley_point)
+armley_line = get_raster_line_with_knots(armley_point)
+```
+
+::: {#fig-skeleton-line layout-ncol="2"}
+```{python}
+shapely_transform = partial(affine_transform, matrix=s_matrix_otley)
+otley_sk = otley_line.map(shapely_transform).map(set_precision_pointone)
+otley_sk = otley_sk.set_crs(CRS)
+otley_sk.plot()
+```
+
+```{python}
+shapely_transform = partial(affine_transform, matrix=s_matrix_armley)
+armley_sk = armley_line.map(shapely_transform).map(set_precision_pointone)
+armley_sk = armley_sk.set_crs(CRS)
+armley_sk.plot()
+```
+
+Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
+:::
+
+### Knots
+
+Knots in the network are multiple short segments at intersections, resembling tangled knots.
+To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined.
+The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point.
+This process effectively removes the knot-like appearance.
+As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in @fig-knots.
+
+```{python}
+import networkx as nx
+from shapely.geometry import MultiPoint
+
+def get_raster_line_without_knot(this_line):
+    """get_raster_line_without_knot: remove knots from LineString GeoSeries
+    args:
+      this_line: LineString GeoSeries array with knots
+    returns:
+      LineString GeoSeries with knots removed
+    """
+    edge, node = get_source_target(this_line)
+    ix = edge.length > 2.0
+    connected = get_connected_class(edge.loc[~ix, ["source", "target"]])
+    node = node.loc[connected.index].join(connected).sort_index()
+    connected_edge = get_centre(node)
+    r = combine_line(pd.concat([connected_edge["geometry"], edge.loc[ix, "geometry"]]))
+    return r[r.length > 2.0]
+
+
+def get_connected_class(edge):
+    """get_connected_class: return labeled connected node pandas Series from edge list
+    args:
+      edge_list: source, target edge pandas DataFrame
+    returns:
+      labeled node pandas Series
+    """
+    nx_graph = nx.from_pandas_edgelist(edge)
+    connected = nx.connected_components(nx_graph)
+    r = {k: i for i, j in enumerate(connected) for k in j}
+    return pd.Series(r, name="class")
+
+def get_centre(node):
+    """get_centre_edge: return centroid Point from discrete node clusters
+    args:
+      node: discrete node cluster GeoDataSeries
+    returns:
+      GeoDataCentre node cluster centroid Point
+    """
+    centre = node[["geometry", "class"]].groupby("class").aggregate(tuple)
+    centre = gp.GeoSeries(centre["geometry"].map(MultiPoint), crs=CRS).centroid
+    centre = centre.rename("target")
+    geometry = node[["class", "geometry"]].set_index("class").join(centre)
+    geometry = geometry.apply(LineString, axis=1)
+    r = node.rename(columns={"node": "source"}).copy()
+    r["geometry"] = geometry.values
+    return r
+```
+
+::: {#fig-knots layout-ncol="2"}
+![](images/knot-output.png){#fig-knot}
+
+![](images/noknot-output.png){#fig-noknot}
+
+Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in @fig-knots.
+:::
+
+### Primal network
+
+There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
+This primal network represents an extreme form of simplification, of great potential value in situations in which the network's overall structure and compression ratios are priorities.
+The primal networks for the Otley Road and Armley Road networks are illustrated in @fig-primal.
+
+```{python}
+def get_nx(line):
+    """get_nx: return primal edge and node network from LineString GeoDataFrame
+    args:
+      line: LineString GeoDataFrame
+    returns:
+      edge, node GeoDataFrames
+    """
+    r = line.map(get_end)
+    edge = gp.GeoSeries(r.map(LineString), crs=CRS)
+    r = np.vstack(r.to_numpy())
+    r = gp.GeoSeries(map(Point, r)).to_frame("geometry")
+    r = r.groupby(r.columns.to_list(), as_index=False).size()
+    return edge
+```
+
+::: {#fig-primal layout-ncol="2"}
+```{python}
+otley_edge_sk = get_nx(otley_sk)
+otley_edge_sk.plot()
+```
+
+```{python}
+armley_edge_sk = get_nx(armley_sk)
+armley_edge_sk.plot()
+```
