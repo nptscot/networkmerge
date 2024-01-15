@@ -7,23 +7,17 @@ The aim of the code below is to test ways to simplify road network data, startin
 The input dataset is as follows, from the [nptscot/coherentnet](https://github.com/nptscot/coherentnet) repository:
 
 
-```{r}
-library(sf)
-library(dplyr)
+```{python}
+# Download raw data from https://github.com/nptscot/coherentnet/blob/main/data/osm_leeds.geojson
+import os
+data_exists = os.path.exists("osm_leeds.geojson")
+# Print message if false:
+if not data_exists:
+    print("Download data from https://raw.githubusercontent.com/nptscot/coherentnet/main/data/osm_leeds.geojson")
 ```
 
-
-```{r}
-# Get raw data from https://github.com/nptscot/coherentnet/blob/main/data/osm_leeds.geojson
-leeds = sf::read_sf("https://raw.githubusercontent.com/nptscot/coherentnet/main/data/osm_leeds.geojson")
-names(leeds)
-if (!file.exists("osm_leeds.geojson")) {
-  download.file("https://raw.githubusercontent.com/nptscot/coherentnet/main/data/osm_leeds.geojson", "osm_leeds.geojson")
-}
+```{python}
 ```
-
-
-
 
 ```{python}
 #| name: python-setup-packages
