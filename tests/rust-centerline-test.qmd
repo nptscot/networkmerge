@@ -1,0 +1,18 @@
+---
+title: "Testing the centerline Rust crate"
+---
+
+We get the repo with:
+
+```bash
+git clone https://codeberg.org/eadf/centerline_rs.git
+```
+
+Let's run the tests:
+
+```bash
+# Install deps:
+sudo apt-get install libxft-dev
+cd centerline_rs
+cargo run --example fltk_gui --features=obj-rs --release
+```
