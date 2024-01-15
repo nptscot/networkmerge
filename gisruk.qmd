@@ -772,7 +772,7 @@ armley_edge_sk.plot()
 In this approach, the buffers described in the previous section are converted into sequences of points.
 From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points which represents the central line of the network.
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
-The clipped Voronoi representation and the resulting central lines are illustrated in @fig-voronoi-2 and @fig-fig-voronoi-line, respectively.
+The clipped Voronoi representation and the resulting central lines are illustrated in @fig-voronoi-2 and @fig-voronoi-line, respectively.
 
 <!-- ### Boundary Segmentation -->
 
