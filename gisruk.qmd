@@ -9,7 +9,7 @@ author:
     affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
     orcid: 0000-0002-4054-0533
   - name: Will Deakin
-    affiliation: Network Rail, UK
+    affiliation: Digital, Data and Technology Services, Network Rail, UK
     orcid: 0009-0008-5656-4469
   - name: Josiah Parry
     affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
@@ -151,6 +151,8 @@ These methods reduce the number of vertices in a line or polygon features, but d
 More sophisticated methods to help simplify complex networks include the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
 However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
 
+We note the simplification and interpolation for with linear (one-dimensional) geometries is less mature than Polygon or MultiPolygon (two-dimensional) geometry. For example robust implementation for the areal interpolation of intensive and extensive variables are available in `R` areal-weighted-interpolation package[@rareal] or in the `python` PySAL Tobler library[@pysaltobler].
+
 The aim of this paper is to present new ways to simplify transport networks, with implementations in open source software for reproducible research.
 
 ```{=html}
@@ -195,7 +197,7 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 
 # Methods {#sec-methods}
 
-The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+The key contributions of the paper are the novel methods of image skeletonization[@scikit2014][@zha1984][@lee1994], presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 
 ```{=html}
 <!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
@@ -569,7 +571,7 @@ armley_p = np.stack(np.where(armley_skeleton >= 1))
 armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
 ```
 
-The rasterized skeletal image is then converted back into point geometry, completing the vector -\> raster -\> vector geometry transformation process, as illustrated in @fig-skeleton-line.
+The rasterized skeletal image is then converted back into point geometry, completing the vector-to-raster-to-vector geometry transformation process, as illustrated in @fig-skeleton-line.
 
 <!-- Figure commented out as not necessary and similar to the subsequent figure: -->
 
@@ -770,7 +772,8 @@ armley_edge_sk.plot()
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
 In this approach, the buffers described in the previous section are converted into sequences of points.
-From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points which represents the central line of the network.
+From these sequences, a centre-line is derived based on a set of Voronoi polygons with the `Shapely` library[@shapely2023]  that cover 
+these points which represents the central line of the network.
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 The clipped Voronoi representation and the resulting central lines are illustrated in @fig-voronoi-2 and @fig-voronoi-line, respectively.
 
@@ -1205,13 +1208,11 @@ there is much to do, including:
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
--   Optimisation, which may have been described as the 'root of all evil', but which is important for working with national or global datasets
+-   Premature optimisation, which may have been described as the "root of all evil"^["Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974], but which is important for working with national or global datasets
 
 -   Testing the approach on other datasets, including those with different spatial scales and network types
 
 Each of these areas represents an interesting geographical and computational challenge. More importantly, solving them has the potential to improve the quality of transport planning and policy making, demonstrating the value of geocomputation for public benefit.
-
-
 
 # References
 
