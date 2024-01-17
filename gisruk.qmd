@@ -151,7 +151,8 @@ These methods reduce the number of vertices in a line or polygon features, but d
 More sophisticated methods to help simplify complex networks include the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
 However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
 
-We note the simplification and interpolation for with linear (one-dimensional) geometries is less mature than Polygon or MultiPolygon (two-dimensional) geometry. For example robust implementation for the areal interpolation of intensive and extensive variables are available in `R` areal-weighted-interpolation package[@rareal] or in the `python` PySAL Tobler library[@pysaltobler].
+We note the simplification and interpolation for with linear (one-dimensional) geometries is less mature than Polygon or MultiPolygon (two-dimensional) geometry.
+For example robust implementation for the areal interpolation of intensive and extensive variables are available in `R` areal-weighted-interpolation package[@prener2019] or in the `python` PySAL Tobler library [@knaap2023].
 
 The aim of this paper is to present new ways to simplify transport networks, with implementations in open source software for reproducible research.
 
@@ -754,6 +755,7 @@ def get_nx(line):
 ```
 
 <!-- ::: {#fig-primal layout-ncol="2"} -->
+
 ```{python}
 #| include: false
 otley_edge_sk = get_nx(otley_sk)
@@ -767,13 +769,13 @@ armley_edge_sk.plot()
 ```
 
 <!-- Primal networks for the Otley Road (left) and Armley Road (right) networks. -->
+
 <!-- ::: -->
 
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
 In this approach, the buffers described in the previous section are converted into sequences of points.
-From these sequences, a centre-line is derived based on a set of Voronoi polygons with the `Shapely` library[@shapely2023]  that cover 
-these points which represents the central line of the network.
+From these sequences, a centre-line is derived based on a set of Voronoi polygons with the `Shapely` library[@shapely2023] that cover these points which represents the central line of the network.
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 The clipped Voronoi representation and the resulting central lines are illustrated in @fig-voronoi-2 and @fig-voronoi-line, respectively.
 
@@ -1190,54 +1192,53 @@ They were developed in response to a request by practitioners using early versio
 The approach is now deployed in a publicly accessible web application hosted at www.npt.scot, as illustrated in @fig-npt.
 
 ::: {#fig-npt layout="[40,-2,40]"}
-
 ![](images/paste-4.png)
 
 ![](images/paste-3.png)
 
 The Network Planning Tool for Scotland, showing the network results for central Edinburgh without simplification (left) and with simplification (right).
 Note that the values on Princes Street (highlighted) are hard to interpret without simplification.
-
 :::
 
+We are confident that there will be more research and accompanying open source software to address this knotty problem.
+There is much more to do, including:
 
-We're confident that there will be more research and open source software addressing knotty problem.
-there is much to do, including:
-
--   Packaging the code so it's more easy to use elsewhere
+-   Packaging the approach in open source software products that are easy to use and integrate in other tools, for the benefit of open source transport planning in general
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
--   Optimisation, noting that premature optimisation has been described as the "root of all evil"^[
-  "Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974], but which is important for working with national or global datasets
-]
+-   Optimisation, noting that premature optimisation has been described as the "root of all evil"[^1]
 
 -   Testing the approach on other datasets, including those with different spatial scales and network types
 
-Each of these areas represents an interesting geographical and computational challenge. More importantly, solving them has the potential to improve the quality of transport planning and policy making, demonstrating the value of geocomputation for public benefit.
+[^1]: "Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974], but which is important for working with national or global datasets
+
+Each of these areas represents an interesting geographical and computational challenge.
+More importantly, solving them has the potential to improve the quality of transport planning and policy making, demonstrating the value of geocomputation for public benefit.
 
 # References
 
 ::: {#refs}
-
 :::
 
 # Acknowledgements {.appendix .unnumbered}
 
 <!-- Acknowledgement should be made of any funding bodies who have supported the work reported in the paper, of those who have given permission for their work to be reproduced or of individuals whose particular assistance is due recognition. Acknowledge data providers here where appropriate. -->
+
 Thanks to Transport Scotland for funding the development of the Network Planning Tool for Scotland, and to the many users who have provided feedback on the tool.
 Thanks to Sustrans Scotland, and Matt Davis and Angus Calder in particular, for collaborating on the project.
-
 
 # Biographies {.appendix .unnumbered}
 
 <!-- All contributing authors should include a biography of no more than 50 words each outlining their career stage and research interests. -->
 
-Robin Lovelace is Associate Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England. Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation. 
+Robin Lovelace is Associate Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England.
+Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation.
 
-Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS). Zhao specializes in machine learning, data science and geocomputation for transport planning and engineering.
+Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS).
+Zhao specializes in machine learning, data science and geocomputation for transport planning and engineering.
 
-Will Deakin is the Trains Portfolio Architect in IT Delivery at Network Rail, the British national rail infrastructure manager. Will is a passionate advocate of the use of data science, visualisation and open data to help support reproducible and fact based policy making.
+Will Deakin is the Trains Portfolio Architect in IT Delivery at Network Rail, the British national rail infrastructure manager.
+Will is a passionate advocate of the use of data science, visualisation and open data to help support reproducible and fact based policy making.
 
 Josiah Parry is a Senior Product Engineer at Environmental Systems Research Institute, Inc (Esri) and an open source software developer.
-
