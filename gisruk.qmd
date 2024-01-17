@@ -1208,7 +1208,9 @@ there is much to do, including:
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
--   Premature optimisation, which may have been described as the "root of all evil"^["Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974], but which is important for working with national or global datasets
+-   Optimisation, noting that premature optimisation has been described as the "root of all evil"^[
+  "Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974], but which is important for working with national or global datasets
+]
 
 -   Testing the approach on other datasets, including those with different spatial scales and network types
 
