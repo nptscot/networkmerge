@@ -198,7 +198,7 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 
 # Methods {#sec-methods}
 
-The key contributions of the paper are the novel methods of image skeletonization[@scikit2014][@zha1984][@lee1994], presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+The key contributions of the paper are the novel methods of image skeletonization[@scikit2014; @zha1984; @lee1994], presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 
 ```{=html}
 <!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
@@ -1207,11 +1207,11 @@ There is much more to do, including:
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
--   Optimisation, noting that premature optimisation has been described as the "root of all evil"[^1]
+-   Optimisation, noting that premature optimisation has been described as the "root of all evil"[^1], but which is important for working with national or global datasets
 
 -   Testing the approach on other datasets, including those with different spatial scales and network types
 
-[^1]: "Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974], but which is important for working with national or global datasets
+[^1]:  "Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." [@knuth1974]
 
 Each of these areas represents an interesting geographical and computational challenge.
 More importantly, solving them has the potential to improve the quality of transport planning and policy making, demonstrating the value of geocomputation for public benefit.
