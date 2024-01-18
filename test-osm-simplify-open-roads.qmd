@@ -1,0 +1,75 @@
+---
+output: gfm
+---
+
+```{r}
+library(sf)
+sf::sf_use_s2(FALSE)
+library(tmap)
+tmap_mode("view")
+remotes::install_dev("stplanr")
+library(stplanr)
+```
+
+The OS open roads dataset is as follows:
+
+
+```{r}
+open_roads = sf::read_sf("./data/OS_3km.geojson")
+summary(duplicated(open_roads$geometry))
+plot(open_roads$geometry)
+open_roads = sf::st_make_valid(open_roads)
+# m = qtm(open_roads)
+# tmap_save(m, "open_roads.html")
+# browseURL("open_roads.html")
+```
+
+We can get some OSM data of the same area as follows:
+
+```{r}
+case_study_area = open_roads |>
+  sf::st_union() |>
+  sf::st_convex_hull() |>
+  sf::st_transform("EPSG:4326")
+osm_roads = osmextract::oe_get_network(
+  "Edinburgh",
+  mode = "driving",
+  boundary = case_study_area,
+  boundary_type = "clip"
+)
+plot(osm_roads$geometry)
+```
+
+Let's join the from the more intricate OSM geomtry onto the OS open roads data:
+
+```{r}
+osm_roads$value = runif(nrow(osm_roads))
+sum_na_rum = function(x) sum(x, na.rm = TRUE)
+concat_strings = function(x) paste(unique(x), collapse = ",")
+most_common_string = function(x) names(sort(table(x), decreasing = TRUE))[1]
+first_string = function(x) x[1]
+funs = list(
+    value = sum_na_rum,
+    highway = first_string
+    )
+osm_projected = sf::st_transform(osm_roads, sf::st_crs(open_roads))
+# ?rnet_join
+os_joined = rnet_merge(
+  open_roads |> dplyr::transmute(n = seq(nrow(open_roads))),
+  osm_projected |> sf::st_cast("LINESTRING") |> sf::st_zm(),
+  funs = funs,
+  dist = 20
+  ,
+  segment_length = 10
+  )
+names(os_joined)
+summary(os_joined$value)
+head(os_joined$highway)
+os_joined = os_joined[os_joined$value <= 15, ]
+m = tm_shape(os_joined) +
+  tm_lines("value", palette = "Blues", auto.palette.mapping = FALSE, lwd = 5) +
+  tm_shape(osm_projected) +
+  tm_lines("value", palette = "Reds", auto.palette.mapping = FALSE)
+tmap_save(m, "osm_open_roads.html")
+browseURL("osm_open_roads.html")
+```
