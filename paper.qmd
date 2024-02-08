@@ -1849,15 +1849,15 @@ tmap_options(
 )
 
 # Create the first map with scale bar
-m1 = tm_shape(rnet_merged) + 
+m1 = tm_shape(rnet_yp) + 
+     tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
+     tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
+# Create the second map
+m2 = tm_shape(rnet_merged) + 
      tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
      tm_scale_bar() +
      tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
 
-# Create the second map
-m2 = tm_shape(rnet_yp) + 
-     tm_lines("value", palette = "viridis", lwd = 5, breaks = brks) +
-     tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
 
 # Arrange the two maps vertically with a tight layout and synchronization
 tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
