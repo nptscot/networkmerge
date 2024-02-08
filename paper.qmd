@@ -1868,28 +1868,20 @@ Comparasion of Orginal Edinburgh Road Network (Up) and Simplied Edinburgh Road N
 
 # Discussion and Conclusion {#sec-discussion}
 
-In this study, we have explored the complexities of urban route networks and the pressing need for their simplification to enhance transport planning efficiency.
-The research centered around the application and comparison of two methods for route network simplification: image skeletonization and Voronoi diagram-centreline identification.
-Through the analysis of two diverse datasets, Otley Road and Armley Road, we not only demonstrated the utility and efficacy of these methods in managing different levels of network complexities but also proposed a meticulous process for efficiently merging attributes from a complex network to a simplified one.
-This process, complemented by a rigorous "sanity" check, ensures that the essential characteristics of the original network are accurately retained, thereby upholding the integrity and effectiveness of transport planning based on these simplified models.
+This paper explored methods for simplifying route networks and demonstrated reproducible implementations.
+The two main methods developed for this purpose were image skeletonization and Voronoi diagram-centreline identification.
+Both resulted in geometries that were substantially simpler and less resource-intensive for subsequent network analysis steps.
+Furthermore, a follow-on stage of joining the attributes of the original 'complex' network, aggregating values where needed, was shown to substantially improve visualisation and interpretation of the simplified network.
 
-## Discussion
+Both methods successfully reduced the complexity of the network representations while preserving spatial and connectivity characteristics.
+The appropriate balance between simplification and preservation of network geometries will vary depending on the specific requirements of the analysis.
+An advantage of the implementations we have developed, available in the Python package `parenx`, is that they are highly flexible and can be adapted to suit the specific requirements of the user, from low levels of simplification to aggressive simplification towards the 'primal network'.
 
-The results obtained from applying these methods have highlighted several key insights.
-First, the importance of maintaining the integrity and topological accuracy of the original network in the simplification process cannot be overstated.
-Both methods successfully reduced the complexity of the network representations while preserving essential spatial and connectivity characteristics.
-This balance is crucial for ensuring that the simplified networks remain true to their real-world counterparts, thus maintaining the reliability of transport planning models and decisions based on these models.
+There are several future directions of travel that we believe are worth exploring, building on the work presented here.
+One is to explore alternative algorithms for thinning buffered networks, for example the grassfire algorithm.
 
-Furthermore, the comparative analysis of the two methods revealed their respective strengths and potential applications.
-The image skeletonization approach excelled in producing more streamlined network representations, particularly effective in contexts where a high-level overview of the network is required.
-On the other hand, the Voronoi diagram-centreline identification method provided a more nuanced simplification, capturing the central alignment of the route networks, making it suitable for detailed analysis and planning at a more granular level.
-
-## Conclusion
-
-Conclusively, the study underscores the significance of route network simplification in the transport planning.
-The methodologies tackle the increasing intricacy of urban route networks.
-By simplifying these networks, we can achieve more efficient and actionable insights for urban transport planning.
-This not only aids in better visualization and interpretation of transport models but also harmonizes the complexity of urban networks with the clarity needed for effective planning and decision-making.
+We developed the methods to support the Network Planning Tool for Scotland, which provides a strong evidence base enabling more data-driven prioritisation of investment in active travel infrastructure.
+However, we believe it has applications beyond this use case, in strategic rail network modelling, network redesign work, and in the development of computationally efficient and easy-to-interpret and modify network representations for use in transport planning and analysis.
 
 # References
 
