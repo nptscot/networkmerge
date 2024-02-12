@@ -1,1 +1,1 @@
-Sitemap: https://github.com/nptscot/networkmerge/sitemap.xml
+Sitemap: https://nptscot.github.io/networkmerge/sitemap.xml

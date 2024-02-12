@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -26,7 +26,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,6 +62,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -102,7 +103,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -111,6 +118,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -120,15 +128,42 @@ div.csl-indent {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">networkmerge</span>
     </a>
@@ -140,17 +175,17 @@ div.csl-indent {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./paper.html" rel="" target="" aria-current="page">
- <span class="menu-text">Networkmerge paper</span></a>
+    <a class="nav-link active" href="./paper.html" aria-current="page"> 
+<span class="menu-text">Networkmerge paper</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://www.npt.scot" rel="" target="">
- <span class="menu-text">Network Planning Tool web application with simplified network</span></a>
+    <a class="nav-link" href="https://www.npt.scot"> 
+<span class="menu-text">Network Planning Tool web application with simplified network</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -214,36 +249,36 @@ div.csl-indent {
     <div class="quarto-title-meta-contents">
     <p class="author">Robin Lovelace <a href="https://orcid.org/0000-0001-5679-6536" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
   </div>
-    <div class="quarto-title-meta-contents">
+  <div class="quarto-title-meta-contents">
         <p class="affiliation">
             Leeds Institute for Transport Studies, University of Leeds, UK
           </p>
       </div>
-      <div class="quarto-title-meta-contents">
+    <div class="quarto-title-meta-contents">
     <p class="author">Zhao Wang <a href="https://orcid.org/0000-0002-4054-0533" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
   </div>
-    <div class="quarto-title-meta-contents">
+  <div class="quarto-title-meta-contents">
         <p class="affiliation">
             Leeds Institute for Transport Studies, University of Leeds, UK
           </p>
       </div>
-      <div class="quarto-title-meta-contents">
+    <div class="quarto-title-meta-contents">
     <p class="author">Will Deakin <a href="https://orcid.org/0009-0008-5656-4469" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
   </div>
-    <div class="quarto-title-meta-contents">
+  <div class="quarto-title-meta-contents">
         <p class="affiliation">
-            Network Rail, UK
+            Digital, Data and Technology services, Network Rail, UK
           </p>
       </div>
-      <div class="quarto-title-meta-contents">
+    <div class="quarto-title-meta-contents">
     <p class="author">Josiah Parry <a href="https://orcid.org/0000-0001-9910-865X" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
   </div>
-    <div class="quarto-title-meta-contents">
+  <div class="quarto-title-meta-contents">
         <p class="affiliation">
             Environmental Systems Research Institute, Redlands, CA, USA
           </p>
       </div>
-    </div>
+  </div>
 
 <div class="quarto-title-meta">
 
@@ -253,42 +288,10 @@ div.csl-indent {
   </div>
   
 
+
 </header>
 
-<!-- Blurb form special issue in Journal of Physics: Complexity
 
-
-Journal of Physics: Complexity
-Focus Issue on Urban Mobility and Green Transportation in Sustainable Cities
-Guest Editors
-
-    Ruiqi Li, Beijing University of Chemical Technology, China
-    Marta C. Gonzalez, University of California, USA
-    Michael Szell, IT University of Copenhagen, Denmark
-    Luis E. Olmos, University of Medellin, Colombia 
-
-Scope
-
-Along with the rapid urbanization and car-oriented transportation systems for most cities worldwide, challenges associated with urban mobility and transportation have escalated, calling for greener and more sustainable solutions to address environmental, social, and economic concerns. For example, the flooding of car and conventional transportation system are responsible for a variety of urban illnesses, including traffic congestion, air pollution, energy deficiency, greenhouse gas emissions, loss of home value and property taxes, and deterioration of health of residents, and underscoring the urgent need for a paradigm shift towards green and sustainable alternatives.
-
-This Focus aims to explore the intersection of physics and complexity in the context of urban mobility and green transportation, shedding light on cutting-edge research that not only elucidates the fundamental principles governing these systems but also offers practical applications to create more sustainable and efficient cities. Regarding the green transportation, it can be any means of travel that does not negatively impact the environment, including (but are not limited to) bikes (dockless or docked sharing ones), ebikes (both private or sharing ones), electric vehicles. A better green transportation would involve both the infrastructure level and human behaviors level.
-
-The focus issue is concerned with all aspects of urban mobility and green transportation, topics addressed include, but are not limited to:
-
-    Empirical and theoretical study of human mobility in green transportation
-    Design and/or optimization of sidewalk, bicycle, or micromobility networks in cities
-    Road safety in green transportation system
-    Infrastructure analysis of green transportation system
-    Design and/or optimization of charging stations in cities
-    The relationship between urban form and vehicle kilometers traveled (VKT) and reduction of emissions
-    Rebalancing strategy for dockless/docked bike-sharing systems
-    Empirical and theoretical study of mobility patterns of sharing conveyances (e.g., dockless sharing bikes or sharing cars)
-    Analysis and/or optimization of ride sharing of car-pooling platforms
-    Agent-based modeling and simulation for urban mobility in green transportation
-    Implications for policymaking and urban designers
-    Measuring complexity of urban mobility
-    Green mobility and social distancing in times of pandemic -->
-<hr>
 <section id="reproducibility" class="level1 unnumbered">
 <h1 class="unnumbered">Reproducibility</h1>
 <details>
@@ -310,19 +313,14 @@ The focus issue is concerned with all aspects of urban mobility and green transp
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
 <p>Datasets representing route networks are important in every stage of modern data-driven transport planning. A wide range of data types can be used as inputs and outputs transport models, including route network datasets, origin-destination data, movement patterns captured by global positioning systems (GPS), and information on surface characteristics derived from remote sensing imagery.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Of these, route network datasets are unusual because they are commonly used as both inputs and outputs of transport models.</p>
-<p>As highlighted in the field of transport geography, network data models serve as digital representations of transportation networks, crucial for planning and operational purposes. These models, enriched through graph theory, enclosed the complex, multi-modal nature of transportation data across various jurisdictions [^2]. This complexity is particularly relevant when considering the enhancement of route network datasets for different use cases, offering widely applicable benefits.</p>
+<p>As highlighted in the field of transport geography, network data models serve as digital representations of transportation networks, crucial for planning and operational purposes. These models, enriched through graph theory, enclosed the complex, multi-modal nature of transportation data across various jurisdictions. This complexity is particularly relevant when considering the enhancement of route network datasets for different use cases, offering widely applicable benefits.</p>
 <p>This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making. An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other <em>ways</em> (to use the OpenStreetMap terminology) along which people and goods can travel. More formally, transport network datasets are <em>spatial networks</em> “for which the nodes are located in a space equipped with a metric”, space typically being two-dimensional space and the main metric being Euclidean (or weighted Euclidean) distances <span class="citation" data-cites="barthélemy2011">(<a href="#ref-barthélemy2011" role="doc-biblioref">Barthélemy 2011</a>)</span>. Transport networks must contain spatial information on the coordinates of vertices (points along ways) and edges that connect them (the straight lines between vertices representing ways). Transport networks can also contain ‘attribute data’ such as the type of way (e.g.&nbsp;road, rail, cycle), its physical characteristics (e.g.&nbsp;is lit at night), and usage data, e.g.&nbsp;the amount of daily traffic using each segment. As inputs, route networks typically represent road or other transport networks along which vehicles travel. When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>.</p>
 <p>File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of <code>.tntp</code> plain text files, examples of which can be found in <a href="https://github.com/bstabler/TransportationNetworks">github.com/bstabler/TransportationNetworks</a>), <code>.DAT</code> files used by the proprietary SATURN transport modelling system and XML-based <code>.osm</code> or <code>.pbf</code> files that encode OpenStreetMap data. Geographic file formats implementing the ‘Simple Features Access’ standard developed by the Open Geospatial Consortium (<a href="https://www.ogc.org/standard/sfa/">OGC</a>), such as <code>.shp</code> and <code>.geojson</code>, can also be used to represent route networks.</p>
 <p>With the increasing availability of high resolution geographic datasets and performant hardware and software, people (e.g.&nbsp;via OpenStreetMap) and national mapping agencies are mapping in more and more detail. Sustainable transport planning can benefit from the influx of data, but excess complexity and intricacy of street network geometries can lead to problems in analyzing and visualizing transportation networks. A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility. Consequently, the necessity for network simplification becomes evident, aligning with wider ‘map generalization’ methods for pre-processing datasets depending on the scale of analysis <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>. 25 years since Sutton’s paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge.</p>
-<p>Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms <span class="citation" data-cites="liu2020vector de2014efficient">(<a href="#ref-liu2020vector" role="doc-biblioref">Liu et al. 2020</a>; <a href="#ref-de2014efficient" role="doc-biblioref">Magalhaes et al. 2014</a>)</span>. These methods reduce the number of vertices in a line or polygon features. While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in <a href="#sec-methods">Section&nbsp;4</a>. Vector smoothing approaches, including the use of Bezier curves <span class="citation" data-cites="pradhan2023modified">(<a href="#ref-pradhan2023modified" role="doc-biblioref">Pradhan and Pradhan 2023</a>)</span> and Kernel-based smoothing <span class="citation" data-cites="duong2022statistical">(<a href="#ref-duong2022statistical" role="doc-biblioref">Duong 2022</a>)</span>, can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.</p>
+<p>Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms <span class="citation" data-cites="liu2020vector de2014efficient">(<a href="#ref-liu2020vector" role="doc-biblioref">Liu et al. 2020</a>; <a href="#ref-de2014efficient" role="doc-biblioref">Magalhaes et al. 2014</a>)</span>. These methods reduce the number of vertices in a line or polygon features. While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in <a href="#sec-methods" class="quarto-xref">Section&nbsp;4</a>. Vector smoothing approaches, including the use of Bezier curves <span class="citation" data-cites="pradhan2023modified">(<a href="#ref-pradhan2023modified" role="doc-biblioref">Pradhan and Pradhan 2023</a>)</span> and Kernel-based smoothing <span class="citation" data-cites="duong2022statistical">(<a href="#ref-duong2022statistical" role="doc-biblioref">Duong 2022</a>)</span>, can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.</p>
 <p>Recent progress towards solving the knotty problem problem of network simplification for transport planning has included methods for the automatic detection of ‘face artifacts’ <span class="citation" data-cites="fleischmann">(<a href="#ref-fleischmann" role="doc-biblioref">Fleischmann and Vybornova, n.d.</a>)</span> and removal of ‘slivers’ to generate simplified representations of ‘street blocks’ <span class="citation" data-cites="grippa2018">(<a href="#ref-grippa2018" role="doc-biblioref">Grippa et al. 2018</a>)</span>. However, these methods tend to be ‘all or nothing’ and do not provide flexibility in terms of the level of simplification or which features are removed.</p>
 <p>Flexibility is important due to the wide range of transport planning use cases. Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g.&nbsp;maps for junction design may have scales of 1:1000. Other use cases, such as strategic network planning tools and ‘planning support systems’ <span class="citation" data-cites="page2020">(<a href="#ref-page2020" role="doc-biblioref">Page et al. 2020</a>)</span>, typically involve zoomed-out representations of street networks at scales of 1:10,000+ beyond which dual carriageways are not relevant and can distort visualisation of networks.</p>
-<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion">Section&nbsp;6</a> we discuss the results and outline future work.</p>
-<!-- Much research has focussed on generating and modelling transport network datasets.
-This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
-Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
-<!-- Todo: add papers on network cleaning and simplification. -->
-<!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
+<p>The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning. <a href="#sec-problem" class="quarto-xref">Section&nbsp;2</a> outlines the problem of complex route networks. <a href="#sec-data" class="quarto-xref">Section&nbsp;3</a> describes the input datasets. <a href="#sec-methods" class="quarto-xref">Section&nbsp;4</a> presents methods for route network simplification alongside results based on the example datasets. In <a href="#sec-discussion" class="quarto-xref">Section&nbsp;6</a> we discuss the results and outline future work.</p>
 </section>
 <section id="sec-problem" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Problem definition</h1>
@@ -331,65 +329,90 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 <li>It does not remove redundant vertices, which can lead to large file sizes and slow rendering.</li>
 <li>Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.</li>
 </ul>
-<p>The final point is most relevant to the present paper. An example of the issue is shown in <a href="#fig-pct">Figure&nbsp;1</a> from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>. The left panel shows Otley Road with a flow value of 818 (<a href="#fig-otley-road">Figure&nbsp;1 (a)</a>). The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (<a href="#fig-armley-road">Figure&nbsp;1 (b)</a>). Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 &gt; 818), this is not clear from the visualisation.</p>
+<p>The final point is most relevant to the present paper. An example of the issue is shown in <a href="#fig-pct" class="quarto-xref">Figure&nbsp;1</a> from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>. The left panel shows Otley Road with a flow value of 818 (<a href="#fig-otley-road" class="quarto-xref">Figure&nbsp;1 (a)</a>). The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (<a href="#fig-armley-road" class="quarto-xref">Figure&nbsp;1 (b)</a>). Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 &gt; 818), this is not clear from the visualisation.</p>
 <div id="fig-pct" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-otley-road" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="images/otley-road-narrow.png" class="img-fluid figure-img" data-ref-parent="fig-pct"></p>
-<figcaption class="figure-caption">(a)</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pct" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-otley-road" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-otley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/otley-road-narrow.png" id="fig-otley-road" class="img-fluid figure-img" data-ref-parent="fig-pct">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-otley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-armley-road" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="images/armley-road-narrow.png" class="img-fluid figure-img" data-ref-parent="fig-pct"></p>
-<figcaption class="figure-caption">(b)</figcaption>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pct" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-armley-road" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-armley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/armley-road-narrow.png" id="fig-armley-road" class="img-fluid figure-img" data-ref-parent="fig-pct">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-armley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left. Source: open access Propensity to Cycle Tool results available at www.pct.bike.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left. Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+</figcaption>
 </figure>
 </div>
-<p>A subsequent step described by <span class="citation" data-cites="morgan2020">Morgan and Lovelace (<a href="#ref-morgan2020" role="doc-biblioref">2020</a>)</span> is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network. The ‘rasterisation’ stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in <a href="#fig-rasterisation">Figure&nbsp;2</a>.</p>
+<p>A subsequent step described by <span class="citation" data-cites="morgan2020">Morgan and Lovelace (<a href="#ref-morgan2020" role="doc-biblioref">2020</a>)</span> is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network. The ‘rasterisation’ stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in <a href="#fig-rasterisation" class="quarto-xref">Figure&nbsp;2</a>.</p>
 <div id="fig-rasterisation" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-otley-road-raster" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="images/otley-road-raster.png" class="img-fluid figure-img" data-ref-parent="fig-rasterisation"></p>
-<figcaption class="figure-caption">(a)</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rasterisation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-rasterisation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-otley-road-raster" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-otley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/otley-road-raster.png" id="fig-otley-road-raster" class="img-fluid figure-img" data-ref-parent="fig-rasterisation">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-otley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-armley-road-raster" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="images/armley-road-raster.png" class="img-fluid figure-img" data-ref-parent="fig-rasterisation"></p>
-<figcaption class="figure-caption">(b)</figcaption>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-rasterisation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-armley-road-raster" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-armley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/armley-road-raster.png" id="fig-armley-road-raster" class="img-fluid figure-img" data-ref-parent="fig-rasterisation">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-armley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: Rasterised network results for the same corridors shown in <a href="#fig-pct">Figure&nbsp;1</a>. Note the visual artefacts such as ‘staircase’ effects and overlapping values resulting from parallel lines along Armley Road (right panel). Source: open access Propensity to Cycle Tool results available at www.pct.bike.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rasterisation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Rasterised network results for the same corridors shown in <a href="#fig-pct" class="quarto-xref">Figure&nbsp;1</a>. Note the visual artefacts such as ‘staircase’ effects and overlapping values resulting from parallel lines along Armley Road (right panel). Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+</figcaption>
 </figure>
 </div>
 <p>The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes. By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.</p>
 </section>
 <section id="sec-data" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Data</h1>
-<p>In this study, we focus on two exemplary input datasets, as outlined in <a href="#tbl-input-data">Table&nbsp;1</a>, both of which are sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM). Each input dataset illustrates varying levels of complexity. This variety allows us to explore and understand the nuances involved in simplifying route networks for more efficient urban transport planning.</p>
-<div id="tbl-input-data" class="tbl-parent quarto-layout-panel anchored">
-<div class="panel-caption table-caption">
-<p>Table&nbsp;1: Input datasets used in this paper.</p>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div id="tbl-input-data" class="cell quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-input-data" style="flex-basis: 100.0%;justify-content: center;">
+<p>In this study, we focus on two exemplary input datasets, as outlined in <a href="#tbl-input-data" class="quarto-xref">Table&nbsp;1</a>, both of which are sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM). Each input dataset illustrates varying levels of complexity. This variety allows us to explore and understand the nuances involved in simplifying route networks for more efficient urban transport planning.</p>
+<div id="tbl-input-data" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-input-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Input datasets used in this paper.
+</figcaption>
+<div aria-describedby="tbl-input-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-input-data" class="cell anchored">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -422,19 +445,27 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 </tbody>
 </table>
 </div>
-<p><strong>?(caption)</strong></p>
 </div>
 </div>
+</figure>
 </div>
-<p>The selection of these two datasets, Otley Road and Armley Road, are illustrated in <a href="#fig-input-data">Figure&nbsp;3</a>. They represent the spectrum of complexities found in urban route networks, from the simple to the intricate. By analyzing these contrasting road structures, we aim to develop a comprehensive approach to route network simplification, catering to the varying demands of urban transport systems.</p>
-<div id="fig-input-data" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<p>The selection of these two datasets, Otley Road and Armley Road, are illustrated in <a href="#fig-input-data" class="quarto-xref">Figure&nbsp;3</a>. They represent the spectrum of complexities found in urban route networks, from the simple to the intricate. By analyzing these contrasting road structures, we aim to develop a comprehensive approach to route network simplification, catering to the varying demands of urban transport systems.</p>
+<div id="fig-input-data" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-input-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="paper_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<figcaption class="figure-caption">Figure&nbsp;3: Illustration of the size and level of spatial complexity of the input datasets.</figcaption>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-input-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Illustration of the size and level of spatial complexity of the input datasets.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -445,23 +476,31 @@ Much has been written about network 'cleaning' and simplification as a pre-proce
 <li>Simplifying the <em>geometry</em></li>
 <li>Assigning attributes to the simplified network</li>
 </ol>
-<p>Sections <a href="#sec-topology-preserving-simplification">Section&nbsp;4.1</a> to <a href="#sec-simplification-via-voronoi-polygons">Section&nbsp;4.3</a> describe methods for simplifying the geometry of the network. The key contributions of the paper are the novel methods of image skeletonization, presented in <a href="#sec-simplification-via-skeletonization">Section&nbsp;4.2</a>, and simplification with Voronoi diagrams to identify central lines, covered in <a href="#sec-simplification-via-voronoi-polygons">Section&nbsp;4.3</a>. To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network. This is covered in <a href="#sec-joining-route-networks">Section&nbsp;4.4</a>.</p>
+<p>Sections <a href="#sec-topology-preserving-simplification" class="quarto-xref">Section&nbsp;4.1</a> to <a href="#sec-simplification-via-voronoi-polygons" class="quarto-xref">Section&nbsp;4.3</a> describe methods for simplifying the geometry of the network. The key contributions of the paper are the novel methods of image skeletonization, presented in <a href="#sec-simplification-via-skeletonization" class="quarto-xref">Section&nbsp;4.2</a>, and simplification with Voronoi diagrams to identify central lines, covered in <a href="#sec-simplification-via-voronoi-polygons" class="quarto-xref">Section&nbsp;4.3</a>. To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network. This is covered in <a href="#sec-joining-route-networks" class="quarto-xref">Section&nbsp;4.4</a>.</p>
 <!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
 The concept of a primal network that represents a high level of simplification is explored as well. -->
 <section id="sec-topology-preserving-simplification" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="sec-topology-preserving-simplification"><span class="header-section-number">4.1</span> Topology-preserving simplification</h2>
-<p>Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of <a href="#fig-topology-preserving">Figure&nbsp;4</a>, topology-preserving simplication <em>can</em> reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in <a href="#fig-topology-preserving">Figure&nbsp;4</a>.</p>
+<p>Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network. As shown in top panel of <a href="#fig-topology-preserving" class="quarto-xref">Figure&nbsp;4</a>, topology-preserving simplication <em>can</em> reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in <a href="#fig-topology-preserving" class="quarto-xref">Figure&nbsp;4</a>.</p>
 <div id="fig-topology-preserving" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-topology-preserving-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
 <div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="paper_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.</figcaption><p></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-topology-preserving-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Illustration of topology-preserving simplification, using the <code>mapshaper</code> JavaScript package. The % values represent the “percentage of removable points to retain” argument values used in the simplification process.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -470,70 +509,114 @@ The concept of a primal network that represents a high level of simplification i
 <section id="create-a-projected-combined-buffered-geometry" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="create-a-projected-combined-buffered-geometry"><span class="header-section-number">4.2.1</span> Create a projected combined buffered geometry:</h3>
 <p>In both approaches, the network simplification process initiates with the generation of buffered geometries, achieved using the get_geometry_buffer function. For our purposes, we have chosen a buffer size of 8 meters. These buffered geometries are essential for spatial analyses as they extend the influence area of each geometry, thereby facilitating the identification and processing of geometries that intersect or lie adjacent to each other in subsequent stages of the analysis.</p>
-<p><a href="#fig-buffered-network">Figure&nbsp;5</a> displays the buffered versions of the Otley Road (on the left) and Armley Road (on the right) networks. It visually illustrates how the application of an 8-meter buffer transforms the initial geometries of these roads. This representation is pivotal for understanding the spatial extension and the overlapping areas created by the buffer zones around each road network, setting the stage for subsequent analysis and simplification processes​.</p>
+<p><a href="#fig-buffered-network" class="quarto-xref">Figure&nbsp;5</a> displays the buffered versions of the Otley Road (on the left) and Armley Road (on the right) networks. It visually illustrates how the application of an 8-meter buffer transforms the initial geometries of these roads. This representation is pivotal for understanding the spatial extension and the overlapping areas created by the buffer zones around each road network, setting the stage for subsequent analysis and simplification processes​.</p>
 <div id="fig-buffered-network" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-buffered-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="paper_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="paper_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="paper_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
+<div>
+<figure class="figure">
 <p><img src="paper_files/figure-html/unnamed-chunk-12-7.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Buffered versions of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
 </figure>
 </div>
-<p>In <a href="#fig-split-ends">Figure&nbsp;6</a>, truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks are presented. This visualization demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.</p>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-buffered-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Buffered versions of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
+</figure>
+</div>
+<p>In <a href="#fig-split-ends" class="quarto-xref">Figure&nbsp;6</a>, truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks are presented. This visualization demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.</p>
 <div id="fig-split-ends" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-split-ends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-14-9.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-15-11.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6: Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-13-9.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-<p><a href="#fig-otley-armley-classes">Figure&nbsp;7</a> shows the segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks. It effectively highlights the contrast between the more intricate and the simpler sections within these networks.</p>
-<div id="fig-otley-armley-classes" class="quarto-layout-panel">
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-14-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-split-ends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-otley-armley-classes" class="quarto-xref">Figure&nbsp;7</a> shows the segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks. It effectively highlights the contrast between the more intricate and the simpler sections within these networks.</p>
+<div id="fig-otley-armley-classes" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-otley-armley-classes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-17-13.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-16-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-18-15.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-17-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;7: Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-otley-armley-classes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -544,15 +627,22 @@ The concept of a primal network that represents a high level of simplification i
 </section>
 <section id="affine-transforms" class="level3" data-number="4.2.3">
 <h3 data-number="4.2.3" class="anchored" data-anchor-id="affine-transforms"><span class="header-section-number">4.2.3</span> Affine transforms</h3>
-<p>The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table <a href="#tbl-panel">Table&nbsp;2</a>.</p>
-<div id="tbl-panel" class="tbl-parent quarto-layout-panel anchored">
-<div class="panel-caption table-caption">
-<p>Table&nbsp;2: Rasterio and Shapely affine transformation matrices for the Otley Road network.</p>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div id="tbl-rasterio-transform" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-panel" style="flex-basis: 50.0%;justify-content: center;">
-<table class="table">
-<caption>(a) Rasterio affine transformation matrix.</caption>
+<p>The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0. The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table <a href="#tbl-panel" class="quarto-xref">Table&nbsp;2</a>.</p>
+<div id="tbl-panel" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-panel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Rasterio and Shapely affine transformation matrices for the Otley Road network.
+</figcaption>
+<div aria-describedby="tbl-panel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-panel" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-rasterio-transform" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-rasterio-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Rasterio affine transformation matrix.
+</figcaption>
+<div aria-describedby="tbl-rasterio-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="cell table table-sm table-striped small">
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">0.5</td>
@@ -572,9 +662,17 @@ The concept of a primal network that represents a high level of simplification i
 </tbody>
 </table>
 </div>
-<div id="tbl-shapely-transform" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-panel" style="flex-basis: 50.0%;justify-content: center;">
-<table class="table">
-<caption>(b) Shapely affine transformation matrix.</caption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-panel" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-shapely-transform" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-shapely-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Shapely affine transformation matrix.
+</figcaption>
+<div aria-describedby="tbl-shapely-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="cell table table-sm table-striped small">
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">0</td>
@@ -589,46 +687,75 @@ The concept of a primal network that represents a high level of simplification i
 </tbody>
 </table>
 </div>
+</figure>
 </div>
+</div>
+</div>
+</div>
+</figure>
 </div>
 <p>In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation. The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.</p>
 </section>
 <section id="skeletonize-the-buffer-to-a-point-geometry" class="level3" data-number="4.2.4">
 <h3 data-number="4.2.4" class="anchored" data-anchor-id="skeletonize-the-buffer-to-a-point-geometry"><span class="header-section-number">4.2.4</span> Skeletonize the buffer to a point geometry</h3>
-<p>A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster’s scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in <a href="#fig-rasterize">Figure&nbsp;8</a>. This step ensures a more coherent and accurate representation in the raster image.</p>
+<p>A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image. This transformation adjusts the geometry to match the raster’s scale and orientation. Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in <a href="#fig-rasterize" class="quarto-xref">Figure&nbsp;8</a>. This step ensures a more coherent and accurate representation in the raster image.</p>
 <div id="fig-rasterize" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rasterize-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-24-17.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-25-19.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;8: Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.</figcaption><p></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-23-17.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-<p>The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in <a href="#fig-thin-skeleton">Figure&nbsp;9</a>.</p>
-<div id="fig-thin-skeleton" class="quarto-layout-panel">
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-24-19.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rasterize-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
+</figcaption>
+</figure>
+</div>
+<p>The image undergoes a thinning process, yielding a skeletal raster image as the result. This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in <a href="#fig-thin-skeleton" class="quarto-xref">Figure&nbsp;9</a>.</p>
+<div id="fig-thin-skeleton" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-thin-skeleton-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-26-21.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-25-21.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-27-23.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-26-23.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;9: Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-thin-skeleton-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 <p>The rasterized skeletal image is then converted back into point geometry, completing the vector -&gt; raster -&gt; vector geometry transformation process.</p>
@@ -638,70 +765,106 @@ The concept of a primal network that represents a high level of simplification i
 
 ::: -->
 <p>The challenge with this approach is that instead of generating points situated on the simplified network, it returns a set of points rather than line geometries. This necessitates the inference of line geometry from the associated set of points. Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.</p>
-<p>The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square. After adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network. <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. --> To visualize the simplified network in its original spatial context, the reverse affine transformation is applied. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework. The resulting simplified network is illustrated in <a href="#fig-skeleton-line">Figure&nbsp;10</a>.</p>
+<p>The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square. After adjacent points are identified, line segments are created by connecting these points. The final and crucial step is the amalgamation of these individual line segments. This combination results in a continuous line geometry that represents the simplified network. <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. --> To visualize the simplified network in its original spatial context, the reverse affine transformation is applied. This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework. The resulting simplified network is illustrated in <a href="#fig-skeleton-line" class="quarto-xref">Figure&nbsp;10</a>.</p>
 <div id="fig-skeleton-line" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-skeleton-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-30-25.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-31-25.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-31-27.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-32-27.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;10: Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.</figcaption><p></p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-skeleton-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
+</figcaption>
 </figure>
 </div>
 </section>
 <section id="knots" class="level3" data-number="4.2.5">
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="knots"><span class="header-section-number">4.2.5</span> Knots</h3>
-<p>Knots in the network are multiple short segments at intersections, resembling tangled knots. To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster’s central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in <a href="#fig-knots">Figure&nbsp;11</a>.</p>
+<p>Knots in the network are multiple short segments at intersections, resembling tangled knots. To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined. The end-points of longer lines that connect to these segment clusters are then realigned to the cluster’s central point. This process effectively removes the knot-like appearance. As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in <a href="#fig-knots" class="quarto-xref">Figure&nbsp;11</a>.</p>
 <div id="fig-knots" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-knot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="images/knot-output.png" class="img-fluid figure-img" data-ref-parent="fig-knots"></p>
-<figcaption class="figure-caption">(a)</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-knots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-knots" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-knot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-knot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/knot-output.png" id="fig-knot" class="img-fluid figure-img" data-ref-parent="fig-knots">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-knot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-noknot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="images/noknot-output.png" class="img-fluid figure-img" data-ref-parent="fig-knots"></p>
-<figcaption class="figure-caption">(b)</figcaption>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-knots" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-noknot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-noknot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/noknot-output.png" id="fig-noknot" class="img-fluid figure-img" data-ref-parent="fig-knots">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-noknot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;11: Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in <a href="#fig-knots">Figure&nbsp;11</a>.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-knots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in <a href="#fig-knots" class="quarto-xref">Figure&nbsp;11</a>.
+</figcaption>
 </figure>
 </div>
 </section>
 <section id="primal-network" class="level3" data-number="4.2.6">
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="primal-network"><span class="header-section-number">4.2.6</span> Primal network</h3>
-<p>There are circumstances where it might be beneficial to view a “primal” network, which is exclusively composed of direct lines connecting start and end points. This primal network represents an extreme form of simplification, of great potential value in situations in which the network’s overall structure and compression ratios are priorities. The primal networks for the Otley Road and Armley Road networks are illustrated in <a href="#fig-primal">Figure&nbsp;12</a>.</p>
+<p>There are circumstances where it might be beneficial to view a “primal” network, which is exclusively composed of direct lines connecting start and end points. This primal network represents an extreme form of simplification, of great potential value in situations in which the network’s overall structure and compression ratios are priorities. The primal networks for the Otley Road and Armley Road networks are illustrated in <a href="#fig-primal" class="quarto-xref">Figure&nbsp;12</a>.</p>
 <div id="fig-primal" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-primal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-32-29.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-35-29.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-33-31.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-36-31.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;12: Primal networks for the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-primal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: Primal networks for the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -711,144 +874,228 @@ The concept of a primal network that represents a high level of simplification i
 <p>In this approach, the network lines are first buffered as described above. The edges of these buffers are then segmented into sequences of points. From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points. This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.</p>
 <section id="boundary-segmentation" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="boundary-segmentation"><span class="header-section-number">4.3.1</span> Boundary Segmentation</h3>
-<p>In <a href="#fig-boundary">Figure&nbsp;13</a>, the boundary of the buffered input geometry (otley_geometry) is calculated and then simplified. This process yields a simplified GeoSeries consisting of LineStrings, all of which are precisely aligned with the specified coordinate reference system (CRS). This step illustrates the transformation from the initial buffer geometries, named ‘otley_buffer’ and ‘Armley_buffer’, to their more refined and simplified versions, ‘otley_boundary’ and ‘Armley_boundary’, respectively. These refined boundaries provide an accurate representation and visualization of the exact limits of the spatial objects involved.</p>
+<p>In <a href="#fig-boundary" class="quarto-xref">Figure&nbsp;13</a>, the boundary of the buffered input geometry (otley_geometry) is calculated and then simplified. This process yields a simplified GeoSeries consisting of LineStrings, all of which are precisely aligned with the specified coordinate reference system (CRS). This step illustrates the transformation from the initial buffer geometries, named ‘otley_buffer’ and ‘Armley_buffer’, to their more refined and simplified versions, ‘otley_boundary’ and ‘Armley_boundary’, respectively. These refined boundaries provide an accurate representation and visualization of the exact limits of the spatial objects involved.</p>
 <div id="fig-boundary" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boundary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-38-33.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-39-35.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;13: Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-35-33.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-<p><a href="#fig-segment">Figure&nbsp;14</a> showcase the conversion of segmented LineString geometries into point geometries. This essential transformation forms the basis for constructing Voronoi diagrams.</p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-36-35.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boundary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13: Simplified boundaries of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-segment" class="quarto-xref">Figure&nbsp;14</a> showcase the conversion of segmented LineString geometries into point geometries. This essential transformation forms the basis for constructing Voronoi diagrams.</p>
 <div id="fig-segment" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-segment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-41-37.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-42-39.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;14: Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-37-37.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-<p><a href="#fig-voronoi-point">Figure&nbsp;15</a>, the process of converting the segmented LineString geometries into point geometries is illustrated. This transformation is essential for the creation of Voronoi diagrams.</p>
-<div id="fig-voronoi-point" class="quarto-layout-panel">
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-38-39.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-segment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14: Detail segmented boundaries of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-voronoi-point" class="quarto-xref">Figure&nbsp;15</a>, the process of converting the segmented LineString geometries into point geometries is illustrated. This transformation is essential for the creation of Voronoi diagrams.</p>
+<div id="fig-voronoi-point" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-voronoi-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-43-41.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-39-41.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-44-43.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-40-43.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;15: Detail point segement of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-voronoi-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15: Detail point segement of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 <!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
 </section>
 <section id="voronoi-diagram" class="level3" data-number="4.3.2">
 <h3 data-number="4.3.2" class="anchored" data-anchor-id="voronoi-diagram"><span class="header-section-number">4.3.2</span> Voronoi diagram</h3>
-<p>In <a href="#fig-voronoi-2">Figure&nbsp;16</a>, the generation and clipping of the corresponding Voronoi diagrams to the bounds of the input geometry is depicted.</p>
+<p>In <a href="#fig-voronoi-2" class="quarto-xref">Figure&nbsp;16</a>, the generation and clipping of the corresponding Voronoi diagrams to the bounds of the input geometry is depicted.</p>
 <!-- ::: {#fig-voronoi layout-ncol="2"} -->
 <!-- Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
 
 <!-- ::: -->
 <!-- ### Voronoi 2 -->
 <div id="fig-voronoi-2" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-voronoi-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-43-45.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-47-45.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-44-47.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-48-47.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;16: Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-voronoi-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: Clipped Voronoi diagrams of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 <!-- ### Voronoi simplified network -->
-<p><a href="#fig-voronoi-simplified">Figure&nbsp;17</a> shows the Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer’s width from the buffer edge. This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines.</p>
+<p><a href="#fig-voronoi-simplified" class="quarto-xref">Figure&nbsp;17</a> shows the Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer’s width from the buffer edge. This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines.</p>
 <div id="fig-voronoi-simplified" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-voronoi-simplified-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-45-49.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-50-49.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-46-51.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-51-51.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;17: Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.</figcaption><p></p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-voronoi-simplified-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17: Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.
+</figcaption>
 </figure>
 </div>
 </section>
 <section id="voronoi-simplified-network" class="level3" data-number="4.3.3">
 <h3 data-number="4.3.3" class="anchored" data-anchor-id="voronoi-simplified-network"><span class="header-section-number">4.3.3</span> Voronoi simplified network</h3>
-<p>The center-line network depicted in <a href="#fig-voronoi-line">Figure&nbsp;18</a> is created through a process that involves the removal of knot-like features from the resultant network. This step refines the geometry of network, ensuring a more streamlined and accurate representation of the transport routes.</p>
+<p>The center-line network depicted in <a href="#fig-voronoi-line" class="quarto-xref">Figure&nbsp;18</a> is created through a process that involves the removal of knot-like features from the resultant network. This step refines the geometry of network, ensuring a more streamlined and accurate representation of the transport routes.</p>
 <div id="fig-voronoi-line" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-voronoi-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-47-53.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-52-53.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-48-55.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-53-55.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;18: Simplified versions of the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-voronoi-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18: Simplified versions of the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 <!-- ### Primal network -->
-<p><a href="#fig-primal-voronoi">Figure&nbsp;19</a> illustrates the primal network derived from the Voronoi approach. This representation highlights the fundamental structure of the network, showcasing a simplified and efficient layout that results from the Voronoi-based simplification process and how the primal network captures the essential connectivity and layout of the transport routes.</p>
+<p><a href="#fig-primal-voronoi" class="quarto-xref">Figure&nbsp;19</a> illustrates the primal network derived from the Voronoi approach. This representation highlights the fundamental structure of the network, showcasing a simplified and efficient layout that results from the Voronoi-based simplification process and how the primal network captures the essential connectivity and layout of the transport routes.</p>
 <div id="fig-primal-voronoi" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-primal-voronoi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="paper_files/figure-html/unnamed-chunk-49-57.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-54-57.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-50-59.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-55-59.png" class="img-fluid figure-img" width="672"></p>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;19: Primal networks for the Otley Road (left) and Armley Road (right) networks.</figcaption><p></p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-primal-voronoi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;19: Primal networks for the Otley Road (left) and Armley Road (right) networks.
+</figcaption>
 </figure>
 </div>
 <!-- ![](images/paste-1.png) -->
@@ -883,21 +1130,25 @@ This function is designed to merge route network data, taking into account the p
 <li><p><strong><code>dist</code></strong> (Buffer Distance): This parameter defines the buffer zone around <code>rnet_xp</code> in meters, for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.</p></li>
 <li><p><strong><code>segment_length</code></strong> (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in <code>rnet_y</code> before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration. <!-- Todo: discuss possibility of cutting lines at buffer intersections. --></p></li>
 <li><p><strong><code>funs</code></strong> (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each. Any function can be used, with sum and mean being typical values.</p></li>
-<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads. <a href="#fig-max_angle_diff">Figure&nbsp;20</a> demonstrates the impact of this parameter in preventing the overestimation of values on side roads.</p></li>
+<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads. <a href="#fig-max_angle_diff" class="quarto-xref">Figure&nbsp;20</a> demonstrates the impact of this parameter in preventing the overestimation of values on side roads.</p></li>
 </ul>
 <div id="fig-max_angle_diff" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-max_angle_diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="pics/Prevent overestimate of values on sideroads.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side roads</figcaption>
+<figcaption>The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side roads</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;20: The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side Roads.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-max_angle_diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;20: The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side Roads.
+</figcaption>
 </figure>
 </div>
 <!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
@@ -929,8 +1180,6 @@ In this study, the line_bearing function is defined to calculate the angle.
 As shown below,
 
 ```         
-
-
 rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)
 ```
 
@@ -995,13 +1244,14 @@ This approach is particularly useful in scenarios where the directionality of th
 </section>
 <section id="evaluation-of-proposed-route-network-simplification" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Evaluation of Proposed Route network simplification</h1>
-<p>In this section, we delve into the practical application of our proposed route network simplification techniques, focusing on a complex urban road network situated in the heart of Edinburgh. The key characteristics of the Edinburgh city center are detailed in <a href="#tbl-new-datasets">Table&nbsp;3</a>.</p>
-<div id="tbl-new-datasets" class="tbl-parent quarto-layout-panel anchored">
-<div class="panel-caption table-caption">
-<p>Table&nbsp;3: Characteristics of Datasets: Edinburgh city centre and the Doncaster rail network.</p>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div id="tbl-new-datasets" class="cell quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-new-datasets" style="flex-basis: 100.0%;justify-content: center;">
+<p>In this section, we delve into the practical application of our proposed route network simplification techniques, focusing on a complex urban road network situated in the heart of Edinburgh. The key characteristics of the Edinburgh city center are detailed in <a href="#tbl-new-datasets" class="quarto-xref">Table&nbsp;3</a>.</p>
+<div id="tbl-new-datasets" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-new-datasets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Characteristics of Datasets: Edinburgh city centre and the Doncaster rail network.
+</figcaption>
+<div aria-describedby="tbl-new-datasets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-new-datasets" class="cell anchored">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -1031,9 +1281,9 @@ This approach is particularly useful in scenarios where the directionality of th
 </tbody>
 </table>
 </div>
-<p><strong>?(caption)</strong></p>
 </div>
 </div>
+</figure>
 </div>
 <!-- ```{python}
 import geopandas as gpd
@@ -1072,7 +1322,7 @@ doncaster_rail_info = {
 
 # princes_street_info, doncaster_rail_info
 ``` -->
-<p><a href="#fig-results">Figure&nbsp;21</a> illustrate various stages of network simplification, providing a comparative view of the impact of our methodology.</p>
+<p><a href="#fig-results" class="quarto-xref">Figure&nbsp;21</a> illustrate various stages of network simplification, providing a comparative view of the impact of our methodology.</p>
 <ul>
 <li><p>Input figure presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.</p></li>
 <li><p>Skeletonized figure shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.</p></li>
@@ -1082,26 +1332,42 @@ doncaster_rail_info = {
 </ul>
 <!-- TODO: improve the figure layout. -->
 <div id="fig-results" class="quarto-layout-panel">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="2400"></p>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;21: Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.</figcaption><p></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid figure-img" width="2400"></p>
 </figure>
 </div>
-<p><a href="#fig-apply_results">Figure&nbsp;22</a> presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method. It is observed that the attribute <code>value</code> from the original network has been correctly transferred to the simplified network via a <code>sum</code> calculation process. This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.</p>
-<div id="fig-apply_results" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;21: Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-apply_results" class="quarto-xref">Figure&nbsp;22</a> presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method. It is observed that the attribute <code>value</code> from the original network has been correctly transferred to the simplified network via a <code>sum</code> calculation process. This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.</p>
+<div id="fig-apply_results" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-apply_results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-66-3.png" class="img-fluid figure-img" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-61-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<figcaption class="figure-caption">Figure&nbsp;22: Comparasion of Orginal Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down).</figcaption>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-apply_results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;22: Comparasion of Orginal Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down).
+</figcaption>
 </figure>
 </div>
 </section>
@@ -1119,32 +1385,31 @@ doncaster_rail_info = {
 </section>
 </section>
 <section id="references" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> References</h1>
+<p>&lt;!– Out-takes, to tidy-up/include later:</p>
+<p>:::</p>
+<p>The graphic below shows a 2 panel plot showing simplification with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.</p>
+<div id="fig-osmnx-consolidate-intersections" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-osmnx-consolidate-intersections-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 
-<!-- Tests -->
-<!-- Out-takes, to tidy-up/include later:
-
-:::
-
-The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
-
-::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
-::: {.cell}
-
-:::
-
-
-Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
-:::
-
-A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
-Two approaches to this are outlined below. -->
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-osmnx-consolidate-intersections-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;23: Illustration of consolidation of intersections, with the <code>consolidate_intersections</code> function from the <code>osmnx</code> Python package.
+</figcaption>
+</figure>
+</div>
 
 
 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">7 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-ballesteros2011" class="csl-entry" role="listitem">
 Ballesteros, Jaime, Ariel Cary, and Naphtali Rishe. 2011. <span>“SpSJoin: Parallel Spatial Similarity Joins.”</span> In, 481484. GIS ’11. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2093973.2094054">https://doi.org/10.1145/2093973.2094054</a>.
 </div>
@@ -1272,10 +1537,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1285,8 +1549,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1299,6 +1572,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1342,6 +1734,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1367,6 +1760,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1427,6 +1846,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
