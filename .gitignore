@@ -167,3 +167,6 @@ maps/
 paper_files/figure-pdf
 .Renviron
 /.quarto/
+_freeze/
+_site/
+.Rhistory

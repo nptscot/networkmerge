@@ -145,12 +145,11 @@ Datasets representing route networks are important in every stage of modern data
 A wide range of data types can be used as inputs and outputs transport models, including route network datasets, origin-destination data, movement patterns captured by global positioning systems (GPS), and information on surface characteristics derived from remote sensing imagery.[^1]
 Of these, route network datasets are unusual because they are commonly used as both inputs and outputs of transport models.
 
-[^1]: See the [online documentation](https://sumo.dlr.de/docs/Simulation/Output/index.html) of the SUMO traffic simulation tool for an example of the wide range of data formats that transport datasets can output.
-
-As highlighted in the field of transport geography, network data models serve as digital representations of transportation networks, crucial for planning and operational purposes. These models, enriched through graph theory, enclosed the complex, multi-modal nature of transportation data across various jurisdictions [^2]. This complexity is particularly relevant when considering the enhancement of route network datasets for different use cases, offering widely applicable benefits.
-
 [^1]: See the [online documentation](https://transportgeography.org/contents/methods/network-data-models/).
 
+As highlighted in the field of transport geography, network data models serve as digital representations of transportation networks, crucial for planning and operational purposes.
+These models, enriched through graph theory, enclosed the complex, multi-modal nature of transportation data across various jurisdictions \[\^2\].
+This complexity is particularly relevant when considering the enhancement of route network datasets for different use cases, offering widely applicable benefits.
 
 This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making.
 An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other *ways* (to use the OpenStreetMap terminology) along which people and goods can travel.
@@ -164,7 +163,9 @@ File formats for representing route networks include Transportation Network Test
 Geographic file formats implementing the 'Simple Features Access' standard developed by the Open Geospatial Consortium ([OGC](https://www.ogc.org/standard/sfa/)), such as `.shp` and `.geojson`, can also be used to represent route networks.
 
 With the increasing availability of high resolution geographic datasets and performant hardware and software, people (e.g. via OpenStreetMap) and national mapping agencies are mapping in more and more detail.
-Sustainable transport planning can benefit from the influx of data, but excess complexity and intricacy of street network geometries can lead to problems in analyzing and visualizing transportation networks. A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.  Consequently, the necessity for network simplification becomes evident, aligning with wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
+Sustainable transport planning can benefit from the influx of data, but excess complexity and intricacy of street network geometries can lead to problems in analyzing and visualizing transportation networks.
+A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.
+Consequently, the necessity for network simplification becomes evident, aligning with wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
 25 years since Sutton's paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge.
 
 Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms [@liu2020vector; @de2014efficient].
@@ -172,9 +173,8 @@ These methods reduce the number of vertices in a line or polygon features.
 While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
 Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.
 
-Recent progress towards solving the knotty problem problem of network simplification for transport planning has included methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018]. 
+Recent progress towards solving the knotty problem problem of network simplification for transport planning has included methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
 However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
-
 
 Flexibility is important due to the wide range of transport planning use cases.
 Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g. maps for junction design may have scales of 1:1000.
@@ -186,10 +186,11 @@ The aim of this paper is to articulate the problem of complex route networks, pr
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 In @sec-discussion we discuss the results and outline future work.
 
+```{=html}
 <!-- Much research has focussed on generating and modelling transport network datasets.
 This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
 Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
-
+```
 <!-- Todo: add papers on network cleaning and simplification. -->
 
 <!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
@@ -288,10 +289,11 @@ The key contributions of the paper are the novel methods of image skeletonizatio
 To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network.
 This is covered in @sec-joining-route-networks.
 
+```{=html}
 <!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
 The concept of a primal network that represents a high level of simplification is explored as well. -->
-
+```
 ## Topology-preserving simplification {#sec-topology-preserving-simplification}
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
