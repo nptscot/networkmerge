@@ -1,9 +1,5 @@
 ---
 title: "Route network simplification for transport planning"
-#  methods and applications"
-# Alternatives:
-# title: "Network simplification: application to the visualisation of transport networks"
-# title: "methods and applications to support the visualisation, modelling and redesign of transport systems"
 bibliography: references.bib
 author: 
   - name: Robin Lovelace
@@ -32,44 +28,6 @@ editor:
 # # Uncomment to run with Jupyter:
 # jupyter: python3
 ---
-
-```{=html}
-<!-- Blurb form special issue in Journal of Physics: Complexity
-
-
-Journal of Physics: Complexity
-Focus Issue on Urban Mobility and Green Transportation in Sustainable Cities
-Guest Editors
-
-    Ruiqi Li, Beijing University of Chemical Technology, China
-    Marta C. Gonzalez, University of California, USA
-    Michael Szell, IT University of Copenhagen, Denmark
-    Luis E. Olmos, University of Medellin, Colombia 
-
-Scope
-
-Along with the rapid urbanization and car-oriented transportation systems for most cities worldwide, challenges associated with urban mobility and transportation have escalated, calling for greener and more sustainable solutions to address environmental, social, and economic concerns. For example, the flooding of car and conventional transportation system are responsible for a variety of urban illnesses, including traffic congestion, air pollution, energy deficiency, greenhouse gas emissions, loss of home value and property taxes, and deterioration of health of residents, and underscoring the urgent need for a paradigm shift towards green and sustainable alternatives.
-
-This Focus aims to explore the intersection of physics and complexity in the context of urban mobility and green transportation, shedding light on cutting-edge research that not only elucidates the fundamental principles governing these systems but also offers practical applications to create more sustainable and efficient cities. Regarding the green transportation, it can be any means of travel that does not negatively impact the environment, including (but are not limited to) bikes (dockless or docked sharing ones), ebikes (both private or sharing ones), electric vehicles. A better green transportation would involve both the infrastructure level and human behaviors level.
-
-The focus issue is concerned with all aspects of urban mobility and green transportation, topics addressed include, but are not limited to:
-
-    Empirical and theoretical study of human mobility in green transportation
-    Design and/or optimization of sidewalk, bicycle, or micromobility networks in cities
-    Road safety in green transportation system
-    Infrastructure analysis of green transportation system
-    Design and/or optimization of charging stations in cities
-    The relationship between urban form and vehicle kilometers traveled (VKT) and reduction of emissions
-    Rebalancing strategy for dockless/docked bike-sharing systems
-    Empirical and theoretical study of mobility patterns of sharing conveyances (e.g., dockless sharing bikes or sharing cars)
-    Analysis and/or optimization of ride sharing of car-pooling platforms
-    Agent-based modeling and simulation for urban mobility in green transportation
-    Implications for policymaking and urban designers
-    Measuring complexity of urban mobility
-    Green mobility and social distancing in times of pandemic -->
-```
-
-------------------------------------------------------------------------
 
 # Reproducibility {.unnumbered}
 
@@ -148,7 +106,7 @@ Of these, route network datasets are unusual because they are commonly used as b
 [^1]: See the [online documentation](https://transportgeography.org/contents/methods/network-data-models/).
 
 As highlighted in the field of transport geography, network data models serve as digital representations of transportation networks, crucial for planning and operational purposes.
-These models, enriched through graph theory, enclosed the complex, multi-modal nature of transportation data across various jurisdictions \[\^2\].
+These models, enriched through graph theory, enclosed the complex, multi-modal nature of transportation data across various jurisdictions.
 This complexity is particularly relevant when considering the enhancement of route network datasets for different use cases, offering widely applicable benefits.
 
 This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making.
@@ -185,15 +143,6 @@ The aim of this paper is to articulate the problem of complex route networks, pr
 @sec-data describes the input datasets.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 In @sec-discussion we discuss the results and outline future work.
-
-```{=html}
-<!-- Much research has focussed on generating and modelling transport network datasets.
-This is unsurprising given the importance of transport networks as inputs and outputs of transport models.
-Much has been written about network 'cleaning' and simplification as a pre-processing step in transport modelling. -->
-```
-<!-- Todo: add papers on network cleaning and simplification. -->
-
-<!-- However, there has been relatively little research into transport network visualisation, despite the importance of visualisation to enable more people to understand transport models, for informing policies and prioritising investment in transport planning. -->
 
 # Problem definition {#sec-problem}
 
@@ -1512,8 +1461,6 @@ This not only aids in better visualization and interpretation of transport model
 
 # References
 
-<!-- Tests -->
-
 ```{python}
 # osmnx test:
 # import osmnx as ox
@@ -1555,7 +1502,6 @@ This not only aids in better visualization and interpretation of transport model
 # momepy.roundabout_simplification(gdf)
 ```
 
-````{=html}
 <!-- Out-takes, to tidy-up/include later:
 
 :::
@@ -1588,6 +1534,3 @@ plt.show()
 Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
 :::
 
-A more aggressive approach is to simplify and alter network topology in a single step, "through the removal of duplicate or parallel edges, and combining simply-connected nodes" [@deakin2023].
-Two approaches to this are outlined below. -->
-````
