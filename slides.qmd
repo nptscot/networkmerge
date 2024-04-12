@@ -1,32 +1,30 @@
 ---
 title: Reproducible methods for network simplification
 format: revealjs
+bibliography: references.bib
 ---
 
 ### The problem
 
-
 ::: {#fig-pct layout-ncol="2"}
-
 ![](images/otley-road-narrow.png){#fig-otley-road}
 
 ![](images/armley-road-narrow.png){#fig-armley-road}
 
 Two parallel ways in Leeds, UK, with similar flow but different widths.
-
 :::
 
----
+------------------------------------------------------------------------
 
 ### Issues and live demo
-
 
 Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left..
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 
-Demo: https://www.pct.bike/m/?r=west-yorkshire
+Demo: https://www.pct.bike/m/?r
+=west-yorkshire
 
----
+------------------------------------------------------------------------
 
 ### Solution + demo
 
@@ -36,35 +34,34 @@ Demo: https://www.pct.bike/m/?r=west-yorkshire
 ![](images/paste-3.png)
 
 The Network Planning Tool for Scotland, showing the network results for central Edinburgh without simplification (left) and with simplification (right).
-Note that the values on Princes Street (highlighted) are hard to interpret without simplification. Demo: [www.npt.scot](https://nptscot.github.io/).
+Note that the values on Princes Street (highlighted) are hard to interpret without simplification.
+Demo: [www.npt.scot](https://nptscot.github.io/).
 :::
 
----
+------------------------------------------------------------------------
 
+### Prior work
+
+Route network aggregation generates estimates of flow on the network, rasterisation help with visualisatioin [@morgan2020]
+
+![](images/paste-5.png)
 
 ### The code
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="40%"}
-
 <small>
 
 The code underlying the results presented in this paper are available from the following repositories:
 
-- The [`nptscot/networkmerge`](https://github.com/nptscot/networkmerge) repository contains the reproducible paper.
-- The `parenx` Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
-- The `rnetmatch` R package for network simplification is available on GitHub in the repo [`nptscot/rnetmatch`](https://github.com/nptscot/rnetmatch).
+-   The [`nptscot/networkmerge`](https://github.com/nptscot/networkmerge) repository contains the reproducible paper.
+-   The `parenx` Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
+-   The `rnetmatch` R package for network simplification is available on GitHub in the repo [`nptscot/rnetmatch`](https://github.com/nptscot/rnetmatch).
 
 </small>
-
 :::
 
 ::: {.column width="60%"}
-
 ![](images/box.gif)
-
-
 :::
-
-::::
+:::
