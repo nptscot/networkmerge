@@ -15,7 +15,7 @@ author:
     affiliation: Environmental Systems Research Institute (Esri), Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
 abstract: |
-  Route network datasets, crucial to transport models, have grown complex, leading to visualization issues and potential misinterpretations. We address this by presenting two methods for simplifying these datasets: image skeletonization and Voronoi diagram-centreline identification. These reproducible and adaptable methods, developed with open data and software, have applications in urban mobility and green transportation, demonstrated by their use in the publicly available Network Planning Tool funded by Transport for Scotland.
+  Route network datasets, crucial to transport models, have grown complex, leading to visualization issues and potential misinterpretations. We address this by presenting two methods for simplifying these datasets: image skeletonization and Voronoi diagram-centreline identification. We have developed two packages, the 'parenx' Python package (available on pip) and the 'rnetmatch' R package (available on GitHub) to implement these methods. The approach has applications in transportation, demonstrated by their use in the publicly available Network Planning Tool funded by Transport for Scotland.
 keywords: [network simplification, transport planning, urban analytics, geocomputation, reproducible research]
 execute: 
   echo: false
@@ -155,6 +155,11 @@ We note the simplification and interpolation for with linear (one-dimensional) g
 For example robust implementation for the areal interpolation of intensive and extensive variables are available in `R` areal-weighted-interpolation package[@prener2019] or in the `python` PySAL Tobler library [@knaap2023].
 
 The aim of this paper is to present new ways to simplify transport networks, with implementations in open source software for reproducible research.
+The code underlying the results presented in this paper are available from the following repositories:
+
+- The [`nptscot/networkmerge`](https://github.com/nptscot/networkmerge) repository contains the reproducible paper.
+- The `parenx` Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
+- The `rnetmatch` R package for network simplification is available on GitHub in the repo [`nptscot/rnetmatch`](https://github.com/nptscot/rnetmatch).
 
 ```{=html}
 <!-- @sec-problem outlines the problem of complex route networks.
@@ -1189,7 +1194,8 @@ Both approaches are based on the idea of creating a buffer around the network an
 The code is open and reproducible, hosted on the [nptscot](https://github.com/nptscot) GitHub organisation.
 The approach demonstrates the ideal outlined by Stan Openshaw that geocomputation should be used for public benefit [@openshaw2000]: the methods were developed not just because they are interesting and not previously tackled in the academic literature implemented in open source software with reproducible code.
 They were developed in response to a request by practitioners using early versions of the Transport Scotland funded Network Planning Tool for Scotland.
-The approach is now deployed in a publicly accessible web application hosted at www.npt.scot, as illustrated in @fig-npt.
+The potential of the approach is illustrated with the 'simplified network' switch (which maps the values onto the Ordnance Survey's simplified Open Roads dataset) in the web application www.npt.scot, as illustrated in @fig-npt.
+A next step in terms of transport applications would be to add similar network simplification toggles to web applications in settings where simplified networks are unavailable.
 
 ::: {#fig-npt layout="[40,-2,40]"}
 ![](images/paste-4.png)
@@ -1200,10 +1206,13 @@ The Network Planning Tool for Scotland, showing the network results for central 
 Note that the values on Princes Street (highlighted) are hard to interpret without simplification.
 :::
 
+A question raised by the provision of two algorithms is "which is best".
+Based on our visual inspection and discussion, we sense that the Voronoi approach generates higher quality results.
+The skeletonization approach is more computationally efficient, but the Voronoi approach yields more accurate (in terms of true centreline) and less 'wavy' results.
+However, these are subjective judgements and we would like to test them more rigorously in future work, as outlined below.
+
 We are confident that there will be more research and accompanying open source software to address this knotty problem.
 There is much more to do, including:
-
--   Packaging the approach in open source software products that are easy to use and integrate in other tools, for the benefit of open source transport planning in general
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
@@ -1213,6 +1222,8 @@ There is much more to do, including:
 
 [^1]: "Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%" [@knuth1974].
 
+One area where we would be particularly interested in seeing applications beyond the transport domain is river network analysis: the size of some riverine networks prohibits/slows down research.
+Could a network simplification pre-processing step speed-up and therefore improve results? Our hypothesis is yes, but that remains to be tested.
 Each of these areas represents an interesting geographical and computational challenge.
 More importantly, solving them has the potential to improve the quality of transport planning and policy making, demonstrating the value of geocomputation for public benefit.
 

@@ -1,0 +1,33 @@
+---
+format: gfm
+---
+
+# Reviewer 1
+
+1.1. This is an interesting paper and has very wide applications. The fact the tool will be widely available is a very good thing.
+
+We thank the review for the positive feedback.
+
+1.2. I am not overly clear on the methods and I think some more content could be added here. For example, the skeletonization example could have another figure to demonstrate the process. Also, which (skeletonization or Voronoi) is better, what are the differences? Which one was used in the Network Planning tool for Scotland?
+
+For us, the "quality" of the Voronoi simplified network appears to be better. Noting this is subjective rather than a quantitative assessment
+However, the algorithm is more complicated and marginally slower.
+
+We have now updated the paper to state this and to discuss the need for testing, perhaps with participants providing feedback on the quality of the simplified networks (so it is less subjective).
+
+
+1.3. I think it would be good to mention some of the wider applications of this as well.
+
+We have now mentioned the potential to apply the work to river network modelling in more detail.
+
+# Reviewer 2
+
+2.1. This paper presents a practical approach to solving the problem of multiple parallel routes being considered separately when counting flows. The paper is well written and the results are supported with clear visualisations. 
+
+We thank the reviewer for the positive feedback.
+
+2.2. Although the two examples presented appear to work effectively (and the tool is being used operationally) there is little quantitative discussion of the results and their limitations. Similarly, two approaches are presented but it's not clear which approach would be more suited to which applications - or are they both the same? Some more quantitative discussion of the results would be welcomed in the presentation, should the paper be accepted.
+
+We agree and, as per our response to Reviewer 1, we have now updated the paper to state that the Voronoi approach appears to be of higher quality, but is more complex and marginally slower. We have also discussed the need for some kind of testing method perhaps using randomised trials to assess network quality.
+
+ 
