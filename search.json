@@ -4,7 +4,7 @@
     "href": "slides.html#references",
     "title": "Reproducible methods for network simplification",
     "section": "",
-    "text": "Prior work\nRoute network aggregation generates estimates of flow on the network, rasterisation help with visualisatioin (Morgan and Lovelace 2020)\n\nThe code\n\n\n\nThe code underlying the results presented in this paper are available from the following repositories:\n\nThe nptscot/networkmerge repository contains the reproducible paper.\nThe parenx Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo anisotropi4/parenx.\nThe rnetmatch R package for network simplification is available on GitHub in the repo nptscot/rnetmatch.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMorgan, Malcolm, and Robin Lovelace. 2020. “Travel Flow Aggregation: Nationally Scalable Methods for Interactive and Online Visualisation of Transport Behaviour at the Road Network Level.” Environment & Planning B: Planning & Design, July. https://doi.org/10.1177/2399808320942779."
+    "text": "References\n\n\n\n\n\n\n\n\nMorgan, Malcolm, and Robin Lovelace. 2020. “Travel Flow Aggregation: Nationally Scalable Methods for Interactive and Online Visualisation of Transport Behaviour at the Road Network Level.” Environment & Planning B: Planning & Design, July. https://doi.org/10.1177/2399808320942779."
   },
   {
     "objectID": "index.html",
