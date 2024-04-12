@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "networkmerge",
+    "section": "",
+    "text": "This website hosts the networkmerge paper which presents methods for simplifying route networks for transport planning. The methods were developed for the Network Planning Tool for Scotland which is publicly available at https://npt.scot.\n\nIt was produced with Quarto, which was also used to support the academic paper shown below. See https://quarto.org/docs/websites for further information.\nThe paper is re-built automatically when the source code is updated:\n\n\n\nQuarto Publish\n\n\nSee github.com/nptscot/networkmerge for the source code underlying this website."
+  },
+  {
     "objectID": "paper.html",
     "href": "paper.html",
     "title": "Route network simplification for transport planning",
@@ -54,12 +61,5 @@
     "title": "Route network simplification for transport planning",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nSee the online documentation.↩︎"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "networkmerge",
-    "section": "",
-    "text": "This website hosts the networkmerge paper which presents methods for simplifying route networks for transport planning. The methods were developed for the Network Planning Tool for Scotland which is publicly available at https://npt.scot.\n\nIt was produced with Quarto, which was also used to support the academic paper shown below. See https://quarto.org/docs/websites for further information.\nThe paper is re-built automatically when the source code is updated:\n\n\n\nQuarto Publish\n\n\nSee github.com/nptscot/networkmerge for the source code underlying this website."
   }
 ]

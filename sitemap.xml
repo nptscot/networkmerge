@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://nptscot.github.io/networkmerge/paper.html</loc>
-    <lastmod>2024-04-12T08:46:20.384Z</lastmod>
+    <loc>https://nptscot.github.io/networkmerge/slides.html</loc>
+    <lastmod>2024-04-12T08:59:06.090Z</lastmod>
   </url>
   <url>
     <loc>https://nptscot.github.io/networkmerge/index.html</loc>
-    <lastmod>2024-04-12T08:46:20.384Z</lastmod>
+    <lastmod>2024-04-12T08:59:06.086Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nptscot.github.io/networkmerge/paper.html</loc>
+    <lastmod>2024-04-12T08:59:06.086Z</lastmod>
   </url>
 </urlset>
