@@ -28,7 +28,27 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -374,7 +394,7 @@ Figure&nbsp;1: Two parallel ways in Leeds, UK, with similar flow but different w
 
 <h3 id="issues-and-live-demo">Issues and live demo</h3>
 <p>Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left.. Source: open access Propensity to Cycle Tool results available at www.pct.bike.</p>
-<p>Demo: https://www.pct.bike/m/?r=west-yorkshire</p>
+<p>Demo: https://www.pct.bike/m/?r =west-yorkshire</p>
 </section>
 <section class="slide level2">
 
@@ -400,8 +420,11 @@ Figure&nbsp;2: The Network Planning Tool for Scotland, showing the network resul
 </figure>
 </div>
 </section>
-<section class="slide level2">
+<section class="slide level2 smaller scrollable" id="references">
 
+<h3 id="prior-work">Prior work</h3>
+<p>Route network aggregation generates estimates of flow on the network, rasterisation help with visualisatioin <span class="citation" data-cites="morgan2020">(<a href="#/references" role="doc-biblioref" onclick="">Morgan and Lovelace 2020</a>)</span></p>
+<p><img data-src="images/paste-5.png"></p>
 <h3 id="the-code">The code</h3>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -421,6 +444,11 @@ Figure&nbsp;2: The Network Planning Tool for Scotland, showing the network resul
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
+</div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-morgan2020" class="csl-entry" role="listitem">
+Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nationally Scalable Methods for Interactive and Online Visualisation of Transport Behaviour at the Road Network Level.”</span> <em>Environment &amp; Planning B: Planning &amp; Design</em>, July. <a href="https://doi.org/10.1177/2399808320942779">https://doi.org/10.1177/2399808320942779</a>.
 </div>
 </div>
 </section>
