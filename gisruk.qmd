@@ -1204,6 +1204,7 @@ Note that the values on Princes Street (highlighted) are hard to interpret witho
 A question raised by the provision of two algorithms is "which is best".
 Based on our visual inspection and discussion, we sense that the Voronoi approach generates higher quality results.
 The skeletonization approach is more computationally efficient, but the Voronoi approach yields more accurate (in terms of true centreline) and less 'wavy' results.
+However, these are subjective judgements and we would like to test them more rigorously in future work, as outlined below.
 
 We are confident that there will be more research and accompanying open source software to address this knotty problem.
 There is much more to do, including:
