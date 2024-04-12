@@ -15,7 +15,7 @@ author:
     affiliation: Environmental Systems Research Institute (Esri), Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
 abstract: |
-  Route network datasets, crucial to transport models, have grown complex, leading to visualization issues and potential misinterpretations. We address this by presenting two methods for simplifying these datasets: image skeletonization and Voronoi diagram-centreline identification. These reproducible and adaptable methods, developed with open data and software, have applications in urban mobility and green transportation, demonstrated by their use in the publicly available Network Planning Tool funded by Transport for Scotland.
+  Route network datasets, crucial to transport models, have grown complex, leading to visualization issues and potential misinterpretations. We address this by presenting two methods for simplifying these datasets: image skeletonization and Voronoi diagram-centreline identification. We have developed two packages, the 'parenx' Python package (available on pip) and the 'rnetmatch' R package (available on GitHub) to implement these methods. The approach has applications in transportation, demonstrated by their use in the publicly available Network Planning Tool funded by Transport for Scotland.
 keywords: [network simplification, transport planning, urban analytics, geocomputation, reproducible research]
 execute: 
   echo: false
@@ -1208,8 +1208,6 @@ However, these are subjective judgements and we would like to test them more rig
 
 We are confident that there will be more research and accompanying open source software to address this knotty problem.
 There is much more to do, including:
-
--   Packaging the approach in open source software products that are easy to use and integrate in other tools, for the benefit of open source transport planning in general
 
 -   Testing the impact of different parameters to find appropriate settings for different use cases
 
