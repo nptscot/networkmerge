@@ -100,7 +100,9 @@ Route network aggregation generates estimates of flow on the network, rasterisat
 
 ---
 
-### 
+### Rust implementation
+
+See https://github.com/nptscot/rnetmatch/blob/main/paper.qmd
 
 ---
 
