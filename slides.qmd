@@ -46,6 +46,42 @@ Route network aggregation generates estimates of flow on the network, rasterisat
 
 ![](images/paste-5.png)
 
+---
+
+### Existing simplification algorithms
+
+![](images/paste-6.png)
+
+---
+
+### Buffering
+
+![](images/paste-7.png)
+
+---
+
+
+### Buffer rasterisation
+
+![](images/paste-8.png)
+
+---
+
+
+### Skeletonisation
+
+![](images/paste-9.png)
+
+---
+
+
+### Knot removal
+
+![](images/paste-10.png)
+
+---
+
+
 ### The code
 
 ::: columns
@@ -65,3 +101,7 @@ The code underlying the results presented in this paper are available from the f
 ![](images/box.gif)
 :::
 :::
+
+---
+
+### References
