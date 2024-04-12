@@ -155,6 +155,11 @@ We note the simplification and interpolation for with linear (one-dimensional) g
 For example robust implementation for the areal interpolation of intensive and extensive variables are available in `R` areal-weighted-interpolation package[@prener2019] or in the `python` PySAL Tobler library [@knaap2023].
 
 The aim of this paper is to present new ways to simplify transport networks, with implementations in open source software for reproducible research.
+The code underlying the results presented in this paper are available from the following repositories:
+
+- The [`nptscot/networkmerge`](https://github.com/nptscot/networkmerge) repository contains the reproducible paper.
+- The `parenx` Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
+- The `rnetmatch` R package for network simplification is available on GitHub in the repo [`nptscot/rnetmatch`](https://github.com/nptscot/rnetmatch).
 
 ```{=html}
 <!-- @sec-problem outlines the problem of complex route networks.
