@@ -1,0 +1,47 @@
+---
+title: Reproducible methods for network simplification
+format: revealjs
+---
+
+### The problem
+
+
+::: {#fig-pct layout-ncol="2"}
+
+![](images/otley-road-narrow.png){#fig-otley-road}
+
+![](images/armley-road-narrow.png){#fig-armley-road}
+
+Two parallel ways in Leeds, UK, with similar flow but different widths.
+
+:::
+
+---
+
+### Issues and live demo
+
+
+Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left..
+Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+
+Demo: https://www.pct.bike/m/?r=west-yorkshire
+
+---
+
+### Solution + demo
+
+::: {#fig-npt layout="[40,-2,40]"}
+![](images/paste-4.png)
+
+![](images/paste-3.png)
+
+The Network Planning Tool for Scotland, showing the network results for central Edinburgh without simplification (left) and with simplification (right).
+Note that the values on Princes Street (highlighted) are hard to interpret without simplification. Demo: [www.npt.scot](https://nptscot.github.io/).
+:::
+
+---
+
+
+# Slide 3
+
+This is the content of slide 3.
