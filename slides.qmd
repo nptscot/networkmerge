@@ -17,6 +17,20 @@ author:
     orcid: 0000-0001-9910-865X
 ---
 
+```{bash}
+#| echo: false
+#| eval: false
+# Convert networkmerge-talk-gisruk.mp4 to .ogg
+ffmpeg -i networkmerge-talk-gisruk.mp4 -c:v libtheora -q:v 7 -c:a libvorbis -q:a 4 networkmerge-talk-gisruk.ogg
+ls -lh networkmerge-talk-gisruk.*
+```
+
+### Details
+
+- For listen-along audio, download and open this: https://github.com/nptscot/networkmerge/releases/download/v1/networkmerge-talk-gisruk.mp4
+- For the associated GISRUK extended abstract, see here: https://github.com/nptscot/networkmerge/releases/download/v1/gisruk.pdf
+- For the code, see here: https://github.com/nptscot/
+
 ### The problem
 
 ::: {#fig-pct layout-ncol="2"}
