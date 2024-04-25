@@ -1,5 +1,5 @@
 ---
-conference: GISRUK 2023
+conference: GISRUK 2024
 title: Reproducible methods for network simplification for data visualisation and transport planning
 author: 
   - name: Robin Lovelace
