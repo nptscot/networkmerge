@@ -125,35 +125,6 @@ div.csl-indent {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -303,8 +274,41 @@ window.Quarto = {
 <p>After installing the dependencies, you can reproduce the paper by running the following command in the terminal:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render paper.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Install the dependencies by cloning the repository and running the following:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" name="python-setup">
+<div class="cell-output cell-output-stdout">
+<pre><code>geometries (NA     -&gt; 0.2.4    ) [CRAN]
+Rcpp       (1.0.12 -&gt; 1.0.13   ) [CRAN]
+s2         (1.1.6  -&gt; 1.1.7    ) [CRAN]
+BH         (NA     -&gt; 1.84.0-0 ) [CRAN]
+RcppEigen  (NA     -&gt; 0.3.4.0.0) [CRAN]
+xfun       (0.45   -&gt; 0.46     ) [CRAN]
+rapidjsonr (NA     -&gt; 1.2.0    ) [CRAN]
+jsonify    (NA     -&gt; 1.2.2    ) [CRAN]
+── R CMD build ─────────────────────────────────────────────────────────────────
+* checking for file ‘/tmp/RtmpL4cYHb/remotes1a7a40f1506c/nptscot-networkmerge-a8670f8/DESCRIPTION’ ... OK
+* preparing ‘networkmerge’:
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* creating default NAMESPACE file
+* building ‘networkmerge_1.1.2.9000.tar.gz’</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Installing pyenv ...
+Done! pyenv has been installed to '/home/runner/.local/share/r-reticulate/pyenv/bin/pyenv'.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/home/runner/.pyenv/versions/3.12.4/bin/python3.12"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Using Python: /home/runner/.pyenv/versions/3.12.4/bin/python3.12
+Creating virtual environment '~/.virtualenvs/r-reticulate' ... 
+Done!
+Installing packages: pip, wheel, setuptools
+Virtual environment '~/.virtualenvs/r-reticulate' successfully created.
+Using virtual environment '~/.virtualenvs/r-reticulate' ...</code></pre>
+</div>
+</div>
 <p>To contribute to the papers written as quarto documents (with <code>.qmd</code> extensions) like this one, we recommend using the Quarto extension for VS Code. You can go into the visual editor with the following shortcut:</p>
 <pre><code>Ctrl+Shift+F4</code></pre>
 <p>You can then add citations with Ctrl+Shift+F11 and benefit from Quarto’s other features for academic writing.</p>
@@ -1101,11 +1105,12 @@ Figure&nbsp;19: Primal networks for the Otley Road (left) and Armley Road (right
 </section>
 <section id="sec-joining-route-networks" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="sec-joining-route-networks"><span class="header-section-number">4.4</span> Joining route networks</h2>
-<p>After generating a simplified network using the methods described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one. This process is commonly referred to as ‘conflation’ and ‘integration’. Conflation is essential because while the source file (detailed network) might be rich in attributes like street names, address ranges, and zip codes, it may lack positional accuracy. Conversely, the target file (simplified network) is likely to be positionally precise but deficient in detailed attributes. As noted by <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>, network data integration encompasses two key aspects: the geometric integration, involving the link and node feature elements, and the integration of attributes such as highway data. In our context, the aim is to merge the detailed attributes from the source network with the geometrically simplified target network, ensuring a comprehensive and accurate representation in the simplified version.</p>
-<p>This ‘joining’ step is vital for using simplified networks as the basis for presenting model outputs. In instances where a simplified version of the network is readily available, such as the Ordnance Survey’s Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time. We have implemented the steps presented in this section in the <code>rnet_merge()</code> function in the <code>stplanr</code> R package.</p>
-<p>The process is analogous to joining two datasets based on a common ‘key’ variable. In this case there is no definitive key, meaning that network joining can be regarded as a ‘fuzzy’ or ‘keyless’ join process <span class="citation" data-cites="suri wachowicz2019">(<a href="#ref-suri" role="doc-biblioref">Suri et al., n.d.</a>; <a href="#ref-wachowicz2019" role="doc-biblioref">Wachowicz and Mrozek 2019</a>)</span>: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.</p>
+<p>After generating a simplified network using the methods described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one. This process is commonly referred to as ‘conflation’ and ‘integration’. Conflation is essential because while the source file (detailed network) might be rich in attributes like street names, address ranges, and zip codes, it may lack positional accuracy. Conversely, the target file (simplified network) is likely to be positionally precise but deficient in detailed attributes. As noted by <span class="citation" data-cites="sutton1998">(<a href="#ref-sutton1998" role="doc-biblioref">Sutton 1998</a>)</span>, network data integration encompasses two key aspects: the geometric integration, involving the link and node feature elements, and the integration of attributes such as highway data. In our context, the purpose of the joining stage is to merge the detailed attributes from the source network onto the geometrically simplified target network. This ‘joining’ step is vital for using simplified networks as the basis for presenting model outputs generated on a complex network in a easy-to-interpret form. <!-- In instances where a simplified version of the network is readily available, such as the Ordnance Survey's Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time.
+We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package. --></p>
+<p>The process is analogous to joining two datasets based on a common ‘key’ variable. In this case there is no definitive key, meaning that network joining can be regarded as a ‘fuzzy’ or ‘keyless’ join process <span class="citation" data-cites="suri wachowicz2019">(<a href="#ref-suri" role="doc-biblioref">Suri et al., n.d.</a>; <a href="#ref-wachowicz2019" role="doc-biblioref">Wachowicz and Mrozek 2019</a>)</span>: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join. The simplified (typically denoted ‘x’) object can also be referred to as the ‘target’ object, following the terminology used to describe database and ‘spatial similarity’ joins <span class="citation" data-cites="ballesteros2011">(<a href="#ref-ballesteros2011" role="doc-biblioref">Ballesteros, Cary, and Rishe 2011</a>)</span>. There are at least a couple of implementations of network joining approaches in open source software: the <code>rnet_merge()</code> function in the <code>stplanr</code> R package <span class="citation" data-cites="lovelace2019">(<a href="#ref-lovelace2019" role="doc-biblioref">Lovelace, Ellison, and Morgan 2019</a>)</span>, and the <a href="https://github.com/nptscot/rnetmatch/tree/main/rust"><code>rnetmatch</code> Rust crate</a> which has binding to R and (soon) Python. The details of network joining methods, algorithms and implementations are outside the scope of this paper, see the documentation associated with the projects mentioned above for more information.</p>
 <!-- **Data Preparation:** -->
-<p>The main inputs of the network merging function are two route networks: <code>rnet_x</code> (the simple network geometry) and <code>rnet_y</code> (the original network with a more complex geometry and attributes that need to be translated onto the new network). <code>rnet_x</code> can also be referred to as the ‘target’ object, following the terminology used to describe database and ‘spatial similarity’ joins <span class="citation" data-cites="ballesteros2011">(<a href="#ref-ballesteros2011" role="doc-biblioref">Ballesteros, Cary, and Rishe 2011</a>)</span>. <code>rnet_y</code> in this case represents the detailed network with attributes such as model outputs representing transport flows to be translated onto the new network.</p>
+<!-- The main inputs of the network merging function are two route networks: `rnet_x` (the simple network geometry) and `rnet_y` (the original network with a more complex geometry and attributes that need to be translated onto the new network). -->
+<!-- `rnet_y` in this case represents the detailed network with attributes such as model outputs representing transport flows to be translated onto the new network. -->
 <!-- **Step 1: Coordinate Reference System Alignment** -->
 <!-- Transform the spatial data of both `rnet_x` (the simplified network) and `rnet_y` (the detailed network) to the same coordinate reference system.
 For this project, we have selected EPSG:27700. -->
@@ -1123,32 +1128,24 @@ For this project, we have selected EPSG:27700. -->
 
 Employ the `rnet_merge` function from the `stplanr` package.
 This function is designed to merge route network data, taking into account the predefined functions and alignment in the coordinate system. -->
-<p>The network joining function can also take a number of arguments that define how the attributes are translated to the simplified target network:</p>
-<ul>
-<li><p><strong><code>dist</code></strong> (Buffer Distance): This parameter defines the buffer zone around <code>rnet_xp</code> in meters, for determining the proximity at which features from both networks are considered for merging. Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.</p></li>
-<li><p><strong><code>segment_length</code></strong> (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in <code>rnet_y</code> before they are split. Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration. <!-- Todo: discuss possibility of cutting lines at buffer intersections. --></p></li>
-<li><p><strong><code>funs</code></strong> (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each. Any function can be used, with sum and mean being typical values.</p></li>
-<li><p><strong><code>max_angle_diff</code></strong> (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries. A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads. <a href="#fig-max_angle_diff" class="quarto-xref">Figure&nbsp;20</a> demonstrates the impact of this parameter in preventing the overestimation of values on side roads.</p></li>
-</ul>
-<div id="fig-max_angle_diff" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-max_angle_diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="pics/Prevent overestimate of values on sideroads.png" class="img-fluid figure-img"></p>
-<figcaption>The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side roads</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-max_angle_diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;20: The effect of setting <code>max_angle_diff</code> to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side Roads.
-</figcaption>
-</figure>
-</div>
+<!-- The network joining function can also take a number of arguments that define how the attributes are translated to the simplified target network:
+
+-   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, for determining the proximity at which features from both networks are considered for merging.
+    Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
+
+-   **`segment_length`** (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split.
+    Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration. -->
+<!-- -   **`funs`** (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each.
+    Any function can be used, with sum and mean being typical values.
+
+-   **`max_angle_diff`** (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries.
+    A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads.
+    @fig-max_angle_diff demonstrates the impact of this parameter in preventing the overestimation of values on side roads. -->
+<!-- ::: {#fig-max_angle_diff layout-ncol="1"}
+![The effect of setting `max_angle_diff` to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side roads](pics/Prevent%20overestimate%20of%20values%20on%20sideroads.png)
+
+The effect of setting `max_angle_diff` to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side Roads.
+::: -->
 <!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
 The formula for the weighted sum is:
 
@@ -1157,29 +1154,35 @@ $$
 $$
 
 Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line. -->
-<p>An optional normalization step adjusts the values associated with each feature in the simplified network. This adjustment ensures that the total flow values of both the complex and simplified networks are equivalent. The need for normalization arises from the fact that simplified networks typically have a reduced total length and are less circuitous compared to their complex counterparts.</p>
-<p>The normalization process is governed by the following formula:</p>
-<p><span class="math display">\[
+<!-- An optional normalization step adjusts the values associated with each feature in the simplified network.
+This adjustment ensures that the total flow values of both the complex and simplified networks are equivalent.
+The need for normalization arises from the fact that simplified networks typically have a reduced total length and are less circuitous compared to their complex counterparts. -->
+<!-- The normalization process is governed by the following formula:
+
+$$
 \text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
-\]</span></p>
-<p>Additionally, to account for potential overestimation of values in the simplified network, the following formula is applied:</p>
-<p><span class="math display">\[
+$$
+
+Additionally, to account for potential overestimation of values in the simplified network, the following formula is applied:
+
+$$
 \text{over\_estimate} = \frac{\sum(\text{Aggregated Value} \times \text{Length of Single Line})}{\sum(\text{Original Value} \times \text{Length of Lines in Complex Network})}
-\]</span></p>
-<p>The final step involves adjusting the normalized value to correct any overestimation, as calculated above:</p>
-<p><span class="math display">\[
+$$
+
+The final step involves adjusting the normalized value to correct any overestimation, as calculated above:
+
+$$
 \text{Adjusted Value} = \frac{\text{Normalized Value}}{\text{over\_estimate}}
-\]</span></p>
-<p>Through these steps, the normalized and adjusted values more accurately reflect the true distribution and intensity of flows within the simplified network, preserving the overall data integrity.</p>
+$$
+
+Through these steps, the normalized and adjusted values more accurately reflect the true distribution and intensity of flows within the simplified network, preserving the overall data integrity. -->
 <!-- Content for long form appendix?: -->
 <!-- To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y.
 The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj\$angle_x.
 In this study, the line_bearing function is defined to calculate the angle.
 As shown below,
-
-```         
+       
 rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)
-```
 
 The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line.
 Below is the detailed formula:
@@ -1224,17 +1227,28 @@ $$
 
 In this bidirectional adjustment, the bearing is normalized to a range of \[0, 180) degrees.
 This means that opposite directions along a line yield the same bearing value.
-This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. -->
+This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. 
+-->
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
-<p>After the joining process has completed, a series of post-processing steps can refine the results:</p>
-<ul>
-<li><p><strong>Cleaning</strong>: The <code>rnet_merged</code> dataset undergoes an initial cleaning phase where superfluous columns are removed. This step enhances dataset manageability and focuses on relevant data by eliminating columns such as ‘identifier’ and ‘length_x’.</p></li>
-<li><p><strong>Dimensionality Reduction</strong>: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size. This reduction simplifies the dataset and optimizes it for storage and processing efficiency.</p></li>
-<li><p><strong>NA Handling</strong>: A thorough examination is conducted for the presence of NA values across the columns. Any rows where all the targeted columns contain NA values are filtered out.</p></li>
-<li><p><strong>Spatial Subsetting</strong>: Following the removal of linestrings that contain NA attributes from the <code>rnet_merged</code> dataset, we proceed to create a geometric buffer zone. This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer. A subset of <code>rnet_yp</code>, termed <code>rnet_yp_rest</code>, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area. This step ensures that only those components of <code>rnet_y</code> which are spatially distinct from <code>rnet_merged</code> are retained for further consideration.</p></li>
-<li><p><strong>Network Simplification</strong>: In the final stage of simplification, the datasets <code>rnet_yp_rest</code> and <code>rnet_merged_all</code> are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.</p></li>
-</ul>
-<p>These post-processing steps are adaptable and can be customized according to the specific requirements of the analysis.</p>
+<!-- After the joining process has completed, a series of post-processing steps can refine the results:
+
+-   **Cleaning**: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed.
+    This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
+
+-   **Dimensionality Reduction**: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size.
+    This reduction simplifies the dataset and optimizes it for storage and processing efficiency.
+
+-   **NA Handling**: A thorough examination is conducted for the presence of NA values across the columns.
+    Any rows where all the targeted columns contain NA values are filtered out.
+
+-   **Spatial Subsetting**: Following the removal of linestrings that contain NA attributes from the `rnet_merged` dataset, we proceed to create a geometric buffer zone.
+    This zone serves as a spatial criterion for identifying and retaining only those geometries that lie outside of this buffer.
+    A subset of `rnet_yp`, termed `rnet_yp_rest`, is then delineated based on this spatial relationship, effectively omitting any geometries that intersect with or fall within the buffered area.
+    This step ensures that only those components of `rnet_y` which are spatially distinct from `rnet_merged` are retained for further consideration.
+
+-   **Network Simplification**: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
+
+These post-processing steps are adaptable and can be customized according to the specific requirements of the analysis. -->
 <!-- TODO: add content to this section. -->
 <!-- TODO: Is this possible? -->
 <!-- ## Combined network simplification and attribute merging -->
@@ -1320,7 +1334,7 @@ doncaster_rail_info = {
 
 # princes_street_info, doncaster_rail_info
 ``` -->
-<p><a href="#fig-results" class="quarto-xref">Figure&nbsp;21</a> illustrate various stages of network simplification, providing a comparative view of the impact of our methodology.</p>
+<p><a href="#fig-results" class="quarto-xref">Figure&nbsp;20</a> illustrate various stages of network simplification, providing a comparative view of the impact of our methodology.</p>
 <ul>
 <li><p>Input figure presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.</p></li>
 <li><p>Skeletonized figure shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.</p></li>
@@ -1345,11 +1359,11 @@ doncaster_rail_info = {
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;21: Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.
+Figure&nbsp;20: Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.
 </figcaption>
 </figure>
 </div>
-<p><a href="#fig-apply_results" class="quarto-xref">Figure&nbsp;22</a> presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method. It is observed that the attribute <code>value</code> from the original network has been correctly transferred to the simplified network via a <code>sum</code> calculation process. This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.</p>
+<p><a href="#fig-apply_results" class="quarto-xref">Figure&nbsp;21</a> presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method. It is observed that the attribute <code>value</code> from the original network has been correctly transferred to the simplified network via a <code>sum</code> calculation process. This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.</p>
 <div id="fig-apply_results" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-apply_results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1364,7 +1378,7 @@ Figure&nbsp;21: Matrix of Route Network Simplification Stages across Armley, Edi
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-apply_results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;22: Comparasion of Orginal Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down).
+Figure&nbsp;21: Comparasion of Orginal Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down).
 </figcaption>
 </figure>
 </div>
@@ -1408,6 +1422,9 @@ Grippa, Taïs, Stefanos Georganos, Soukaina Zarougui, Pauline Bognounou, Eric Di
 </div>
 <div id="ref-liu2020vector" class="csl-entry" role="listitem">
 Liu, B., X. Liu, D. Li, Y. Shi, G. Fernandez, and Y. Wang. 2020. <span>“A Vector Line Simplification Algorithm Based on the Douglas–Peucker Algorithm, Monotonic Chains and Dichotomy.”</span> <em>ISPRS International Journal of Geo-Information</em> 9 (4): 251.
+</div>
+<div id="ref-lovelace2019" class="csl-entry" role="listitem">
+Lovelace, Robin, Richard Ellison, and Malcolm Morgan. 2019. <em>Stplanr: Sustainable Transport Planning</em>.
 </div>
 <div id="ref-lovelace2017" class="csl-entry" role="listitem">
 Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
