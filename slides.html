@@ -8,13 +8,13 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.553">
+  <meta name="generator" content="quarto-1.5.54">
 
   <meta name="author" content="Robin Lovelace">
   <meta name="author" content="Zhao Wang">
   <meta name="author" content="Will Deakin">
   <meta name="author" content="Josiah Parry">
-  <title>networkmerge - Reproducible methods for network simplification</title>
+  <title>networkmerge – Reproducible methods for network simplification</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -389,31 +389,35 @@ Josiah Parry <a href="https://orcid.org/0000-0001-9910-865X" class="quarto-title
 </section>
 <section class="slide level2">
 
+<h3 id="details">Details</h3>
+<ul>
+<li>For listen-along audio, download and open this: https://github.com/nptscot/networkmerge/releases/download/v1/networkmerge-talk-gisruk.mp4</li>
+<li>For the associated GISRUK extended abstract, see here: https://github.com/nptscot/networkmerge/releases/download/v1/gisruk.pdf</li>
+<li>For the code, see here: https://github.com/nptscot/</li>
+</ul>
 <h3 id="the-problem">The problem</h3>
 <div id="fig-pct" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-pct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pct" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-otley-road" class="quarto-figure quarto-figure-center quarto-float">
+<div id="fig-otley-road" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-subfloat-fig">
 <div aria-describedby="fig-otley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img data-src="images/otley-road-narrow.png" id="fig-otley-road" data-ref-parent="fig-pct">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-otley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a)
 </figcaption>
 </figure>
 </div>
 </div>
 <div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pct" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-armley-road" class="quarto-figure quarto-figure-center quarto-float">
+<div id="fig-armley-road" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-subfloat-fig">
 <div aria-describedby="fig-armley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img data-src="images/armley-road-narrow.png" id="fig-armley-road" data-ref-parent="fig-pct">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-armley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(b)
 </figcaption>
 </figure>
 </div>
@@ -512,8 +516,7 @@ Figure&nbsp;2: The Network Planning Tool for Scotland, showing the network resul
 </small><p><small></small></p>
 </div><div class="column" style="width:60%;">
 <p><img data-src="images/box.gif"></p>
-</div>
-</div>
+</div></div>
 </section>
 <section class="slide level2 smaller scrollable" id="references">
 
@@ -740,6 +743,44 @@ Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nat
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
@@ -772,18 +813,7 @@ Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nat
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -815,7 +845,29 @@ Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nat
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
           var filterRegex = new RegExp("https:\/\/nptscot\.github\.io\/networkmerge\/");
@@ -823,7 +875,7 @@ Morgan, Malcolm, and Robin Lovelace. 2020. <span>“Travel Flow Aggregation: Nat
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
         // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
         for (var i=0; i<links.length; i++) {
           const link = links[i];
           if (!isInternal(link.href)) {
