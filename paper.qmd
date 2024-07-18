@@ -43,19 +43,19 @@ quarto render paper.qmd
 
 Install the dependencies by cloning the repository and running the following:
 
-``` r
-requirements_txt = readLines("requirements.txt")
-py_install(requirements_txt, pip = TRUE)
-```
-
 ```{r}
 #| name: python-setup
-#| include: false
+# Install remotes if not already:
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
+}
+remotes::install_github("nptscot/networkmerge")
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
 if (!requireNamespace("reticulate")) {
   install.packages("reticulate")
 }
+# See reticulate documentation to use a specific Python version:
 # ?reticulate::install_python()
 reticulate::install_python("3.12.4")
 # Install Python dependencies with reticulate:
