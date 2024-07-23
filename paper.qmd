@@ -43,20 +43,21 @@ quarto render paper.qmd
 
 Install the dependencies by cloning the repository and running the following:
 
-``` r
-requirements_txt = readLines("requirements.txt")
-py_install(requirements_txt, pip = TRUE)
-```
-
 ```{r}
 #| name: python-setup
-#| include: false
+# Install remotes if not already:
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
+}
+remotes::install_github("nptscot/networkmerge")
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
 if (!requireNamespace("reticulate")) {
   install.packages("reticulate")
 }
-reticulate::install_python()
+# See reticulate documentation to use a specific Python version:
+# ?reticulate::install_python()
+reticulate::install_python("3.12.4")
 # Install Python dependencies with reticulate:
 reticulate::py_install(requirements_txt, pip = TRUE)
 ```
@@ -913,20 +914,22 @@ This process is commonly referred to as 'conflation' and 'integration'.
 Conflation is essential because while the source file (detailed network) might be rich in attributes like street names, address ranges, and zip codes, it may lack positional accuracy.
 Conversely, the target file (simplified network) is likely to be positionally precise but deficient in detailed attributes.
 As noted by [@sutton1998], network data integration encompasses two key aspects: the geometric integration, involving the link and node feature elements, and the integration of attributes such as highway data.
-In our context, the aim is to merge the detailed attributes from the source network with the geometrically simplified target network, ensuring a comprehensive and accurate representation in the simplified version.
-
-This 'joining' step is vital for using simplified networks as the basis for presenting model outputs.
-In instances where a simplified version of the network is readily available, such as the Ordnance Survey's Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time.
-We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package.
+In our context, the purpose of the joining stage is to merge the detailed attributes from the source network onto the geometrically simplified target network.
+This 'joining' step is vital for using simplified networks as the basis for presenting model outputs generated on a complex network in a easy-to-interpret form.
+<!-- In instances where a simplified version of the network is readily available, such as the Ordnance Survey's Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time.
+We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package. -->
 
 The process is analogous to joining two datasets based on a common 'key' variable.
 In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
+The simplified (typically denoted 'x') object can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins [@ballesteros2011].
+There are at least a couple of implementations of network joining approaches in open source software: the `rnet_merge()` function in the `stplanr` R package [@lovelace2019], and the [`rnetmatch` Rust crate](https://github.com/nptscot/rnetmatch/tree/main/rust) which has binding to R and (soon) Python.
+The details of network joining methods, algorithms and implementations are outside the scope of this paper, see the documentation associated with the projects mentioned above for more information.
 
 <!-- **Data Preparation:** -->
 
-The main inputs of the network merging function are two route networks: `rnet_x` (the simple network geometry) and `rnet_y` (the original network with a more complex geometry and attributes that need to be translated onto the new network).
-`rnet_x` can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins [@ballesteros2011].
-`rnet_y` in this case represents the detailed network with attributes such as model outputs representing transport flows to be translated onto the new network.
+<!-- The main inputs of the network merging function are two route networks: `rnet_x` (the simple network geometry) and `rnet_y` (the original network with a more complex geometry and attributes that need to be translated onto the new network). -->
+
+<!-- `rnet_y` in this case represents the detailed network with attributes such as model outputs representing transport flows to be translated onto the new network. -->
 
 <!-- **Step 1: Coordinate Reference System Alignment** -->
 
@@ -964,29 +967,27 @@ This function is designed to merge route network data, taking into account the p
 rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = 20, segment_length = 10, funs = funs, max_angle_diff = 30) 
 ```
 
-The network joining function can also take a number of arguments that define how the attributes are translated to the simplified target network:
+<!-- The network joining function can also take a number of arguments that define how the attributes are translated to the simplified target network:
 
 -   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, for determining the proximity at which features from both networks are considered for merging.
     Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
 
 -   **`segment_length`** (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split.
-    Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration.
-    <!-- Todo: discuss possibility of cutting lines at buffer intersections. -->
+    Segmenting long segments in the detailed network reduces number of source geometries that do not fit within target geometries, which can be key for achieving higher accuracy in attribute integration. -->
 
--   **`funs`** (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each.
+<!-- -   **`funs`** (Function List): Comprises a series of key-value pairs representing variable names and the function to apply to each.
     Any function can be used, with sum and mean being typical values.
 
 -   **`max_angle_diff`** (Maximum Angular Difference): This argument specifies the maximum angular difference between segments and target lines for values in matching source geometries to be translated to the target simplified geometries.
     A low value, such as 20 degrees, ensures that values are translated only to segments with similar orientations, preventing overestimation of values on side roads.
-    @fig-max_angle_diff demonstrates the impact of this parameter in preventing the overestimation of values on side roads.
+    @fig-max_angle_diff demonstrates the impact of this parameter in preventing the overestimation of values on side roads. -->
 
-::: {#fig-max_angle_diff layout-ncol="1"}
+<!-- ::: {#fig-max_angle_diff layout-ncol="1"}
 ![The effect of setting `max_angle_diff` to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side roads](pics/Prevent%20overestimate%20of%20values%20on%20sideroads.png)
 
 The effect of setting `max_angle_diff` to 20 degrees compared to a null value, illustrating the reduction in value overestimation on side Roads.
-:::
+::: -->
 
-```{=html}
 <!-- An optional `sum_flows` argument can be used to ensure that more influential lines have a proportionate impact on the final aggregated value for each geometry in the simplified network.
 The formula for the weighted sum is:
 
@@ -995,12 +996,12 @@ $$
 $$
 
 Where `xi` represents the attribute value for the i-th line in the complex network, and `wi` is the length weight for the i-th line. -->
-```
-An optional normalization step adjusts the values associated with each feature in the simplified network.
-This adjustment ensures that the total flow values of both the complex and simplified networks are equivalent.
-The need for normalization arises from the fact that simplified networks typically have a reduced total length and are less circuitous compared to their complex counterparts.
 
-The normalization process is governed by the following formula:
+<!-- An optional normalization step adjusts the values associated with each feature in the simplified network.
+This adjustment ensures that the total flow values of both the complex and simplified networks are equivalent.
+The need for normalization arises from the fact that simplified networks typically have a reduced total length and are less circuitous compared to their complex counterparts. -->
+
+<!-- The normalization process is governed by the following formula:
 
 $$
 \text{Normalized Value} = \frac{\text{Weighted Sum}}{\sum w_i}
@@ -1018,19 +1019,16 @@ $$
 \text{Adjusted Value} = \frac{\text{Normalized Value}}{\text{over\_estimate}}
 $$
 
-Through these steps, the normalized and adjusted values more accurately reflect the true distribution and intensity of flows within the simplified network, preserving the overall data integrity.
+Through these steps, the normalized and adjusted values more accurately reflect the true distribution and intensity of flows within the simplified network, preserving the overall data integrity. -->
 
 <!-- Content for long form appendix?: -->
 
-````{=html}
 <!-- To calculate max_angle_diff, it's necessary to accurately calculate the angles (bearings) of lines from two networks, rnet_x$angle_x and rnet_y$angle_y.
 The difference in these angles is then computed as rnetj$angle_diff <- rnetj$angle_y - rnetj\$angle_x.
 In this study, the line_bearing function is defined to calculate the angle.
 As shown below,
-
-```         
+       
 rnet$angle = line_bearing(rnet_y, bidirectional = TRUE)
-```
 
 The process of calculating the bidirectional bearing of a line segment in geographical coordinates involves normalizing the standard bearing so that it is the same regardless of the direction of travel along the line.
 Below is the detailed formula:
@@ -1075,8 +1073,8 @@ $$
 
 In this bidirectional adjustment, the bearing is normalized to a range of \[0, 180) degrees.
 This means that opposite directions along a line yield the same bearing value.
-This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. -->
-````
+This approach is particularly useful in scenarios where the directionality of the line is not a primary concern, ensuring consistency in bearing values regardless of the line's travel direction. 
+-->
 
 <!-- ![image](pics/Prevent_overestimate_of_values_on_sideroads.png) -->
 
@@ -1130,7 +1128,7 @@ m2 = tm_shape(rnet_merged_without_angle) +
 tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 ```
 
-After the joining process has completed, a series of post-processing steps can refine the results:
+<!-- After the joining process has completed, a series of post-processing steps can refine the results:
 
 -   **Cleaning**: The `rnet_merged` dataset undergoes an initial cleaning phase where superfluous columns are removed.
     This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
@@ -1148,9 +1146,10 @@ After the joining process has completed, a series of post-processing steps can r
 
 -   **Network Simplification**: In the final stage of simplification, the datasets `rnet_yp_rest` and `rnet_merged_all` are combined to form the final network, which retains the simplicity of the original simplified structure while concurrently encompassing the detailed attributes, thereby providing a comprehensive yet efficient foundation for further analysis.
 
-These post-processing steps are adaptable and can be customized according to the specific requirements of the analysis.
+These post-processing steps are adaptable and can be customized according to the specific requirements of the analysis. -->
 
 ```{python}
+#| eval: false
 rnet_x = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 # # Plotting both GeoJSON files side by side
@@ -1485,6 +1484,7 @@ This not only aids in better visualization and interpretation of transport model
 ```
 
 ```{python}
+# Mompy test:
 # import osmnx as ox
 # import geopandas as gpd
 # import momepy
@@ -1503,36 +1503,3 @@ This not only aids in better visualization and interpretation of transport model
 # nx.draw(gdf_nx)
 # momepy.roundabout_simplification(gdf)
 ```
-
-<!-- Out-takes, to tidy-up/include later:
-
-:::
-
-The graphic below shows a 2 panel plot showing simplification with the `consolidate_intersections` function from the `osmnx` Python package.
-
-::: {#fig-osmnx-consolidate-intersections layout-ncol="2"}
-```{python}
-#| echo: false
-#| eval: false
-#| warning: false
-import osmnx as ox
-# Get all streets within 50 m of Princes Street, Edinburgh:
-# Get point that is on Princes Street:
-# ox.geocode_to_gdf("Princes Street Edinburgh")
-G = ox.graph_from_place("Royal Scots Greys Memorial", network_type="walk", buffer_dist=200)
-ox.plot_graph(G);
-# Plot the graph in an interactive map:
-# ox.plot_graph_folium(G)
-# project to 27700
-
-G_projected = ox.project_graph(G, 'EPSG:27700')
-# simplify:
-G_simplified = ox.consolidate_intersections(G_projected, tolerance=10, rebuild_graph=True)
-# plot G_simplified as GeoPandas in Quarto:
-ox.plot_graph(G_simplified);
-plt.show()
-```
-
-Illustration of consolidation of intersections, with the `consolidate_intersections` function from the `osmnx` Python package.
-:::
-

@@ -15,6 +15,7 @@ author:
   - name: Josiah Parry
     affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
+knitr: true
 ---
 
 ```{bash}
