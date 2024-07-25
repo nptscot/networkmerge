@@ -49,7 +49,13 @@ Install the dependencies by cloning the repository and running the following:
 if (!requireNamespace("remotes")) {
   install.packages("remotes")
 }
-remotes::install_github("nptscot/networkmerge")
+# Install github version if no DESCRIPTION file:
+if (!file.exists("DESCRIPTION")) {
+  remotes::install_github("nptscot/networkmerge")
+} else {
+  # Install from DESCRIPTION file:
+  remotes::install_deps(dependencies = TRUE)
+}
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
 if (!requireNamespace("reticulate")) {
@@ -1384,7 +1390,9 @@ It is observed that the attribute `value` from the original network has been cor
 This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.
 
 ::: {#fig-apply_results}
+
 ```{r}
+#| eval: false
 rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 
