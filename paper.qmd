@@ -1332,49 +1332,54 @@ for variable in PLOT_DATA:
 
 <!-- TODO: improve the figure layout. -->
 
-::: {#fig-results layout-ncol="1" layout-nrow="1"}
+::: {#fig-results layout-ncol="1"}
 ```{python}
-# Create a figure with 5 subplots in one row
-fig, axs = plt.subplots(1, 5, figsize=(25, 5))  # Adjust the size as needed
+# Create a figure with 2 x 3 rows
 
 # Plot 1: Input
-axs[0] = base_edinburgh.plot(ax=axs[0], color='blue')
-axs[0].grid(True, color='grey', linestyle='--', linewidth=0.5)
-axs[0].xaxis.set_ticklabels([])
-axs[0].yaxis.set_ticklabels([])
-axs[0].set_title('Input')
+fig = plt.figure(figsize=(8, 8))
+ax1 = plt.subplot2grid((3, 2), (0, 0), colspan=2)
+ax2 = plt.subplot2grid((3, 2), (1, 0))
+ax3 = plt.subplot2grid((3, 2), (1, 1))
+ax4 = plt.subplot2grid((3, 2), (2, 0))
+ax5 = plt.subplot2grid((3, 2), (2, 1))
+
+ax1 = base_edinburgh.plot(ax=ax1, color='blue')
+ax1.grid(True, color='grey', linestyle='--', linewidth=0.5)
+ax1.xaxis.set_ticklabels([])
+ax1.yaxis.set_ticklabels([])
+ax1.set_title('Input')
 
 # Plot 2: Skeletonized
-axs[1] = edinburgh_sk.plot(ax=axs[1], color='green')
-axs[1].grid(True, color='grey', linestyle='--', linewidth=0.5)
-axs[1].xaxis.set_ticklabels([])
-axs[1].yaxis.set_ticklabels([])
-axs[1].set_title('Skeletonized')
+ax2 = edinburgh_sk.plot(ax=ax2, color='green')
+ax2.grid(True, color='grey', linestyle='--', linewidth=0.5)
+ax2.xaxis.set_ticklabels([])
+ax2.yaxis.set_ticklabels([])
+ax2.set_title('Skeletonized')
 
 # Plot 3: Voronoi
-axs[2] = edinburgh_line.plot(ax=axs[2], color='orange')
-axs[2].grid(True, color='grey', linestyle='--', linewidth=0.5)
-axs[2].xaxis.set_ticklabels([])
-axs[2].yaxis.set_ticklabels([])
-axs[2].set_title('Voronoi')
+ax3 = edinburgh_line.plot(ax=ax3, color='purple')
+ax3.grid(True, color='grey', linestyle='--', linewidth=0.5)
+ax3.xaxis.set_ticklabels([])
+ax3.yaxis.set_ticklabels([])
+ax3.set_title('Voronoi')
 
 # Plot 4: Primal Skeletonized
-axs[3] = edinburgh_edge_sk.plot(ax=axs[3], color='orchid')
-axs[3].grid(True, color='grey', linestyle='--', linewidth=0.5)
-axs[3].xaxis.set_ticklabels([])
-axs[3].yaxis.set_ticklabels([])
-axs[3].set_title('Primal Skeletonized')
+ax4 = edinburgh_edge_sk.plot(ax=ax4, color='green')
+ax4.grid(True, color='grey', linestyle='--', linewidth=0.5)
+ax4.xaxis.set_ticklabels([])
+ax4.yaxis.set_ticklabels([])
+ax4.set_title('Primal Skeletonized')
 
 # Plot 5: Primal Voronoi
-axs[4] = edinburgh_edge.plot(ax=axs[4], color='tomato')
-axs[4].grid(True, color='grey', linestyle='--', linewidth=0.5)
-axs[4].xaxis.set_ticklabels([])
-axs[4].yaxis.set_ticklabels([])
-axs[4].set_title('Primal Voronoi')
+ax5 = edinburgh_edge.plot(ax=ax5, color='purple')
+ax5.grid(True, color='grey', linestyle='--', linewidth=0.5)
+ax5.xaxis.set_ticklabels([])
+ax5.yaxis.set_ticklabels([])
+ax5.set_title('Primal Voronoi')
 
 plt.tight_layout()
 plt.show()
-
 ```
 
 Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail.
