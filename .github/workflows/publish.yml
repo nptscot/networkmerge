@@ -24,6 +24,8 @@ jobs:
           extra-packages: |
             any::ggplot2
             any::rcmdcheck
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #       - name: Install deps
 #         # Run the script in .devcontainer/install-additional-dependencies.sh
 #         run: bash .devcontainer/install-additional-dependencies.sh
