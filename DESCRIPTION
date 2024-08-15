@@ -44,7 +44,8 @@ Imports:
     ggplot2,
     stplanr,
     rsgeo (>= 0.1.6.9000)
-Additional_repositories: https://josiahparry.r-universe.dev
+Remotes:
+    JosiahParry/rsgeo
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
