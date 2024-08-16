@@ -665,22 +665,6 @@ armley_sk.plot()
 Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
 :::
 
-### Knots
-
-Knots in the network are multiple short segments at intersections, resembling tangled knots.
-To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined.
-The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point.
-This process effectively removes the knot-like appearance.
-As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in @fig-knots.
-
-::: {#fig-knots layout-ncol="2"}
-![](images/knot-output.png){#fig-knot}
-
-![](images/noknot-output.png){#fig-noknot}
-
-Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in @fig-knots.
-:::
-
 ### Primal network
 
 There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
@@ -910,6 +894,27 @@ armley_edge.plot()
 
 Primal networks for the Otley Road (left) and Armley Road (right) networks.
 :::
+
+## Post-Processing
+
+Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted knots and optionally further simplification to a primal network.
+
+### Knots
+
+Knots in the network are multiple short segments at intersections, resembling tangled knots.
+To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined.
+The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point.
+This process effectively removes the knot-like appearance.
+As with previous steps, the reverse affine transformation is applied to the simplified network before plotting, ensuring the network is represented in its original spatial context, as illustrated in @fig-knots.
+
+::: {#fig-knots layout-ncol="2"}
+![](images/knot-output.png){#fig-knot}
+
+![](images/noknot-output.png){#fig-noknot}
+
+Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in @fig-knots.
+:::
+
 
 <!-- ![](images/paste-1.png) -->
 
