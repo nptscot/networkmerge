@@ -665,26 +665,6 @@ armley_sk.plot()
 Simplified versions of the Otley Road (left) and Armley Road (right) networks, transformed back into line geometry.
 :::
 
-### Primal network
-
-There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
-This primal network represents an extreme form of simplification, of great potential value in situations in which the network's overall structure and compression ratios are priorities.
-The primal networks for the Otley Road and Armley Road networks are illustrated in @fig-primal.
-
-::: {#fig-primal layout-ncol="2"}
-```{python}
-otley_edge_sk = get_nx(otley_sk)
-otley_edge_sk.plot()
-```
-
-```{python}
-armley_edge_sk = get_nx(armley_sk)
-armley_edge_sk.plot()
-```
-
-Primal networks for the Otley Road (left) and Armley Road (right) networks.
-:::
-
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
 In this approach, the network lines are first buffered as described above.
@@ -876,30 +856,12 @@ armley_line.plot()
 Simplified versions of the Otley Road (left) and Armley Road (right) networks.
 :::
 
-<!-- ### Primal network -->
-
-@fig-primal-voronoi illustrates the primal network derived from the Voronoi approach.
-This representation highlights the fundamental structure of the network, showcasing a simplified and efficient layout that results from the Voronoi-based simplification process and how the primal network captures the essential connectivity and layout of the transport routes.
-
-::: {#fig-primal-voronoi layout-ncol="2"}
-```{python}
-otley_edge = get_nx(otley_line)
-otley_edge.plot()
-```
-
-```{python}
-armley_edge = get_nx(armley_line)
-armley_edge.plot()
-```
-
-Primal networks for the Otley Road (left) and Armley Road (right) networks.
-:::
-
 ## Post-Processing
 
-Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted knots and optionally further simplification to a primal network.
+Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted [knots](@sec-knots). Optionally by removing intermediate lines-sections, a further simplified or [primal network](@sec-primal) that captures the essential connectivity and layout of transport routes can be generated.
 
-### Knots
+
+### Knots {#sec-knots}
 
 Knots in the network are multiple short segments at intersections, resembling tangled knots.
 To remove these features of networks, which add complexity that is rarely relevant for strategic transport planning, short segments are clustered together, and a central point for each cluster is determined.
@@ -913,6 +875,45 @@ As with previous steps, the reverse affine transformation is applied to the simp
 ![](images/noknot-output.png){#fig-noknot}
 
 Zoomed in versions of road structure with knots (left), and with knots removed (right) shown in @fig-knots.
+:::
+
+### Primal network {#sec-primal}
+
+There are circumstances where it might be beneficial to view a "primal" network, which is exclusively composed of direct lines connecting start and end points.
+This primal network represents an extreme form of simplification, of great potential value in situations in which the network's overall structure and compression ratios are priorities.
+
+The primal networks for the Otley Road and Armley Road skeletonized networks are illustrated in @fig-primal-skeleton.
+
+::: {#fig-primal-skeleton layout-ncol="2"}
+```{python}
+otley_edge_sk = get_nx(otley_sk)
+otley_edge_sk.plot()
+```
+
+```{python}
+armley_edge_sk = get_nx(armley_sk)
+armley_edge_sk.plot()
+```
+
+Primal skeletonized networks for the Otley Road (left) and Armley Road (right) networks.
+:::
+
+<!-- ### Primal network -->
+
+@fig-primal-voronoi illustrates the primal network derived from the Voronoi approach.
+
+::: {#fig-primal-voronoi layout-ncol="2"}
+```{python}
+otley_edge = get_nx(otley_line)
+otley_edge.plot()
+```
+
+```{python}
+armley_edge = get_nx(armley_line)
+armley_edge.plot()
+```
+
+Primal Voronoi networks for the Otley Road (left) and Armley Road (right) networks.
 :::
 
 
