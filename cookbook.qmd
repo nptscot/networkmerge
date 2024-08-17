@@ -56,9 +56,9 @@ This was developed and tested on a Debian Linux variant[^3] and run on the comma
 [^8]: The `simplify` parameter sets [`shapely simplify`](https://shapely.readthedocs.io/en/stable/reference/shapely.simplify.html) function tolerance value.
 [^9]: The `tolerance` parameter set [`shapely voronoi_diagram`](https://shapely.readthedocs.io/en/stable/manual.html#shapely.ops.voronoi_diagram) function Voronoi snapping tolerance.
 
-# Set up
+# Set up and run
 
-In this example create a working project directory, say `elegant-tern`, and set a virtual-environment there. This assumes you have `bash` and a working base `python3` installation.
+In this example create a working project directory, say `elegant-tern`, and set a virtual-environment and simplify data there. This assumes you have `bash` and a working base `python3` installation.
 
 ## Create a working directory
 
@@ -112,7 +112,7 @@ While there are many different takes and system to manage `python` packages, my 
 
 # Simplification: TL;DR
 
-The remaining "Too Long; Do not Read" section explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
+The remaining "Too Long; Do not Read" sections explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
 
 ## Skeletonize simplification
 
@@ -253,7 +253,7 @@ done
 
 ### Simplify using skeletonization
 
-
+This creates three skeletonization outputs with varying `simplify` and `segment` parameters:
 ``` bash
 echo skeletonize ${INPATH}
 skeletonize.py ${INPATH} sk-${OUTPUT}.gpkg
@@ -263,7 +263,8 @@ skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
 
 ### Simplify using Voronoi
 
-```
+This creates two Voronoi outputs with varying `simplify` parameters:
+``` bash
 echo voronoi ${INPATH}
 voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
 voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
@@ -330,3 +331,10 @@ if [ x"${OGR2OGR}" != x ]; then
     done
 fi
 ```
+
+# Acknowledgement
+
+Many thanks to everyone who has helped and supported in making this work possible, and making the data available.
+
+* The centre-line track-model is an extract of the Network Rail centre-line track-model hosted by [OpenRailData](https://github.com/openraildata/network-rail-gis) under the [Open Government License](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/), retrieved 2023-07-11.
+* The road network data are static extracts from OpenStreeMap under [CC-BY-SA 2.0](https://www.openstreetmap.org/copyright) through the [OverPassAPI Turbo service](https://overpass-turbo.eu/).
