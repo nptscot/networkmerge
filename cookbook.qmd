@@ -1,5 +1,5 @@
 ---
-title: "How to use the `parenx` module scripts to simplify networks"
+title: "How to use the `parenx` module scripts to simplify linear network features"
 author: 
   - name: Will Deakin
     affiliation: Digital, Data and Technology services, Network Rail, UK
@@ -52,6 +52,9 @@ This was developed and tested on a Debian Linux variant[^3] and run on the comma
 [^4]: The [OpenStreetMap](https://www.openstreetmap.org/search?query=Edinburgh#map=11/55.9115/-3.2622) map of Edinburgh.
 [^5]: The [OSC GeoPKG](https://www.geopackage.org/) specification.
 [^6]: The [GeoJSON Specification](https://geojson.org/) (RFC 7946).
+[^7]: [GitHub data](https://github.com/anisotropi4/parenx/tree/main/data) used in development.
+[^8]: The `simplify` parameter sets [`shapely simplify`](https://shapely.readthedocs.io/en/stable/reference/shapely.simplify.html) function tolerance value.
+[^9]: The `tolerance` parameter set [`shapely voronoi_diagram`](https://shapely.readthedocs.io/en/stable/manual.html#shapely.ops.voronoi_diagram) function Voronoi snapping tolerance.
 
 # Set up
 
@@ -100,13 +103,47 @@ $ python3 -c "import parenx; from importlib.metadata import version; print(versi
 
 While there are many different takes and system to manage `python` packages, my experience is that package management in a virtual environment with `python3` just works.
 
+# Simplification
+The `skeletonize.py` and `voronoi.py` simplication scripts will now simplify linear geometry. Example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
+
+## Skeletonize simplification
+
+As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
+
+``` bash
+$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
+
+
+The base `skeletonize.py` also takes parameters to split buffered line segments or preserve knots. These parameters:
+``` bash
+$ skeltonize.py
+start		0:00:00.000266
+usage: skeletonize.py [-h] [--simplify SIMPLIFY] [--buffer BUFFER] [--scale SCALE] [--knot] [--segment] inpath [outpath]
+skeletonize.py: error: the following arguments are required: inpath
+```
+
+## Voronoi simplification
+
+As the script take a filepath or URL, simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
+
+``` bash
+$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
+The base `voronoi.py` also takes a tolerance parameter[^9] to sets to the Voronoi polygon overlap:
+``` bash
+start		0:00:00.000154
+usage: voronoi.py [-h] [--simplify SIMPLIFY] [--scale SCALE] [--buffer BUFFER] [--tolerance TOLERANCE] inpath [outpath]
+voronoi.py: error: the following arguments are required: inpath
+```
 
 # Helper script
-
-There is a helper script `run.sh` in the repository.
+The `run.sh` helper script sets and installs `parenx` in a virtual enviroment, and runs the `skeltonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed.
 
 ## Find the helper script
-To find it run:
+To find it:
 
 ``` bash
 $ find . -name run.sh
@@ -130,7 +167,7 @@ $ find . -name run.sh -exec cp {} . \;
 ```
 
 ## Run the helper script
-The default runs the `skeltonize` and `voronoi` simplification scripts with different parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
+The default runs the `skeltonize` and `voronoi` simplification scripts with a number of parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
 
 ``` bash
 $ ./run.sh
