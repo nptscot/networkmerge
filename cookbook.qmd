@@ -187,7 +187,7 @@ stop		0:00:19.703512
 ```
 
 ## What does the helper `run.sh` do?
-The helper script sets and installs `parenx` in a virtual enviroment, and runs the `skeltonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. It takes two option command line parameters that specify the path to data and output filename.
+The helper script creates the enviroment and runs the `skeltonize` and `voronoi` simplification scripts with different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. The path and output filename can also be specified.
 
 ### Set up environment
 As above this checks to see if a `venv` directory exists, creates and populates it if not, and activates the environment:
