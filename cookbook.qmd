@@ -48,7 +48,10 @@ This was developed and tested on a Debian Linux variant[^3] and run on the comma
 
 [^1]: The [network merge paper here](https://nptscot.github.io/networkmerge/paper.html).
 [^2]: See the [online project](https://pypi.org/project/parenx/).
-[^3]: https://www.debian.org/
+[^3]: The [Debian Linux distribution](https://www.debian.org/)
+[^4]: The [OpenStreetMap](https://www.openstreetmap.org/search?query=Edinburgh#map=11/55.9115/-3.2622) map of Edinburgh.
+[^5]: The [OSC GeoPKG](https://www.geopackage.org/) specification.
+[^6]: The [GeoJSON Specification](https://geojson.org/) (RFC 7946).
 
 # Set up
 
@@ -90,7 +93,7 @@ This installs the latest release of the `parenx` scripts from `pypi` and prints 
 ``` bash
 $ pip install parenx
 $ python3 -c "import parenx; from importlib.metadata import version; print(version('parenx'))"
-0.5.5
+0.5.6
 ```
 
 ## Notes
@@ -110,9 +113,9 @@ $ find . -name run.sh
 ./venv/lib/python3.12/site-packages/parenx/run.sh
 ```
 
-## (optional) Copy the helper script to the working directory:
+## Copy the helper script
 
-If you want to check for its existence copy it to the working directory type:
+Copy the helper script to the working directory. If you want to check for its existence copy it to the working directory type:
 ``` bash
 $ ls run.sh
 ls: cannot access 'run.sh': No such file or directory
@@ -124,6 +127,26 @@ run.sh
 Otherwise the following will suffice:
 ``` bash
 $ find . -name run.sh -exec cp {} . \;
+```
+
+## Run the helper script
+The default runs the `skeltonize` and `voronoi` simplification scripts with different parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
+
+``` bash
+$ ./run.sh
+simplify ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
+skeletonize ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
+start		0:00:00.000270
+read geojson	0:00:00.093758
+...
+write simple	0:00:03.403231
+write primal	0:00:03.446779
+stop		0:00:03.498828
+voronoi ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
+start		0:00:00.000165
+read geojson	0:00:00.079670
+...
+stop		0:00:19.703512
 ```
 
 ## What does the helper `run.sh` do?
@@ -183,8 +206,23 @@ do
 done
 ```
 
-### *more stuff*
-More stuff here
+### Simplify using skeletonization
+
+
+``` bash
+echo skeletonize ${INPATH}
+skeletonize.py ${INPATH} sk-${OUTPUT}.gpkg
+skeletonize.py ${INPATH} sk-${OUTPUT}-simple.gpkg --simplify 1.0
+skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
+```
+
+### Simplify using Voronoi
+
+```
+echo voronoi ${INPATH}
+voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
+voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
+```
 
 ### What does this all look like?
 
@@ -230,8 +268,8 @@ skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
 echo voronoi ${INPATH}
 voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
 voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
-OGR2OGR=$(which ogr2ogr)
 
+OGR2OGR=$(which ogr2ogr)
 if [ x"${OGR2OGR}" != x ]; then
     for k in sk vr
     do
