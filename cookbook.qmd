@@ -95,18 +95,155 @@ $ python3 -c "import parenx; from importlib.metadata import version; print(versi
 
 ## Notes
 
-While there are many different takes, my experience is that package management in a virtual environment with `python3` just works.
+While there are many different takes and system to manage `python` packages, my experience is that package management in a virtual environment with `python3` just works.
 
 
 # Helper script
-``` bash
 
-$ ./run.sh
+There is a helper script `run.sh` in the repository.
+
+## Find the helper script
+To find it run:
+
+``` bash
+$ find . -name run.sh
+./venv/lib/python3.12/site-packages/parenx/run.sh
 ```
 
-```{python}
-#| name: python-setup-packages
-import warnings
-from functools import partial
-from pathlib import Path
+## (optional) Copy the helper script to the working directory:
+
+If you want to check for its existence copy it to the working directory type:
+``` bash
+$ ls run.sh
+ls: cannot access 'run.sh': No such file or directory
+$ find . -name run.sh -exec cp {} . \;
+$ ls run.sh
+run.sh
+```
+
+Otherwise the following will suffice:
+``` bash
+$ find . -name run.sh -exec cp {} . \;
+```
+
+## What does the helper `run.sh` do?
+The helper script sets and installs `parenx` in a virtual enviroment, and runs the `skeltonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. It takes two option command line parameters that specify the path to data and output filename.
+
+### Set up environment
+As above this checks to see if a `venv` directory exists, creates and populates it if not, and activates the environment:
+
+``` bash
+#!/usr/bin/env bash
+
+if [ ! -d venv ]; then
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install --upgrade wheel
+    pip install parenx
+fi
+
+source venv/bin/activate
+```
+
+It also see if there are any command line parameters set and creates an archive directory, if it is absent:
+
+``` bash
+LIBPATH=$(find . -name data | fgrep parenx)
+INPATH=${1:-"${LIBPATH}/rnet_princes_street.geojson"}
+OUTPUT=${2:-"output"}
+
+echo simplify ${INPATH}
+
+if [ ! -d archive ]; then
+    mkdir archive
+fi
+```
+
+This sets the `LIBPATH` shell variable to the location of `parenx` library.
+
+It also sets the `INPATH` and `OUTPATH` shell variables to command line values, or defaults.
+
+### Archive previous files
+Create an archive directory, and archive any existing output files.
+
+``` bash
+if [ ! -d archive ]; then
+    mkdir archive
+fi
+
+for k in sk vr
+do
+    if [ -s ${k}-${OUTPUT}.gpkg ]; then
+        mv ${k}-${OUTPUT}.gpkg archive
+    fi
+    if [ -s ${k}-${OUTPUT}.geojson ]; then
+        mv ${k}-${OUTPUT}.geojson archive
+    fi
+done
+```
+
+### *more stuff*
+More stuff here
+
+### What does this all look like?
+
+Remembering `less` is `more`:
+``` bash
+$ less run.sh
+#!/usr/bin/env bash
+
+if [ ! -d venv ]; then
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install --upgrade wheel
+    pip install parenx
+fi
+
+source venv/bin/activate
+
+LIBPATH=$(find . -name data | fgrep parenx | head -1)
+INPATH=${1:-"${LIBPATH}/rnet_princes_street.geojson"}
+OUTPUT=${2:-"output"}
+
+echo simplify ${INPATH}
+
+if [ ! -d archive ]; then
+    mkdir archive
+fi
+
+for k in sk vr
+do
+    if [ -s ${k}-${OUTPUT}.gpkg ]; then
+        mv ${k}-${OUTPUT}.gpkg archive
+    fi
+    if [ -s ${k}-${OUTPUT}.geojson ]; then
+        mv ${k}-${OUTPUT}.geojson archive
+    fi
+done
+
+echo skeletonize ${INPATH}
+skeletonize.py ${INPATH} sk-${OUTPUT}.gpkg
+skeletonize.py ${INPATH} sk-${OUTPUT}-simple.gpkg --simplify 1.0
+skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
+echo voronoi ${INPATH}
+voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
+voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
+OGR2OGR=$(which ogr2ogr)
+
+if [ x"${OGR2OGR}" != x ]; then
+    for k in sk vr
+    do
+        rm -f ${k}-${OUTPUT}.geojson
+        ogr2ogr -f GeoJSON ${k}-${OUTPUT}.geojson ${k}-${OUTPUT}.gpkg line
+        sed -i 's/00000[0-9]*//g' ${k}-${OUTPUT}.geojson
+    done
+    for k in sk vr
+    do
+        rm -f ${k}-${OUTPUT}-simple.geojson
+        ogr2ogr -f GeoJSON ${k}-${OUTPUT}-simple.geojson ${k}-${OUTPUT}-simple.gpkg line
+        sed -i 's/00000[0-9]*//g' ${k}-${OUTPUT}-simple.geojson
+    done
+fi
 ```
