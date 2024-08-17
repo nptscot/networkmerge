@@ -99,12 +99,20 @@ $ python3 -c "import parenx; from importlib.metadata import version; print(versi
 0.5.6
 ```
 
+## Simplify a linear-network
+
+To simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
+``` bash
+$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
 ## Notes
 
 While there are many different takes and system to manage `python` packages, my experience is that package management in a virtual environment with `python3` just works.
 
-# Simplification
-The `skeletonize.py` and `voronoi.py` simplication scripts will now simplify linear geometry. Example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
+# Simplification: TL;DR
+
+The remaining "Too Long; Do not Read" section explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
 
 ## Skeletonize simplification
 
