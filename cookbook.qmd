@@ -44,13 +44,63 @@ quarto render cookbook.qmd
 
 This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, it is clear this module is neither well documentmed nor intuiative and use. So the hope is that by sharing these examples will make using these scripts a bit less painful.
 
-
+This was developed and tested on a Debian Linux variant[^3] and run on the command-line interface with various versions of `python3`. While not tested they should work on under environments and operating systems.
 
 [^1]: The [network merge paper here](https://nptscot.github.io/networkmerge/paper.html).
 [^2]: See the [online project](https://pypi.org/project/parenx/).
+[^3]: https://www.debian.org/
 
 # Set up
+
+In this example create a working project directory, say `elegant-tern`, and set a virtual-environment there. This assumes you have `bash` and a working base `python3` installation.
+
+## Create a working directory
+
+Open a shell command line prompt and type:
+
 ``` bash
+$ mkdir elegant-tern
+$ cd elegant-tern
+```
+
+## Create and activate `python3` virtual-environment
+
+Create a `python` virtual environment under `venv` in the working directory:
+
+``` bash
+$ python3 -m venv venv
+$ source venv/bin/activate
+```
+
+Activation then means that the scripts and modules installed in the virtual environment are added to the shell execution path.
+
+## Upgrade the base `pip` and `wheel` modules (optional)
+
+This is to make sure you are working with the lastest version of the `python3` package management and installation tools:
+``` bash
+$ pip install --upgrade pip
+$ pip install --upgrade wheel
+```
+
+This becomes more important if you are maintaining a `pypi` project.
+
+## Install the `parenx` project:
+
+This installs the latest release of the `parenx` scripts from `pypi` and prints the module version to `stdout`:
+``` bash
+$ pip install parenx
+$ python3 -c "import parenx; from importlib.metadata import version; print(version('parenx'))"
+0.5.5
+```
+
+## Notes
+
+While there are many different takes, my experience is that package management in a virtual environment with `python3` just works.
+
+
+# Helper script
+``` bash
+
 $ ./run.sh
 ```
 
