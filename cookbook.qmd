@@ -1,0 +1,340 @@
+---
+title: "How to use the `parenx` module scripts to simplify linear network features"
+author: 
+  - name: Will Deakin
+    affiliation: Digital, Data and Technology services, Network Rail, UK
+    orcid: 0009-0008-5656-4469
+  - name: Robin Lovelace
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0001-5679-6536
+  - name: Zhao Wang
+    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+    orcid: 0000-0002-4054-0533
+  - name: Josiah Parry
+    affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
+    orcid: 0000-0001-9910-865X
+format:
+  # pdf: default
+  html: default
+number-sections: true
+execute: 
+  echo: false
+  message: false
+  warning: false
+editor: 
+  markdown: 
+    wrap: sentence
+# # Uncomment to run with Jupyter:
+# jupyter: python3
+---
+
+# Reproducibility {.unnumbered}
+
+<details>
+
+To reproduce this paper you need `quarto` installed.
+
+After installing the dependencies, you can reproduce the paper by running the following command in the terminal:
+
+``` bash
+quarto render cookbook.qmd
+```
+
+# Introduction
+
+This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, it is clear this module is neither well documentmed nor intuiative and use. So the hope is that by sharing these examples will make using these scripts a bit less painful.
+
+This was developed and tested on a Debian Linux variant[^3] and run on the command-line interface with various versions of `python3`. While not tested they should work on under environments and operating systems.
+
+[^1]: The [network merge paper here](https://nptscot.github.io/networkmerge/paper.html).
+[^2]: See the [online project](https://pypi.org/project/parenx/).
+[^3]: The [Debian Linux distribution](https://www.debian.org/)
+[^4]: The [OpenStreetMap](https://www.openstreetmap.org/search?query=Edinburgh#map=11/55.9115/-3.2622) map of Edinburgh.
+[^5]: The [OSC GeoPKG](https://www.geopackage.org/) specification.
+[^6]: The [GeoJSON Specification](https://geojson.org/) (RFC 7946).
+[^7]: [GitHub data](https://github.com/anisotropi4/parenx/tree/main/data) used in development.
+[^8]: The `simplify` parameter sets [`shapely simplify`](https://shapely.readthedocs.io/en/stable/reference/shapely.simplify.html) function tolerance value.
+[^9]: The `tolerance` parameter set [`shapely voronoi_diagram`](https://shapely.readthedocs.io/en/stable/manual.html#shapely.ops.voronoi_diagram) function Voronoi snapping tolerance.
+
+# Set up and run
+
+In this example create a working project directory, say `elegant-tern`, and set a virtual-environment and simplify data there. This assumes you have `bash` and a working base `python3` installation.
+
+## Create a working directory
+
+Open a shell command line prompt and type:
+
+``` bash
+$ mkdir elegant-tern
+$ cd elegant-tern
+```
+
+## Create and activate `python3` virtual-environment
+
+Create a `python` virtual environment under `venv` in the working directory:
+
+``` bash
+$ python3 -m venv venv
+$ source venv/bin/activate
+```
+
+Activation then means that the scripts and modules installed in the virtual environment are added to the shell execution path.
+
+## Upgrade the base `pip` and `wheel` modules (optional)
+
+This is to make sure you are working with the lastest version of the `python3` package management and installation tools:
+``` bash
+$ pip install --upgrade pip
+$ pip install --upgrade wheel
+```
+
+This becomes more important if you are maintaining a `pypi` project.
+
+## Install the `parenx` project:
+
+This installs the latest release of the `parenx` scripts from `pypi` and prints the module version to `stdout`:
+``` bash
+$ pip install parenx
+$ python3 -c "import parenx; from importlib.metadata import version; print(version('parenx'))"
+0.5.6
+```
+
+## Simplify a linear-network
+
+To simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
+``` bash
+$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
+## Notes
+
+While there are many different takes and system to manage `python` packages, my experience is that package management in a virtual environment with `python3` just works.
+
+# Simplification: TL;DR
+
+The remaining "Too Long; Do not Read" sections explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
+
+## Skeletonize simplification
+
+As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
+
+``` bash
+$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
+
+
+The base `skeletonize.py` also takes parameters to split buffered line segments or preserve knots. These parameters:
+``` bash
+$ skeltonize.py
+start		0:00:00.000266
+usage: skeletonize.py [-h] [--simplify SIMPLIFY] [--buffer BUFFER] [--scale SCALE] [--knot] [--segment] inpath [outpath]
+skeletonize.py: error: the following arguments are required: inpath
+```
+
+## Voronoi simplification
+
+As the script take a filepath or URL, simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
+
+``` bash
+$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
+The base `voronoi.py` also takes a tolerance parameter[^9] to sets to the Voronoi polygon overlap:
+``` bash
+start		0:00:00.000154
+usage: voronoi.py [-h] [--simplify SIMPLIFY] [--scale SCALE] [--buffer BUFFER] [--tolerance TOLERANCE] inpath [outpath]
+voronoi.py: error: the following arguments are required: inpath
+```
+
+# Helper script
+The `run.sh` helper script sets and installs `parenx` in a virtual enviroment, and runs the `skeltonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed.
+
+## Find the helper script
+To find it:
+
+``` bash
+$ find . -name run.sh
+./venv/lib/python3.12/site-packages/parenx/run.sh
+```
+
+## Copy the helper script
+
+Copy the helper script to the working directory. If you want to check for its existence copy it to the working directory type:
+``` bash
+$ ls run.sh
+ls: cannot access 'run.sh': No such file or directory
+$ find . -name run.sh -exec cp {} . \;
+$ ls run.sh
+run.sh
+```
+
+Otherwise the following will suffice:
+``` bash
+$ find . -name run.sh -exec cp {} . \;
+```
+
+## Run the helper script
+The default runs the `skeltonize` and `voronoi` simplification scripts with a number of parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
+
+``` bash
+$ ./run.sh
+simplify ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
+skeletonize ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
+start		0:00:00.000270
+read geojson	0:00:00.093758
+...
+write simple	0:00:03.403231
+write primal	0:00:03.446779
+stop		0:00:03.498828
+voronoi ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
+start		0:00:00.000165
+read geojson	0:00:00.079670
+...
+stop		0:00:19.703512
+```
+
+## What does the helper `run.sh` do?
+The helper script creates the enviroment and runs the `skeltonize` and `voronoi` simplification scripts with different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. The path and output filename can also be specified.
+
+### Set up environment
+As above this checks to see if a `venv` directory exists, creates and populates it if not, and activates the environment:
+
+``` bash
+#!/usr/bin/env bash
+
+if [ ! -d venv ]; then
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install --upgrade wheel
+    pip install parenx
+fi
+
+source venv/bin/activate
+```
+
+It also see if there are any command line parameters set and creates an archive directory, if it is absent:
+
+``` bash
+LIBPATH=$(find . -name data | fgrep parenx)
+INPATH=${1:-"${LIBPATH}/rnet_princes_street.geojson"}
+OUTPUT=${2:-"output"}
+
+echo simplify ${INPATH}
+
+if [ ! -d archive ]; then
+    mkdir archive
+fi
+```
+
+This sets the `LIBPATH` shell variable to the location of `parenx` library.
+
+It also sets the `INPATH` and `OUTPATH` shell variables to command line values, or defaults.
+
+### Archive previous files
+Create an archive directory, and archive any existing output files.
+
+``` bash
+if [ ! -d archive ]; then
+    mkdir archive
+fi
+
+for k in sk vr
+do
+    if [ -s ${k}-${OUTPUT}.gpkg ]; then
+        mv ${k}-${OUTPUT}.gpkg archive
+    fi
+    if [ -s ${k}-${OUTPUT}.geojson ]; then
+        mv ${k}-${OUTPUT}.geojson archive
+    fi
+done
+```
+
+### Simplify using skeletonization
+
+This creates three skeletonization outputs with varying `simplify` and `segment` parameters:
+``` bash
+echo skeletonize ${INPATH}
+skeletonize.py ${INPATH} sk-${OUTPUT}.gpkg
+skeletonize.py ${INPATH} sk-${OUTPUT}-simple.gpkg --simplify 1.0
+skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
+```
+
+### Simplify using Voronoi
+
+This creates two Voronoi outputs with varying `simplify` parameters:
+``` bash
+echo voronoi ${INPATH}
+voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
+voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
+```
+
+### What does this all look like?
+
+Remembering `less` is `more`:
+``` bash
+$ less run.sh
+#!/usr/bin/env bash
+
+if [ ! -d venv ]; then
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install --upgrade wheel
+    pip install parenx
+fi
+
+source venv/bin/activate
+
+LIBPATH=$(find . -name data | fgrep parenx | head -1)
+INPATH=${1:-"${LIBPATH}/rnet_princes_street.geojson"}
+OUTPUT=${2:-"output"}
+
+echo simplify ${INPATH}
+
+if [ ! -d archive ]; then
+    mkdir archive
+fi
+
+for k in sk vr
+do
+    if [ -s ${k}-${OUTPUT}.gpkg ]; then
+        mv ${k}-${OUTPUT}.gpkg archive
+    fi
+    if [ -s ${k}-${OUTPUT}.geojson ]; then
+        mv ${k}-${OUTPUT}.geojson archive
+    fi
+done
+
+echo skeletonize ${INPATH}
+skeletonize.py ${INPATH} sk-${OUTPUT}.gpkg
+skeletonize.py ${INPATH} sk-${OUTPUT}-simple.gpkg --simplify 1.0
+skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
+echo voronoi ${INPATH}
+voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
+voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
+
+OGR2OGR=$(which ogr2ogr)
+if [ x"${OGR2OGR}" != x ]; then
+    for k in sk vr
+    do
+        rm -f ${k}-${OUTPUT}.geojson
+        ogr2ogr -f GeoJSON ${k}-${OUTPUT}.geojson ${k}-${OUTPUT}.gpkg line
+        sed -i 's/00000[0-9]*//g' ${k}-${OUTPUT}.geojson
+    done
+    for k in sk vr
+    do
+        rm -f ${k}-${OUTPUT}-simple.geojson
+        ogr2ogr -f GeoJSON ${k}-${OUTPUT}-simple.geojson ${k}-${OUTPUT}-simple.gpkg line
+        sed -i 's/00000[0-9]*//g' ${k}-${OUTPUT}-simple.geojson
+    done
+fi
+```
+
+# Acknowledgement
+
+Many thanks to everyone who has helped and supported in making this work possible, and making the data available.
+
+* The centre-line track-model is an extract of the Network Rail centre-line track-model hosted by [OpenRailData](https://github.com/openraildata/network-rail-gis) under the [Open Government License](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/), retrieved 2023-07-11.
+* The road network data are static extracts from OpenStreeMap under [CC-BY-SA 2.0](https://www.openstreetmap.org/copyright) through the [OverPassAPI Turbo service](https://overpass-turbo.eu/).
