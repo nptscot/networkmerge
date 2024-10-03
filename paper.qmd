@@ -47,12 +47,40 @@ quarto render paper.qmd
 
 Install the dependencies by cloning the repository and running the following:
 
+```bash
+# Update rust to unstable latest version:
+rustup update nightly
+```
+
 ```{r}
 #| name: python-setup
 # Install remotes if not already:
 if (!requireNamespace("remotes")) {
   install.packages("remotes")
 }
+remotes::install_github("josiahparry/rsgeo")
+install.packages(
+  'rsgeo', 
+  repos = c('https://josiahparry.r-universe.dev', 'https://cloud.r-project.org')
+)```bash
+# Update rust
+rustup update stable
+
+```
+
+```{r}
+#| name: python-setup
+# Install remotes if not already:
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
+}
+remotes::install_github("josiahparry/rsgeo")
+install.packages(
+  'rsgeo', 
+  repos = c('https://josiahparry.r-universe.dev', 'https://cloud.r-project.org')
+)
+library(rsgeo)
+library(rsgeo)
 # Install github version if no DESCRIPTION file:
 if (!file.exists("DESCRIPTION")) {
   remotes::install_github("nptscot/networkmerge")

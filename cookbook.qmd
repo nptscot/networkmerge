@@ -105,7 +105,7 @@ python3 -c "import parenx; from importlib.metadata import version; print(version
 
 To simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
 
-```{bash}
+```bash
 skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg --buffer 30
 ```
 
