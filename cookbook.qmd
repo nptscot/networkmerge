@@ -112,6 +112,7 @@ Let's look at the before and after network:
 
 ```{python}
 import geopandas as gpd
+import parenx as px
 before = gpd.read_file('https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true')
 after = gpd.read_file('sk-doncaster.gpkg')
 import matplotlib.pyplot as plt
