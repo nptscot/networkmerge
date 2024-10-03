@@ -36,7 +36,7 @@ To reproduce this paper you need `quarto` installed.
 
 After installing the dependencies, you can reproduce the paper by running the following command in the terminal:
 
-``` bash
+```bash
 quarto render cookbook.qmd
 ```
 
@@ -64,18 +64,18 @@ In this example create a working project directory, say `elegant-tern`, and set 
 
 Open a shell command line prompt and type:
 
-``` bash
-$ mkdir elegant-tern
-$ cd elegant-tern
+```bash
+mkdir elegant-tern
+cd elegant-tern
 ```
 
 ## Create and activate `python3` virtual-environment
 
 Create a `python` virtual environment under `venv` in the working directory:
 
-``` bash
-$ python3 -m venv venv
-$ source venv/bin/activate
+```bash
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 Activation then means that the scripts and modules installed in the virtual environment are added to the shell execution path.
@@ -83,9 +83,9 @@ Activation then means that the scripts and modules installed in the virtual envi
 ## Upgrade the base `pip` and `wheel` modules (optional)
 
 This is to make sure you are working with the lastest version of the `python3` package management and installation tools:
-``` bash
-$ pip install --upgrade pip
-$ pip install --upgrade wheel
+```bash
+pip install --upgrade pip
+pip install --upgrade wheel
 ```
 
 This becomes more important if you are maintaining a `pypi` project.
@@ -93,17 +93,39 @@ This becomes more important if you are maintaining a `pypi` project.
 ## Install the `parenx` project:
 
 This installs the latest release of the `parenx` scripts from `pypi` and prints the module version to `stdout`:
-``` bash
-$ pip install parenx
-$ python3 -c "import parenx; from importlib.metadata import version; print(version('parenx'))"
+
+```bash
+pip install parenx
+python3 -c "import parenx; from importlib.metadata import version; print(version('parenx'))"
 0.5.6
 ```
 
 ## Simplify a linear-network
 
 To simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
-``` bash
-$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+
+```{bash}
+skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```
+
+Let's look at the before and after network:
+
+```{python}
+import geopandas as gpd
+before = gpd.read_file('https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true')
+after = gpd.read_file('sk-doncaster.gpkg')
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(15, 7))
+
+before.plot(ax=axes[0], color='blue')
+axes[0].set_title('Before Simplification')
+
+after.plot(ax=axes[1], color='red')
+axes[1].set_title('After Simplification')
+
+plt.tight_layout()
+plt.show()
 ```
 
 ## Notes
@@ -118,15 +140,15 @@ The remaining "Too Long; Do not Read" sections explains more about how the `pare
 
 As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
 
-``` bash
-$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```bash
+skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
 ```
 
 
 
 The base `skeletonize.py` also takes parameters to split buffered line segments or preserve knots. These parameters:
-``` bash
-$ skeltonize.py
+```bash
+skeltonize.py
 start		0:00:00.000266
 usage: skeletonize.py [-h] [--simplify SIMPLIFY] [--buffer BUFFER] [--scale SCALE] [--knot] [--segment] inpath [outpath]
 skeletonize.py: error: the following arguments are required: inpath
@@ -136,12 +158,12 @@ skeletonize.py: error: the following arguments are required: inpath
 
 As the script take a filepath or URL, simplify the rail centre-line track-model near Doncaster to the `GeoPKG` file `sk-doncaster.gpkg`:
 
-``` bash
-$ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+```bash
+skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
 ```
 
 The base `voronoi.py` also takes a tolerance parameter[^9] to sets to the Voronoi polygon overlap:
-``` bash
+```bash
 start		0:00:00.000154
 usage: voronoi.py [-h] [--simplify SIMPLIFY] [--scale SCALE] [--buffer BUFFER] [--tolerance TOLERANCE] inpath [outpath]
 voronoi.py: error: the following arguments are required: inpath
@@ -153,32 +175,32 @@ The `run.sh` helper script sets and installs `parenx` in a virtual enviroment, a
 ## Find the helper script
 To find it:
 
-``` bash
-$ find . -name run.sh
+```bash
+find . -name run.sh
 ./venv/lib/python3.12/site-packages/parenx/run.sh
 ```
 
 ## Copy the helper script
 
 Copy the helper script to the working directory. If you want to check for its existence copy it to the working directory type:
-``` bash
-$ ls run.sh
+```bash
+ls run.sh
 ls: cannot access 'run.sh': No such file or directory
-$ find . -name run.sh -exec cp {} . \;
-$ ls run.sh
+find . -name run.sh -exec cp {} . \;
+ls run.sh
 run.sh
 ```
 
 Otherwise the following will suffice:
-``` bash
-$ find . -name run.sh -exec cp {} . \;
+```bash
+find . -name run.sh -exec cp {} . \;
 ```
 
 ## Run the helper script
 The default runs the `skeltonize` and `voronoi` simplification scripts with a number of parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
 
-``` bash
-$ ./run.sh
+```bash
+./run.sh
 simplify ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
 skeletonize ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson
 start		0:00:00.000270
@@ -200,7 +222,7 @@ The helper script creates the enviroment and runs the `skeltonize` and `voronoi`
 ### Set up environment
 As above this checks to see if a `venv` directory exists, creates and populates it if not, and activates the environment:
 
-``` bash
+```bash
 #!/usr/bin/env bash
 
 if [ ! -d venv ]; then
@@ -216,7 +238,7 @@ source venv/bin/activate
 
 It also see if there are any command line parameters set and creates an archive directory, if it is absent:
 
-``` bash
+```bash
 LIBPATH=$(find . -name data | fgrep parenx)
 INPATH=${1:-"${LIBPATH}/rnet_princes_street.geojson"}
 OUTPUT=${2:-"output"}
@@ -235,7 +257,7 @@ It also sets the `INPATH` and `OUTPATH` shell variables to command line values, 
 ### Archive previous files
 Create an archive directory, and archive any existing output files.
 
-``` bash
+```bash
 if [ ! -d archive ]; then
     mkdir archive
 fi
@@ -254,7 +276,7 @@ done
 ### Simplify using skeletonization
 
 This creates three skeletonization outputs with varying `simplify` and `segment` parameters:
-``` bash
+```bash
 echo skeletonize ${INPATH}
 skeletonize.py ${INPATH} sk-${OUTPUT}.gpkg
 skeletonize.py ${INPATH} sk-${OUTPUT}-simple.gpkg --simplify 1.0
@@ -264,7 +286,7 @@ skeletonize.py ${INPATH} sk-${OUTPUT}-segment.gpkg --segment
 ### Simplify using Voronoi
 
 This creates two Voronoi outputs with varying `simplify` parameters:
-``` bash
+```bash
 echo voronoi ${INPATH}
 voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
 voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
@@ -273,8 +295,8 @@ voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
 ### What does this all look like?
 
 Remembering `less` is `more`:
-``` bash
-$ less run.sh
+```bash
+less run.sh
 #!/usr/bin/env bash
 
 if [ ! -d venv ]; then
