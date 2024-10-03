@@ -29,6 +29,10 @@ editor:
 # jupyter: python3
 ---
 
+```{r}
+# Engine: knitr
+```
+
 # Reproducibility {.unnumbered}
 
 <details>
