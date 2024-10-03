@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -268,34 +268,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="create-a-working-directory" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="create-a-working-directory"><span class="header-section-number">2.1</span> Create a working directory</h2>
 <p>Open a shell command line prompt and type:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mkdir elegant-tern</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd elegant-tern</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> elegant-tern</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> elegant-tern</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="create-and-activate-python3-virtual-environment" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="create-and-activate-python3-virtual-environment"><span class="header-section-number">2.2</span> Create and activate <code>python3</code> virtual-environment</h2>
 <p>Create a <code>python</code> virtual environment under <code>venv</code> in the working directory:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 <span class="at">-m</span> venv venv</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> source venv/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv venv</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Activation then means that the scripts and modules installed in the virtual environment are added to the shell execution path.</p>
 </section>
 <section id="upgrade-the-base-pip-and-wheel-modules-optional" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="upgrade-the-base-pip-and-wheel-modules-optional"><span class="header-section-number">2.3</span> Upgrade the base <code>pip</code> and <code>wheel</code> modules (optional)</h2>
 <p>This is to make sure you are working with the lastest version of the <code>python3</code> package management and installation tools:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">--upgrade</span> pip</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">--upgrade</span> wheel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> wheel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This becomes more important if you are maintaining a <code>pypi</code> project.</p>
 </section>
 <section id="install-the-parenx-project" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="install-the-parenx-project"><span class="header-section-number">2.4</span> Install the <code>parenx</code> project:</h2>
 <p>This installs the latest release of the <code>parenx</code> scripts from <code>pypi</code> and prints the module version to <code>stdout</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install parenx</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 <span class="at">-c</span> <span class="st">"import parenx; from importlib.metadata import version; print(version('parenx'))"</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install parenx</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import parenx; from importlib.metadata import version; print(version('parenx'))"</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">0.5.6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="simplify-a-linear-network" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="simplify-a-linear-network"><span class="header-section-number">2.5</span> Simplify a linear-network</h2>
 <p>To simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg <span class="at">--buffer</span> 30</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s look at the before and after network:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cookbook_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cookbook_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="notes" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="notes"><span class="header-section-number">2.6</span> Notes</h2>
@@ -308,9 +327,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="skeletonize-simplification" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="skeletonize-simplification"><span class="header-section-number">3.1</span> Skeletonize simplification</h2>
 <p>As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The base <code>skeletonize.py</code> also takes parameters to split buffered line segments or preserve knots. These parameters:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> skeltonize.py</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeltonize.py</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">start</span>       0:00:00.000266</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">usage:</span> skeletonize.py <span class="pp">[-</span><span class="ss">h</span><span class="pp">]</span> [--simplify SIMPLIFY] [--buffer BUFFER] [--scale SCALE] <span class="pp">[--</span><span class="ss">knot</span><span class="pp">]</span> <span class="pp">[--</span><span class="ss">segment</span><span class="pp">]</span> inpath <span class="pp">[</span><span class="ss">outpath</span><span class="pp">]</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py:</span> error: the following arguments are required: inpath</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -318,7 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="voronoi-simplification" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="voronoi-simplification"><span class="header-section-number">3.2</span> Voronoi simplification</h2>
 <p>As the script take a filepath or URL, simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The base <code>voronoi.py</code> also takes a tolerance parameter<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> to sets to the Voronoi polygon overlap:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">start</span>       0:00:00.000154</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">usage:</span> voronoi.py <span class="pp">[-</span><span class="ss">h</span><span class="pp">]</span> [--simplify SIMPLIFY] [--scale SCALE] [--buffer BUFFER] [--tolerance TOLERANCE] inpath <span class="pp">[</span><span class="ss">outpath</span><span class="pp">]</span></span>
@@ -331,24 +350,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="find-the-helper-script" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="find-the-helper-script"><span class="header-section-number">4.1</span> Find the helper script</h2>
 <p>To find it:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> find . <span class="at">-name</span> run.sh</span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> run.sh</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./venv/lib/python3.12/site-packages/parenx/run.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="copy-the-helper-script" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="copy-the-helper-script"><span class="header-section-number">4.2</span> Copy the helper script</h2>
 <p>Copy the helper script to the working directory. If you want to check for its existence copy it to the working directory type:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls run.sh</span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> run.sh</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ls:</span> cannot access <span class="st">'run.sh'</span>: No such file or directory</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> find . <span class="at">-name</span> run.sh <span class="at">-exec</span> cp {} . <span class="dt">\;</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls run.sh</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> run.sh <span class="at">-exec</span> cp {} . <span class="dt">\;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> run.sh</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">run.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Otherwise the following will suffice:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> find . <span class="at">-name</span> run.sh <span class="at">-exec</span> cp {} . <span class="dt">\;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> run.sh <span class="at">-exec</span> cp {} . <span class="dt">\;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="run-the-helper-script" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="run-the-helper-script"><span class="header-section-number">4.3</span> Run the helper script</h2>
 <p>The default runs the <code>skeltonize</code> and <code>voronoi</code> simplification scripts with a number of parameters, against an OpenStreetMap<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Edinburgh Princes Street road network file (<code>net_princes_street.geojson</code>). It creates a <code>GeoPKG</code><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with three output layers and, if <code>ogr2ogr</code> is installed, <code>GeoJSON</code><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./run.sh</span>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./run.sh</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">simplify</span> ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize</span> ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">start</span>       0:00:00.000270</span>
@@ -428,7 +447,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="what-does-this-all-look-like" class="level3" data-number="4.4.5">
 <h3 data-number="4.4.5" class="anchored" data-anchor-id="what-does-this-all-look-like"><span class="header-section-number">4.4.5</span> What does this all look like?</h3>
 <p>Remembering <code>less</code> is <code>more</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> less run.sh</span>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> run.sh</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-d</span> venv <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
