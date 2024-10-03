@@ -112,10 +112,14 @@ Let's look at the before and after network:
 
 ```{python}
 import geopandas as gpd
-import parenx as px
-before = gpd.read_file('https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true')
-after = gpd.read_file('sk-doncaster.gpkg')
+# import parenx as px
 import matplotlib.pyplot as plt
+
+before = gpd.read_file('https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson?raw=true')
+# after = gpd.read_file('sk-doncaster.gpkg')
+u = "https://github.com/nptscot/networkmerge/releases/download/v1/sk-doncaster.gpkg"
+after = gpd.read_file(u)
+# import matplotlib.pyplot as plt
 
 fig, axes = plt.subplots(1, 2, figsize=(15, 7))
 
