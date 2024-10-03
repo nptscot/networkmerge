@@ -37,69 +37,6 @@ editor:
 
 <details>
 
-To reproduce this paper you need `quarto` installed.
-
-After installing the dependencies, you can reproduce the paper by running the following command in the terminal:
-
-``` bash
-quarto render paper.qmd
-```
-
-Install the dependencies by cloning the repository and running the following:
-
-```bash
-# Update rust to unstable latest version:
-rustup update nightly
-```
-
-```{r}
-#| name: python-setup
-# Install remotes if not already:
-if (!requireNamespace("remotes")) {
-  install.packages("remotes")
-}
-remotes::install_github("josiahparry/rsgeo")
-install.packages(
-  'rsgeo', 
-  repos = c('https://josiahparry.r-universe.dev', 'https://cloud.r-project.org')
-)```bash
-# Update rust
-rustup update stable
-
-```
-
-```{r}
-#| name: python-setup
-# Install remotes if not already:
-if (!requireNamespace("remotes")) {
-  install.packages("remotes")
-}
-remotes::install_github("josiahparry/rsgeo")
-install.packages(
-  'rsgeo', 
-  repos = c('https://josiahparry.r-universe.dev', 'https://cloud.r-project.org')
-)
-library(rsgeo)
-library(rsgeo)
-# Install github version if no DESCRIPTION file:
-if (!file.exists("DESCRIPTION")) {
-  remotes::install_github("nptscot/networkmerge")
-} else {
-  # Install from DESCRIPTION file:
-  remotes::install_deps(dependencies = TRUE)
-}
-requirements_txt = readLines("requirements.txt")
-# Check if Python is installed:
-if (!requireNamespace("reticulate")) {
-  install.packages("reticulate")
-}
-# See reticulate documentation to use a specific Python version:
-# ?reticulate::install_python()
-reticulate::install_python("3.12.4")
-# Install Python dependencies with reticulate:
-reticulate::py_install(requirements_txt, pip = TRUE)
-```
-
 ```{r}
 #| name: r-setup
 library(sf)
