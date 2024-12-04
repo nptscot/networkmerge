@@ -106,11 +106,13 @@ Vector geometry simplification methods include Douglas-Peucker and Visvalingam-W
 These methods reduce the number of vertices in a line or polygon features.
 While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
 Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.
+Although the focus of this paper is converting linestrings to linestrings, a common way of achieving this is through the intermediate step of converting linestrings to polygons and then converting these polygons back into linestrings representing centrelines or *medial axes* (an approach used in both methods presented in @sec-methods), with numerous algorithms and implementations for medial axis calculation published in the literature and open source software repositories [e.g. @smogavec2012 ].
 
 Recent progress towards solving the knotty problem problem of network simplification for transport planning has included methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
 However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
 Network simplification is a challenge that is not unique to transport planning.
 Riverine research and flood mapping applications, for example, require estimates of many river characteristics, including simplified centerlines derived from datasets representing river banks, as implemented in software including the R package `cmgo` [@golly2017] and an approach implemented in Google Earth Engine called RivWidthCloud [@yang2020].
+The `riverdist` R package, to provide another example, provides functionality for checking whether datasets representing river channels are braided and for removing braids by returning only the shortest paths along the lengths of river centerlines, for example [@tyers2016].
 
 Flexibility is important due to the wide range of transport planning use cases.
 Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g. maps for junction design may have scales of 1:1000.
