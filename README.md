@@ -1,5 +1,6 @@
 # networkmerge
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 Welcome to the networkmerge project.
@@ -12,13 +13,8 @@ For reproducibility and automation the code in the
 [`paper.qmd`](paper.qmd) file is run as part of a GitHub Actions
 workflow. The build status is:
 
-<div>
-
-[![](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml/badge.svg)](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml)
-
-Quarto Publish
-
-</div>
+[![Quarto
+Publish](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml/badge.svg)](https://github.com/nptscot/networkmerge/actions/workflows/publish.yml)
 
 To install the dependencies needed to reproduce the paper, see the code
 in the [devcontainer](./.devcontainer) and
@@ -35,3 +31,6 @@ quarto render paper.qmd
 See the rendered result, which automatically updates after each commit
 to the main branch, at
 [nptscot.github.io/networkmerge](https://nptscot.github.io/networkmerge/).
+
+The methods were presented at [GISRUK
+2024](https://zenodo.org/records/11077553).

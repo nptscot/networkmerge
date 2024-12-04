@@ -23,3 +23,5 @@ quarto render paper.qmd
 ```
 
 See the rendered result, which automatically updates after each commit to the main branch, at [nptscot.github.io/networkmerge](https://nptscot.github.io/networkmerge/).
+
+The methods were presented at [GISRUK 2024](https://zenodo.org/records/11077553).
