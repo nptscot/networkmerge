@@ -106,7 +106,10 @@ Vector geometry simplification methods include Douglas-Peucker and Visvalingam-W
 These methods reduce the number of vertices in a line or polygon features.
 While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
 Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.
-Although the focus of this paper is converting linestrings to linestrings, a common way of achieving this is through the intermediate step of converting linestrings to polygons and then converting these polygons back into linestrings representing centrelines or *medial axes* (an approach used in both methods presented in @sec-methods), with numerous algorithms and implementations for medial axis calculation published in the literature and open source software repositories [e.g. @smogavec2012 ].
+
+Although the focus of this paper is converting linestrings to linestrings, a common way of achieving this is through the intermediate step of converting linestrings to polygons and then converting these polygons back into linestrings representing centrelines or *medial axes* (an approach used in both methods presented in @sec-methods), with numerous algorithms and implementations for medial axis calculation published in the literature and open source software repositories [e.g. @smogavec2012; @centerli2023].
+Recent implementations that both import and export linestrings include the under-development `neatnet` Python package [@fleischmann2024] , and the `parenx` package [@deakin2024].
+The latter is the basis of the methods presented in this paper.
 
 Recent progress towards solving the knotty problem problem of network simplification for transport planning has included methods for the automatic detection of 'face artifacts' [@fleischmann] and removal of 'slivers' to generate simplified representations of 'street blocks' [@grippa2018].
 However, these methods tend to be 'all or nothing' and do not provide flexibility in terms of the level of simplification or which features are removed.
