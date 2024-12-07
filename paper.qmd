@@ -297,9 +297,9 @@ The % values represent the "percentage of removable points to retain" argument v
 
 The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segements from a raster of this buffer.
 
-### Create a projected combined buffered geometry
+<!--- ### Create a projected combined buffered geometry --->
 
-In both the skeletonization and Voronoi approaches, the network simplification process starts with the generation of buffered geometries.
+In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system.
 <!-- , achieved using the `get_geometry_buffer` function. --> We use a buffer size of 8 meters in this paper, which roughly corresponds to the width of a typical road, with the result illustrated in @fig-buffered-network.
 
 ```{python}
@@ -356,7 +356,7 @@ base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
 
-::: {#fig-buffered-network layout-ncol="2"}
+<!---
 ```{python}
 base_otley.plot(edgecolor="blue", color="blue")
 ```
@@ -364,7 +364,8 @@ base_otley.plot(edgecolor="blue", color="blue")
 ```{python}
 base_armley.plot(edgecolor="blue", color="blue")
 ```
-
+--->
+::: {#fig-buffered-network layout-ncol="2"}
 ```{python}
 otley_geometry.plot(edgecolor="blue", color="blue")
 ```
@@ -376,9 +377,15 @@ armley_geometry.plot(edgecolor="blue", color="blue")
 Buffered versions of the Otley Road (left) and Armley Road (right) networks.
 :::
 
-In @fig-split-ends, truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks are presented.
-This visualization demonstrates the process of cutting and segmenting the buffer geometries.
-It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.
+### Network skeletonization
+
+In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced. This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
+
+In detail, skeletonization is only applied where more than line-segment buffer overlaps. To identify overlapping line-segments, the buffer is split at the end of each line-segment, see top Otley Road (left) and Armley Road (right) @fig-split-ends. The overlapping line-segments are then buffered while retaining the remaining disjoint lines, shown in bottom @fig-split-ends.
+ 
+
+<!---This visualization demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.
+It effectively highlights the contrast between the more intricate and the simpler sections within these networks. --->
 
 ::: {#fig-split-ends layout-ncol="2"}
 ```{python}
@@ -399,8 +406,8 @@ combined_armley = gp.GeoSeries(unary_union(armley_centre.values).geoms, crs=CRS)
 combined_armley.plot()
 ```
 
-Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
-:::
+<!--- Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+::: --->
 
 ```{python}
 i, j = base_otley.sindex.query(combined_otley, predicate="intersects")
@@ -422,10 +429,6 @@ ix = base_armley["class"] == -1
 base_armley.loc[ix, "count"] = 0
 ```
 
-@fig-otley-armley-classes shows the segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
-It effectively highlights the contrast between the more intricate and the simpler sections within these networks.
-
-::: {#fig-otley-armley-classes layout-ncol="2"}
 ```{python}
 ix = base_otley["count"].isin([0, 1])
 p = base_otley.loc[~ix, "geometry"].copy()
@@ -462,18 +465,13 @@ except AttributeError:
 armley_segment.plot()
 ```
 
-Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
+Segmented line-buffer geometries (top) and geometries to be skeletonized (bottom) for the Otley Road (left) and Armley Road (right) networks.
 :::
 
-### Skeletonization
 
-In the skeletonization process, the buffered lines of the network are first transformed into a raster image.
-Subsequently, this raster image is processed through a thinning algorithm to produce a skeletal representation of the original network.
-This skeletal structure preserves the overall extent and connectivity of the initial network, with a central line that closely follows the contours of the combined buffered area.
-
-To correlate the points in the buffered geometry with their respective positions in the raster image, we implement an affine transformation.
-This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
-Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format.
+As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
+<!-- This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format. --->
 
 ```{python}
 import rasterio.features as rif
@@ -483,9 +481,9 @@ r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geo
 r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
 ```
 
-### Affine transforms
+<!--- ### Affine transforms
 
-The affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
+To affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
 The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-panel.
 
 ```{python}
@@ -501,6 +499,7 @@ or_matrix_armley = pd.DataFrame(np.asarray(r_matrix_armley).reshape(-1, 3))
 os_matrix_armley = pd.DataFrame(np.asarray(s_matrix_armley).reshape(3, -1).T)
 ```
 
+<!---
 ::: {#tbl-panel layout-ncol="2"}
 ```{python}
 #| output: asis
@@ -521,14 +520,16 @@ Rasterio and Shapely affine transformation matrices for the Otley Road network.
 
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation.
 The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
+--->
 
-### Skeletonize the buffer to a point geometry
+<!---### Skeletonize the buffer to a point geometry
 
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image.
-This transformation adjusts the geometry to match the raster's scale and orientation.
-Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize.
-This step ensures a more coherent and accurate representation in the raster image.
+This transformation adjusts the geometry to match the raster's scale and orientation. --->
+<!-- Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize.
+This step ensures a more coherent and accurate representation in the raster image. -->
 
+The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles. The result of the scale and cleaned raster is illustrated in @fig-rasterize.
 ```{python}
 from skimage.morphology import remove_small_holes, skeletonize
 import rasterio.plot as rip
@@ -555,8 +556,9 @@ rip.show(armley_im, cmap="Greys", title="buffer geometry")
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
 :::
 
-The image undergoes a thinning process, yielding a skeletal raster image as the result.
-This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton.
+The skeltonisation algorithm is then appled to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
+<!---The image undergoes a thinning process, yielding a skeletal raster image as the result.
+This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
 
 ::: {#fig-thin-skeleton layout-ncol="2"}
 ```{python}
@@ -576,7 +578,9 @@ armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
 Skeletonized versions of the Otley Road (left) and Armley Road (right) networks.
 :::
 
-The rasterized skeletal image is then converted back into point geometry, completing the vector -\> raster -\> vector geometry transformation process.
+### Recreating a linear geometry
+
+The rasterized skeletal image is then converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation:
 
 <!-- Figure commented out as not necessary and similar to the subsequent figure: -->
 
@@ -601,16 +605,13 @@ armley_transform = armley_point.map(shapely_transform).map(set_precision_pointon
 ::: -->
 ```
 
-The challenge with this approach is that instead of generating points situated on the simplified network, it returns a set of points rather than line geometries.
-This necessitates the inference of line geometry from the associated set of points.
-Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.
+Adjacent points are identifed, typically within a 1x1 pixel square, based on proximity within the raster image coordinate system.
+Line segments are then created by connecting these adjacent points. These points are combined, giving a continuous line geometry representing the simplified network.
+Finally, a reverse scaling affine transformation is applied to return to the original coordinate system.
+<!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
 
-The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
-After adjacent points are identified, line segments are created by connecting these points.
-The final and crucial step is the amalgamation of these individual line segments.
-This combination results in a continuous line geometry that represents the simplified network.
-<!-- This conversion from point to line geometry is a pivotal aspect of network simplification. --> To visualize the simplified network in its original spatial context, the reverse affine transformation is applied.
-This step reverts the network back to its original coordinate system, aligning the simplified geometry with the original spatial framework.
+Noting that creating a line geometry from the set of points in the raster buffer is arguable the most complex step.
+
 The resulting simplified network is illustrated in @fig-skeleton-line.
 
 ```{python}
@@ -720,7 +721,7 @@ Detail point segement of the Otley Road (left) and Armley Road (right) networks.
 
 <!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
 
-### Voronoi diagram
+### Voronoi diagram simplification
 
 In @fig-voronoi-2, the generation and clipping of the corresponding Voronoi diagrams to the bounds of the input geometry is depicted.
 
@@ -795,10 +796,9 @@ armley_line.plot()
 Voronoi diagram lines with lines that are completely within the buffer geometry and less than half-a-buffer-width from the buffer edge.
 :::
 
-### Voronoi simplified network
+<!--- ### Voronoi simplified network --->
 
-The center-line network depicted in @fig-voronoi-line is created through a process that involves the removal of knot-like features from the resultant network.
-This step refines the geometry of network, ensuring a more streamlined and accurate representation of the transport routes.
+The final center-line network shown in @fig-voronoi-line is created through a clean up process that involves the removal of knot-like features from the simplified network. While knots  common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
 
 ::: {#fig-voronoi-line layout-ncol="2"}
 ```{python}
