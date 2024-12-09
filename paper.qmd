@@ -70,8 +70,8 @@ However, this complexity can affect the visualisation of model results.
 A common issue is the presence of multiple parallel ways on the same corridor.
 This can lead to incorrect traffic flow values inferred from visual inspection of results, misinterpretation of model outputs and, potentially, investment in the wrong places.
 To address this challenges, we present and compare two methods for *simplifying* route network datasets: 1) image skeletonization and 2) Voronoi diagram-centreline identification approaches.
-These methods have real-world applications in urban mobility and green transportation, as illustrated by the use of the simplified network results in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.nptscot.scot](https://www.nptscot.scot).
-Being developed with open data and open-source software, these methods are not only reproducible but also adaptable, enbabling their use in new contexts.
+These methods have real-world applications, as illustrated in the "Simplified network" layer in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.npt.scot](https://www.npt.scot).
+Based on open access data and the open source `parenx` Python package, available on the Python Package Index, these methods are not only reproducible but also adaptable, enbabling their use in new contexts.
 
 # Introduction
 
