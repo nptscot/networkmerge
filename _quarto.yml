@@ -3,6 +3,7 @@ project:
   render:
     - index.qmd
     - paper.qmd
+    - methods.qmd
     - cookbook.qmd
     - slides.qmd
 
@@ -12,12 +13,14 @@ website:
     left:
       - href: paper.qmd
         text: "Networkmerge paper"
-      - href: https://www.npt.scot
-        text: "Network Planning Tool web application with simplified network"
       - href: cookbook.qmd
         text: "parenx cookbook"
+      - href: methods.qmd
+        text: "Methods"
       - href: slides.qmd
         text: "Slides"
+      - href: https://www.npt.scot
+        text: "Network Planning Tool web application with simplified network"
 
 
 format:
