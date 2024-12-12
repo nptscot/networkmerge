@@ -1258,12 +1258,12 @@ plt.show()
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
 
-Matrix of Route Network Simplification Stages across Edinburgh.
+Results of the route network simplification methods applied to Edinburgh city center, comparing the input dataset (top left), skeletonized network (top right), Voronoi diagram (bottom left), and primal network (bottom right).
 :::
 
-@fig-apply_results presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method.
+<!-- @fig-apply_results presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method.
 It is observed that the attribute `value` from the original network has been correctly transferred to the simplified network via a `sum` calculation process.
-This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.
+This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity. -->
 
 <!-- ::: {#fig-apply_results} -->
 ```{r}
@@ -1323,16 +1323,12 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 
 # Discussion and Conclusion {#sec-discussion}
 
-This paper explored methods for simplifying route networks and demonstrated reproducible implementations.
-The two main methods developed for this purpose were image skeletonization and Voronoi diagram-centreline identification.
-Both resulted in geometries that were substantially simpler and less resource-intensive for subsequent network analysis steps.
-Furthermore, a follow-on stage of joining the attributes of the original 'complex' network, aggregating values where needed, was shown to substantially improve visualisation and interpretation of the simplified network.
-
-Both methods successfully reduced the complexity of the network representations while preserving spatial and connectivity characteristics.
+The two main methods developed in this paper are image skeletonization and Voronoi diagram-centreline identification, both of which are implemented in the open source software for reproducible research (see the reproducible source code of this paper at [github.com/nptscot](https://github.com/nptscot)).
+Both methods result in geometries that are substantially simpler and less resource-intensive for subsequent network analysis steps, while preserving the essential connectivity and spatial characteristics of the original network.
 The appropriate balance between simplification and preservation of network geometries will vary depending on the specific requirements of the analysis.
 An advantage of the implementations we have developed, available in the Python package `parenx`, is that they are highly flexible and can be adapted to suit the specific requirements of the user, from low levels of simplification to aggressive simplification towards the 'primal network'.
 
-There are several future directions of travel that we believe are worth exploring, building on the work presented here.
+There are several future directions of travel that could build on this work.
 One is to explore alternative algorithms for thinning buffered networks, recursively, for example the grassfire algorithm [@leymarie1992], or with medial axis algorithms [e.g. @smogavec2012].
 A limitation of the approach is that it is time-consuming for large networks such as cities, motivating research and software development to speed up the process, with options including parallelisation, implementation in lower-level languages, and optimisation of the algorithms themselves.
 
