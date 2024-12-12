@@ -276,12 +276,12 @@ Other use cases, such as strategic network planning tools and 'planning support 
 </section>
 <section id="sec-problem" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Problem definition</h1>
-<p><span class="citation" data-cites="morgan2020">Morgan and Lovelace (<a href="#ref-morgan2020" role="doc-biblioref">2020</a>)</span> presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function <code>overline()</code>. The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings. The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally. However, the ‘overline’ approach, without further processing, has limitations:</p>
+<p>The problem tackled in this paper is the simplification of complex route networks. This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>, the route networks of which are on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings <span class="citation" data-cites="morgan2020">Morgan and Lovelace (<a href="#ref-morgan2020" role="doc-biblioref">2020</a>)</span>. Implemented in the function <code>overline()</code> in the <code>stplanr</code> R package <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>, the methods enable visualization of large transport networks and inform investment decisions in transport planning internationally <span class="citation" data-cites="lovelace2024 félix2025">(<a href="#ref-lovelace2024" role="doc-biblioref">Lovelace et al. 2024</a>; <a href="#ref-félix2025" role="doc-biblioref">Félix, Moura, and Lovelace 2025</a>)</span>. However, this ‘overline’ approach, without further processing, has limitations:</p>
 <ul>
-<li>It does not remove redundant vertices, which can lead to large file sizes and slow rendering.</li>
-<li>Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.</li>
+<li>Functionally redundant vertices are kept, leading to large file sizes and slow rendering.</li>
+<li>Parallel ways that are not merged.</li>
 </ul>
-<p>The final point is most relevant to the present paper. An example of the issue is shown in <a href="#fig-pct" class="quarto-xref">Figure&nbsp;1</a> from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows <span class="citation" data-cites="lovelace2017">(<a href="#ref-lovelace2017" role="doc-biblioref">Lovelace et al. 2017</a>)</span>. The left panel shows Otley Road with a flow value of 818 (<a href="#fig-otley-road" class="quarto-xref">Figure&nbsp;1 (a)</a>). The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (<a href="#fig-armley-road" class="quarto-xref">Figure&nbsp;1 (b)</a>). Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 &gt; 818), this is not clear from the visualisation.</p>
+<p>The latter issue is particularly problematic for visualisation of transport networks, as shown in <a href="#fig-pct" class="quarto-xref">Figure&nbsp;1</a>. The left panel shows Otley Road with a flow value of 818 (<a href="#fig-otley-road" class="quarto-xref">Figure&nbsp;1 (a)</a>). The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (<a href="#fig-armley-road" class="quarto-xref">Figure&nbsp;1 (b)</a>). Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 &gt; 818), this is not clear from the visualisation.</p>
 <div id="fig-pct" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -416,9 +416,6 @@ Figure&nbsp;4: Illustration of topology-preserving simplification, using the <co
 <!--- ### Create a projected combined buffered geometry --->
 <p>In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system. <!-- , achieved using the `get_geometry_buffer` function. --> We use a buffer size of 8 meters in this paper, which roughly corresponds to the width of a typical road, with the result illustrated in <a href="#fig-buffered-network" class="quarto-xref">Figure&nbsp;5</a>.</p>
 <!---
-
-
-
 ::: {.cell}
 ::: {.cell-output-display}
 ![](paper_files/figure-html/unnamed-chunk-9-1.png){width=672}
@@ -430,9 +427,6 @@ Figure&nbsp;4: Illustration of topology-preserving simplification, using the <co
 ![](paper_files/figure-html/unnamed-chunk-10-3.png){width=672}
 :::
 :::
-
-
-
 --->
 <div id="fig-buffered-network" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -531,21 +525,12 @@ Through this process, we maintain the spatial integrity and relational positioni
 To affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
 The Rasterio transform applies a scale and translation in a specific order, while the Shapely transform follows a different order for scaling and rotation, as illustrated in Table @tbl-panel.
 
-
-
-
 ::: {.cell}
 
 :::
 
-
-
-
 <!---
 ::: {#tbl-panel layout-ncol="2"}
-
-
-
 ::: {#tbl-rasterio-transform .cell tbl-cap='Rasterio affine transformation matrix.'}
 |     |      |        |
 |----:|-----:|-------:|
@@ -560,9 +545,6 @@ The Rasterio transform applies a scale and translation in a specific order, whil
 | 0   | -0.5 | 426757 |
 | 0.5 |  0   | 437646 |
 :::
-
-
-
 
 Rasterio and Shapely affine transformation matrices for the Otley Road network.
 :::
@@ -1257,6 +1239,9 @@ Deakin, Will. 2024. <em>Parenx</em>. <a href="https://github.com/anisotropi4/par
 <div id="ref-duong2022statistical" class="csl-entry" role="listitem">
 Duong, T. 2022. <span>“Statistical Visualisation for Tidy and Geospatial Data in r via Kernel Smoothing Methods in the Eks Package.”</span> <em>arXiv Preprint arXiv:2203.01686</em>.
 </div>
+<div id="ref-félix2025" class="csl-entry" role="listitem">
+Félix, Rosa, Filipe Moura, and Robin Lovelace. 2025. <span>“Reproducible Methods for Modeling Combined Public Transport and Cycling Trips and Associated Benefits: Evidence from the biclaR Tool.”</span> <em>Computers, Environment and Urban Systems</em> 117 (April): 102230. <a href="https://doi.org/10.1016/j.compenvurbsys.2024.102230">https://doi.org/10.1016/j.compenvurbsys.2024.102230</a>.
+</div>
 <div id="ref-fleischmann" class="csl-entry" role="listitem">
 Fleischmann, Martin, and Anastassia Vybornova. n.d. <span>“A Shape-Based Heuristic for the Detection of Urban Block Artifacts in Street Networks.”</span>
 </div>
@@ -1280,6 +1265,9 @@ Lovelace, Robin, Richard Ellison, and Malcolm Morgan. 2019. <em>Stplanr: Sustain
 </div>
 <div id="ref-lovelace2017" class="csl-entry" role="listitem">
 Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. <span>“The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.”</span> <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.
+</div>
+<div id="ref-lovelace2024" class="csl-entry" role="listitem">
+Lovelace, Robin, Joey Talbot, Eugeni Vidal-Tortosa, Hussein Mahfouz, Elaine Brick, Peter Wright, Gary O’Toole, Dan Brennan, and Suzanne Meade. 2024. <span>“Cycle Route Uptake and Scenario Estimation (CRUSE): An Approach for Developing Strategic Cycle Network Planning Tools.”</span> <em>European Transport Research Review</em> 16 (1). <a href="https://doi.org/10.1186/s12544-024-00668-8">https://doi.org/10.1186/s12544-024-00668-8</a>.
 </div>
 <div id="ref-de2014efficient" class="csl-entry" role="listitem">
 Magalhaes, S. V. de, M. V. Andrade, W. R. Franklin, and W. Li. 2014. <span>“An Efficient Map Generalization Heuristic Based on the Visvalingam-Whyatt Algorithm.”</span>
