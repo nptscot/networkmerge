@@ -139,13 +139,12 @@ In @sec-discussion we discuss the results and outline future work.
 The problem tackled in this paper is the simplification of complex route networks.
 This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) [@lovelace2017], the route networks of which are on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings @morgan2020.
 Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualization of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
-However, the 'overline' approach, without further processing, has limitations:
+However, this 'overline' approach, without further processing, has limitations:
 
--   It does not remove redundant vertices, which can lead to large file sizes and slow rendering.
--   Parallel ways that are part of the same corridor are not merged into a single way, resulting in outputs that are difficult to interpret.
+-   Functionally redundant vertices are kept, leading to large file sizes and slow rendering.
+-   Parallel ways that are not merged.
 
-The final point is most relevant to the present paper.
-An example of the issue is shown in @fig-pct from the Propensity to Cycle Tool for England (PCT), with segment values representing daily commuter cycling potential flows [@lovelace2017].
+The latter issue is particularly problematic for visualisation of transport networks, as shown in @fig-pct [@lovelace2017].
 The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
 The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
