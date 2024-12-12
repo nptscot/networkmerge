@@ -1125,17 +1125,10 @@ doncaster_rail_info = {
 ``` -->
 ````
 
-@fig-results illustrate various stages of network simplification, providing a comparative view of the impact of our methodology.
-
--   Input figure presents the initial input geometries for each location, serving as the baseline for comparing subsequent simplification stages.
-
--   Skeletonized figure shows the results of the skeletonization process, reducing the networks to their fundamental linear structures.
-
--   Voronoi figure display the outcomes of applying the Voronoi diagram-based simplification, focusing on the central alignment of the routes.
-
--   Primal Skeletonized demonstrates the networks post-application of a primal approach to the skeletonized data, offering insights into the primary routes and connections.
-
--   Primal Voronoi exhibits the results of applying a primal approach to the Voronoi-simplified networks, highlighting the straightforward paths within the Voronoi framework.
+@fig-results illustrates the methods presented in this paper, providing a comparative view of the impact of our methodology.
+It is clear the the geometry of the input dataset (top left) is more complicated than needed for strategic transport planning.
+The skeletonized network (top right) is a simplified version of the input dataset, with the Voronoi diagram (bottom left) providing an alternative simplification.
+Finally, the primal network (bottom right) is the most simplified version of the input dataset, with only the most essential connections retained.
 
 ```{python}
 PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
@@ -1272,7 +1265,7 @@ Matrix of Route Network Simplification Stages across Edinburgh.
 It is observed that the attribute `value` from the original network has been correctly transferred to the simplified network via a `sum` calculation process.
 This comparison between the original and simplified Edinburgh Road Networks demonstrates the effectiveness of the proposed simplification techniques in maintaining the essential characteristics of the network while reducing its complexity.
 
-::: {#fig-apply_results}
+<!-- ::: {#fig-apply_results} -->
 ```{r}
 #| eval: false
 rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
@@ -1325,8 +1318,8 @@ m2 = tm_shape(rnet_merged) +
 tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 ```
 
-Comparison of Original Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down).
-:::
+<!-- Comparison of Original Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down). -->
+<!-- ::: -->
 
 # Discussion and Conclusion {#sec-discussion}
 
