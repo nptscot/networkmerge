@@ -33,12 +33,13 @@ editor:
 # Engine: knitr
 ```
 
-# Reproducibility {.unnumbered}
+<!-- # Reproducibility {.unnumbered} -->
 
-<details>
+<!-- <details>
 
 ```{r}
 #| name: r-setup
+#| include: false
 library(sf)
 library(tmap)
 library(dplyr)
@@ -60,7 +61,7 @@ Ctrl+Shift+F4
 
 You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other features for academic writing.
 
-</details>
+</details> -->
 
 # Abstract {.unnumbered}
 
@@ -130,9 +131,8 @@ Other use cases, such as strategic network planning tools and 'planning support 
 
 The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning.
 @sec-problem outlines the problem of complex route networks.
-@sec-data describes the input datasets.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
-In @sec-discussion we discuss the results and outline future work.
+@sec-application demonstrates the methods applied to a real transport network (Edinburgh, Scotland) and @sec-discussion concludes with a discussion of the results and future work.
 
 # Problem definition {#sec-problem}
 
@@ -185,9 +185,8 @@ rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
 rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
-In this paper we focus the two street networks discussed in the previous section, the extents and geometries of which are shown in @fig-input-data.
-Both of which are sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM).
-(See the '`parenex` cookbook', a technical appendix that accomanies this paper, for an example of the method applied to a rail network dataset, and the `methods` technical appendix for a detailed description of the methods used in this paper.)
+In this paper we use the two street networks discussed in the previous section to illustrate the methods.
+See the ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) and [Methods](https://nptscot.github.io/networkmerge/methods.html) appendices for details on the methods used in this paper and their application to alternative (railway based) datasets.
 
 ```{r}
 #| include: false
@@ -205,7 +204,6 @@ There are two main challenges that need to be overcome to simplify transport net
 1.  Simplifying the *geometry*
 2.  Assigning attributes to the simplified network
 
-Sections @sec-topology-preserving-simplification to @sec-simplification-via-voronoi-polygons describe methods for simplifying the geometry of the network.
 The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 <!-- To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network.
 This is covered in @sec-joining-route-networks. -->
@@ -298,7 +296,7 @@ base_armley.plot(edgecolor="blue", color="blue")
 ````
 
 
-### Network skeletonization
+<!-- ### Network skeletonization -->
 
 In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced (see the Methods appendix for details).
 This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
@@ -397,8 +395,9 @@ except AttributeError:
 <!-- ::: -->
 
 As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
-<!-- This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
-Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format. --->
+This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
+The skeltonisation algorithm is then appled to the raster image yielding a skeletal raster image and converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 
 ```{python}
 import rasterio.features as rif
@@ -408,8 +407,6 @@ r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geo
 r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
 ```
 
-The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
-The result of the scale and cleaned raster is illustrated in @fig-rasterize.
 
 ```{python}
 from skimage.morphology import remove_small_holes, skeletonize
@@ -437,7 +434,6 @@ with warnings.catch_warnings():
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
 ::: -->
 
-The skeltonisation algorithm is then appled to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
 <!---The image undergoes a thinning process, yielding a skeletal raster image as the result.
 This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
 
@@ -459,9 +455,7 @@ armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
 <!-- Skeletonized versions of the Otley Road (left) and Armley Road (right) networks. -->
 <!-- ::: -->
 
-### Recreating a linear geometry
-
-The rasterized skeletal image is then converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation:
+<!-- ### Recreating a linear geometry -->
 
 <!-- Figure commented out as not necessary and similar to the subsequent figure: -->
 
@@ -521,12 +515,11 @@ armley_sk = armley_sk.set_crs(CRS)
 
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
-In this approach, the network lines are first buffered as described above.
+Voronoi simplification takes the buffered network segments and converts them into a set of points.
 The edges of these buffers are then segmented into sequences of points.
 From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points.
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
-### Boundary Segmentation
 
 ```{python}
 scale = 10.0
@@ -535,11 +528,6 @@ tolerance = 0.1
 otley_clip = box(426800, 437400, 427000, 437600)
 armley_clip = box(427200, 433500, 427400, 433700)
 ```
-
-In @fig-boundary, the boundary of the buffered input geometry (otley_geometry) is calculated and then simplified.
-This process yields a simplified GeoSeries consisting of LineStrings, all of which are precisely aligned with the specified coordinate reference system (CRS).
-This step illustrates the transformation from the initial buffer geometries, named 'otley_buffer' and 'Armley_buffer', to their more refined and simplified versions, 'otley_boundary' and 'Armley_boundary', respectively.
-These refined boundaries provide an accurate representation and visualization of the exact limits of the spatial objects involved.
 
 <!-- ::: {#fig-boundary layout-ncol="2"} -->
 ```{python}
@@ -612,8 +600,6 @@ otley_sk = otley_sk.set_crs(CRS)
 
 <!-- we probably want to pick Voronoi #1 or Voronoi #2. I'd marginally favour #2 -->
 
-### Voronoi diagram simplification
-
 <!-- In @fig-voronoi-2, the generation and clipping of the corresponding Voronoi diagrams to the bounds of the input geometry is depicted. -->
 
 <!-- ::: {#fig-voronoi layout-ncol="2"} -->
@@ -668,8 +654,10 @@ armley_voronoi = armley_voronoi[ix].reset_index(drop=True)
 
 <!-- ### Voronoi simplified network -->
 
-Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer's width from the buffer edge.
+Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer's width from the buffer edge are selected.
 This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines.
+The final center-line network is created through a clean up process that involves the removal of knot-like features from the simplified network.
+While knots common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
 
 <!-- ::: {#fig-voronoi-simplified layout-ncol="2"} -->
 ```{python}
@@ -689,8 +677,7 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 
 <!--- ### Voronoi simplified network --->
 
-The final center-line network shown in @fig-voronoi-line is created through a clean up process that involves the removal of knot-like features from the simplified network.
-While knots common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
+
 
 ::: {#fig-skeleton-line layout-ncol="2"}
 ```{python}
@@ -1066,7 +1053,7 @@ rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.
 
 <!-- ## Combined network simplification and attribute merging -->
 
-# Application to Edinburgh City Centre
+# Application to Edinburgh City Centre {#sec-application}
 
 <!-- In this section, we delve into the practical application of our proposed route network simplification techniques, focusing on a complex urban road network situated in the heart of Edinburgh.
 The key characteristics of the Edinburgh city center are detailed in @tbl-new-datasets. -->
