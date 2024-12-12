@@ -2,18 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nptscot.github.io/networkmerge/slides.html</loc>
-    <lastmod>2024-12-12T09:26:22.705Z</lastmod>
+    <lastmod>2024-12-12T09:45:30.465Z</lastmod>
   </url>
   <url>
-    <loc>https://nptscot.github.io/networkmerge/paper.html</loc>
-    <lastmod>2024-12-12T09:26:22.697Z</lastmod>
+    <loc>https://nptscot.github.io/networkmerge/methods.html</loc>
+    <lastmod>2024-12-12T09:45:30.461Z</lastmod>
   </url>
   <url>
     <loc>https://nptscot.github.io/networkmerge/index.html</loc>
-    <lastmod>2024-12-12T09:26:22.697Z</lastmod>
+    <lastmod>2024-12-12T09:45:30.461Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nptscot.github.io/networkmerge/paper.html</loc>
+    <lastmod>2024-12-12T09:45:30.461Z</lastmod>
   </url>
   <url>
     <loc>https://nptscot.github.io/networkmerge/cookbook.html</loc>
-    <lastmod>2024-12-12T09:26:22.549Z</lastmod>
+    <lastmod>2024-12-12T09:45:30.313Z</lastmod>
   </url>
 </urlset>
