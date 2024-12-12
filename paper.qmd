@@ -75,6 +75,7 @@ Based on open access data and the open source `parenx` Python package, available
 
 # Introduction
 
+```{=html}
 <!-- A wide range of data types can be used as inputs and outputs transport models, including route network datasets, origin-destination data, movement patterns captured by global positioning systems (GPS), and information on surface characteristics derived from remote sensing imagery.[^1]
 Of these, route network datasets are unusual because they are commonly used as both inputs and outputs of transport models.
 
@@ -86,6 +87,7 @@ This complexity is particularly relevant when considering the enhancement of rou
 
 This raises questions about what transport network datasets are, and how they can be optimized for more effective decision-making.
 An intuitive definition is that route network datasets are digital representations of footpaths, cycleways, highways and other *ways* (to use the OpenStreetMap terminology) along which people and goods can travel. -->
+```
 
 Datasets representing route networks are important in every stage of transport planning.
 Transport network datasets are *spatial networks* "for which the nodes are located in a space equipped with a metric", space typically being two-dimensional space and the main metric being Euclidean (or weighted Euclidean) distances [@barthélemy2011].
@@ -95,6 +97,7 @@ As inputs, route networks typically represent road or other transport networks a
 When generated as model outputs, they are typically used to visualize metrics such as flow over different time periods on transport networks at the segment level [@sutton1998].
 Route network simplification can be applied to both inputs and outputs of transport models, with the aim of reducing complexity while preserving the spatial structure of the network and relevant attributes.
 
+```{=html}
 <!-- File formats for representing route networks include Transportation Network Test Problem files (TNTP and stored as a series of `.tntp` plain text files, examples of which can be found in [github.com/bstabler/TransportationNetworks](https://github.com/bstabler/TransportationNetworks)), `.DAT` files used by the proprietary SATURN transport modelling system and XML-based `.osm` or `.pbf` files that encode OpenStreetMap data.
 Geographic file formats implementing the 'Simple Features Access' standard developed by the Open Geospatial Consortium ([OGC](https://www.ogc.org/standard/sfa/)), such as `.shp` and `.geojson`, can also be used to represent route networks.
 
@@ -103,6 +106,7 @@ Sustainable transport planning can benefit from the influx of data, but excess c
 A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.
 Consequently, the necessity for network simplification becomes evident, aligning with wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
 25 years since Sutton's paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge. -->
+```
 
 Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms [@liu2020vector; @de2014efficient].
 While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
@@ -118,9 +122,11 @@ Network simplification is a challenge that is not unique to transport planning.
 Riverine research and flood mapping applications, for example, require estimates of many river characteristics, including simplified centerlines derived from datasets representing river banks, as implemented in software including the R package `cmgo` [@golly2017] and an approach implemented in Google Earth Engine called RivWidthCloud [@yang2020].
 The `riverdist` R package, to provide another example, provides functionality for checking whether datasets representing river channels are braided and for removing braids by returning only the shortest paths along the lengths of river centerlines, for example [@tyers2016].
 
+```{=html}
 <!-- Flexibility is important due to the wide range of transport planning use cases.
 Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g. maps for junction design may have scales of 1:1000.
 Other use cases, such as strategic network planning tools and 'planning support systems' [@page2020], typically involve zoomed-out representations of street networks at scales of 1:10,000+ beyond which dual carriageways are not relevant and can distort visualisation of networks. -->
+```
 
 The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning.
 @sec-problem outlines the problem of complex route networks.
@@ -130,9 +136,9 @@ In @sec-discussion we discuss the results and outline future work.
 
 # Problem definition {#sec-problem}
 
-@morgan2020 presented methods for combining multiple overlapping routes into a single route network with non-overlapping linestrings for visualisation, implemented in the function `overline()`.
-The approach takes overlapping linestrings representing multiple routes and combines them into a single network with non-overlapping linestrings.
-The approach has been used to visualise large transport networks, informing investment decisions in transport planning internationally.
+The problem tackled in this paper is the simplification of complex route networks.
+This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) [@lovelace2017], the route networks of which are on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings @morgan2020.
+Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualization of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
 However, the 'overline' approach, without further processing, has limitations:
 
 -   It does not remove redundant vertices, which can lead to large file sizes and slow rendering.
@@ -357,6 +363,7 @@ base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
 
+````{=html}
 <!---
 ```{python}
 base_otley.plot(edgecolor="blue", color="blue")
@@ -366,6 +373,8 @@ base_otley.plot(edgecolor="blue", color="blue")
 base_armley.plot(edgecolor="blue", color="blue")
 ```
 --->
+````
+
 ::: {#fig-buffered-network layout-ncol="2"}
 ```{python}
 otley_geometry.plot(edgecolor="blue", color="blue")
@@ -380,13 +389,17 @@ Buffered versions of the Otley Road (left) and Armley Road (right) networks.
 
 ### Network skeletonization
 
-In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced. This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
+In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced.
+This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
 
-In detail, skeletonization is only applied where more than line-segment buffer overlaps. To identify overlapping line-segments, the buffer is split at the end of each line-segment, see top Otley Road (left) and Armley Road (right) @fig-split-ends. The overlapping line-segments are then buffered while retaining the remaining disjoint lines, shown in bottom @fig-split-ends.
- 
+In detail, skeletonization is only applied where more than line-segment buffer overlaps.
+To identify overlapping line-segments, the buffer is split at the end of each line-segment, see top Otley Road (left) and Armley Road (right) @fig-split-ends.
+The overlapping line-segments are then buffered while retaining the remaining disjoint lines, shown in bottom @fig-split-ends.
 
+```{=html}
 <!---This visualization demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.
 It effectively highlights the contrast between the more intricate and the simpler sections within these networks. --->
+```
 
 ::: {#fig-split-ends layout-ncol="2"}
 ```{python}
@@ -407,8 +420,10 @@ combined_armley = gp.GeoSeries(unary_union(armley_centre.values).geoms, crs=CRS)
 combined_armley.plot()
 ```
 
+```{=html}
 <!--- Truncated and segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
 ::: --->
+```
 
 ```{python}
 i, j = base_otley.sindex.query(combined_otley, predicate="intersects")
@@ -469,7 +484,6 @@ armley_segment.plot()
 Segmented line-buffer geometries (top) and geometries to be skeletonized (bottom) for the Otley Road (left) and Armley Road (right) networks.
 :::
 
-
 As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
 <!-- This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
 Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format. --->
@@ -482,6 +496,7 @@ r_matrix_otley, s_matrix_otley, out_shape_otley = get_affine_transform(otley_geo
 r_matrix_armley, s_matrix_armley, out_shape_armley = get_affine_transform(armley_geometry, scale=2.0)
 ```
 
+````{=html}
 <!--- ### Affine transforms
 
 To affine transformations for Rasterio and Shapely are demonstrated with a scaling factor of 2.0.
@@ -522,15 +537,23 @@ Rasterio and Shapely affine transformation matrices for the Otley Road network.
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation.
 The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 --->
+````
 
+```{=html}
 <!---### Skeletonize the buffer to a point geometry
 
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image.
 This transformation adjusts the geometry to match the raster's scale and orientation. --->
+```
+
+```{=html}
 <!-- Following this, the raster image undergoes a cleaning process to eliminate small holes that often appear in areas where buffered lines run parallel or intersect at shallow angles, resulting in raster representations illustrated in @fig-rasterize.
 This step ensures a more coherent and accurate representation in the raster image. -->
+```
 
-The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles. The result of the scale and cleaned raster is illustrated in @fig-rasterize.
+The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
+The result of the scale and cleaned raster is illustrated in @fig-rasterize.
+
 ```{python}
 from skimage.morphology import remove_small_holes, skeletonize
 import rasterio.plot as rip
@@ -607,7 +630,8 @@ armley_transform = armley_point.map(shapely_transform).map(set_precision_pointon
 ```
 
 Adjacent points are identifed, typically within a 1x1 pixel square, based on proximity within the raster image coordinate system.
-Line segments are then created by connecting these adjacent points. These points are combined, giving a continuous line geometry representing the simplified network.
+Line segments are then created by connecting these adjacent points.
+These points are combined, giving a continuous line geometry representing the simplified network.
 Finally, a reverse scaling affine transformation is applied to return to the original coordinate system.
 <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
 
@@ -799,7 +823,8 @@ Voronoi diagram lines with lines that are completely within the buffer geometry 
 
 <!--- ### Voronoi simplified network --->
 
-The final center-line network shown in @fig-voronoi-line is created through a clean up process that involves the removal of knot-like features from the simplified network. While knots  common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
+The final center-line network shown in @fig-voronoi-line is created through a clean up process that involves the removal of knot-like features from the simplified network.
+While knots common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
 
 ::: {#fig-voronoi-line layout-ncol="2"}
 ```{python}
