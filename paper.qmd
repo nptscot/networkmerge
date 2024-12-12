@@ -125,7 +125,7 @@ Consequently, the necessity for network simplification becomes evident, aligning
 Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms [@liu2020vector; @de2014efficient].
 <!--- While effective in preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
 Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.--->
-While preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity, as shown in @sec-methods.
+While preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity.
 Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices and so are of limited use for simplifying transport networks.
 
 A common approach is simplification through converstion to an intermediate polygon (buffer) layer.
