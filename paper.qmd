@@ -154,25 +154,29 @@ Although this section of Armley road has a higher cycling potential than the sec
 
 ![](images/armley-road-narrow.png){#fig-armley-road}
 
-Illustration of issues associated with route network-level results containing multiple parallel ways on the same corridor: it is not clear from the visualisation that the corridor shown in the right hand figure has greater flow than the corridor shown in the left.
-Source: open access Propensity to Cycle Tool results available at www.pct.bike.
-:::
-
-A subsequent step described by @morgan2020 is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
-The 'rasterisation' stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in @fig-rasterisation.
-
-::: {#fig-rasterisation layout-ncol="2"}
 ![](images/otley-road-raster.png){#fig-otley-road-raster}
 
 ![](images/armley-road-raster.png){#fig-armley-road-raster}
 
-Rasterised network results for the same corridors shown in @fig-pct.
-Note the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
+Vector (top) and raster (bottom) visualisations of route network results in the Propensity to Cycle Tool.
+Note that it is not clear from the visualisation that the corridor shown in the right hand figures (Armley Road corridor) has greater flow than the corridor shown in the left (Otley Road).
+Note also the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
-:::
 
-The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes.
-By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors.
+<!-- ::: -->
+
+<!-- A subsequent step described by @morgan2020 is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
+The 'rasterisation' stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in @fig-rasterisation. -->
+
+<!-- ::: {#fig-rasterisation layout-ncol="2"}
+
+
+Rasterised network results for the same corridors shown in @fig-pct.
+Source: open access Propensity to Cycle Tool results available at www.pct.bike.
+::: -->
+
+<!-- The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes.
+By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors. -->
 
 # Data and Methods {#sec-methods}
 
