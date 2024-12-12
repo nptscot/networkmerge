@@ -1,5 +1,5 @@
 ---
-title: "Route network simplification for transport planning: methods"
+title: "Networkmerge methods"
 bibliography: references.bib
 author: 
   - name: Robin Lovelace
