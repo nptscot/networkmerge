@@ -147,15 +147,15 @@ The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
 The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
 
-::: {#fig-pct layout-ncol="2" width=80%}
+::: {#fig-pct layout-ncol="2" width=50%}
 
-![](images/otley-road-narrow.png){#fig-otley-road}
+![](images/otley-road-narrow.png){#fig-otley-road width=80%}
 
-![](images/armley-road-narrow.png){#fig-armley-road}
+![](images/armley-road-narrow.png){#fig-armley-road width=80%}
 
-![](images/otley-road-raster.png){#fig-otley-road-raster}
+![](images/otley-road-raster.png){#fig-otley-road-raster width=80%}
 
-![](images/armley-road-raster.png){#fig-armley-road-raster}
+![](images/armley-road-raster.png){#fig-armley-road-raster width=80%}
 
 Vector (top) and raster (bottom) visualisations of route network results in the Propensity to Cycle Tool.
 Note that it is not clear from the visualisation that the corridor shown in the right hand figures (Armley Road corridor) has greater flow than the corridor shown in the left (Otley Road).
