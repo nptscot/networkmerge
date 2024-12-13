@@ -147,7 +147,8 @@ The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
 The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
 
-::: {#fig-pct layout-ncol="2"}
+::: {#fig-pct layout-ncol="2" width=80%}
+
 ![](images/otley-road-narrow.png){#fig-otley-road}
 
 ![](images/armley-road-narrow.png){#fig-armley-road}
