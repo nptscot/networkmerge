@@ -184,7 +184,7 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
 In this paper we use the two street networks discussed in the previous section to illustrate the methods.
-See the ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) and [Methods](https://nptscot.github.io/networkmerge/methods.html) appendicees for further details on the methods used in this paper and their application to alternative (railway based) datasets.
+See the ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) and [Methods](https://nptscot.github.io/networkmerge/methods.html) appendices for further details on the methods used in this paper and their application to alternative (railway based) datasets.
 
 ```{r}
 #| include: false
