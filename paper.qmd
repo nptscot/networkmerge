@@ -1314,6 +1314,11 @@ Another is to speed up the process, with options including parallelisation, impl
 We developed the methods to support the Network Planning Tool for Scotland, which provides a strong evidence base enabling more data-driven prioritisation of investment in active travel infrastructure.
 However, we believe it has applications beyond this use case, for example in strategic rail network modelling and transport network redesign to support more sustainable transport systems.
 
+# Data Availability
+
+All data and code used to generate the results presented in this paper are available in the GitHub repository associated with the paper, to be made available upon acceptance.
+To ensure that the paper is fully reproducible, we use GitHub actions to rebuild the paper whenever changes are made to the repository.
+
 # References
 
 ```{python}
