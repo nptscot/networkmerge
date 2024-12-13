@@ -281,19 +281,6 @@ base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
 
-````{=html}
-<!---
-```{python}
-base_otley.plot(edgecolor="blue", color="blue")
-```
-
-```{python}
-base_armley.plot(edgecolor="blue", color="blue")
-```
---->
-````
-
-
 <!-- ### Network skeletonization -->
 
 In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
@@ -677,15 +664,15 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 
 
 
-::: {#fig-skeleton-line layout-ncol="2"}
-```{python}
+::: {#fig-skeleton-line layout-ncol="3"}
 
-otley_sk.plot()
+```{python}
+base_otley.plot(edgecolor="blue", color="blue")
 ```
 
 ```{python}
 
-armley_sk.plot()
+otley_sk.plot()
 ```
 
 ```{python}
@@ -701,6 +688,17 @@ otley_line.plot()
 ```
 
 ```{python}
+base_armley.plot(edgecolor="blue", color="blue")
+```
+
+
+
+```{python}
+
+armley_sk.plot()
+```
+
+```{python}
 armley_line = filter_buffer(armley_line, armley_geometry)
 armley_edge, armley_node = get_source_target(armley_line.to_frame("geometry"))
 ix = armley_node["count"] < 4
@@ -712,7 +710,8 @@ armley_line = combine_line(armley_line)
 armley_line.plot()
 ```
 
-Simplified versions of the Otley Road (left) and Armley Road (right) networks, using skeletonization (top) and Voronoi (bottom) approaches.
+Original and simplified versions of the Otley Road (top) and Armley Road (bottom) networks.
+From left to right: original network, skeletonized network, Voronoi simplified network.
 
 :::
 
