@@ -147,14 +147,15 @@ The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
 The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
 
-::: {#fig-pct layout-ncol="2"}
-![](images/otley-road-narrow.png){#fig-otley-road}
+::: {#fig-pct layout-ncol="2" width=50%}
 
-![](images/armley-road-narrow.png){#fig-armley-road}
+![](images/otley-road-narrow.png){#fig-otley-road width=80%}
 
-![](images/otley-road-raster.png){#fig-otley-road-raster}
+![](images/armley-road-narrow.png){#fig-armley-road width=80%}
 
-![](images/armley-road-raster.png){#fig-armley-road-raster}
+![](images/otley-road-raster.png){#fig-otley-road-raster width=80%}
+
+![](images/armley-road-raster.png){#fig-armley-road-raster width=80%}
 
 Vector (top) and raster (bottom) visualisations of route network results in the Propensity to Cycle Tool.
 Note that it is not clear from the visualisation that the corridor shown in the right hand figures (Armley Road corridor) has greater flow than the corridor shown in the left (Otley Road).
@@ -280,19 +281,6 @@ base_armley["geometry"] = base_armley["geometry"].map(set_precision_pointone)
 base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
-
-````{=html}
-<!---
-```{python}
-base_otley.plot(edgecolor="blue", color="blue")
-```
-
-```{python}
-base_armley.plot(edgecolor="blue", color="blue")
-```
---->
-````
-
 
 <!-- ### Network skeletonization -->
 
@@ -677,15 +665,15 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 
 
 
-::: {#fig-skeleton-line layout-ncol="2"}
-```{python}
+::: {#fig-skeleton-line layout-ncol="3"}
 
-otley_sk.plot()
+```{python}
+base_otley.plot(edgecolor="blue", color="blue")
 ```
 
 ```{python}
 
-armley_sk.plot()
+otley_sk.plot()
 ```
 
 ```{python}
@@ -701,6 +689,17 @@ otley_line.plot()
 ```
 
 ```{python}
+base_armley.plot(edgecolor="blue", color="blue")
+```
+
+
+
+```{python}
+
+armley_sk.plot()
+```
+
+```{python}
 armley_line = filter_buffer(armley_line, armley_geometry)
 armley_edge, armley_node = get_source_target(armley_line.to_frame("geometry"))
 ix = armley_node["count"] < 4
@@ -712,7 +711,8 @@ armley_line = combine_line(armley_line)
 armley_line.plot()
 ```
 
-Simplified versions of the Otley Road (left) and Armley Road (right) networks, using skeletonization (top) and Voronoi (bottom) approaches.
+Original and simplified versions of the Otley Road (top) and Armley Road (bottom) networks.
+From left to right: original network, skeletonized network, Voronoi simplified network.
 
 :::
 
