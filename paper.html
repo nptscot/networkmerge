@@ -291,7 +291,7 @@ Other use cases, such as strategic network planning tools and 'planning support 
 <div id="fig-otley-road" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-otley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/otley-road-narrow.png" id="fig-otley-road" class="img-fluid figure-img" data-ref-parent="fig-pct">
+<img src="images/otley-road-narrow.png" id="fig-otley-road" class="img-fluid figure-img" style="width:80.0%" data-ref-parent="fig-pct">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-otley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a)
@@ -303,7 +303,7 @@ Other use cases, such as strategic network planning tools and 'planning support 
 <div id="fig-armley-road" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-armley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/armley-road-narrow.png" id="fig-armley-road" class="img-fluid figure-img" data-ref-parent="fig-pct">
+<img src="images/armley-road-narrow.png" id="fig-armley-road" class="img-fluid figure-img" style="width:80.0%" data-ref-parent="fig-pct">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-armley-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b)
@@ -317,7 +317,7 @@ Other use cases, such as strategic network planning tools and 'planning support 
 <div id="fig-otley-road-raster" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-otley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/otley-road-raster.png" id="fig-otley-road-raster" class="img-fluid figure-img" data-ref-parent="fig-pct">
+<img src="images/otley-road-raster.png" id="fig-otley-road-raster" class="img-fluid figure-img" style="width:80.0%" data-ref-parent="fig-pct">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-otley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c)
@@ -329,7 +329,7 @@ Other use cases, such as strategic network planning tools and 'planning support 
 <div id="fig-armley-road-raster" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-armley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/armley-road-raster.png" id="fig-armley-road-raster" class="img-fluid figure-img" data-ref-parent="fig-pct">
+<img src="images/armley-road-raster.png" id="fig-armley-road-raster" class="img-fluid figure-img" style="width:80.0%" data-ref-parent="fig-pct">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-armley-road-raster-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (d)
@@ -376,19 +376,6 @@ Topology-preserving simplification reduces the number of vertices in a linestrin
 <p>The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segements from a raster of this buffer.</p>
 <!--- ### Create a projected combined buffered geometry --->
 <p>In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system. <!-- , achieved using the `get_geometry_buffer` function. --> We use a buffer size of 8 meters in this paper.</p>
-<!---
-::: {.cell}
-::: {.cell-output-display}
-![](paper_files/figure-html/unnamed-chunk-7-1.png){width=672}
-:::
-:::
-
-::: {.cell}
-::: {.cell-output-display}
-![](paper_files/figure-html/unnamed-chunk-8-3.png){width=672}
-:::
-:::
---->
 <!-- ### Network skeletonization -->
 <p>In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced (see <a href="https://nptscot.github.io/networkmerge/methods.html">Methods</a> appendix for details). This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.</p>
 <p>In detail, skeletonization is only applied where more than line-segment buffer overlaps. To identify overlapping line-segments, the buffer is split at the end of each line-segment. The overlapping line-segments are then buffered while retaining the remaining disjoint lines.</p>
@@ -471,7 +458,25 @@ This skeletonized image effectively captures the essential structure and layout 
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-skeleton-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="paper_files/figure-html/unnamed-chunk-38-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -480,7 +485,9 @@ This skeletonized image effectively captures the essential structure and layout 
 </div>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+</div>
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -489,9 +496,7 @@ This skeletonized image effectively captures the essential structure and layout 
 </div>
 </div>
 </div>
-</div>
-<div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -500,7 +505,7 @@ This skeletonized image effectively captures the essential structure and layout 
 </div>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -512,7 +517,7 @@ This skeletonized image effectively captures the essential structure and layout 
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-skeleton-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Simplified versions of the Otley Road (left) and Armley Road (right) networks, using skeletonization (top) and Voronoi (bottom) approaches.
+Figure&nbsp;2: Original and simplified versions of the Otley Road (top) and Armley Road (bottom) networks. From left to right: original network, skeletonized network, Voronoi simplified network.
 </figcaption>
 </figure>
 </div>
