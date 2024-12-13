@@ -68,10 +68,7 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 Route network datasets are central to transport models as key inputs and outputs.
 The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
 However, this complexity can affect the visualisation of model results.
-A common issue is the presence of multiple parallel ways on the same corridor.
-<!--- WD: I'm not sure I understand this
-This can lead to incorrect traffic flow values *inferred from visual inspection of results*, misinterpretation of model outputs and, potentially, investment in the wrong places. --->
-This can lead to incorrect inferred traffic flow values, misinterpretation of model outputs and, potentially, investment in the wrong places.
+A common issue is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts and misinterpretation of model outputs.
 To address this challenges, we present and compare two methods for *simplifying* route network datasets: 1) image skeletonization and 2) Voronoi diagram-centreline identification.
 These methods have real-world applications, as illustrated in the "Simplified network" layer in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.npt.scot](https://www.npt.scot).
 Based on open access data and the open source `parenx` Python package, available on the Python Package Index, these methods are not only reproducible but also adaptable, enbabling their use in new contexts.
