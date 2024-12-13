@@ -718,17 +718,12 @@ Simplified versions of the Otley Road (left) and Armley Road (right) networks, u
 
 ## Post-Processing
 
-Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted knots.
-Optionally by removing intermediate lines-sections, a further simplified or primal network that captures the essential connectivity and layout of transport routes can be generated.
-
-Where knots are short segments at intersections, resembling tangled knots.
+Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted knots, short segments at intersections, resembling tangled knots.
 To remove these features, short segments are clustered together, and a central point for each cluster is determined.
-The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point.
+The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point, as illustrated in the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix.
 
-<!-- ### Primal network {#sec-primal} -->
-
-The primal network is composed of direct lines connecting start and end points.
-This primal network represents an extreme form of simplification, prioritising the network's structure and compression.
+An additional optional stage is to simplify the network further by removing vertices that are not essential for the network's connectivity, resulting in a primal network that captures the essential connectivity and layout of transport routes.
+The primal network is thus composed of direct lines connecting start and end points, representing a high level of simplification that prioritises the network's structure and compression.
 
 <!-- The primal networks for the Otley Road and Armley Road skeletonized networks are illustrated in @fig-primal-skeleton. -->
 
@@ -784,10 +779,7 @@ We have implemented the steps presented in this section in the `rnet_merge()` fu
 
 <!-- The process is analogous to joining two datasets based on a common 'key' variable. -->
 In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
-There are at least a couple of implementations of network joining approaches in open source software: the `rnet_merge()` function in the `stplanr` R package [@lovelace2019], and the [`rnetmatch` R
-<!--- WD: I'm not sure what this means
-The simplified (typically denoted 'x') object can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins [@ballesteros2011]. --->
-There are at least a couple of implementations of network joining approaches in open source software: the `rnet_merge()` function in the `stplanr` R package [@lovelace2019], and the [`rnetmatch` Rust crate](https://github.com/nptscot/rnetmatch/tree/main/rust) which has binding to R and (soon) Python.
+There are at least a couple of implementations of network joining methods in open source software: the `rnet_merge()` function in the `stplanr` R package [@lovelace2019], and the [`rnetmatch` Rust crate](https://github.com/nptscot/rnetmatch/tree/main/rust) for which has bindings to R and Python are planned.
 The details of network joining methods, algorithms and implementations are outside the scope of this paper, see the documentation associated with the projects mentioned above for more information.
 
 <!-- **Data Preparation:** -->
