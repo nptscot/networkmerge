@@ -1305,7 +1305,6 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 The two main methods developed in this paper are implemented in the open source software for reproducible research (see the reproducible source code of this paper at [github.com/nptscot](https://github.com/nptscot)).
 Both Skeletonization and Voronoi-based methods result in geometries that are substantially simpler and less resource-intensive for subsequent network analysis steps, while preserving the essential connectivity and spatial characteristics of the original network.
 Which to use, and the appropriate balance between simplification and preservation of network geometries will vary depending on the specific requirements of the analysis.
-<!--- An advantage of the implementations we have developed, in the Python package `parenx`, is that they can be adapted to suit the requirements of the user, from low levels of simplification to aggressive simplification towards the 'primal network' (see the [`parenx` cookbook](https://nptscot.github.io/networkmerge/cookbook.html)). --->
 An advantage of the implementations we have developed, in the Python package `parenx`, is that they are adaptable to the requirements of the user, from low levels of simplification to the aggressive simplification of a 'primal network' (see the [`parenx` cookbook](https://nptscot.github.io/networkmerge/cookbook.html)).
 
 There are several potential directions of travel building on this work.
@@ -1313,7 +1312,7 @@ One is to explore alternative algorithms for thinning buffered networks, recursi
 Another is to speed up the process, with options including parallelisation, implementation in lower-level languages, and optimisation of the algorithms themselves.
 
 We developed the methods to support the Network Planning Tool for Scotland, which provides a strong evidence base enabling more data-driven prioritisation of investment in active travel infrastructure.
-However, we believe it has applications beyond this use case, in strategic rail network modelling and network redesign work to support more sustainable transport systems.
+However, we believe it has applications beyond this use case, for example in strategic rail network modelling and transport network redesign to support more sustainable transport systems.
 
 # References
 
