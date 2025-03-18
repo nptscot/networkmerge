@@ -43,9 +43,9 @@ quarto render cookbook.qmd
 
 # Introduction
 
-This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, it is clear this module is neither well documentmed nor intuiative and use. So the hope is that by sharing these examples will make using these scripts a bit less painful.
+This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, this module is neither well documentmed nor intuitive to use. So the hope is that by sharing these examples will make using these scripts a bit less painful.
 
-This was developed and tested on a Debian Linux variant[^3] and run on the command-line interface with various versions of `python3`. While not tested they should work on under environments and operating systems.
+This was developed and tested on a Debian Linux variant[^3] and run on the command-line interface with various versions of `python3`. While not tested on other environments they should work on under environments and operating systems.
 
 [^1]: The [network merge paper here](https://nptscot.github.io/networkmerge/paper.html).
 [^2]: See the [online project](https://pypi.org/project/parenx/).
@@ -169,7 +169,7 @@ skeletonize.py https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncast
 
 The base `skeletonize.py` also takes parameters to split buffered line segments or preserve knots. These parameters:
 ```bash
-skeltonize.py
+skeletonize.py
 start		0:00:00.000266
 usage: skeletonize.py [-h] [--simplify SIMPLIFY] [--buffer BUFFER] [--scale SCALE] [--knot] [--segment] inpath [outpath]
 skeletonize.py: error: the following arguments are required: inpath
@@ -191,7 +191,7 @@ voronoi.py: error: the following arguments are required: inpath
 ```
 
 # Helper script
-The `run.sh` helper script sets and installs `parenx` in a virtual enviroment, and runs the `skeltonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed.
+The `run.sh` helper script sets and installs `parenx` in a virtual environment, and runs the `skeletonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed.
 
 ## Find the helper script
 To find it:
@@ -218,7 +218,7 @@ find . -name run.sh -exec cp {} . \;
 ```
 
 ## Run the helper script
-The default runs the `skeltonize` and `voronoi` simplification scripts with a number of parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
+The default runs the `skeletonize` and `voronoi` simplification scripts with a number of parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
 
 ```bash
 ./run.sh
@@ -238,7 +238,7 @@ stop		0:00:19.703512
 ```
 
 ## What does the helper `run.sh` do?
-The helper script creates the enviroment and runs the `skeltonize` and `voronoi` simplification scripts with different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. The path and output filename can also be specified.
+The helper script creates the enviroment and runs the `skeletonize` and `voronoi` simplification scripts with different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. The path and output filename can also be specified.
 
 ### Set up environment
 As above this checks to see if a `venv` directory exists, creates and populates it if not, and activates the environment:
