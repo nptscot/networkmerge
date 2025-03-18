@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -73,10 +73,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-659650fc26dc25888fc1474f317bb8ac.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8647a4a42273f773479d27c00df3f9ed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -263,8 +263,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details></section>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This cookbook is an addendum of the network merge paper<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone <code>parenx</code> module<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was developed and deployed to <code>pypy</code>. However, noting this is <strong>beta software</strong>, it is clear this module is neither well documentmed nor intuiative and use. So the hope is that by sharing these examples will make using these scripts a bit less painful.</p>
-<p>This was developed and tested on a Debian Linux variant<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and run on the command-line interface with various versions of <code>python3</code>. While not tested they should work on under environments and operating systems.</p>
+<p>This cookbook is an addendum of the network merge paper<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone <code>parenx</code> module<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was developed and deployed to <code>pypy</code>. However, noting this is <strong>beta software</strong>, this module is neither well documentmed nor intuitive to use. So the hope is that by sharing these examples will make using these scripts a bit less painful.</p>
+<p>This was developed and tested on a Debian Linux variant<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and run on the command-line interface with various versions of <code>python3</code>. While not tested on other environments they should work on under environments and operating systems.</p>
 </section>
 <section id="set-up-and-run" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Set up and run</h1>
@@ -333,7 +333,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The base <code>skeletonize.py</code> also takes parameters to split buffered line segments or preserve knots. These parameters:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeltonize.py</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">start</span>       0:00:00.000266</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">usage:</span> skeletonize.py <span class="pp">[-</span><span class="ss">h</span><span class="pp">]</span> [--simplify SIMPLIFY] [--buffer BUFFER] [--scale SCALE] <span class="pp">[--</span><span class="ss">knot</span><span class="pp">]</span> <span class="pp">[--</span><span class="ss">segment</span><span class="pp">]</span> inpath <span class="pp">[</span><span class="ss">outpath</span><span class="pp">]</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py:</span> error: the following arguments are required: inpath</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -350,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="helper-script" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Helper script</h1>
-<p>The <code>run.sh</code> helper script sets and installs <code>parenx</code> in a virtual enviroment, and runs the <code>skeltonize</code> and <code>voronoi</code> simplification scripts with a number of different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed.</p>
+<p>The <code>run.sh</code> helper script sets and installs <code>parenx</code> in a virtual environment, and runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with a number of different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed.</p>
 <section id="find-the-helper-script" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="find-the-helper-script"><span class="header-section-number">4.1</span> Find the helper script</h2>
 <p>To find it:</p>
@@ -370,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="run-the-helper-script" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="run-the-helper-script"><span class="header-section-number">4.3</span> Run the helper script</h2>
-<p>The default runs the <code>skeltonize</code> and <code>voronoi</code> simplification scripts with a number of parameters, against an OpenStreetMap<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Edinburgh Princes Street road network file (<code>net_princes_street.geojson</code>). It creates a <code>GeoPKG</code><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with three output layers and, if <code>ogr2ogr</code> is installed, <code>GeoJSON</code><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.</p>
+<p>The default runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with a number of parameters, against an OpenStreetMap<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Edinburgh Princes Street road network file (<code>net_princes_street.geojson</code>). It creates a <code>GeoPKG</code><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with three output layers and, if <code>ogr2ogr</code> is installed, <code>GeoJSON</code><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./run.sh</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">simplify</span> ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize</span> ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson</span>
@@ -388,7 +388,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-does-the-helper-run.sh-do" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="what-does-the-helper-run.sh-do"><span class="header-section-number">4.4</span> What does the helper <code>run.sh</code> do?</h2>
-<p>The helper script creates the enviroment and runs the <code>skeltonize</code> and <code>voronoi</code> simplification scripts with different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed. The path and output filename can also be specified.</p>
+<p>The helper script creates the enviroment and runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed. The path and output filename can also be specified.</p>
 <section id="set-up-environment" class="level3" data-number="4.4.1">
 <h3 data-number="4.4.1" class="anchored" data-anchor-id="set-up-environment"><span class="header-section-number">4.4.1</span> Set up environment</h3>
 <p>As above this checks to see if a <code>venv</code> directory exists, creates and populates it if not, and activates the environment:</p>
