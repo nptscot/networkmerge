@@ -30,12 +30,15 @@ install.packages(
   repos = c('https://josiahparry.r-universe.dev', 'https://cloud.r-project.org')
 )
 library(rsgeo)
-# Install github version if no DESCRIPTION file:
-if (!file.exists("DESCRIPTION")) {
-  remotes::install_github("nptscot/networkmerge")
-} else {
-  # Install from DESCRIPTION file:
-  remotes::install_local()
+# Install if not already:
+if (!requireNamespace("networkmerge")) {
+  # Install github version if no DESCRIPTION file:
+  if (!file.exists("DESCRIPTION")) {
+    remotes::install_github("nptscot/networkmerge")
+  } else {
+    # Install from DESCRIPTION file:
+    remotes::install_local()
+  }
 }
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
