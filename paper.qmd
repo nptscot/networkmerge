@@ -4,10 +4,10 @@ bibliography: references.bib
 author:
   - name: Will Deakin
     affiliation: Digital, Data and Technology services, Network Rail, UK
+    orcid: 0009-0008-5656-4469
   - name: Zhao Wang
     affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
     orcid: 0000-0002-4054-0533
-    orcid: 0009-0008-5656-4469
   - name: Josiah Parry
     affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
