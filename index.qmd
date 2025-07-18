@@ -35,7 +35,7 @@ if (!file.exists("DESCRIPTION")) {
   remotes::install_github("nptscot/networkmerge")
 } else {
   # Install from DESCRIPTION file:
-  remotes::install_deps(dependencies = TRUE)
+  remotes::install_local()
 }
 requirements_txt = readLines("requirements.txt")
 # Check if Python is installed:
