@@ -1,10 +1,10 @@
 on:
-    workflow_dispatch:
-    # Run on Pull Requests
-    pull_request:
-      branches:
-        - main
-  
+  workflow_dispatch:
+  # Run on Pull Requests
+  pull_request:
+    branches:
+      - main
+
 name: Quarto Publish
 
 jobs:
@@ -29,9 +29,10 @@ jobs:
             any::remotes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       - name: Install deps
-#         # Run the script in .devcontainer/install-additional-dependencies.sh
-#         run: bash .devcontainer/install-additional-dependencies.sh
-
+      - name: Set GitHub token for R
+        run: echo "GITHUB_PAT=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+#     - name: Install deps
+#       # Run the script in .devcontainer/install-additional-dependencies.sh
+#       run: bash .devcontainer/install-additional-dependencies.sh
       - name: Render
         uses: quarto-dev/quarto-actions/render@v2
