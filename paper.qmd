@@ -66,12 +66,12 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 # Abstract {.unnumbered}
 
 Route network datasets are central to transport models as key inputs and outputs.
-The complexity of route network inputs from sources such as OpenStreetMap has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
+The complexity of route network inputs from sources such as OpenStreetMap [@openstreetmap] has increased over time, enabling more precise modelling of sustainable modes such as walking and cycling.
 However, this complexity can affect the visualisation of model results.
 A common issue is the presence of multiple parallel ways on the same corridor, which can lead to visual artefacts and misinterpretation of model outputs.
-To address this challenges, we present and compare two methods for *simplifying* route network datasets: 1) image skeletonization and 2) Voronoi diagram-centreline identification.
+To address these challenges, we present and compare two methods for *simplifying* route network datasets: 1) image skeletonization and 2) Voronoi diagram-centreline identification.
 These methods have real-world applications, as illustrated in the "Simplified network" layer in the Transport for Scotland funded Network Planning Tool, which is publicly available at [www.npt.scot](https://www.npt.scot).
-Based on open access data and the open source `parenx` Python package, available on the Python Package Index, these methods are not only reproducible but also adaptable, enbabling their use in new contexts.
+Based on open access data and the open source `parenx` Python package, available on the Python Package Index, these methods are not only reproducible but also adaptable, enabling their use in new contexts.
 
 # Introduction
 
@@ -109,8 +109,8 @@ Vector geometry simplification methods include Douglas-Peucker and Visvalingam-W
 While preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity.
 Vector smoothing approaches, including the use of Bezier curves [@pradhan2023modified] and Kernel-based smoothing [@duong2022statistical], can create more visually appealing lines or polygons, but do not reduce the number of vertices.
 
-A common approach is simplification through converstion to an intermediate polygon (buffer) layer.
-Numerous algorithms for such 'medial axis' calculationsjave been published open source software repositories [e.g. @smogavec2012; @centerli2023].
+A common approach is simplification through conversion to an intermediate polygon (buffer) layer.
+Numerous algorithms for such 'medial axis' calculations have been published in open source software repositories [e.g. @smogavec2012; @centerli2023].
 Recent implementations of network simplification methods include the under-development `neatnet` Python package [@fleischmann2024], and the `parenx` package which is available on the Python Package Index [@deakin2024].
 The latter is used in this paper.
 
@@ -135,7 +135,7 @@ The aim of this paper is to articulate the problem of complex route networks, pr
 # Problem definition {#sec-problem}
 
 The problem tackled in this paper is the simplification of complex route networks.
-This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) [@lovelace2017], the route networks of which are on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings @morgan2020.
+This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) [@lovelace2017], the route networks of which are based on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings [@morgan2020].
 Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualization of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
 However, this 'overline' approach, without further processing, has limitations:
 
@@ -383,7 +383,7 @@ except AttributeError:
 As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
 This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
 The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
-The skeltonisation algorithm is then appled to the raster image yielding a skeletal raster image and converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
+The skeletonization algorithm is then applied to the raster image yielding a skeletal raster image and converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 
 ```{python}
 import rasterio.features as rif
@@ -472,7 +472,7 @@ These points are combined, giving a continuous line geometry representing the si
 Finally, a reverse scaling affine transformation is applied to return to the original coordinate system.
 <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
 
-Noting that creating a line geometry from the set of points in the raster buffer is arguable the most complex step.
+It should be noted that creating a line geometry from the set of points in the raster buffer is arguably the most complex step in the skeletonization process.
 
 <!-- The resulting simplified network is illustrated in @fig-skeleton-line. -->
 
@@ -643,7 +643,7 @@ armley_voronoi = armley_voronoi[ix].reset_index(drop=True)
 Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer's width from the buffer edge are selected.
 This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines.
 The final center-line network is created through a clean up process that involves the removal of knot-like features from the simplified network.
-While knots common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
+While knots are common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
 
 <!-- ::: {#fig-voronoi-simplified layout-ncol="2"} -->
 ```{python}
