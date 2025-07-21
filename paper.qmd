@@ -103,7 +103,7 @@ Growing availability of high resolution geographic datasets and performant hardw
 Sustainable transport planning benefits from this trend, but the complexity and intricacy of street network geometries can create problems.
 A clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.
 Consequently, the necessity for network simplification becomes evident, aligning with wider 'map generalization' methods for pre-processing datasets depending on the scale of analysis [@sutton1998].
-25 years since Sutton's paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge. -->
+25 years since Sutton's paper on the topic, simplification of networks for transport planning and other applications remains an unsolved challenge.
 
 Vector geometry simplification methods include Douglas-Peucker and Visvalingam-Whyatt algorithms [@liu2020vector; @de2014efficient].
 While preserving the overall shape and geographical accuracy, this method struggles to reduce network complexity.
@@ -120,6 +120,8 @@ However, these methods tend to be 'all or nothing' and do not provide flexibilit
 Network simplification can be useful for a wide range of applications.
 Riverine research and flood mapping applications, for example, require estimates of many river characteristics, including simplified centerlines derived from datasets representing river banks, as implemented in software including the R package `cmgo` [@golly2017] and an approach implemented in Google Earth Engine called RivWidthCloud [@yang2020].
 The `riverdist` R package, to provide another example, provides functionality for checking whether datasets representing river channels are braided and for removing braids by returning only the shortest paths along the lengths of river centerlines, for example [@tyers2016].
+
+This approach was taken as we could only find few examples for the aggregation and simplification of linear network features, especially for transport and planning networks. Where this general approach is based on the application of techniques used for image simplification, and applied to any overlapping linear features where aggregation is appropriate. For example, simplification of transport or other flow networks to produce an aggregated route-view as the basis for capacity analysis. Whether that is for active-transport, rail, road or other logical network flows.
 
 ```{=html}
 <!-- Flexibility is important due to the wide range of transport planning use cases.
