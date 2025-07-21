@@ -26,7 +26,7 @@ editor:
   markdown: 
     wrap: sentence
 # # Uncomment to run with Jupyter:
-# jupyter: python3
+jupyter: python3
 ---
 
 ```{r}
@@ -1299,6 +1299,8 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 
 <!-- Comparison of Original Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down). -->
 <!-- ::: -->
+
+The primal network in figure @fig-results is a highly simplified network created by connecting intersecting or end nodes, removing intermediate points and sections within linear features.
 
 # Discussion and Conclusion {#sec-discussion}
 
