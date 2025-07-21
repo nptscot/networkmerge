@@ -1107,7 +1107,7 @@ doncaster_rail_info = {
 
 @fig-results illustrates the methods presented in this paper, providing a comparative view of the impact of our methodology.
 The skeletonized network (top right) is a simplified version of the input dataset, with the Voronoi diagram (bottom left) providing an alternative simplification.
-Finally, the primal network (bottom right) is the most simplified version of the input dataset, with only the most essential connections retained.
+Finally, the primal network (bottom right) is the most simplified version of the input dataset, with only the most essential connections retained. This highly simplified network is created by identifying all nodes within an edge, counting the edges at that node and removing all nodes with an edge with count of two. Retains unconnected edges, or those at intersections between between edges.
 
 ```{python}
 PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
