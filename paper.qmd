@@ -383,7 +383,8 @@ except AttributeError:
 <!-- ::: -->
 
 As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
-This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+This scale operation in a uniform affine scale transformation applied to increase the detail contained in the raster image. An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image. 
+
 The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
 The skeletonization algorithm is then applied to the raster image yielding a skeletal raster image and converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 
