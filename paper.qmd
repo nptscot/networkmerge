@@ -121,6 +121,8 @@ Network simplification can be useful for a wide range of applications.
 Riverine research and flood mapping applications, for example, require estimates of many river characteristics, including simplified centerlines derived from datasets representing river banks, as implemented in software including the R package `cmgo` [@golly2017] and an approach implemented in Google Earth Engine called RivWidthCloud [@yang2020].
 The `riverdist` R package, to provide another example, provides functionality for checking whether datasets representing river channels are braided and for removing braids by returning only the shortest paths along the lengths of river centerlines, for example [@tyers2016].
 
+This approach was taken as we could only find a few examples for the aggregation and simplification of linear features, especially with transport and planning networks. However, as this general approach is based on the application of techniques used for image simplification, it can be applied to any overlapping linear features where aggregation is appropriate. For example, simplification of transport or other flow networks to produce an aggregated route-view as the basis for capacity analysis. Whether that is for active-transport, rail, road or other logical network flows.
+
 ```{=html}
 <!-- Flexibility is important due to the wide range of transport planning use cases.
 Some transport planning use cases require zoomed-in, geographically accurate and complex representations of transport networks, e.g. maps for junction design may have scales of 1:1000.
@@ -224,7 +226,8 @@ The skeletonization approach generates a simplified network by buffering the net
 <!--- ### Create a projected combined buffered geometry --->
 
 In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system.
-<!-- , achieved using the `get_geometry_buffer` function. --> We use a buffer size of 8 meters in this paper.
+<!-- , achieved using the `get_geometry_buffer` function. -->
+We use a buffer size of 8 metres in this paper. This value is informed by typical widths of a UK two-lane highway with an example for a typical 2-way road being specified in the [Design Manual for Roads and Bridges (DMRB)](https://assets.publishing.service.gov.uk/media/5a7e0035ed915d74e6223743/pdfmanforstreets.pdf#page=81) as "min 4.8 m, max 8.8 m" and the minimum GB rail centre-line track separation of 3.26m, and two sections of 1.435m standard gauge.
 
 ```{python}
 #| name: python-setup-packages
@@ -381,7 +384,7 @@ except AttributeError:
 <!-- ::: -->
 
 As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
-This scale operation in a uniform affine scale transformation applied to increase the detail contained in the raster image. An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+This scale operation is a uniform affine scale transformation applied to increase the detail contained in the raster image. An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image. 
 
 The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
 The skeletonization algorithm is then applied to the raster image yielding a skeletal raster image and converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
@@ -1108,7 +1111,7 @@ doncaster_rail_info = {
 
 @fig-results illustrates the methods presented in this paper, providing a comparative view of the impact of our methodology.
 The skeletonized network (top right) is a simplified version of the input dataset, with the Voronoi diagram (bottom left) providing an alternative simplification.
-Finally, the primal network (bottom right) is the most simplified version of the input dataset, with only the most essential connections retained.
+Finally, the primal network (bottom right) is the most simplified version of the input dataset, with only the most essential connections retained. This highly simplified network is created by identifying all nodes in the network, counting the edges connected to each node, and removing all nodes that are connected to exactly two edges. Unconnected edges or those at intersections between edges are retained.
 
 ```{python}
 PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
