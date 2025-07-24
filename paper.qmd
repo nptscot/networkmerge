@@ -224,7 +224,8 @@ The skeletonization approach generates a simplified network by buffering the net
 <!--- ### Create a projected combined buffered geometry --->
 
 In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system.
-<!-- , achieved using the `get_geometry_buffer` function. --> We use a buffer size of 8 meters in this paper.
+<!-- , achieved using the `get_geometry_buffer` function. -->
+We use a buffer size of 8 metres in this paper. This value is informed by typical widths of a UK two-lane highway with an example for a typical 2-way road being specified in the [Design Manual for Roads and Bridges (DMRB)](https://assets.publishing.service.gov.uk/media/5a7e0035ed915d74e6223743/pdfmanforstreets.pdf#page=81) as "min 4.8 m, max 8.8 m" and the minimum GB rail centre-line track separation of 3.26m, and two sections of 1.435m standard gauge.
 
 ```{python}
 #| name: python-setup-packages
