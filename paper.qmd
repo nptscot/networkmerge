@@ -767,6 +767,11 @@ armley_edge = get_nx(armley_line)
 
 See Section 4 in [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details.
 
+## Skeletonization versus Voronoi
+
+Both the skeletonization and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification. Additionally, the resulting lines can be wobbly. The simplification process is memory- and CPU-intensive, and its speed depends on network density and overlap. On commodity hardware, simplifying a core urban road network of 1 km extent takes about 5 seconds, while a 3 km urban core takes between 30 and 60 seconds. Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.1 times slower than skeletonization.
+
+Based on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonization algorithm is preferred for larger areas (such as 100 km²). Notably, skeletonization of the entire British rail center-line network took about 5 hours.
 
 ## Joining route networks {#sec-joining-route-networks}
 
