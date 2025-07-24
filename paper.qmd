@@ -765,7 +765,7 @@ See Section 4 in [Methods](https://nptscot.github.io/networkmerge/methods.html) 
 
 ## Skeletonization versus Voronoi
 
-Both are the skeletonization and Voronoi approach are generic approaches, with the following known issues: they do not maintain a link between attributes and the simplified network, nor identify a subset of edges that need simplification, and the lines are a wobbly. The simplification is memory and CPU intensive and slow, and depends on the density and network overlap. On commodity hardware for a urban 1km extent core road network takes 5 seconds, a 3km urban core between 30-60 seconds. The Voronoi output is significantly smoother, it is typically 3.6-5.1 slower than skeletonization.
+Both the skeletonization and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification. Additionally, the resulting lines can be wobbly. The simplification process is memory- and CPU-intensive, and its speed depends on network density and overlap. On commodity hardware, simplifying a core urban road network of 1 km extent takes about 5 seconds, while a 3 km urban core takes between 30 and 60 seconds. Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.1 times slower than skeletonization.
 
 Based on available compute, that Voronoi algorithm is used for smaller, say 1km² networks, while for larger 100km² extents the skeletonization algorithm. Noting that skeletonization on the full British rail centre-line network took about 5 hours.
 
