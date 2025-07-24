@@ -199,67 +199,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required namespace: networkmerge</code></pre>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>rsgeo      (0.1.8 -&gt; 5c033a789...) [GitHub]
-geometries (NA    -&gt; 0.2.4       ) [CRAN]
-BH         (NA    -&gt; 1.87.0-1    ) [CRAN]
-RcppEigen  (NA    -&gt; 0.3.4.0.2   ) [CRAN]
-rapidjsonr (NA    -&gt; 1.2.0       ) [CRAN]</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'data.table::first' by 'dplyr::first' when
+loading 'networkmerge'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Installing 4 packages: geometries, BH, RcppEigen, rapidjsonr</code></pre>
+<pre><code>Warning: replacing previous import 'data.table::last' by 'dplyr::last' when
+loading 'networkmerge'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Installing packages into '/home/runner/work/_temp/Library'
-(as 'lib' is unspecified)</code></pre>
+<pre><code>Warning: replacing previous import 'data.table::between' by 'dplyr::between'
+when loading 'networkmerge'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Downloading GitHub repo JosiahParry/rsgeo@HEAD</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file ‘/tmp/RtmpAToUUv/remotes27c364d2a30/JosiahParry-rsgeo-5c033a7/DESCRIPTION’ ... OK
-* preparing ‘rsgeo’:
-* checking DESCRIPTION meta-information ... OK
-* cleaning src
-* checking for LF line-endings in source and make files and shell scripts
-* checking for empty or unneeded directories
-* building ‘rsgeo_0.1.8.tar.gz’</code></pre>
+<pre><code>Warning: replacing previous import 'curl::handle_reset' by 'httr::handle_reset'
+when loading 'networkmerge'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Installing package into '/home/runner/work/_temp/Library'
-(as 'lib' is unspecified)</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file ‘/tmp/RtmpAToUUv/file27c38489744/networkmerge/DESCRIPTION’ ... OK
-* preparing ‘networkmerge’:
-* checking DESCRIPTION meta-information ... OK
-* checking for LF line-endings in source and make files and shell scripts
-* checking for empty or unneeded directories
-Removed empty directory ‘networkmerge/.quarto/quarto-session-temp463e4d2929f4661b’
-Removed empty directory ‘networkmerge/.quarto/quarto-session-temp969afe9582bc6878’
-Removed empty directory ‘networkmerge/_freeze’
-Removed empty directory ‘networkmerge/_site’
-* creating default NAMESPACE file
-* building ‘networkmerge_1.1.2.9000.tar.gz’</code></pre>
+<pre><code>Warning: replacing previous import 'magrittr::set_names' by 'rlang::set_names'
+when loading 'networkmerge'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Installing package into '/home/runner/work/_temp/Library'
-(as 'lib' is unspecified)</code></pre>
+<pre><code>Warning: replacing previous import 'data.table:::=' by 'rlang:::=' when loading
+'networkmerge'</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if Python is installed:</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"reticulate"</span>)) {</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"reticulate"</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required namespace: reticulate</code></pre>
+<pre><code>Warning: replacing previous import 'jsonlite::flatten' by 'rlang::flatten' when
+loading 'networkmerge'</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See reticulate documentation to use a specific Python version:</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ?reticulate::install_python()</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">install_python</span>(<span class="st">"3.12.4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'jsonlite::unbox' by 'rlang::unbox' when
+loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'lwgeom::st_perimeter' by 'sf::st_perimeter'
+when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'lwgeom::st_minimum_bounding_circle' by
+'sf::st_minimum_bounding_circle' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::od_id_szudzik' by
+'stplanr::od_id_szudzik' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::od_to_odmatrix' by
+'stplanr::od_to_odmatrix' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::odmatrix_to_od' by
+'stplanr::odmatrix_to_od' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::od_id_order' by 'stplanr::od_id_order'
+when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::od_id_character' by
+'stplanr::od_id_character' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::od_id_max_min' by
+'stplanr::od_id_max_min' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'od::od_oneway' by 'stplanr::od_oneway' when
+loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'ggplot2::geom_line' by 'rsgeo::geom_line'
+when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'ggplot2::geom_polygon' by
+'rsgeo::geom_polygon' when loading 'networkmerge'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: replacing previous import 'ggplot2::geom_point' by 'rsgeo::geom_point'
+when loading 'networkmerge'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>requirements_txt <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">"requirements.txt"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if Python is installed:</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"reticulate"</span>)) {</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"reticulate"</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># See reticulate documentation to use a specific Python version:</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ?reticulate::install_python()</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">install_python</span>(<span class="st">"3.12.4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Installing pyenv ...
 Done! pyenv has been installed to '/home/runner/.local/share/r-reticulate/pyenv/bin/pyenv'.</code></pre>
@@ -273,8 +300,8 @@ Done! pyenv has been installed to '/home/runner/.local/share/r-reticulate/pyenv/
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "/home/runner/.pyenv/versions/3.12.4/bin/python3.12"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python dependencies with reticulate:</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python dependencies with reticulate:</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">py_install</span>(requirements_txt, <span class="at">pip =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Using Python: /home/runner/.pyenv/versions/3.12.4/bin/python3.12
 Creating virtual environment '~/.virtualenvs/r-reticulate' ... </code></pre>
