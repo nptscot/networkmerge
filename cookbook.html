@@ -179,19 +179,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#skeletonize-simplification" id="toc-skeletonize-simplification" class="nav-link" data-scroll-target="#skeletonize-simplification"><span class="header-section-number">3.1</span> Skeletonize simplification</a></li>
   <li><a href="#voronoi-simplification" id="toc-voronoi-simplification" class="nav-link" data-scroll-target="#voronoi-simplification"><span class="header-section-number">3.2</span> Voronoi simplification</a></li>
   </ul></li>
-  <li><a href="#helper-script" id="toc-helper-script" class="nav-link" data-scroll-target="#helper-script"><span class="header-section-number">4</span> Helper script</a>
+  <li><a href="#helper-scripts" id="toc-helper-scripts" class="nav-link" data-scroll-target="#helper-scripts"><span class="header-section-number">4</span> Helper scripts</a>
   <ul class="collapse">
-  <li><a href="#find-the-helper-script" id="toc-find-the-helper-script" class="nav-link" data-scroll-target="#find-the-helper-script"><span class="header-section-number">4.1</span> Find the helper script</a></li>
-  <li><a href="#copy-the-helper-script" id="toc-copy-the-helper-script" class="nav-link" data-scroll-target="#copy-the-helper-script"><span class="header-section-number">4.2</span> Copy the helper script</a></li>
-  <li><a href="#run-the-helper-script" id="toc-run-the-helper-script" class="nav-link" data-scroll-target="#run-the-helper-script"><span class="header-section-number">4.3</span> Run the helper script</a></li>
+  <li><a href="#find-the-run.sh-helper-script" id="toc-find-the-run.sh-helper-script" class="nav-link" data-scroll-target="#find-the-run.sh-helper-script"><span class="header-section-number">4.1</span> Find the <code>run.sh</code> helper script</a></li>
+  <li><a href="#copy-the-run.sh-helper-script" id="toc-copy-the-run.sh-helper-script" class="nav-link" data-scroll-target="#copy-the-run.sh-helper-script"><span class="header-section-number">4.2</span> Copy the <code>run.sh</code> helper script</a></li>
+  <li><a href="#run-the-run.sh-helper-script" id="toc-run-the-run.sh-helper-script" class="nav-link" data-scroll-target="#run-the-run.sh-helper-script"><span class="header-section-number">4.3</span> Run the <code>run.sh</code> helper script</a></li>
   <li><a href="#what-does-the-helper-run.sh-do" id="toc-what-does-the-helper-run.sh-do" class="nav-link" data-scroll-target="#what-does-the-helper-run.sh-do"><span class="header-section-number">4.4</span> What does the helper <code>run.sh</code> do?</a>
   <ul class="collapse">
   <li><a href="#set-up-environment" id="toc-set-up-environment" class="nav-link" data-scroll-target="#set-up-environment"><span class="header-section-number">4.4.1</span> Set up environment</a></li>
   <li><a href="#archive-previous-files" id="toc-archive-previous-files" class="nav-link" data-scroll-target="#archive-previous-files"><span class="header-section-number">4.4.2</span> Archive previous files</a></li>
   <li><a href="#simplify-using-skeletonization" id="toc-simplify-using-skeletonization" class="nav-link" data-scroll-target="#simplify-using-skeletonization"><span class="header-section-number">4.4.3</span> Simplify using skeletonization</a></li>
   <li><a href="#simplify-using-voronoi" id="toc-simplify-using-voronoi" class="nav-link" data-scroll-target="#simplify-using-voronoi"><span class="header-section-number">4.4.4</span> Simplify using Voronoi</a></li>
-  <li><a href="#what-does-this-all-look-like" id="toc-what-does-this-all-look-like" class="nav-link" data-scroll-target="#what-does-this-all-look-like"><span class="header-section-number">4.4.5</span> What does this all look like?</a></li>
+  <li><a href="#what-does-the-full-run.sh-script-look-like" id="toc-what-does-the-full-run.sh-script-look-like" class="nav-link" data-scroll-target="#what-does-the-full-run.sh-script-look-like"><span class="header-section-number">4.4.5</span> What does the full <code>run.sh</code> script look like?</a></li>
   </ul></li>
+  <li><a href="#copy-the-parenx-helper-script" id="toc-copy-the-parenx-helper-script" class="nav-link" data-scroll-target="#copy-the-parenx-helper-script"><span class="header-section-number">4.5</span> Copy the <code>parenx</code> helper script</a></li>
+  <li><a href="#run-the-parenx-helper-script" id="toc-run-the-parenx-helper-script" class="nav-link" data-scroll-target="#run-the-parenx-helper-script"><span class="header-section-number">4.6</span> Run the <code>parenx</code> helper script</a></li>
   </ul></li>
   <li><a href="#acknowledgement" id="toc-acknowledgement" class="nav-link" data-scroll-target="#acknowledgement"><span class="header-section-number">5</span> Acknowledgement</a></li>
   </ul>
@@ -350,17 +352,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">voronoi.py:</span> error: the following arguments are required: inpath</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="helper-script" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Helper script</h1>
-<p>The <code>run.sh</code> helper script sets and installs <code>parenx</code> in a virtual environment, and runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with a number of different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed.</p>
-<section id="find-the-helper-script" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="find-the-helper-script"><span class="header-section-number">4.1</span> Find the helper script</h2>
+<section id="helper-scripts" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Helper scripts</h1>
+<p>The <code>run.sh</code> helper script sets and installs <code>parenx</code> in a virtual environment, and runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with a number of different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed. A second <code>parenx</code> helper script has also been developed which allows the simplification algorithm to be passed as a command line parameter.</p>
+<section id="find-the-run.sh-helper-script" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="find-the-run.sh-helper-script"><span class="header-section-number">4.1</span> Find the <code>run.sh</code> helper script</h2>
 <p>To find it:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> run.sh</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./venv/lib/python3.12/site-packages/parenx/run.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="copy-the-helper-script" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="copy-the-helper-script"><span class="header-section-number">4.2</span> Copy the helper script</h2>
+<section id="copy-the-run.sh-helper-script" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="copy-the-run.sh-helper-script"><span class="header-section-number">4.2</span> Copy the <code>run.sh</code> helper script</h2>
 <p>Copy the helper script to the working directory. If you want to check for its existence copy it to the working directory type:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> run.sh</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ls:</span> cannot access <span class="st">'run.sh'</span>: No such file or directory</span>
@@ -370,8 +372,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Otherwise the following will suffice:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> run.sh <span class="at">-exec</span> cp {} . <span class="dt">\;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="run-the-helper-script" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="run-the-helper-script"><span class="header-section-number">4.3</span> Run the helper script</h2>
+<section id="run-the-run.sh-helper-script" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="run-the-run.sh-helper-script"><span class="header-section-number">4.3</span> Run the <code>run.sh</code> helper script</h2>
 <p>The default runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with a number of parameters, against an OpenStreetMap<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Edinburgh Princes Street road network file (<code>net_princes_street.geojson</code>). It creates a <code>GeoPKG</code><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with three output layers and, if <code>ogr2ogr</code> is installed, <code>GeoJSON</code><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./run.sh</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">simplify</span> ./venv/lib/python3.12/site-packages/parenx/data/rnet_princes_street.geojson</span>
@@ -450,8 +452,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">voronoi.py</span> <span class="va">${INPATH}</span> vr-<span class="va">${OUTPUT}</span>.gpkg</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">voronoi.py</span> <span class="va">${INPATH}</span> vr-<span class="va">${OUTPUT}</span>-simple.gpkg <span class="at">--simplify</span> 1.0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="what-does-this-all-look-like" class="level3" data-number="4.4.5">
-<h3 data-number="4.4.5" class="anchored" data-anchor-id="what-does-this-all-look-like"><span class="header-section-number">4.4.5</span> What does this all look like?</h3>
+<section id="what-does-the-full-run.sh-script-look-like" class="level3" data-number="4.4.5">
+<h3 data-number="4.4.5" class="anchored" data-anchor-id="what-does-the-full-run.sh-script-look-like"><span class="header-section-number">4.4.5</span> What does the full <code>run.sh</code> script look like?</h3>
 <p>Remembering <code>less</code> is <code>more</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> run.sh</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
@@ -510,6 +512,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
 <span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
+</section>
+<section id="copy-the-parenx-helper-script" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="copy-the-parenx-helper-script"><span class="header-section-number">4.5</span> Copy the <code>parenx</code> helper script</h2>
+<p>Copy the <code>parenx</code> helper script to the working directory and make an <code>output</code> directory</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> parenx <span class="at">-type</span> f <span class="at">-exec</span> cp {} . <span class="dt">\;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="run-the-parenx-helper-script" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="run-the-parenx-helper-script"><span class="header-section-number">4.6</span> Run the <code>parenx</code> helper script</h2>
+<p>The following runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts where the algorithm is selected on the command line. It assumes that the environment has been set with a <code>data</code> directory containing the <code>rnet_princes_street.geojson</code>. The simplified network is then created under the <code>output</code> directory as specified on the command line.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./parenx</span> skeletonize ./data/rnet_princes_street.geojson output/rnet_princes_street_skeltonize.gpkg</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./parenx</span> voronoi ./data/rnet_princes_street.geojson output/rnet_princes_street_voronoi.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>All additional parameters supported by the <code>python</code> scripts are also supported. For example, the following will pass the value 4.0 to skeletonize script and retain knots</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./parenx</span> skeletonize data/rnet_princes_street.geojson output/rnet_princes_street_sk.gpkg <span class="at">--scale</span> 4 <span class="at">--knot</span><span class="kw">`</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Application Programming Interface (API) Example</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> <span class="kw">`</span>skeletonize_frame<span class="kw">`</span><span class="ex">,</span> <span class="kw">`</span>voronoi_frame<span class="kw">`</span><span class="ex">,</span> <span class="kw">`</span>primal_frame<span class="kw">`</span> <span class="ex">and</span> <span class="kw">`</span>tile_skeletonize_frame<span class="kw">`</span> <span class="ex">functions</span> are exposed via a simple API.</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="kw">```</span>python</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">import</span> geopandas as gp</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="ex">from</span> parenx import skeletonize_frame, voronoi_frame, skeletonize_tiles, get_primal</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="ex">CRS</span> = <span class="st">"EPSG:27700"</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="ex">filepath</span> = <span class="st">"data/rnet_princes_street.geojson"</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="ex">frame</span> = gp.read_file<span class="er">(</span><span class="ex">filepath</span><span class="kw">)</span><span class="ex">.to_crs</span><span class="er">(</span><span class="ex">CRS</span><span class="kw">)</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="ex">parameter</span> = {<span class="st">"simplify"</span>: 0.0, <span class="st">"buffer"</span>: 8.0, <span class="st">"scale"</span>: 1.0, <span class="st">"knot"</span>: False, <span class="st">"segment"</span>: False}</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="ex">r</span> = skeletonize_frame<span class="er">(</span><span class="va">frame</span><span class="op">[</span><span class="st">"geometry"</span><span class="op">]</span><span class="ex">,</span> parameter<span class="kw">)</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="ex">parameter</span> = {<span class="st">"simplify"</span>: 0.0, <span class="st">"scale"</span>: 5.0, <span class="st">"buffer"</span>: 8.0, <span class="st">"tolerance"</span>: 1.0}</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="ex">r</span> = voronoi_frame<span class="er">(</span><span class="va">frame</span><span class="op">[</span><span class="st">"geometry"</span><span class="op">]</span><span class="ex">,</span> parameter<span class="kw">)</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="ex">primal</span> = get_primal<span class="er">(</span><span class="ex">r</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="acknowledgement" class="level1" data-number="5">
