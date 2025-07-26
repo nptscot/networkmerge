@@ -240,7 +240,7 @@ import geopandas as gp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from parenx.shared import combine_line, get_geometry_buffer, get_nx, get_source_target
+from parenx.shared import combine_line, get_geometry_buffer, get_primal, get_source_target
 from parenx.skeletonize import (
     get_affine_transform,
     get_raster_line,
@@ -733,12 +733,12 @@ The primal network is thus composed of direct lines connecting start and end poi
 
 <!-- ::: {#fig-primal-skeleton layout-ncol="2"} -->
 ```{python}
-otley_edge_sk = get_nx(otley_sk)
+otley_edge_sk = get_primal(otley_sk)
 # otley_edge_sk.plot()
 ```
 
 ```{python}
-armley_edge_sk = get_nx(armley_sk)
+armley_edge_sk = get_primal(armley_sk)
 # armley_edge_sk.plot()
 ```
 
@@ -751,12 +751,12 @@ armley_edge_sk = get_nx(armley_sk)
 
 <!-- ::: {#fig-primal-voronoi layout-ncol="2"} -->
 ```{python}
-otley_edge = get_nx(otley_line)
+otley_edge = get_primal(otley_line)
 # otley_edge.plot()
 ```
 
 ```{python}
-armley_edge = get_nx(armley_line)
+armley_edge = get_primal(armley_line)
 # armley_edge.plot()
 ```
 
@@ -1149,7 +1149,7 @@ if "edinburgh_sk" not in globals():
     edinburgh_line = get_raster_line(edinburgh_point)
     edinburgh_sk = edinburgh_line.map(shapely_transform).map(set_precision_pointone)
     edinburgh_sk = gp.GeoSeries(edinburgh_sk, crs=CRS)
-    edinburgh_edge_sk = get_nx(edinburgh_sk)
+    edinburgh_edge_sk = get_primal(edinburgh_sk)
 
 if "doncaster_sk" not in globals():
     base_doncaster = gp.read_file("./data/rnet_doncaster_rail.geojson").to_crs(CRS)
@@ -1166,7 +1166,7 @@ if "doncaster_sk" not in globals():
     doncaster_line = get_raster_line(doncaster_point)
     doncaster_sk = doncaster_line.map(shapely_transform).map(set_precision_pointone)
     doncaster_sk = gp.GeoSeries(doncaster_sk, crs=CRS)
-    doncaster_edge_sk = get_nx(doncaster_sk)
+    doncaster_edge_sk = get_primal(doncaster_sk)
 ```
 
 ```{python}
@@ -1177,7 +1177,7 @@ if "edinburgh_edge" not in globals():
         edinburgh_voronoi, edinburgh_boundary, edinburgh_geometry, radius
     )
     edinburgh_line = edinburgh_line.simplify(1.0)
-    edinburgh_edge = get_nx(edinburgh_line)
+    edinburgh_edge = get_primal(edinburgh_line)
 
 if "doncaster_edge" not in globals():
     doncaster_boundary = get_geometry_line(doncaster_geometry)
@@ -1186,7 +1186,7 @@ if "doncaster_edge" not in globals():
         doncaster_voronoi, doncaster_boundary, doncaster_geometry, radius
     )
     doncaster_line = doncaster_line.simplify(1.0)
-    doncaster_edge = get_nx(doncaster_line)
+    doncaster_edge = get_primal(doncaster_line)
 ```
 
 ```{python}
