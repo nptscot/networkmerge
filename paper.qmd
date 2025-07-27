@@ -508,6 +508,7 @@ armley_sk = armley_sk.set_crs(CRS)
 Voronoi simplification takes the buffered network segments and converts them into a set of points.
 The edges of these buffers are then segmented into sequences of points.
 From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points.
+For more detail on segmentation and Voronoi simplification see [Methods](https://nptscot.github.io/networkmerge/methods.html#sec-simplification-via-voronoi-polygons).
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 
 
