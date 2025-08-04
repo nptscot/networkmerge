@@ -71,10 +71,29 @@ Done.
 Done.
 
 - [x] **R2.8** Update "Suri et al. n.d." to "10.14778/3494124.3494149".
-- [x] **R2.9** Explain the choice of an 8-meter buffer in section 3.1 and advise users on its specification.
-- [x] **R2.10** Correct typo "skeltonisation" on p.5 l.31.
-- [x] **R2.11** Explain the resolution of the raster component in skeletonisation and its reasoning in the main text.
+
+Done.
+
+- [x] **R2.9** The buffer chosen in section 3.1 is 8. Why? Is it better than 7 or 9? How is this determined? How should a user specify this in their case study?
+
+We have clarified in section 3.1 that the 8 m buffer was chosen to reflect UK road widths, referencing the Design Manual for Roads and Bridges (DMRB) and standard rail track separation. This value is now justified. We also state that the `buffer` argument in the simplification functions can be used to adjust the buffer size depending on reader/user needs in the main body of the paper.
+
+- [x] **R2.10** P.5 l.31 contains a typo "skeltonisation". 
+
+Done.
+
+- [x] **R2.11** This may be in the appendix, which I haven't received, but the main text would also benefit from understanding the resolution of the raster component in skeletonisation and the reasoning behind it. 
+
+We have explained the transformation and how it influences the results, e.g. to reduce the 'wiggliness' of the skeletonized output. We now state in the main body of the paper:
+
+> This scale operation is a uniform affine scale transformation applied to increase the detail contained in the raster image. An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+
+We now include the appendix in the submission.
+
 - [x] **R2.12** Explain the segmentation step of the Voronoi-based approach and its effect on results.
+
+Details were included in the appendix, which is now included in the submission and appropriately referenced in the main body of the paper. 
+
 - [ ] **R2.13** Add titles for columns in figures.
 - [x] **R2.14** Clarify what the "primitive mesh" in Figure 3 is and how it was created.
 - [ ] **R2.15** Enlarge images in Figure 3 for better visibility of differences.
