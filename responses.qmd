@@ -12,24 +12,25 @@ To help the review process, we have numbered each of the reviewers' comments and
 
 # Reviewer 1
 
-- [ ] **R1.1** Expand all sections except "Data and Methods" and "Introduction" (e.g., "Application to Edinburgh City Centre" is only 3 sentences).
+- [ ] **R1.1** With the exception of [Section 3 Data and Methods] (and possibly [Section 1 Introduction]), all sections need a healthy fleshing out. There is simply not enough language, for example [Section 4 Application to Edinburgh City Centre] is only 3 sentences long. 
 
 <!-- TODO: Check over the sections (RL) -->
 
-- [ ] **R1.2** Improve transitions between text sections to reduce choppiness.
+- [ ] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
 
 # Reviewer 2
 
-- [x] **R2.1** Add a section comparing the two algorithms, including performance, limitations, and guidance on when to use each.
+The paper tackles a task that is not easy - the simplification of road networks. While it provides reusable software and two different algorithms that solve the problem at hand, the paper itself lacks some key components that would allow users to properly evaluate the usefulness of this contribution. Please see the points below. 
+
+- [x] **R2.1** My main comment relates to understanding how good these algorithms are and which is actually better. The paper provides no comparison of the two beyond the visual comparison in Figures 2 and 3. Nor does it provide any validation, leaving the reader without a much-needed understanding of the performance of the proposed methods. Do they do the job well? In which cases are they perfect and in which do they struggle? What are the limitations of the resulting geometry? The paper does not answer any of these questions. My suggestion is to include a section with an explicit comparison of the two methods and guidance on which should be used when. 
 
 We have added a new section titled "Skeletonization versus Voronoi" which compares the two algorithms, compares their performance with reference to performance and size.
 Importantly, we now highlight the performance benefits of the skeletonization approach for large networks, also highlighting the smoother output of the Voronoi approach.
 
-- [ ] **R2.2** Compare results to ground truth data.
+- [ ] **R2.2** On top of that, it would be great to see a comparison to some ground truth data (I am not sure if the primal network is not that, see below). 
 
 <!-- TODO:
 We compared the outputs of our simplification methods against an independent and authoritative source of road network data, Ordnance Survey's OpenRoads data product. -->
-
 
 - [x] **R2.3** The parenx API is rather unusual. One would assume that a Python package could be imported and used in memory, but this does not seem to be the case as the only documented API is the CLI. Which is strange in itself. Instead of using something like `parenx skeletonize in.geojson out.geojson` and `parenx voronoi in.geojson out.geojson`, which is a common model, it registers `skeletonize.py` and `voronoi.py`, suggesting a Python file rather than a function name. With proper documentation this is probably fine, I just find these choices really weird and incompatible with the rest of the ecosystem. 
 
@@ -59,22 +60,24 @@ See the appendix for more details on the CLI and the API.
 - We have updated the function names to be more descriptive, e.g. `get_nx()` is now `get_primal()`, matching the description in the paper.
 - We have provided a command-line interface (CLI) that works from shell environments, allowing users to run the methods without needing to write Python code. The CLI uses the command `parenx` and, as the reviewer suggested, takes the algorithm name as the first argument (either `skeletonize` or `voronoi`, without needing the `.py` suffix). 
 
-- [ ] **R2.4** Reconcile the title's focus on "transport planning" with other mentioned applications.
-- [ ] **R2.5** Provide the appendix (cookbook and methods section) for review.
+## Other minor comments
 
-- [x] **R2.6** Remove "->" on p. 2, line 14.
+- [ ] **R2.4** The title says that the algorithms are aimed at transport planning, but in the text the authors also mention other applications. This is a bit confusing. 
+- [ ] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment. 
 
-Done.
-
-- [x] **R2.7** Update "Fleischmann and Vybornova n.d." to "10.5311/JOSIS.2024.28.319".
+- [x] **R2.6**  Line 14 on p. 2 contains "->", which probably should not be there. 
 
 Done.
 
-- [x] **R2.8** Update "Suri et al. n.d." to "10.14778/3494124.3494149".
+- [x] **R2.7**  Fleischmann and Vybornova n.d. seems to have been published in the meantime at 10.5311/JOSIS.2024.28.319. 
 
 Done.
 
-- [x] **R2.9** The buffer chosen in section 3.1 is 8. Why? Is it better than 7 or 9? How is this determined? How should a user specify this in their case study?
+- [x] **R2.8** Suri et al. n.d. also appears to have been published at 10.14778/3494124.3494149. 
+
+Done.
+
+- [x] **R2.9**  The buffer chosen in section 3.1 is 8. Why? Is it better than 7 or 9? How is this determined? How should a user specify this in their case study? 
 
 We have clarified in section 3.1 that the 8 m buffer was chosen to reflect UK road widths, referencing the Design Manual for Roads and Bridges (DMRB) and standard rail track separation. This value is now justified. We also state that the `buffer` argument in the simplification functions can be used to adjust the buffer size depending on reader/user needs in the main body of the paper.
 
@@ -90,13 +93,19 @@ We have explained the transformation and how it influences the results, e.g. to 
 
 We now include the appendix in the submission.
 
-- [x] **R2.12** Explain the segmentation step of the Voronoi-based approach and its effect on results.
+- [x] **R2.12** The same applies to the segmentation step of the Voronoi-based approach, as this can significantly affect the result.
 
 Details were included in the appendix, which is now included in the submission and appropriately referenced in the main body of the paper. 
 
-- [ ] **R2.13** Add titles for columns in figures.
-- [x] **R2.14** Clarify what the "primitive mesh" in Figure 3 is and how it was created.
-- [ ] **R2.15** Enlarge images in Figure 3 for better visibility of differences.
+- [ ] **R2.13**  I would suggest including titles for the columns in the figure for additional clarity and to eliminate the need to refer to the caption. 
+
+- [x] **R2.14** Figure 3 contains a "primitive mesh". What is it, how was it created? It is unclear what we are looking at. 
+
+We have clarified what this means with the following additional sentence:
+
+> This highly simplified network is created by identifying all nodes in the network, counting the edges connected to each node, and removing all nodes that are connected to exactly two edges. Unconnected edges or those at intersections between edges are retained.
+
+- [ ] **R2.15** Figure 3 contains images that are too small and it is difficult to see the differences. 
 
 # Reviewer 3
 
