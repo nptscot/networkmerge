@@ -1,0 +1,76 @@
+---
+title: "Responses to reviewer comments"
+---
+
+Dear Prof. Arribas-Bel, reviewers and editorial team,
+
+We thank you for the opportunity to revise our manuscript and for the constructive feedback provided by the reviewers. We have carefully considered all comments and suggestions and we are confident that the revisions have improved the manuscript. Below, we provide a detailed response to each of the reviewers' comments.
+
+...
+
+To help the review process, we have numbered each of the reviewers' comments and provided our responses with reference to these.
+
+# Reviewer 1
+
+- [ ] **R1.1** Expand all sections except "Data and Methods" and "Introduction" (e.g., "Application to Edinburgh City Centre" is only 3 sentences).
+
+<!-- TODO: Check over the sections (RL) -->
+
+- [ ] **R1.2** Improve transitions between text sections to reduce choppiness.
+
+# Reviewer 2
+
+- [x] **R2.1** Add a section comparing the two algorithms, including performance, limitations, and guidance on when to use each.
+
+We have added a new section titled "Skeletonization versus Voronoi" which compares the two algorithms, compares their performance with reference to performance and size.
+Importantly, we now highlight the performance benefits of the skeletonization approach for large networks, also highlighting the smoother output of the Voronoi approach.
+
+- [ ] **R2.2** Compare results to ground truth data.
+
+<!-- TODO:
+We compared the outputs of our simplification methods against an independent and authoritative source of road network data, Ordnance Survey's OpenRoads data product. -->
+
+
+- [x] **R2.3** Clarify the `parenx` API; address unusual CLI model and `skeletonize.py`/`voronoi.py` naming.
+- [ ] **R2.4** Reconcile the title's focus on "transport planning" with other mentioned applications.
+- [ ] **R2.5** Provide the appendix (cookbook and methods section) for review.
+- [x] **R2.6** Remove "->" on p. 2, line 14.
+- [x] **R2.7** Update "Fleischmann and Vybornova n.d." to "10.5311/JOSIS.2024.28.319".
+- [x] **R2.8** Update "Suri et al. n.d." to "10.14778/3494124.3494149".
+- [x] **R2.9** Explain the choice of an 8-meter buffer in section 3.1 and advise users on its specification.
+- [x] **R2.10** Correct typo "skeltonisation" on p.5 l.31.
+- [x] **R2.11** Explain the resolution of the raster component in skeletonisation and its reasoning in the main text.
+- [x] **R2.12** Explain the segmentation step of the Voronoi-based approach and its effect on results.
+- [ ] **R2.13** Add titles for columns in figures.
+- [x] **R2.14** Clarify what the "primitive mesh" in Figure 3 is and how it was created.
+- [ ] **R2.15** Enlarge images in Figure 3 for better visibility of differences.
+
+# Reviewer 3
+
+- [x] **R3.1** Proofread the text for typos and unfinished sentences.
+- [ ] **R3.2** Provide a clearer interpretation of `parenx` outcomes, especially in the "Edinburgh use case" section.
+- [ ] **R3.3** Clarify the purpose of the paper in the abstract (e.g., presenting `parenx` for route network simplification).
+- [ ] **R3.4** Specify the "new contexts" mentioned in the abstract.
+- [x] **R3.5** Address issue #145.
+- [ ] **R3.6** Clarify difference/overlap between "route network", "transport network data set", and "spatial networks".
+- [ ] **R3.7** Broaden the applicability of route network simplification beyond transport model networks to argue for wider significance.
+- [x] **R3.8** Add a citation for OSM mention.
+- [x] **R3.9** Provide examples of "other applications" for which route network simplification is an "unsolved challenge".
+- [ ] **R3.10** Move the aim of the paper statement earlier in the introduction.
+- [ ] **R3.11** Explain why limitations of the existing approach are presented as a bulleted list in the problem definition. Clarify if they are identical to the problem definition.
+- [ ] **R3.12** Include a "before/after" plot in the problem definition section to explain "simplification".
+- [ ] **R3.13** In "Data and Methods," describe the data in addition to methods, and comment on the Edinburgh City Centre use case.
+- [ ] **R3.14** Introduce references to Figure 2 subfigures in the methods subsections.
+- [x] **R3.15** If the 8-meter buffer for skeletonization is use-case specific, move it to the use case description and justify the choice. If general, explain the reasoning.
+- [x] **R3.16** Complete the last sentence of section 3.1 (skeletonization).
+- [ ] **R3.17** Shorten or move the "joining route networks" subsection to discussion/future work if it's not part of `parenx` or the Edinburgh use case.
+- [ ] **R3.18** Expand the "Application to Edinburgh" section, covering: why this use case, its particularities, goal of simplification, what readers should notice in Figure 4, evaluation of methods, and differences between `parenx` methods.
+- [ ] **R3.19** Rephrase "we believe it has applications.." in the conclusion to be more confident about the applications and specify them.
+
+# Comments from marked-up PDF file
+
+- [ ] ... **PDF1** ... (please refer to the marked-up PDF file for specific comments).
+
+
+# Additional changes made
+
