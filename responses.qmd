@@ -1,5 +1,6 @@
 ---
 title: "Responses to reviewer comments"
+bibliography: bibliography.bib
 ---
 
 Dear Prof. Arribas-Bel, reviewers and editorial team,
@@ -113,18 +114,33 @@ This work addresses a relevant issue, i.e., route network simplification, which 
 
 General comments:
 - [x] **R3.1** the text itself could use a fresh pair of eyes for revision due to several typoes, unfinished sentences, etc.
+
+We have carefully proofread the text and fixed all typos, unfinished sentences, and other minor issues.
+
 - [ ] **R3.2** i answered "no" to the question above, "Are the interpretations and conclusions justified by the results?", mostly because i think there needs to be a more clear *interpretation* of parenx outcomes, see my comments on the "edinburgh use case" section below
+
+
 
 ## abstract
 - [ ] **R3.3** can it be made more clear what the _purpose_ of the paper is? (presenting parenx which enables the simplification of route networks by 2 methods, ...)
 - [ ] **R3.4** "new contexts" >> which contexts? (more specific?)
 
 ## introduction
-- [ ] **R3.6** would be good to re-do the definitions used here to be more clear and concise. e.g. the nodes/edges/lines sentence with the several parentheses is a bit hard to read and somewhat circular in its definitions. Potentially helpful to refer to a plot here? (if there is space for more plots)
+- [x] **R3.6** would be good to re-do the definitions used here to be more clear and concise. e.g. the nodes/edges/lines sentence with the several parentheses is a bit hard to read and somewhat circular in its definitions. Potentially helpful to refer to a plot here? (if there is space for more plots)
+
+<!-- TODO: check. https://github.com/nptscot/networkmerge/issues/145 -->
+We have rephrased the definitions to be clearer and more concise.
+
 - [ ] **R3.7** also be more clear about difference/overlap between "route network", "transport network data set", "spatial networks" etc.
 - [ ] **R3.8** "Route network simplification can be applied to transport model networks" >> i would argue that route network simplification can be applied to many more contexts (basically anywhere that spatial networks are used) -- could help argue for the significance of the work?
 - [x] **R3.9** OSM mention: add citation
+
+Done, and now cited following best practices [@openstreetmap]
+
 - [x] **R3.10** "unsolved challenge for other applications" >> say which (or give at least some examples)
+
+
+
 - [ ] **R3.11** "The aim of this paper..." >> this sentence/its contents should ideally come earlier / as early as possible (first page of paper)
 
 ## problem definition
@@ -157,3 +173,4 @@ This section seems way too short, i would suggest to say more here (if word limi
 
 # Additional changes made
 
+# References
