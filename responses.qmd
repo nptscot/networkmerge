@@ -140,6 +140,9 @@ Done, and now cited following best practices [@openstreetmap]
 
 - [x] **R3.9** "unsolved challenge for other applications" >> say which (or give at least some examples)
 
+We have added the following sentences.
+
+> This approach was taken as we could only find a few examples for the aggregation and simplification of linear features, especially with transport and planning networks. However, as this general approach is based on the application of techniques used for image simplification, it can be applied to any overlapping linear features where aggregation is appropriate. For example, simplification of transport or other flow networks to produce an aggregated route-view as the basis for capacity analysis. Whether that is for active-transport, rail, road or other logical network flows.
 
 
 - [ ] **R3.10** "The aim of this paper..." >> this sentence/its contents should ideally come earlier / as early as possible (first page of paper)
@@ -152,7 +155,13 @@ Done, and now cited following best practices [@openstreetmap]
 - [ ] **R3.13** this section only describes methods, what about the data? could be a place to also comment on the edinburgh city center use case?
 - [ ] **R3.14** Introduce references to (subfigures of) Figure 2 in the methods subsections
 - [x] **R3.15** skeletonization buffer size 8 meters: at first glance this seems to me use-case specific, not part of methods? so: if this is a location-based choice, i would suggest to move it to the use case description and there argue why 8m was chosen. if this is a general recommendation for future parenx use i would leave this here but then comment on the reasoning behind the choice of the buffer size
+
+See our response to **R2.9**. We have clarified that the 8 m buffer is informed by UK road widths and rail track separation, and that it can be adjusted using the `buffer` parameter in the simplification functions.
+
 - [x] **R3.16** skeletonization: last sentence of section 3.1. is cut short
+
+Typo fixed.
+
 - [ ] **R3.17** joining route networks: if this is not part of parenx (if i grasped this correctly) and also not part of the Edinburgh use case (?), then maybe this can be shortened/doesn't need its own subsection? (Could be moved to discussion/future work?)
 
 ## Application to Edinburgh
