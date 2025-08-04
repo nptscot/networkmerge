@@ -31,13 +31,11 @@ Importantly, we now highlight the performance benefits of the skeletonization ap
 We compared the outputs of our simplification methods against an independent and authoritative source of road network data, Ordnance Survey's OpenRoads data product. -->
 
 
-- [x] **R2.3** Clarify the `parenx` API; address unusual CLI model and `skeletonize.py`/`voronoi.py` naming.
+- [x] **R2.3** The parenx API is rather unusual. One would assume that a Python package could be imported and used in memory, but this does not seem to be the case as the only documented API is the CLI. Which is strange in itself. Instead of using something like `parenx skeletonize in.geojson out.geojson` and `parenx voronoi in.geojson out.geojson`, which is a common model, it registers `skeletonize.py` and `voronoi.py`, suggesting a Python file rather than a function name. With proper documentation this is probably fine, I just find these choices really weird and incompatible with the rest of the ecosystem. 
 
 We have updated the implementation of the methods in the `parenx` package, which has been updated on PyPI and GitHub:
 
-- We have updated the function names to be more descriptive, e.g. `get_nx()` is now `get_primal()`, matching the description in the paper.
-- We have provided a command-line interface (CLI) that works from shell environments, allowing users to run the methods without needing to write Python code. The CLI uses the command `parenx` and, as the reviewer suggested, takes the algorithm name as the first argument (either `skeletonize` or `voronoi`, without needing the `.py` suffix). 
-- The package now exposes the core simplfication functions in the `parenx` namespace, so users and developers can import them directly in their Python code. The following now works thanks to this change, which previously would generate an error:
+- The package now exposes the core simplfication functions in the `parenx` namespace, so users and developers can import them directly in their Python code. These improvements are highlighted in the following example from the updated `parenx` documentation (previously this would have generated an error):
 
 ```python
 import geopandas as gp
@@ -58,10 +56,20 @@ primal = get_primal(r)
 
 See the appendix for more details on the CLI and the API.
 
+- We have updated the function names to be more descriptive, e.g. `get_nx()` is now `get_primal()`, matching the description in the paper.
+- We have provided a command-line interface (CLI) that works from shell environments, allowing users to run the methods without needing to write Python code. The CLI uses the command `parenx` and, as the reviewer suggested, takes the algorithm name as the first argument (either `skeletonize` or `voronoi`, without needing the `.py` suffix). 
+
 - [ ] **R2.4** Reconcile the title's focus on "transport planning" with other mentioned applications.
 - [ ] **R2.5** Provide the appendix (cookbook and methods section) for review.
+
 - [x] **R2.6** Remove "->" on p. 2, line 14.
+
+Done.
+
 - [x] **R2.7** Update "Fleischmann and Vybornova n.d." to "10.5311/JOSIS.2024.28.319".
+
+Done.
+
 - [x] **R2.8** Update "Suri et al. n.d." to "10.14778/3494124.3494149".
 - [x] **R2.9** Explain the choice of an 8-meter buffer in section 3.1 and advise users on its specification.
 - [x] **R2.10** Correct typo "skeltonisation" on p.5 l.31.
