@@ -67,7 +67,7 @@ We agree that there was an element of 'trying to ride two horses at once' and te
 We have decided to keep the title focused on transport planning, as this is the primary application of the methods, and we have made it clear that the mention of other applications is to highlight the general applicability of the approach, outside the scope of this paper.
 The introduction now states:
 
-> While the focus of this paper is on route network simplification for transport planning, it is worth noting that the general approach can be applied to other types of linear features.
+> While the focus of this paper is on route network simplification for transport planning, and applications to other fields are beyond its scope, it is worth noting prior research tackling the challenge of simplifying linear features in other domains.
 
 - [ ] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment. 
 
