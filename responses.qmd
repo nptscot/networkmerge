@@ -5,9 +5,7 @@ bibliography: bibliography.bib
 
 Dear Prof. Arribas-Bel, reviewers and editorial team,
 
-We thank you for the opportunity to revise our manuscript and for the constructive feedback provided by the reviewers. We have carefully considered all comments and suggestions and we are confident that the revisions have improved the manuscript. Below, we provide a detailed response to each of the reviewers' comments.
-
-...
+We thank you for the opportunity to revise our manuscript and for the constructive feedback provided by the reviewers. We have carefully considered all comments and suggestions. We are confident that the revisions have improved the manuscript. Below, we provide a detailed response to each of the reviewers' comments.
 
 To help the review process, we have numbered each of the reviewers' comments and provided our responses with reference to these.
 
@@ -63,7 +61,14 @@ See the appendix for more details on the CLI and the API.
 
 ## Other minor comments
 
-- [ ] **R2.4** The title says that the algorithms are aimed at transport planning, but in the text the authors also mention other applications. This is a bit confusing. 
+- [x] **R2.4** The title says that the algorithms are aimed at transport planning, but in the text the authors also mention other applications. This is a bit confusing. 
+
+We agree that there was an element of 'trying to ride two horses at once' and tension between the title and the paragraph in the introduction on other applications.
+We have decided to keep the title focused on transport planning, as this is the primary application of the methods, and we have made it clear that the mention of other applications is to highlight the general applicability of the approach, outside the scope of this paper.
+The introduction now states:
+
+> While the focus of this paper is on route network simplification for transport planning, it is worth noting that the general approach can be applied to other types of linear features.
+
 - [ ] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment. 
 
 - [x] **R2.6**  Line 14 on p. 2 contains "->", which probably should not be there. 
