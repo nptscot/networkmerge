@@ -11,11 +11,29 @@ To help the review process, we have numbered each of the reviewers' comments and
 
 # Reviewer 1
 
-- [ ] **R1.1** With the exception of [Section 3 Data and Methods] (and possibly [Section 1 Introduction]), all sections need a healthy fleshing out. There is simply not enough language, for example [Section 4 Application to Edinburgh City Centre] is only 3 sentences long. 
+- [x] **R1.1** With the exception of [Section 3 Data and Methods] (and possibly [Section 1 Introduction]), all sections need a healthy fleshing out. There is simply not enough language, for example [Section 4 Application to Edinburgh City Centre] is only 3 sentences long. 
 
-<!-- TODO: Check over the sections (RL) -->
+We agree, the paper was overly terse in places.
+This was largely by design, as a technical paper we wanted to focus on the methods and let the code speak for itself.
+But having carefully considered the reviewer's comments, we have added more detail to the paper, particularly in the "Application to Edinburgh" section, which now includes a more detailed description of the use case, the goals of the simplification process, and a discussion of the results.
+We have also fleshed out other sections and improved the general flow of the paper and key aspects such as the abstract and introduction.
 
-- [ ] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
+- [x] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
+
+Similar to the previous comment, we have improved the flow of the paper by adding transitions and clarifying the connections between sections. We have also ensured that the text reads more smoothly and coherently. For example we:
+
+- Added a signpost in Data and Methods after the two-challenge list to lead into geometry first ("We address the geometric simplification first...").
+- Rewrote the skeletonization opening to a clean buffer step: "As a common first step, we buffer the lines in a projected coordinate system."
+- Clarified overlap targeting: "only where more than one buffered line segment overlaps."
+- Bridged segmentation -> scaling: added "To mitigate rasterization artefacts, we increase resolution via a uniform affine scale..." and explained the trade-off.
+- Smoothed the hole-removal and skeletonization-to-vector sentences for a single, continuous flow.
+- Rephrased the point-to-line reconstruction with a lead-in and tightened wording. We also noted it as the most complex stage.
+- Introduced the Voronoi approach ("In contrast to skeletonization...") and tightened the selection criteria for retained edges.
+- Clarified the Post-Processing purpose and defined "knots" succinctly.
+- Added a short bridge at the start of "Skeletonization versus Voronoi" to frame trade-offs.
+- Added a transition at the start of "Joining route networks" (shift from geometry to attributes).
+- Inserted a one-line signpost in the Edinburgh application about using consistent parameters for fair comparison.
+- Aligned Data Availability with the repository link and CI-based reproducibility language.
 
 # Reviewer 2
 
@@ -67,7 +85,7 @@ We agree that there was an element of 'trying to ride two horses at once' and te
 We have decided to keep the title focused on transport planning, as this is the primary application of the methods, and we have made it clear that the mention of other applications is to highlight the general applicability of the approach, outside the scope of this paper.
 The introduction now states:
 
-> While the focus of this paper is on route network simplification for transport planning, it is worth noting that the general approach can be applied to other types of linear features.
+> While the focus of this paper is on route network simplification for transport planning, and applications to other fields are beyond its scope, it is worth noting prior research tackling the challenge of simplifying linear features in other domains.
 
 - [ ] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment. 
 
@@ -187,5 +205,7 @@ This section seems way too short, i would suggest to say more here (if word limi
 
 
 # Additional changes made
+
+OpenStreetMap is now cited more appropriately, in the Introduction rather than in the abstract.
 
 # References
