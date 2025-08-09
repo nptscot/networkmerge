@@ -91,13 +91,6 @@
     "text": "3.4 Skeletonization versus Voronoi\nWith both pipelines defined, we summarize known limitations and performance trade-offs. Both the skeletonization and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification. Additionally, the resulting lines can be wobbly. The simplification process is memory- and CPU-intensive, and its speed depends on network density and overlap. On commodity hardware, simplifying a core urban road network of 1 km extent takes about 5 seconds, while a 3 km urban core takes between 30 and 60 seconds. Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.1 times slower than skeletonization.\nBased on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonization algorithm is preferred for larger areas (such as 100 km²). Notably, skeletonization of the entire British rail center-line network took about 5 hours."
   },
   {
-    "objectID": "paper.html#sec-joining-route-networks",
-    "href": "paper.html#sec-joining-route-networks",
-    "title": "Route network simplification for transport planning",
-    "section": "3.5 Joining route networks",
-    "text": "3.5 Joining route networks\nHaving simplified the geometry, we next consider how to transfer attributes from the detailed network to the simplified one.   In the context of network planning tools, the purpose of the joining stage is to join traffic estimates from the source network onto the geometrically simplified target network (Sutton 1998).  \n\nIn this case there is no definitive key, meaning that network joining can be regarded as a ‘fuzzy’ or ‘keyless’ join process (Suri et al., n.d.; Wachowicz and Mrozek 2019): as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join. There are at least a couple of implementations of network joining methods in open source software: the rnet_merge() function in the stplanr R package (Lovelace, Ellison, and Morgan 2019), and the rnetmatch Rust crate for which has bindings to R and Python are planned. The details of network joining methods, algorithms and implementations are outside the scope of this paper, see the documentation associated with the projects mentioned above for more information."
-  },
-  {
     "objectID": "cookbook.html",
     "href": "cookbook.html",
     "title": "How to use the parenx module scripts to simplify linear network features",
