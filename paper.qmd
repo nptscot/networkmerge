@@ -98,7 +98,6 @@ Recent work in this area includes the `neatnet` Python package [@fleischmann2024
 Other related methods focus on identifying and removing specific types of network artefacts, such as small loops or 'slivers' between dual carriageways to simplify street blocks [@fleischmann; @grippa2018].
 However, these methods often lack the flexibility to control the level of simplification.
 
-
 While the focus of this paper is on route network simplification for transport planning, and applications to other fields are beyond its scope, it is worth noting prior research tackling the challenge of simplifying linear features in other domains.
 In hydrology, for example, researchers require simplified centrelines of rivers derived from datasets representing river banks for applications such as flood mapping and morphological analysis, with implementations in tools like the R package `cmgo` [@golly2017] and RivWidthCloud for Google Earth Engine [@yang2020].
 The `riverdist` R package also provides functionality to simplify braided river channels into a single path [@tyers2016].

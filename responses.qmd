@@ -11,11 +11,16 @@ To help the review process, we have numbered each of the reviewers' comments and
 
 # Reviewer 1
 
-- [ ] **R1.1** With the exception of [Section 3 Data and Methods] (and possibly [Section 1 Introduction]), all sections need a healthy fleshing out. There is simply not enough language, for example [Section 4 Application to Edinburgh City Centre] is only 3 sentences long. 
+- [x] **R1.1** With the exception of [Section 3 Data and Methods] (and possibly [Section 1 Introduction]), all sections need a healthy fleshing out. There is simply not enough language, for example [Section 4 Application to Edinburgh City Centre] is only 3 sentences long. 
 
-<!-- TODO: Check over the sections (RL) -->
+We agree, the paper was overly terse in places.
+This was largely by design, as a technical paper we wanted to focus on the methods and let the code speak for itself.
+But having carefully considered the reviewer's comments, we have added more detail to the paper, particularly in the "Application to Edinburgh" section, which now includes a more detailed description of the use case, the goals of the simplification process, and a discussion of the results.
+We have also fleshed out other sections and improved the general flow of the paper and key aspects such as the abstract and introduction.
 
-- [ ] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
+- [x] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
+
+Similar to the previous comment, we have improved the flow of the paper by adding transitions and clarifying the connections between sections. We have also ensured that the text reads more smoothly and coherently.
 
 # Reviewer 2
 
