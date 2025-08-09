@@ -66,7 +66,7 @@ You can then add citations with Ctrl+Shift+F11 and benefit from Quarto's other f
 # Abstract {.unnumbered}
 
 Route network datasets are fundamental to transport models, serving as both inputs for analysis and outputs for visualisation and decision-making.
-The increasing complexity of route network data from sources like OpenStreetMap [@openstreetmap] allows for more detailed modelling of sustainable transport modes such as walking and cycling.
+The increasing complexity of route network data from sources like OpenStreetMap allows for more detailed modelling of sustainable transport modes such as walking and cycling.
 However, this level of detail can introduce challenges for the clear visualisation and interpretation of model results.
 A common problem is the representation of single transport corridors by multiple parallel lines, which can create visual clutter and obscure important patterns in transport flows.
 This paper addresses these issues by presenting and evaluating two distinct methods for simplifying complex route networks: 1) a raster-based approach using image skeletonization, and 2) a vector-based approach using Voronoi diagrams to identify centrelines.
@@ -82,7 +82,7 @@ More specifically, transport network datasets are *spatial networks* composed of
 In practice, these components are geographically located, with edges representing the physical infrastructure of the transport network, often enriched with attributes like the type of way (e.g., motorway, cycle path), its physical characteristics, and usage data such as daily traffic volumes.
 Accordingly, route network simplification can be applied to both input and output networks, aiming to reduce complexity while preserving the essential spatial structure and relevant attributes of the network.
 
-The growing availability of high-resolution geographic datasets, from open sources like OpenStreetMap and authoritative mapping agencies, has enabled the creation of increasingly detailed maps.
+The growing availability of high-resolution geographic datasets, from open sources including OpenStreetMap [@openstreetmap] and government-funded mapping agencies, has enabled the creation of increasingly detailed maps.
 This trend, powered by advances in hardware and software, is beneficial for sustainable transport planning, which relies on accurate and detailed network information.
 However, the very intricacy of modern street network geometries can create significant problems.
 For transport model outputs to be useful to planners and the public, a clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.

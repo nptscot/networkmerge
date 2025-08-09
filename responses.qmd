@@ -20,18 +20,16 @@ We have also fleshed out other sections and improved the general flow of the pap
 
 - [x] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
 
-Similar to the previous comment, we have improved the flow of the paper by adding transitions and clarifying the connections between sections. We have also ensured that the text reads more smoothly and coherently.
-
-Specifically, we:
+Similar to the previous comment, we have improved the flow of the paper by adding transitions and clarifying the connections between sections. We have also ensured that the text reads more smoothly and coherently. For example we:
 
 - Added a signpost in Data and Methods after the two-challenge list to lead into geometry first ("We address the geometric simplification first...").
 - Rewrote the skeletonization opening to a clean buffer step: "As a common first step, we buffer the lines in a projected coordinate system."
 - Clarified overlap targeting: "only where more than one buffered line segment overlaps."
-- Bridged segmentation -> scaling: added "To mitigate rasterization artefacts, we increase resolution via a uniform affine scale…" and explained the trade-off.
+- Bridged segmentation -> scaling: added "To mitigate rasterization artefacts, we increase resolution via a uniform affine scale..." and explained the trade-off.
 - Smoothed the hole-removal and skeletonization-to-vector sentences for a single, continuous flow.
-- Rephrased the point-to-line reconstruction with a lead-in and tightened wording; noted it as the most complex stage.
-- Introduced a contrastive lead for Voronoi ("In contrast to skeletonization…") and tightened the selection criteria for retained edges.
-- Clarified the Post-Processing purpose and defined “knots” succinctly.
+- Rephrased the point-to-line reconstruction with a lead-in and tightened wording. We also noted it as the most complex stage.
+- Introduced the Voronoi approach ("In contrast to skeletonization...") and tightened the selection criteria for retained edges.
+- Clarified the Post-Processing purpose and defined "knots" succinctly.
 - Added a short bridge at the start of "Skeletonization versus Voronoi" to frame trade-offs.
 - Added a transition at the start of "Joining route networks" (shift from geometry to attributes).
 - Inserted a one-line signpost in the Edinburgh application about using consistent parameters for fair comparison.
@@ -207,5 +205,7 @@ This section seems way too short, i would suggest to say more here (if word limi
 
 
 # Additional changes made
+
+OpenStreetMap is now cited more appropriately, in the Introduction rather than in the abstract.
 
 # References
