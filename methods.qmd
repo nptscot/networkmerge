@@ -189,7 +189,7 @@ import geopandas as gp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from parenx.shared import combine_line, get_geometry_buffer, get_nx, get_source_target
+from parenx.shared import combine_line, get_geometry_buffer, get_primal, get_source_target
 from parenx.skeletonize import (
     get_affine_transform,
     get_raster_line,
@@ -754,12 +754,12 @@ The primal networks for the Otley Road and Armley Road skeletonized networks are
 
 ::: {#fig-primal-skeleton layout-ncol="2"}
 ```{python}
-otley_edge_sk = get_nx(otley_sk)
+otley_edge_sk = get_primal(otley_sk)
 otley_edge_sk.plot()
 ```
 
 ```{python}
-armley_edge_sk = get_nx(armley_sk)
+armley_edge_sk = get_primal(armley_sk)
 armley_edge_sk.plot()
 ```
 
@@ -772,12 +772,12 @@ Primal skeletonized networks for the Otley Road (left) and Armley Road (right) n
 
 ::: {#fig-primal-voronoi layout-ncol="2"}
 ```{python}
-otley_edge = get_nx(otley_line)
+otley_edge = get_primal(otley_line)
 otley_edge.plot()
 ```
 
 ```{python}
-armley_edge = get_nx(armley_line)
+armley_edge = get_primal(armley_line)
 armley_edge.plot()
 ```
 

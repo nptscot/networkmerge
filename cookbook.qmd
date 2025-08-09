@@ -190,10 +190,10 @@ usage: voronoi.py [-h] [--simplify SIMPLIFY] [--scale SCALE] [--buffer BUFFER] [
 voronoi.py: error: the following arguments are required: inpath
 ```
 
-# Helper script
-The `run.sh` helper script sets and installs `parenx` in a virtual environment, and runs the `skeletonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed.
+# Helper scripts
+The `run.sh` helper script sets and installs `parenx` in a virtual environment, and runs the `skeletonize` and `voronoi` simplification scripts with a number of different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. A second `parenx` helper script has also been developed which allows the simplification algorithm to be passed as a command line parameter.
 
-## Find the helper script
+## Find the `run.sh` helper script
 To find it:
 
 ```bash
@@ -201,7 +201,7 @@ find . -name run.sh
 ./venv/lib/python3.12/site-packages/parenx/run.sh
 ```
 
-## Copy the helper script
+## Copy the `run.sh` helper script
 
 Copy the helper script to the working directory. If you want to check for its existence copy it to the working directory type:
 ```bash
@@ -217,7 +217,7 @@ Otherwise the following will suffice:
 find . -name run.sh -exec cp {} . \;
 ```
 
-## Run the helper script
+## Run the `run.sh` helper script
 The default runs the `skeletonize` and `voronoi` simplification scripts with a number of parameters, against an OpenStreetMap[^4] Edinburgh Princes Street road network file (`net_princes_street.geojson`). It creates a `GeoPKG`[^5] with three output layers and, if `ogr2ogr` is installed, `GeoJSON`[^6].
 
 ```bash
@@ -313,7 +313,7 @@ voronoi.py ${INPATH} vr-${OUTPUT}.gpkg
 voronoi.py ${INPATH} vr-${OUTPUT}-simple.gpkg --simplify 1.0
 ```
 
-### What does this all look like?
+### What does the full `run.sh` script look like?
 
 Remembering `less` is `more`:
 ```bash
@@ -374,6 +374,56 @@ if [ x"${OGR2OGR}" != x ]; then
     done
 fi
 ```
+
+## Copy the `parenx` helper script
+
+Copy the `parenx` helper script to the working directory and make an `output` directory
+
+```bash
+find . -name parenx -type f -exec cp {} . \;
+mkdir output
+```
+
+## Run the `parenx` helper script
+The following runs the `skeletonize` and `voronoi` simplification scripts where the algorithm is selected on the command line.
+It assumes that the environment has been set with a `data` directory containing the `rnet_princes_street.geojson`.
+The simplified network is then created under the `output` directory as specified on the command line.
+
+```bash
+./parenx skeletonize ./data/rnet_princes_street.geojson output/rnet_princes_street_skeltonize.gpkg
+./parenx voronoi ./data/rnet_princes_street.geojson output/rnet_princes_street_voronoi.gpkg
+```
+
+All additional parameters supported by the `python` scripts are also supported.
+For example, the following will pass the value 4.0 to skeletonize script and retain knots
+
+```bash
+./parenx skeletonize data/rnet_princes_street.geojson output/rnet_princes_street_sk.gpkg --scale 4 --knot`
+
+
+## Application Programming Interface (API) Example
+
+The `skeletonize_frame`, `voronoi_frame`, `primal_frame` and `tile_skeletonize_frame` functions are exposed via a simple API.
+
+```python
+#!/usr/bin/env python3
+
+import geopandas as gp
+from parenx import skeletonize_frame, voronoi_frame, skeletonize_tiles, get_primal
+
+CRS = "EPSG:27700"
+filepath = "data/rnet_princes_street.geojson"
+frame = gp.read_file(filepath).to_crs(CRS)
+
+parameter = {"simplify": 0.0, "buffer": 8.0, "scale": 1.0, "knot": False, "segment": False}
+r = skeletonize_frame(frame["geometry"], parameter)
+
+parameter = {"simplify": 0.0, "scale": 5.0, "buffer": 8.0, "tolerance": 1.0}
+r = voronoi_frame(frame["geometry"], parameter)
+
+primal = get_primal(r)
+```
+
 
 # Acknowledgement
 
