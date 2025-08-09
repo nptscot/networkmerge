@@ -788,7 +788,6 @@ Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.
 Based on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonization algorithm is preferred for larger areas (such as 100 km²).
 Notably, skeletonization of the entire British rail center-line network took about 5 hours.
 
-## Joining route networks {#sec-joining-route-networks}
 
 Having simplified the geometry, we next consider how to transfer attributes from the detailed network to the simplified one.
 <!-- described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one.
@@ -1342,6 +1341,11 @@ This could include recursive thinning algorithms like the grassfire algorithm [@
 Another important area for development is performance enhancement.
 In particular, the speed of the process could be improved through parallelisation, implementation in lower-level programming languages such as Rust, or further optimisation of the core algorithms.
 <!-- TODO: Mention the challenge of attribute conflation as a key area for future work, as it's a complex problem that this paper only touches on. -->
+
+A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
+This was not part of `parenx` and was not used in the Edinburgh application.
+However, we note that tools for this purpose exist, including the `rnet_merge()` function in the `stplanr` R package [@lovelace2019] and `anime` Rust crate for fast and flexible many-to-many segment matching, a robust basis for attribute joins [@parry_josiahparryanime_2025].
+Describing different joining strategies and implementations would be a logical next step for future work.
 
 The methods presented in this paper were initially developed to support the Network Planning Tool for Scotland, where they provide a strong evidence base for data-driven investment in active travel infrastructure.
 However, their applicability extends far beyond this initial use case.
