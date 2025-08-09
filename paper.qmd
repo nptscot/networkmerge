@@ -180,6 +180,7 @@ There are two main challenges that need to be overcome to simplify transport net
 1.  Simplifying the *geometry*
 2.  Assigning attributes to the simplified network
 
+We address the geometric simplification first, describing skeletonization and then a Voronoi-based approach.
 The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 <!-- To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network.
 This is covered in @sec-joining-route-networks. -->
@@ -200,7 +201,7 @@ The skeletonization approach generates a simplified network by buffering the net
 
 <!--- ### Create a projected combined buffered geometry --->
 
-In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system.
+As a common first step, we buffer the lines in a projected coordinate system.
 <!-- , achieved using the `get_geometry_buffer` function. -->
 We use a buffer size of 8 m in this paper. This value is informed by typical widths of a UK two-lane highway with an example for a typical 2-way road being specified in the [Design Manual for Roads and Bridges (DMRB)](https://assets.publishing.service.gov.uk/media/5a7e0035ed915d74e6223743/pdfmanforstreets.pdf#page=81) as "min 4.8 m, max 8.8 m" and the minimum GB rail centre-line track separation of 3.26m, and two sections of 1.435m standard gauge.
 This parameter can be adjusted to suit the use case and local contexts, using the `buffer` parameter of the simplification functions.
@@ -266,7 +267,7 @@ armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_siz
 In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
 
-In detail, skeletonization is only applied where more than line-segment buffer overlaps.
+Specifically, we apply skeletonization only where more than one buffered line segment overlaps.
 To identify overlapping line-segments, the buffer is split at the end of each line-segment.
 The overlapping line-segments are then buffered while retaining the remaining disjoint lines.
 
@@ -359,11 +360,12 @@ except AttributeError:
 <!-- Segmented line-buffer geometries (top) and geometries to be skeletonized (bottom) for the Otley Road (left) and Armley Road (right) networks. -->
 <!-- ::: -->
 
+To mitigate rasterization artefacts introduced by this step, we increase resolution via a uniform affine scale before thinning.
 As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
 This scale operation is a uniform affine scale transformation applied to increase the detail contained in the raster image. An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
 
-The raster image also requires pre-processing to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
-The skeletonization algorithm is then applied to the raster image yielding a skeletal raster image and converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
+Additionally, we pre-process the raster to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
+The skeletonization algorithm is then applied to the raster image, yielding a skeletal raster image that is converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 
 ```{python}
 import rasterio.features as rif
@@ -446,13 +448,13 @@ armley_transform = armley_point.map(shapely_transform).map(set_precision_pointon
 ::: -->
 ```
 
-Adjacent points are identifed, typically within a 1x1 pixel square, based on proximity within the raster image coordinate system.
+After thinning, we convert the skeleton back to vectors by connecting adjacent pixels into segments and merging them into continuous lines.
 Line segments are then created by connecting these adjacent points.
-These points are combined, giving a continuous line geometry representing the simplified network.
+These segments are combined, giving a continuous line geometry representing the simplified network.
 Finally, a reverse scaling affine transformation is applied to return to the original coordinate system.
 <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
 
-It should be noted that creating a line geometry from the set of points in the raster buffer is arguably the most complex step in the skeletonization process.
+Among these stages, the point-to-line reconstruction is the most complex.
 
 <!-- The resulting simplified network is illustrated in @fig-skeleton-line. -->
 
@@ -481,6 +483,7 @@ armley_sk = armley_sk.set_crs(CRS)
 
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
+In contrast to skeletonization, the Voronoi method remains in vector space until the end and derives centrelines from buffered boundaries.
 Voronoi simplification takes the buffered network segments and converts them into a set of points.
 The edges of these buffers are then segmented into sequences of points.
 From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points.
@@ -621,10 +624,8 @@ armley_voronoi = armley_voronoi[ix].reset_index(drop=True)
 
 <!-- ### Voronoi simplified network -->
 
-Voronoi lines that are completely enclosed within the buffer geometry and are situated at a distance of less than half the buffer's width from the buffer edge are selected.
-This selective visualization of Voronoi lines effectively demonstrates the method precision in capturing and representing the central alignment of the transport network within its buffered confines.
-The final center-line network is created through a clean up process that involves the removal of knot-like features from the simplified network.
-While knots are common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
+From the Voronoi diagram, we retain only edges entirely within the buffer and within half a buffer width of the boundary.
+The final centreline is then cleaned by removing knot-like artefacts, which tend to be more prevalent in Voronoi outputs.
 
 <!-- ::: {#fig-voronoi-simplified layout-ncol="2"} -->
 ```{python}
@@ -699,7 +700,7 @@ From left to right: original network, skeletonized network, Voronoi simplified n
 
 ## Post-Processing
 
-Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted knots, short segments at intersections, resembling tangled knots.
+Both skeletonization and Voronoi outputs require post-processing to remove 'knots'—short, tangled segments that form near intersections.
 To remove these features, short segments are clustered together, and a central point for each cluster is determined.
 The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point, as illustrated in the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix.
 
@@ -746,13 +747,14 @@ See Section 4 in [Methods](https://nptscot.github.io/networkmerge/methods.html) 
 
 ## Skeletonization versus Voronoi
 
+With both pipelines defined, we summarize known limitations and performance trade-offs.
 Both the skeletonization and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification. Additionally, the resulting lines can be wobbly. The simplification process is memory- and CPU-intensive, and its speed depends on network density and overlap. On commodity hardware, simplifying a core urban road network of 1 km extent takes about 5 seconds, while a 3 km urban core takes between 30 and 60 seconds. Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.1 times slower than skeletonization.
 
 Based on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonization algorithm is preferred for larger areas (such as 100 km²). Notably, skeletonization of the entire British rail center-line network took about 5 hours.
 
 ## Joining route networks {#sec-joining-route-networks}
 
-After generating a simplified network using the methods, it is often useful to translate attributes from the original network to the simplified network.
+Having simplified the geometry, we next consider how to transfer attributes from the detailed network to the simplified one.
  <!-- described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one.
 This process is commonly referred to as 'conflation' and 'integration'.
 Conflation is essential because while the source file (detailed network) might be rich in attributes like street names, address ranges, and zip codes, it may lack positional accuracy.
@@ -1038,6 +1040,7 @@ To demonstrate the practical application and effectiveness of the proposed simpl
 This area is characterised by a dense network of streets, including multi-lane roads, one-way systems, and historic streets, making it a challenging and realistic test case for network simplification.
 The input dataset for this area, as shown in the top-left panel of @fig-results, contains numerous parallel lines representing dual carriageways and other complex road features.
 
+We apply both methods with consistent parameters to enable a fair comparison.
 The results of our simplification methods are illustrated in the remaining panels of @fig-results.
 The skeletonized network (top right) provides a simplified representation of the input dataset.
 This method effectively collapses the dual carriageways into single centrelines, while preserving the overall connectivity of the network.
@@ -1273,8 +1276,8 @@ By providing a robust and flexible solution to the long-standing problem of netw
 
 # Data Availability
 
-All data and code used to generate the results presented in this paper are available in the GitHub repository associated with the paper, to be made available upon acceptance.
-To ensure that the paper is fully reproducible, we use GitHub actions to rebuild the paper whenever changes are made to the repository.
+All data and code used to generate the results presented in this paper are available in the GitHub repository for this paper: https://github.com/nptscot/networkmerge.
+To ensure that the paper is fully reproducible, continuous integration rebuilds the paper whenever changes are pushed to the repository.
 
 # References
 
