@@ -1360,6 +1360,9 @@ However, their applicability extends far beyond this initial use case.
 These tools have significant potential in other areas of transport planning, such as strategic rail network modelling, public transport network design, and the redesign of urban street networks to create more sustainable and equitable transport systems.
 By providing a robust and flexible solution to the long-standing problem of network simplification, this work contributes to the broader goal of making transport planning more effective, evidence-based, and accessible.
 
+Beyond transport, similar linear-feature aggregation problems arise across other spatial-network domains --- for example hydrology (deriving river centrelines from bank polygons), utility mapping (pipelines, cables, power corridors), and ecological corridor modelling.
+While these applications are outside this paper’s scope, the methods presented could provide a basis for future work in these areas.
+
 # Data Availability
 
 All data and code used to generate the results presented in this paper are available in the GitHub repository for this paper: https://github.com/nptscot/networkmerge.

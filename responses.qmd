@@ -185,7 +185,10 @@ We added a concise Terminology paragraph in the Introduction that standardizes u
 
 We added new references to show how these terms are used in the literature and have ensured these terms are used consistently throughout the manuscript.
 
-- [ ] **R3.7** "Route network simplification can be applied to transport model networks" >> i would argue that route network simplification can be applied to many more contexts (basically anywhere that spatial networks are used) -- could help argue for the significance of the work?
+- [x] **R3.7** "Route network simplification can be applied to transport model networks" >> i would argue that route network simplification can be applied to many more contexts (basically anywhere that spatial networks are used) -- could help argue for the significance of the work?
+
+Addressed by adding a short paragraph in the Discussion and Conclusion highlighting broader applicability beyond transport (e.g., hydrology/rivers, utilities/power corridors, ecological corridors) while noting these are out of scope here and proposed as future work.
+
 - [x] **R3.8** OSM mention: add citation
 
 Done, and now cited following best practices [@openstreetmap]
