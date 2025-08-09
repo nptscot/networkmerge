@@ -173,10 +173,18 @@ We mention related research in other research contexts (by which we meant discip
 
 - [x] **R3.5** would be good to re-do the definitions used here to be more clear and concise. e.g. the nodes/edges/lines sentence with the several parentheses is a bit hard to read and somewhat circular in its definitions. Potentially helpful to refer to a plot here? (if there is space for more plots)
 
-<!-- TODO: check. https://github.com/nptscot/networkmerge/issues/145 -->
 We have rephrased the definitions to be clearer and more concise.
 
-- [ ] **R3.6** also be more clear about difference/overlap between "route network", "transport network data set", "spatial networks" etc.
+ - [x] **R3.6** also be more clear about difference/overlap between "route network", "transport network data set", "spatial networks" etc.
+
+We added a concise Terminology paragraph in the Introduction that standardizes usage:
+
+- Spatial network: the abstract graph embedded in geographic space (nodes/edges with geometry).
+- Transport network dataset: a concrete geospatial dataset (e.g., GeoPackage/GeoJSON/GeoDataFrame) encoding a spatial network for the transport domain, with attributes and CRS.
+- Route network: an aggregated transport network dataset formed by combining many routes into consolidated corridors (used for model outputs); we keep “transport network dataset” for general inputs and reserve “spatial network” for graph-level statements.
+
+We then used these terms consistently throughout the manuscript.
+
 - [ ] **R3.7** "Route network simplification can be applied to transport model networks" >> i would argue that route network simplification can be applied to many more contexts (basically anywhere that spatial networks are used) -- could help argue for the significance of the work?
 - [x] **R3.8** OSM mention: add citation
 
