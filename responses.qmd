@@ -121,7 +121,10 @@ We now include the appendix in the submission.
 
 Details were included in the appendix, which is now included in the submission and appropriately referenced in the main body of the paper. 
 
-- [ ] **R2.13**  I would suggest including titles for the columns in the figure for additional clarity and to eliminate the need to refer to the caption. 
+- [x] **R2.13**  I would suggest including titles for the columns in the figure for additional clarity and to eliminate the need to refer to the caption. 
+
+This is a good point and will be a 'win' for accessibility.
+We have added titles to the columns subfigures with columns for maximum clarity.
 
 - [x] **R2.14** Figure 3 contains a "primitive mesh". What is it, how was it created? It is unclear what we are looking at. 
 

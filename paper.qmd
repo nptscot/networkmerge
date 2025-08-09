@@ -650,15 +650,18 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 ::: {#fig-skeleton-line layout-ncol="3"}
 
 ```{python}
+#| fig-cap: "Original"
 base_otley.plot(edgecolor="blue", color="blue")
 ```
 
 ```{python}
+#| fig-cap: "Skeletonized"
 
 otley_sk.plot()
 ```
 
 ```{python}
+#| fig-cap: "Voronoi"
 otley_line = filter_buffer(otley_line, otley_geometry)
 otley_edge, otley_node = get_source_target(otley_line.to_frame("geometry"))
 ix = otley_node["count"] < 4
@@ -671,17 +674,20 @@ otley_line.plot()
 ```
 
 ```{python}
+#| fig-cap: "Original"
 base_armley.plot(edgecolor="blue", color="blue")
 ```
 
 
 
 ```{python}
+#| fig-cap: "Skeletonized"
 
 armley_sk.plot()
 ```
 
 ```{python}
+#| fig-cap: "Voronoi"
 armley_line = filter_buffer(armley_line, armley_geometry)
 armley_edge, armley_node = get_source_target(armley_line.to_frame("geometry"))
 ix = armley_node["count"] < 4
