@@ -788,21 +788,6 @@ Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.
 Based on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonization algorithm is preferred for larger areas (such as 100 km²).
 Notably, skeletonization of the entire British rail center-line network took about 5 hours.
 
-
-Having simplified the geometry, we next consider how to transfer attributes from the detailed network to the simplified one.
-<!-- described in the previous sections or through an alternative approach, the next crucial step involves transferring attribute values from the detailed network to the simplified one.
-This process is commonly referred to as 'conflation' and 'integration'.
-Conflation is essential because while the source file (detailed network) might be rich in attributes like street names, address ranges, and zip codes, it may lack positional accuracy.
-Conversely, the target file (simplified network) is likely to be positionally precise but deficient in detailed attributes. --> <!-- As noted by [@sutton1998], this process involves two key aspects: the geometric integration, involving the link and node feature elements, and the integration of attributes such as highway data. --> In the context of network planning tools, the purpose of the joining stage is to join traffic estimates from the source network onto the geometrically simplified target network [@sutton1998].
-<!-- This 'joining' step is vital for using simplified networks as the basis for presenting model outputs generated on a complex network in a easy-to-interpret form. --> <!-- In instances where a simplified version of the network is readily available, such as the Ordnance Survey's Open Roads dataset in the UK, the steps for network simplification can be bypassed to save time.
-We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package. -->
-
-<!-- The process is analogous to joining two datasets based on a common 'key' variable. -->
-
-In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
-There are at least a couple of implementations of network joining methods in open source software: the `rnet_merge()` function in the `stplanr` R package [@lovelace2019], and the [`rnetmatch` Rust crate](https://github.com/nptscot/rnetmatch/tree/main/rust) for which has bindings to R and Python are planned.
-The details of network joining methods, algorithms and implementations are outside the scope of this paper, see the documentation associated with the projects mentioned above for more information.
-
 <!-- **Data Preparation:** -->
 
 <!-- The main inputs of the network merging function are two route networks: `rnet_x` (the simple network geometry) and `rnet_y` (the original network with a more complex geometry and attributes that need to be translated onto the new network). -->
@@ -1345,6 +1330,7 @@ In particular, the speed of the process could be improved through parallelisatio
 A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
 This was not part of `parenx` and was not used in the Edinburgh application.
 However, we note that tools for this purpose exist, including the `rnet_merge()` function in the `stplanr` R package [@lovelace2019] and `anime` Rust crate for fast and flexible many-to-many segment matching, a robust basis for attribute joins [@parry_josiahparryanime_2025].
+Network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
 Describing different joining strategies and implementations would be a logical next step for future work.
 
 The methods presented in this paper were initially developed to support the Network Planning Tool for Scotland, where they provide a strong evidence base for data-driven investment in active travel infrastructure.
