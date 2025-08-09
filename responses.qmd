@@ -234,7 +234,9 @@ See our response to **R2.9**. We have clarified that the 8 m buffer is informed 
 
 Typo fixed.
 
-- [ ] **R3.17** joining route networks: if this is not part of parenx (if i grasped this correctly) and also not part of the Edinburgh use case (?), then maybe this can be shortened/doesn't need its own subsection? (Could be moved to discussion/future work?)
+ - [x] **R3.17** joining route networks: if this is not part of parenx (if i grasped this correctly) and also not part of the Edinburgh use case (?), then maybe this can be shortened/doesn't need its own subsection? (Could be moved to discussion/future work?)
+
+We shortened “Joining route networks” to a concise note clarifying that attribute conflation is not part of `parenx` and was not used in the Edinburgh application, pointed readers to existing tools (`stplanr::rnet_merge()`, `rnetmatch`), and flagged a fuller evaluation of joining strategies as future work.
 
 ## Application to Edinburgh
 This section seems way too short, i would suggest to say more here (if word limit need to be respected, then maybe at the expense of summarizing a bit more the lit review part?), e.g. about
