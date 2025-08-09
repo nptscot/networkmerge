@@ -72,9 +72,9 @@ The increasing complexity of route network data from sources like OpenStreetMap 
 However, this level of detail can introduce challenges for the clear visualisation and interpretation of model results.
 A common problem is the representation of single transport corridors by multiple parallel lines, which can create visual clutter and obscure important patterns in transport flows.
 The purpose of the work presented in this paper is to provide a basis for computationally efficient analysis and visualisation of route networks for strategic transport planning, where intricate geometries—such as parallel or 'braided' linestrings—are unhelpful.
-We present and evaluate two distinct methods for simplifying complex route networks that are intended to be used as a 'pre-processing' step to speed-up and improve the results of strategic transport network analysis, modelling and visualisation workflows.
-First, we present **skeletonization**, an approach that uses 'thinning' of rasterized network data to extract a simplified representation of the network.
-Second, we present a **Voronoi-based** approach using Voronoi diagrams to identify centrelines.
+We present and evaluate two distinct methods for simplifying complex route networks that are intended to be used as a 'pre‑processing' step to speed up and improve the results of strategic transport network analysis, modelling and visualisation workflows.
+First, we present **skeletonisation**, an approach that uses 'thinning' of rasterised network data to extract a simplified representation of the network.
+Second, we present a **Voronoi‑based** approach using Voronoi diagrams to identify centrelines.
 We demonstrate the practical application of these methods using the "Simplified network" layer in the Transport for Scotland funded Network Planning Tool, a publicly accessible resource at [www.npt.scot](https://www.npt.scot).
 To support reproducible research, we implement the methods in the open-source `parenx` Python package, enabling their use alongside other open source tools for transport planning, research and educational applications.
 
@@ -87,8 +87,8 @@ More specifically, transport network datasets are *spatial networks* composed of
 In practice, these components are geographically located, with edges representing the physical infrastructure of the transport network, often enriched with attributes like the type of way (e.g., motorway, cycle path), its physical characteristics, and usage data such as daily traffic volumes.
 Accordingly, route network simplification can be applied to both input and output networks, aiming to reduce complexity while preserving the essential spatial structure and relevant attributes of the network.
 
-In this paper, we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonization and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
-The primary aim is to provide transport planners with tools to simplify complex route networks as a pre-processing step in existing transport modelling workflows.
+In this paper, we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonisation and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
+The primary aim is to provide transport planners with tools to simplify complex route networks as a 'pre‑processing' step in existing transport modelling workflows.
 More broadly, we aim to contribute to wider multi-disciplinary efforts in spatial network analysis and network simplification.
 
 To avoid ambiguity, we set-out key terms and how they are used consistently in the paper.
@@ -101,7 +101,7 @@ The growing availability of high-resolution geographic datasets, from open sourc
 This trend, powered by advances in hardware and software, is beneficial for sustainable transport planning, which relies on accurate and detailed network information.
 However, the very intricacy of modern street network geometries can create significant problems.
 For transport model outputs to be useful to planners and the public, a clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.
-Consequently, network simplification has become a vital step in the transport planning workflow, aligning with established cartographic principles of 'map generalization' for pre-processing datasets according to the scale of analysis [@sutton1998].
+Consequently, network simplification has become a vital step in the transport planning workflow, aligning with established cartographic principles of 'map generalisation' for pre‑processing datasets according to the scale of analysis [@sutton1998].
 Despite being a long-standing challenge, the simplification of networks for transport planning and other applications remains an active area of research.
 
 Existing vector geometry simplification methods, such as the Douglas-Peucker and Visvalingam-Whyatt algorithms, are effective at reducing the number of vertices in a line and thus file sizes, but they do not address the problem of network complexity arising from multiple parallel lines representing a single real-world corridor [@liu2020vector; @de2014efficient].
@@ -127,7 +127,7 @@ We proceed as follows: @sec-problem outlines the problem of complex route networ
 
 The problem tackled in this paper is the simplification of complex route networks.
 This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) [@lovelace2017], the route networks of which are based on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings [@morgan2020].
-Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualization of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
+Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualisation of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
 However, without further processing, the 'overline' approach has two practical limitations: it retains functionally redundant vertices, leading to large file sizes and slow rendering; and it does not merge parallel ways that represent a single corridor.
 This lack of merging is particularly problematic for visualisation of transport networks, as shown in [@fig-pct; @lovelace2017].
 The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
@@ -168,7 +168,7 @@ Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 
 ```{=html}
 <!-- The methods presented in this paper are designed to take a complex network as an input and output a simplified network, while preserving the spatial structure of the network and relevant attributes.
-By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviors. -->
+By reducing duplicated parallel lines and other intricacies, the outputs can enable easier-to-interpret visualisations of transport behaviour on the network patterns and behaviours. -->
 ```
 
 # Data and Methods {#sec-methods}
@@ -200,16 +200,16 @@ There are two main challenges that need to be overcome to simplify transport net
 1.  Simplifying the *geometry*
 2.  Assigning attributes to the simplified network
 
-We address the geometric simplification first, describing skeletonization and then a Voronoi-based approach.
-The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+We address the geometric simplification first, describing skeletonisation and then a Voronoi‑based approach.
+The key contributions of the paper are the novel methods of image skeletonisation, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 
-## Simplification via skeletonization {#sec-simplification-via-skeletonization}
+## Simplification via skeletonisation {#sec-simplification-via-skeletonization}
 
-The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segements from a raster of this buffer.
-For an example of the resulting outputs, see the "Skeletonized" column of @fig-skeleton-line (Otley: top row; Armley: bottom row).
+The skeletonisation approach generates a simplified network by buffering the network, applying an image skeletonisation algorithm, and extracting line segments from a raster of this buffer.
+For an example of the resulting outputs, see the "Skeletonised" column of @fig-skeleton-line (Otley: top row; Armley: bottom row).
 
 As a common first step, we buffer the lines in a projected coordinate system.
-We use a buffer size of 8 m in this paper, a value informed by typical widths of a UK two-lane highway with an example for a typical 2-way road being specified in the [Design Manual for Roads and Bridges (DMRB)](https://assets.publishing.service.gov.uk/media/5a7e0035ed915d74e6223743/pdfmanforstreets.pdf#page=81) as "min 4.8 m, max 8.8 m" and the minimum GB rail centre-line track separation of 3.26m, and two sections of 1.435m standard gauge.
+We use a buffer size of 8 m in this paper, a value informed by typical widths of a UK two‑lane highway with an example for a typical 2‑way road being specified in the [Design Manual for Roads and Bridges (DMRB)](https://assets.publishing.service.gov.uk/media/5a7e0035ed915d74e6223743/pdfmanforstreets.pdf#page=81) as "min 4.8 m, max 8.8 m" and the minimum GB rail centreline track separation of 3.26 m, and two sections of 1.435 m standard gauge.
 This parameter can be adjusted to suit the use case and local contexts, using the `buffer` parameter of the simplification functions.
 
 ```{python}
@@ -268,15 +268,15 @@ base_armley = combine_line(base_armley["geometry"]).to_frame("geometry")
 armley_geometry = get_geometry_buffer(base_armley["geometry"], radius=buffer_size)
 ```
 
-In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
-This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
+In skeletonisation, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
+This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centreline of the combined buffered area.
 
-Specifically, we apply skeletonization only where more than one buffered line segment overlaps.
+Specifically, we apply skeletonisation only where more than one buffered line segment overlaps.
 To identify overlapping line-segments, the buffer is split at the end of each line-segment.
 The overlapping line-segments are then buffered while retaining the remaining disjoint lines.
 
 ```{=html}
-<!---This visualization demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.
+<!---This visualisation demonstrates the process of cutting and segmenting the buffer geometries. It highlights the transformations from the initial buffered geometries to a more segmented and manageable form, preparing them for further analysis and simplification steps​.
 It effectively highlights the contrast between the more intricate and the simpler sections within these networks. --->
 ```
 
@@ -362,18 +362,18 @@ except AttributeError:
 # armley_segment.plot()
 ```
 
-<!-- Segmented line-buffer geometries (top) and geometries to be skeletonized (bottom) for the Otley Road (left) and Armley Road (right) networks. -->
+<!-- Segmented line-buffer geometries (top) and geometries to be skeletonised (bottom) for the Otley Road (left) and Armley Road (right) networks. -->
 
 <!-- ::: -->
 
-To mitigate rasterization artefacts introduced by this step, we increase resolution via a uniform affine scale before thinning.
-As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
+To mitigate rasterisation artefacts introduced by this step, we increase resolution via a uniform affine scale before thinning.
+As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonisation and reducing scale when creating the simplified linear geometric representation.
 This scale operation is a uniform affine scale transformation applied to increase the detail contained in the raster image.
 An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value.
 This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
 
 Additionally, we pre-process the raster to eliminate small holes that appear where buffered lines run parallel or intersect at shallow angles.
-The skeletonization algorithm is then applied to the raster image, yielding a skeletal raster image that is converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
+The skeletonisation algorithm is then applied to the raster image, yielding a skeletal raster image that is converted back into a linear vector geometry, completing the vector-to-raster-to-vector geometry transformation (see [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 
 ```{python}
 import rasterio.features as rif
@@ -407,13 +407,13 @@ with warnings.catch_warnings():
 # rip.show(armley_im, cmap="Greys", title="buffer geometry")
 ```
 
-Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
+Rasterised versions of the Otley Road (left) and Armley Road (right) networks, with post‑processing to remove small holes.
 ::: -->
 ````
 
 ```{=html}
 <!---The image undergoes a thinning process, yielding a skeletal raster image as the result.
-This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
+This skeletonised image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
 ```
 
 <!-- ::: {#fig-thin-skeleton layout-ncol="2"} -->
@@ -432,7 +432,7 @@ armley_p = np.stack(np.where(armley_skeleton >= 1))
 armley_point = gp.GeoSeries(map(Point, armley_p.T), crs=CRS)
 ```
 
-<!-- Skeletonized versions of the Otley Road (left) and Armley Road (right) networks. -->
+<!-- Skeletonised versions of the Otley Road (left) and Armley Road (right) networks. -->
 
 <!-- ::: -->
 
@@ -456,7 +456,7 @@ armley_transform = armley_point.map(shapely_transform).map(set_precision_pointon
 ```
 
 ```{=html}
-<!-- Skeletonized versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
+<!-- Skeletonised versions of the Otley Road (left) and Armley Road (right) networks, transformed back into point geometry.
 
 ::: -->
 ```
@@ -498,10 +498,10 @@ armley_sk = armley_sk.set_crs(CRS)
 
 ## Simplification via Voronoi polygons {#sec-simplification-via-voronoi-polygons}
 
-In contrast to skeletonization, the Voronoi method remains in vector space until the end and derives centrelines from buffered boundaries.
+In contrast to skeletonisation, the Voronoi method remains in vector space until the end and derives centrelines from buffered boundaries.
 Voronoi simplification takes the buffered network segments and converts them into a set of points.
 The edges of these buffers are then segmented into sequences of points.
-From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points.
+From these sequences, a centreline is derived based on a set of Voronoi polygons that cover these points.
 For more detail on segmentation and Voronoi simplification see the [Appendix](https://nptscot.github.io/networkmerge/methods.html#sec-simplification-via-voronoi-polygons).
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
 For examples of the resulting outputs, see the “Voronoi” column of @fig-skeleton-line (Otley: top row; Armley: bottom row).
@@ -679,7 +679,7 @@ base_otley.plot(edgecolor="blue", color="blue")
 ```
 
 ```{python}
-#| fig-cap: "Skeletonized"
+#| fig-cap: "Skeletonised"
 
 otley_sk.plot()
 ```
@@ -703,7 +703,7 @@ base_armley.plot(edgecolor="blue", color="blue")
 ```
 
 ```{python}
-#| fig-cap: "Skeletonized"
+#| fig-cap: "Skeletonised"
 
 armley_sk.plot()
 ```
@@ -722,19 +722,19 @@ armley_line.plot()
 ```
 
 Original and simplified versions of the Otley Road (top) and Armley Road (bottom) networks.
-From left to right: original network, skeletonized network, Voronoi simplified network.
+From left to right: original network, skeletonised network, Voronoi simplified network.
 :::
 
 ## Post-Processing
 
-Both skeletonization and Voronoi outputs require post-processing to remove 'knots'—short, tangled segments that form near intersections.
+Both skeletonisation and Voronoi outputs require post‑processing to remove 'knots'—short, tangled segments that form near intersections.
 To remove these features, short segments are clustered together, and a central point for each cluster is determined.
 The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point, as illustrated in the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix.
 
 An additional optional stage is to simplify the network further by removing vertices that are not essential for the network's connectivity, resulting in a primal network that captures the essential connectivity and layout of transport routes.
 The primal network is thus composed of direct lines connecting start and end points, representing a high level of simplification that prioritises the network's structure and compression.
 
-<!-- The primal networks for the Otley Road and Armley Road skeletonized networks are illustrated in @fig-primal-skeleton. -->
+<!-- The primal networks for the Otley Road and Armley Road skeletonised networks are illustrated in @fig-primal-skeleton. -->
 
 <!-- ::: {#fig-primal-skeleton layout-ncol="2"} -->
 
@@ -748,7 +748,7 @@ armley_edge_sk = get_primal(armley_sk)
 # armley_edge_sk.plot()
 ```
 
-<!-- Primal skeletonized networks for the Otley Road (left) and Armley Road (right) networks. -->
+<!-- Primal skeletonised networks for the Otley Road (left) and Armley Road (right) networks. -->
 
 <!-- ::: -->
 
@@ -776,17 +776,17 @@ armley_edge = get_primal(armley_line)
 
 See Section 4 in [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details.
 
-## Skeletonization versus Voronoi
+## Skeletonisation versus Voronoi
 
 With both pipelines defined, we summarize known limitations and performance trade-offs.
-Both the skeletonization and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification.
+Both the skeletonisation and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification.
 Additionally, the resulting lines can be wobbly.
 The simplification process is memory- and CPU-intensive, and its speed depends on network density and overlap.
-On commodity hardware, simplifying a core urban road network of 1 km extent takes about 5 seconds, while a 3 km urban core takes between 30 and 60 seconds.
-Although the Voronoi output is significantly smoother, it is typically 3.6 to 5.1 times slower than skeletonization.
+On commodity hardware, simplifying a core urban road network of 1 km extent takes about 5 seconds, while a 3 km urban core takes 30–60 seconds.
+Although the Voronoi output is significantly smoother, it is typically 3.6–5.1 times slower than skeletonisation.
 
-Based on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonization algorithm is preferred for larger areas (such as 100 km²).
-Notably, skeletonization of the entire British rail center-line network took about 5 hours.
+Based on available computing resources, the Voronoi algorithm is used for smaller networks (e.g., those covering approximately 1 km²), while the skeletonisation algorithm is preferred for larger areas (such as 100 km²).
+Notably, skeletonisation of the entire British rail centreline network took about 5 hours.
 
 <!-- **Data Preparation:** -->
 
@@ -835,7 +835,7 @@ rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = 20, segment_length = 
 ```{=html}
 <!-- The network joining function can also take a number of arguments that define how the attributes are translated to the simplified target network:
 
--   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in meters, for determining the proximity at which features from both networks are considered for merging.
+-   **`dist`** (Buffer Distance): This parameter defines the buffer zone around `rnet_xp` in metres, for determining the proximity at which features from both networks are considered for merging.
     Typically, this value is refined to approximate the width of streets, ensuring a realistic spatial correlation between the network elements.
 
 -   **`segment_length`** (Maximum Segment Length): This optional argument (with 0 being the default meaning no splitting) specifies the maximum length of segments in `rnet_y` before they are split.
@@ -983,7 +983,7 @@ dist = 20
 rnet_merged_with_angle = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = 20)
 rnet_merged_without_angle= stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs)
 
-# Define breaks for the color scale
+# Define breaks for the colour scale
 brks = c(0, 100, 500, 1000, 5000)
 
 # Set global tmap options for tighter margins
@@ -1014,7 +1014,7 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
     This step enhances dataset manageability and focuses on relevant data by eliminating columns such as 'identifier' and 'length_x'.
 
 -   **Dimensionality Reduction**: Z and M dimensions are removed from the dataset, as they are redundant for our analysis and contribute to unnecessary increases in file size.
-    This reduction simplifies the dataset and optimizes it for storage and processing efficiency.
+  This reduction simplifies the dataset and optimises it for storage and processing efficiency.
 
 -   **NA Handling**: A thorough examination is conducted for the presence of NA values across the columns.
     Any rows where all the targeted columns contain NA values are filtered out.
@@ -1062,15 +1062,15 @@ The results of applying the proposed simplification methods are shown in the rem
 As shown in that figure, both methods effectively collapse dual carriageways into single centrelines while preserving overall connectivity.
 The resulting network geometries are 'cleaner' than the original, making them a strong basis for interpreting flows or other attributes.
 
-There are some differences between the skeletonized and Voronoi results that are visible in @fig-results.
-The Voronoi result captures crossroads more cleanly by aligning with the medial axes of intersecting streets, whereas skeletonization sometimes introduces slight curves or offsets immediately before intersections.
+There are some differences between the skeletonised and Voronoi results that are visible in @fig-results.
+The Voronoi result captures crossroads more cleanly by aligning with the medial axes of intersecting streets, whereas skeletonisation sometimes introduces slight curves or offsets immediately before intersections.
 
 Finally, the primal network shown in the bottom subfigure of @fig-results represents the highest level of simplification.
 This network is created by removing all nodes that are not intersections, effectively representing the network as a series of direct connections between junctions.
 This level of abstraction can be useful for strategic network analysis, where the focus is on connectivity and network structure rather than precise geographical representation.
 The downsides of the more drastic primal results are clear from the sudden sharp angles and discontinuities that can arise, particularly around 'loops'.
 
-Overall, the application to Edinburgh city centre demonstrates that both the skeletonization and Voronoi methods are capable of transforming a complex, detailed road network into a range of simplified representations suitable for different transport planning and analysis purposes.
+Overall, the application to Edinburgh city centre demonstrates that both the skeletonisation and Voronoi methods are capable of transforming a complex, detailed road network into a range of simplified representations suitable for different transport planning and analysis purposes.
 The choice of method and level of simplification will depend on the specific requirements of the task, from creating clear visualisations of model outputs to conducting high-level strategic network analysis.
 
 ```{python}
@@ -1191,7 +1191,7 @@ ax3 = plt.subplot2grid((4, 1), (2, 0))
 ax4 = plt.subplot2grid((4, 1), (3, 0))
 
 # Compute a tighter bounding box around the Edinburgh example:
-# shrink height by 3x and width by 2x, centered on the original bounds.
+# shrink height by 3x and width by 2x, centred on the original bounds.
 minx, miny, maxx, maxy = base_edinburgh.total_bounds
 cx, cy = (minx + maxx) / 2.0, (miny + maxy) / 2.0
 width, height = (maxx - minx), (maxy - miny)
@@ -1207,12 +1207,12 @@ ax1.set_title('Input')
 ax1.set_xlim(xmin_t, xmax_t)
 ax1.set_ylim(ymin_t, ymax_t)
 
-# Plot 2: Skeletonized
+# Plot 2: Skeletonised
 ax2 = edinburgh_sk.plot(ax=ax2, color='green')
 ax2.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax2.xaxis.set_ticklabels([])
 ax2.yaxis.set_ticklabels([])
-ax2.set_title('Skeletonized')
+ax2.set_title('Skeletonised')
 ax2.set_xlim(xmin_t, xmax_t)
 ax2.set_ylim(ymin_t, ymax_t)
 
@@ -1225,7 +1225,7 @@ ax3.set_title('Voronoi')
 ax3.set_xlim(xmin_t, xmax_t)
 ax3.set_ylim(ymin_t, ymax_t)
 
-# Plot 4: Primal Skeletonized
+# Plot 4: Primal Skeletonised
 ax4 = edinburgh_edge_sk.plot(ax=ax4, color='green')
 ax4.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax4.xaxis.set_ticklabels([])
@@ -1241,7 +1241,7 @@ plt.show()
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
 
-Results of the route network simplification methods applied to Edinburgh city center, comparing the input dataset (top left), skeletonized network (top right), Voronoi diagram (bottom left), and primal network (bottom right).
+Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), skeletonised network (top right), Voronoi diagram (bottom left), and primal network (bottom right).
 :::
 
 ```{=html}
@@ -1280,7 +1280,7 @@ for (name in name_list) {
 dist = 20
 rnet_merged = stplanr::rnet_merge(rnet_xp, rnet_yp, dist = dist, segment_length = 10, funs = funs, max_angle_diff = 10)
 
-# Define breaks for the color scale
+# Define breaks for the colour scale
 brks = c(0, 100, 500, 1000, 2000,5000,8000,10000)
 
 # Set global tmap options for tighter margins
@@ -1310,12 +1310,12 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 
 # Discussion and Conclusion {#sec-discussion}
 
-In summary, this paper has presented and demonstrated two novel methods for simplifying complex route networks: one based on image skeletonization and the other on Voronoi diagrams.
+In summary, this paper has presented and demonstrated two novel methods for simplifying complex route networks: one based on image skeletonisation and the other on Voronoi diagrams.
 Both methods are implemented in open-source software, ensuring that the research is reproducible and the tools are available for others to use and adapt (see the reproducible source code of this paper at [github.com/nptscot](https://github.com/nptscot)).
-The results show that both skeletonization and Voronoi-based approaches can successfully transform complex, multi-lined representations of transport corridors into simplified single-line geometries.
+The results show that both skeletonisation and Voronoi‑based approaches can successfully transform complex, multi‑lined representations of transport corridors into simplified single‑line geometries.
 This simplification process results in networks that are substantially less resource-intensive for subsequent analysis and, crucially, lead to clearer and more intuitive visualisations of transport model outputs.
 While both methods achieve the primary goal of simplification, they have different characteristics.
-The skeletonization approach is generally faster, making it more suitable for very large networks.
+The skeletonisation approach is generally faster, making it more suitable for very large networks.
 By contrast, the Voronoi approach, while more computationally intensive, can produce smoother and more aesthetically pleasing centrelines.
 The choice between them, and the selection of parameters that control the level of simplification, will depend on the specific requirements of the analysis and the available computing resources.
 Finally, a key advantage of our implementation in the `parenx` Python package is its flexibility, allowing users to tailor the simplification process from minor adjustments to the aggressive simplification of a 'primal network', as shown in the [`parenx` cookbook](https://nptscot.github.io/networkmerge/cookbook.html).
