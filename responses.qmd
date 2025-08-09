@@ -132,7 +132,14 @@ We have clarified what this means with the following additional sentence:
 
 > This highly simplified network is created by identifying all nodes in the network, counting the edges connected to each node, and removing all nodes that are connected to exactly two edges. Unconnected edges or those at intersections between edges are retained.
 
-- [ ] **R2.15** Figure 3 contains images that are too small and it is difficult to see the differences. 
+- [x] **R2.15** Figure 3 contains images that are too small and it is difficult to see the differences. 
+
+This is an important and well-made point. The figure is perhaps the most important way we have of communicating what we have done and, having thought about and discussed this with reference to the previous figure, we agree that it was almost impossible to discern the differences in the outputs.
+To tackle this issue, we have 'zoomed-in' on Princes Street in the visualisation: specifically the bounding box of the figure has been made 3x smaller in the North-South direction and 2x smaller in the East-West direction.
+In parallel to this change, we have made each subfigure larger by making the panel have 1 column instead of 2 previously. 
+We are happy with the result, you can now clearly see that all simplified outputs now convert the 'braided' Princes Street in the center of the figures into a single linestring.
+Differences between the skeletonization and Voronoi approaches are now much clearer.
+For example, it is clear that the Voronoi approach captures crossroads better with its ability to identify the central axis of the street network compared with the skeletonized outputs which tend to create unwanted curves just before intersections.
 
 # Reviewer 3
 
