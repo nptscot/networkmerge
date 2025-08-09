@@ -141,6 +141,8 @@ We are happy with the result, you can now clearly see that all simplified output
 Differences between the skeletonization and Voronoi approaches are now much clearer.
 For example, it is clear that the Voronoi approach captures crossroads better with its ability to identify the central axis of the street network compared with the skeletonized outputs which tend to create unwanted curves just before intersections.
 
+We have also added a scale bar to help show the spatial context of the network simplifications.
+
 # Reviewer 3
 
 This work addresses a relevant issue, i.e., route network simplification, which is here framed in the context of transportation planning, but has significance that goes beyond transportation planning - in any other field of study where route or street networks are used for spatial modelling. The methods presented here are highly relevant to the issue at hand, novel, and available to the wider community in packaged open-source format. I therefore recommend the publication of this article, with several minor caveats (minor revision) -- see my comments below.
