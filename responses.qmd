@@ -152,13 +152,22 @@ General comments:
 
 We have carefully proofread the text and fixed all typos, unfinished sentences, and other minor issues.
 
-- [ ] **R3.2** i answered "no" to the question above, "Are the interpretations and conclusions justified by the results?", mostly because i think there needs to be a more clear *interpretation* of parenx outcomes, see my comments on the "edinburgh use case" section below
+- [x] **R3.2** i answered "no" to the question above, "Are the interpretations and conclusions justified by the results?", mostly because i think there needs to be a more clear *interpretation* of parenx outcomes, see my comments on the "edinburgh use case" section below
 
-
+We agree that there could have been more interpretation of the results, particularly in relation to the Edinburgh use case, in the previous version of the paper. We have added a greatly improved final figure to illustrate what the simplification methods achieve in a real-world scenario.
+Building on this improved figure, which is 'zoomed-in' compared to the previous version, we have interpreted the results, highlighting the key differences between the original and simplified networks and discussing in some detail the differences between the skeletonized, Voronoi, and primal outputs.
 
 ## abstract
-- [ ] **R3.3** can it be made more clear what the _purpose_ of the paper is? (presenting parenx which enables the simplification of route networks by 2 methods, ...)
-- [ ] **R3.4** "new contexts" >> which contexts? (more specific?)
+
+- [x] **R3.3** can it be made more clear what the _purpose_ of the paper is? (presenting parenx which enables the simplification of route networks by 2 methods, ...)
+
+We now state the purpose: 
+
+> The purpose of the work presented in this paper is to provide a basis for computationally efficient analysis and visualisation of route networks for strategic transport planning, where intricate geometries—such as parallel or 'braided' linestrings—are unhelpful.
+
+- [x] **R3.4** "new contexts" >> which contexts? (more specific?)
+
+We mention related research in other research contexts (by which we meant disciplines) in the Introduction but no longer mention these other contexts in the abstract, favouring a clear focus on transport planning, as alluded to in our responses to other reviewer comments.
 
 ## introduction
 
