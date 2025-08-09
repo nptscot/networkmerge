@@ -87,6 +87,10 @@ More specifically, transport network datasets are *spatial networks* composed of
 In practice, these components are geographically located, with edges representing the physical infrastructure of the transport network, often enriched with attributes like the type of way (e.g., motorway, cycle path), its physical characteristics, and usage data such as daily traffic volumes.
 Accordingly, route network simplification can be applied to both input and output networks, aiming to reduce complexity while preserving the essential spatial structure and relevant attributes of the network.
 
+In this paper, we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonization and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
+The primary aim is to provide transport planners with tools to simplify complex route networks as a pre-processing step in existing transport modelling workflows.
+More broadly, we aim to contribute to wider multi-disciplinary efforts in spatial network analysis and network simplification.
+
 To avoid ambiguity, we set-out key terms and how they are used consistently in the paper.
 A spatial network is the abstract, graph-theoretic object embedded in geographic space (nodes and edges with geometry) [@barthélemy2011].
 A transport network dataset is a concrete geospatial dataset typically saved as a vector geographic dataset in a GeoPackage (.gpkg), GeoJSON (.geojson), or similar geographic file format that encodes a spatial network representing linear transport infrastructure [@kujala2018].
@@ -115,7 +119,6 @@ The `riverdist` R package also provides functionality to simplify braided river 
 The methods presented in this paper draw inspiration from these wider applications of linear feature simplification.
 More broadly, our approach is based on techniques that can be applied to any set of overlapping linear features where aggregation is desired, such as simplifying transport or other flow networks to create a consolidated route-view for capacity analysis or strategic modelling.
 
-The aim of this paper is to articulate the problem of complex route networks, present solutions with implementations in open source software for reproducible research, and describe applications of the methods to support more effective transport planning.
 We proceed as follows: @sec-problem outlines the problem of complex route networks.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 @sec-application demonstrates the methods applied to a real transport network (Edinburgh, Scotland) and @sec-discussion concludes with a discussion of the results and future work.
@@ -125,12 +128,8 @@ We proceed as follows: @sec-problem outlines the problem of complex route networ
 The problem tackled in this paper is the simplification of complex route networks.
 This can be illustrated with reference to the Propensity to Cycle Tool for England (PCT) [@lovelace2017], the route networks of which are based on methods for aggregating multiple overlapping routes into a route network with non-overlapping linestrings [@morgan2020].
 Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualization of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
-However, this 'overline' approach, without further processing, has limitations:
-
--   Functionally redundant vertices are kept, leading to large file sizes and slow rendering.
--   Parallel ways that are not merged.
-
-The latter issue is particularly problematic for visualisation of transport networks, as shown in [@fig-pct; @lovelace2017].
+However, without further processing, the 'overline' approach has two practical limitations: it retains functionally redundant vertices, leading to large file sizes and slow rendering; and it does not merge parallel ways that represent a single corridor.
+This lack of merging is particularly problematic for visualisation of transport networks, as shown in [@fig-pct; @lovelace2017].
 The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
 The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
@@ -149,6 +148,9 @@ Note that it is not clear from the visualisation that the corridor shown in the 
 Note also the visual artefacts such as 'staircase' effects and overlapping values resulting from parallel lines along Armley Road (right panel).
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
+
+In this paper, we use "simplification" to mean reducing the complexity of geometries representing transport networks by aggregating multiple parallel or braided lines into a single centreline while preserving the network’s spatial structure and connectivity.
+See @fig-skeleton-line for method-level examples and @fig-results for a city-centre application.
 
 ```{=html}
 <!-- A subsequent step described by @morgan2020 is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
@@ -178,6 +180,9 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 
 In this paper we use the two street networks discussed in the previous section to illustrate the methods.
 See the ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) and [Methods](https://nptscot.github.io/networkmerge/methods.html) appendices for further details on the methods used in this paper and their application to alternative (railway based) datasets.
+
+In addition to these illustrative street-corridor examples, we apply the same pipelines to a real-world dataset for central Edinburgh derived from OpenStreetMap and analysed in a projected CRS (EPSG:27700).
+Unless otherwise stated, parameters (e.g., buffer size) are kept consistent across methods to enable a fair comparison; the full application is described in @sec-application.
 
 ```{r}
 #| include: false
@@ -215,6 +220,7 @@ Topology-preserving simplification reduces the number of vertices in a linestrin
 ## Simplification via skeletonization {#sec-simplification-via-skeletonization}
 
 The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segements from a raster of this buffer.
+For an example of the resulting outputs, see the "Skeletonized" column of @fig-skeleton-line (Otley: top row; Armley: bottom row).
 
 <!--- ### Create a projected combined buffered geometry --->
 
@@ -517,6 +523,7 @@ The edges of these buffers are then segmented into sequences of points.
 From these sequences, a centre-line is derived based on a set of Voronoi polygons that cover these points.
 For more detail on segmentation and Voronoi simplification see the [Appendix](https://nptscot.github.io/networkmerge/methods.html#sec-simplification-via-voronoi-polygons).
 This approach facilitates the creation of a simplified network representation by focusing on the central alignment of the buffered lines.
+For examples of the resulting outputs, see the “Voronoi” column of @fig-skeleton-line (Otley: top row; Armley: bottom row).
 
 ```{python}
 scale = 10.0

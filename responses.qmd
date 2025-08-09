@@ -193,22 +193,39 @@ Addressed by adding a short paragraph in the Discussion and Conclusion highlight
 
 Done, and now cited following best practices [@openstreetmap]
 
-- [x] **R3.9** "unsolved challenge for other applications" >> say which (or give at least some examples)
+- [x] **R3.9** "unsolved challenge for other applications" 
+
+>> say which (or give at least some examples)
 
 We have added the following sentences.
 
 > This approach was taken as we could only find a few examples for the aggregation and simplification of linear features, especially with transport and planning networks. However, as this general approach is based on the application of techniques used for image simplification, it can be applied to any overlapping linear features where aggregation is appropriate. For example, simplification of transport or other flow networks to produce an aggregated route-view as the basis for capacity analysis. Whether that is for active-transport, rail, road or other logical network flows.
 
+ - [x] **R3.10** "The aim of this paper..." >> this sentence/its contents should ideally come earlier / as early as possible (first page of paper)
 
-- [ ] **R3.10** "The aim of this paper..." >> this sentence/its contents should ideally come earlier / as early as possible (first page of paper)
+We moved the aim statement to the start of the Introduction (immediately after the core definitions) and removed the later duplicate. This brings the paper’s purpose onto the first page.
 
 ## problem definition
-- [ ] **R3.11** why a bullet point list for _limitations_ of the existing approach? are these limitations identical with the problem definition (it seems to me that they are not?)
-- [ ] **R3.12** would be great to have a plot here (e.g. a parenx before//after detail) to use it to explain what exactly the authors mean by "simplification". (ambiguous word - cf the differing use in the osmnx package, etc.)
+
+ - [x] **R3.11** why a bullet point list for _limitations_ of the existing approach? are these limitations identical with the problem definition (it seems to me that they are not?)
+
+We replaced the bullet list with prose.
+The new wording frames these as limitations of the prior 'overline' approach (redundant vertices; unmerged parallel ways) and clarified they are not the problem definition itself.
+
+- [x] **R3.12** would be great to have a plot here (e.g. a parenx before//after detail) to use it to explain what exactly the authors mean by "simplification". (ambiguous word - cf the differing use in the osmnx package, etc.)
+
+We think that the plots already highlight what we mean by simplification. We want to avoid duplication of effort so have instead cross-referenced subsequent figures to illustrate our points.
 
 ## Data and Methods
-- [ ] **R3.13** this section only describes methods, what about the data? could be a place to also comment on the edinburgh city center use case?
-- [ ] **R3.14** Introduce references to (subfigures of) Figure 2 in the methods subsections
+
+ - [x] **R3.13** this section only describes methods, what about the data? could be a place to also comment on the edinburgh city center use case?
+
+Added a brief data/use-case note in Data and Methods stating the Edinburgh dataset provenance (OSM, EPSG:27700), parameter consistency for fair comparison, and a pointer to @sec-application for the full use-case description.
+
+ - [x] **R3.14** Introduce references to (subfigures of) Figure 2 in the methods subsections
+
+Inserted explicit references in the skeletonization and Voronoi subsections to the corresponding columns of @fig-skeleton-line (Otley top row; Armley bottom row) to guide readers to concrete outputs.
+
 - [x] **R3.15** skeletonization buffer size 8 meters: at first glance this seems to me use-case specific, not part of methods? so: if this is a location-based choice, i would suggest to move it to the use case description and there argue why 8m was chosen. if this is a general recommendation for future parenx use i would leave this here but then comment on the reasoning behind the choice of the buffer size
 
 See our response to **R2.9**. We have clarified that the 8 m buffer is informed by UK road widths and rail track separation, and that it can be adjusted using the `buffer` parameter in the simplification functions.
