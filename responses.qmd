@@ -236,9 +236,11 @@ Typo fixed.
 
  - [x] **R3.17** joining route networks: if this is not part of parenx (if i grasped this correctly) and also not part of the Edinburgh use case (?), then maybe this can be shortened/doesn't need its own subsection? (Could be moved to discussion/future work?)
 
-We shortened “Joining route networks” to a concise note clarifying that attribute conflation is not part of `parenx` and was not used in the Edinburgh application, pointed readers to existing tools (`stplanr::rnet_merge()`, `rnetmatch`), and flagged a fuller evaluation of joining strategies as future work.
+We moved the joining content to the discussion as it is relevant to future work but outside the scope of this paper.
+It is now more concise, and references the more up-to-date `anime` crate for network joining.
 
-## Application to Edinburgh
+- [x] **R3.18** Application to Edinburgh
+
 This section seems way too short, i would suggest to say more here (if word limit need to be respected, then maybe at the expense of summarizing a bit more the lit review part?), e.g. about
 - why this usecase, what are its particularities,
 - what is the goal of the simplification process here (e.g. "removing the roundabouts", etc.)
@@ -247,8 +249,13 @@ This section seems way too short, i would suggest to say more here (if word limi
 - what are the differences between the 2 different parenx methods (point out where in figure 4 this becomes apparent?),
 - etc.
 
+We have expanded this section to provide more context and detail about the Edinburgh use case, including its particularities and the goals of the simplification process.
+
 ## Conclusion
-- [ ] **R3.19** "we believe it has applications.." >> i think the authors can be more confident about this ("we believe" is not necessary, you can state that there are in fact applications - & say which)
+
+- [x] **R3.19** "we believe it has applications.." >> i think the authors can be more confident about this ("we believe" is not necessary, you can state that there are in fact applications - & say which)
+
+We have updated the conclusion to state that the methods have applications in transport planning and other fields, as discussed in the introduction and discussion sections.
 
 # Comments from marked-up PDF file
 
