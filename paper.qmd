@@ -83,7 +83,7 @@ To support reproducible research, we implement the methods in the open-source `p
 Datasets representing route networks are foundational to transport planning, serving a dual role as both inputs to and outputs from transport models.
 As inputs, they provide the digital representation of the physical world on which transport systems operate.
 As outputs, they are used to visualise the results of transport models, for example showing levels of predicted demand or network performance on specific routes.
-More specifically, transport network datasets are *spatial networks* composed of nodes (junctions) and edges (links or ways), where each edge has an associated cost, such as its length or travel time [@barthélemy2011].
+More specifically, transport network datasets are *spatial networks* composed of nodes (vertices or junctions) and edges (links or ways), where each edge has an associated cost, such as its length or travel time [@barthélemy2011]. 
 In practice, these components are geographically located, with edges representing the physical infrastructure of the transport network, often enriched with attributes like the type of way (e.g., motorway, cycle path), its physical characteristics, and usage data such as daily traffic volumes.
 Accordingly, route network simplification can be applied to both input and output networks, aiming to reduce complexity while preserving the essential spatial structure and relevant attributes of the network.
 
