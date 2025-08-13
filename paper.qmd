@@ -223,6 +223,7 @@ import geopandas as gp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import neatnet
 from parenx.shared import combine_line, get_geometry_buffer, get_primal, get_source_target
 from parenx.skeletonize import (
     get_affine_transform,
@@ -1077,7 +1078,7 @@ The choice of method and level of simplification will depend on the specific req
 PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
              "armley_line,edinburgh_line,doncaster_line,armley_edge_sk,edinburgh_edge_sk,"
              "doncaster_edge_sk,armley_edge,edinburgh_edge,doncaster_edge,"
-             "os_edinburgh").split(",")
+             "os_edinburgh,edinburgh_neatnet").split(",")
 
 for variable in PLOT_DATA:
     filepath = Path(f"data/rnet_{variable}.geojson")
@@ -1106,6 +1107,11 @@ if "edinburgh_sk" not in globals():
     edinburgh_sk = edinburgh_line.map(shapely_transform).map(set_precision_pointone)
     edinburgh_sk = gp.GeoSeries(edinburgh_sk, crs=CRS)
     edinburgh_edge_sk = get_primal(edinburgh_sk)
+
+# Process with neatnet
+if "edinburgh_neatnet" not in globals():
+    streets = gp.read_file("./data/rnet_princes_street.geojson").to_crs(CRS)
+    edinburgh_neatnet = neatnet.neatify(streets, artifact_threshold=5)
 
 if "doncaster_sk" not in globals():
     base_doncaster = gp.read_file("./data/rnet_doncaster_rail.geojson").to_crs(CRS)
@@ -1186,12 +1192,13 @@ def add_scalebar(ax, loc='lower center', pad=0.5):
   ax.add_artist(sb)
 # Plot 1: Input
 #fig = plt.figure(figsize=(7, 12))
-fig = plt.figure(figsize=(7, 15))
-ax1 = plt.subplot2grid((5, 1), (0, 0))
-ax2 = plt.subplot2grid((5, 1), (1, 0))
-ax3 = plt.subplot2grid((5, 1), (2, 0))
-ax4 = plt.subplot2grid((5, 1), (3, 0))
-ax5 = plt.subplot2grid((5, 1), (4, 0))
+fig = plt.figure(figsize=(7, 18))
+ax1 = plt.subplot2grid((6, 1), (0, 0))
+ax2 = plt.subplot2grid((6, 1), (1, 0))
+ax3 = plt.subplot2grid((6, 1), (2, 0))
+ax4 = plt.subplot2grid((6, 1), (3, 0))
+ax5 = plt.subplot2grid((6, 1), (4, 0))
+ax6 = plt.subplot2grid((6, 1), (5, 0))
 
 # Compute a tighter bounding box around the Edinburgh example:
 # shrink height by 3x and width by 2x, centred on the original bounds.
@@ -1238,15 +1245,24 @@ ax4.set_xlim(xmin_t, xmax_t)
 ax4.set_ylim(ymin_t, ymax_t)
 #add_scalebar(ax4, loc='lower center', pad=0.6)
 
-# Plot 5: Ground truth ordnance survey data
-ax5 = os_edinburgh.plot(ax=ax5, color='black')
+# Plot 5: Neatnet
+ax5 = edinburgh_neatnet.plot(ax=ax5, color='black')
 ax5.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax5.xaxis.set_ticklabels([])
 ax5.yaxis.set_ticklabels([])
-ax5.set_title('Official Road Centrelines (Ordnance Survey OpenRoads)')
+ax5.set_title('Neatnet Simplification')
 ax5.set_xlim(xmin_t, xmax_t)
 ax5.set_ylim(ymin_t, ymax_t)
-add_scalebar(ax5, loc='lower center', pad=0.6)
+
+# Plot 6: Ground truth ordnance survey data
+ax6 = os_edinburgh.plot(ax=ax6, color='black')
+ax6.grid(True, color='grey', linestyle='--', linewidth=0.5)
+ax6.xaxis.set_ticklabels([])
+ax6.yaxis.set_ticklabels([])
+ax6.set_title('Official Road Centrelines (Ordnance Survey OpenRoads)')
+ax6.set_xlim(xmin_t, xmax_t)
+ax6.set_ylim(ymin_t, ymax_t)
+add_scalebar(ax6, loc='lower center', pad=0.6)
 
 plt.tight_layout()
 plt.show()
@@ -1254,7 +1270,7 @@ plt.show()
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
 
-Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top), skeletonised network (second), Voronoi diagram (third), primal network (fourth) and ground truth network.
+Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top), skeletonised network (second), Voronoi diagram (third), primal network (fourth), neatnet simplification (fifth) and ground truth network (sixth).
 :::
 
 ```{=html}
