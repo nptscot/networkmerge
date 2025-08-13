@@ -110,7 +110,7 @@ Similarly, vector smoothing techniques can improve the aesthetic quality of netw
 A more promising approach involves converting the linear network into an intermediate polygon (buffer) layer and then deriving a simplified centreline, or 'medial axis'.
 This concept has been explored in various open-source software implementations [e.g. @smogavec2012; @centerli2023].
 Recent work in this area includes the `neatnet` Python package [@fleischmann2024] and the `parenx` package [@deakin2024], the latter of which forms the basis of the methods presented in this paper.
-Other related methods focus on identifying and removing specific types of network artefacts, such as small loops or 'slivers' between dual carriageways to simplify street blocks [@fleischmann; @grippa2018].
+Other related methods focus on identifying and removing specific types of network artefacts, such as small loops or 'slivers' between dual carriageways to simplify street blocks [@fleischmann2024; @grippa2018].
 However, these methods often lack the flexibility to control the level of simplification.
 
 While the focus of this paper is on route network simplification for transport planning, and applications to other fields are beyond its scope, it is worth noting prior research tackling the challenge of simplifying linear features in other domains.
@@ -1243,7 +1243,7 @@ ax5 = os_edinburgh.plot(ax=ax5, color='black')
 ax5.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax5.xaxis.set_ticklabels([])
 ax5.yaxis.set_ticklabels([])
-ax5.set_title('Ground Truth (Ordnance Survey)')
+ax5.set_title('Official Road Centrelines (Ordnance Survey OpenRoads)')
 ax5.set_xlim(xmin_t, xmax_t)
 ax5.set_ylim(ymin_t, ymax_t)
 add_scalebar(ax5, loc='lower center', pad=0.6)
@@ -1343,7 +1343,7 @@ In particular, the speed of the process could be improved through parallelisatio
 A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
 This was not part of `parenx` and was not used in the Edinburgh application.
 However, we note that tools for this purpose exist, including the `rnet_merge()` function in the `stplanr` R package [@lovelace2019] and `anime` Rust crate for fast and flexible many-to-many segment matching, a robust basis for attribute joins [@parry_josiahparryanime_2025].
-Network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
+Network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri2021; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
 Describing different joining strategies and implementations would be a logical next step for future work.
 
 The methods presented in this paper were initially developed to support the Network Planning Tool for Scotland, where they provide a strong evidence base for data-driven investment in active travel infrastructure.
