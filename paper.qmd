@@ -1270,7 +1270,7 @@ ax6.set_xlim(xmin_t, xmax_t)
 ax6.set_ylim(ymin_t, ymax_t)
 add_scalebar(ax6, loc='lower center', pad=0.6)
 
-plt.tight_layout()
+plt.subplots_adjust(hspace=0.15, wspace=0.1)
 plt.show()
 ```
 
