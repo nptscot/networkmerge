@@ -1224,49 +1224,48 @@ ax1.set_title('Input (OpenStreetMap)')
 ax1.set_xlim(xmin_t, xmax_t)
 ax1.set_ylim(ymin_t, ymax_t)
 
-# Plot 2: Skeletonised
-ax2 = edinburgh_sk.plot(ax=ax2, color='black')
+# Plot 2: Ground truth ordnance survey data
+ax2 = os_edinburgh.plot(ax=ax2, color='black')
 ax2.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax2.xaxis.set_ticklabels([])
 ax2.yaxis.set_ticklabels([])
-ax2.set_title('Skeletonised')
+ax2.set_title('Official Road Centrelines (Ordnance Survey OpenRoads)')
 ax2.set_xlim(xmin_t, xmax_t)
 ax2.set_ylim(ymin_t, ymax_t)
 
-# Plot 3: Voronoi
-ax3 = edinburgh_line.plot(ax=ax3, color='black')
+# Plot 3: Skeletonised
+ax3 = edinburgh_sk.plot(ax=ax3, color='black')
 ax3.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax3.xaxis.set_ticklabels([])
 ax3.yaxis.set_ticklabels([])
-ax3.set_title('Voronoi')
+ax3.set_title('Skeletonised')
 ax3.set_xlim(xmin_t, xmax_t)
 ax3.set_ylim(ymin_t, ymax_t)
 
-# Plot 4: Primal Skeletonised
-ax4 = edinburgh_edge_sk.plot(ax=ax4, color='black')
+# Plot 4: Voronoi
+ax4 = edinburgh_line.plot(ax=ax4, color='black')
 ax4.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax4.xaxis.set_ticklabels([])
 ax4.yaxis.set_ticklabels([])
-ax4.set_title('Primal')
+ax4.set_title('Voronoi')
 ax4.set_xlim(xmin_t, xmax_t)
 ax4.set_ylim(ymin_t, ymax_t)
-#add_scalebar(ax4, loc='lower center', pad=0.6)
 
-# Plot 5: Neatnet
-ax5 = edinburgh_neatnet.plot(ax=ax5, color='black')
+# Plot 5: Primal
+ax5 = edinburgh_edge_sk.plot(ax=ax5, color='black')
 ax5.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax5.xaxis.set_ticklabels([])
 ax5.yaxis.set_ticklabels([])
-ax5.set_title('Neatnet Python package (artifact_threshold=5)')
+ax5.set_title('Primal')
 ax5.set_xlim(xmin_t, xmax_t)
 ax5.set_ylim(ymin_t, ymax_t)
 
-# Plot 6: Ground truth ordnance survey data
-ax6 = os_edinburgh.plot(ax=ax6, color='black')
+# Plot 6: Neatnet
+ax6 = edinburgh_neatnet.plot(ax=ax6, color='black')
 ax6.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax6.xaxis.set_ticklabels([])
 ax6.yaxis.set_ticklabels([])
-ax6.set_title('Official Road Centrelines (Ordnance Survey OpenRoads)')
+ax6.set_title('Neatnet Python package (artifact_threshold=5)')
 ax6.set_xlim(xmin_t, xmax_t)
 ax6.set_ylim(ymin_t, ymax_t)
 add_scalebar(ax6, loc='lower center', pad=0.6)
@@ -1277,7 +1276,7 @@ plt.show()
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
 
-Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), skeletonised network (top right), Voronoi diagram (middle left), primal network (middle right), neatnet simplification (bottom left) and ground truth network (bottom right).
+Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), ground truth network (top right), skeletonised network (middle left), Voronoi diagram (middle right), primal network (bottom left) and neatnet simplification (bottom right).
 :::
 
 ```{=html}
