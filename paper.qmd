@@ -735,7 +735,7 @@ for spine in ax.spines.values():
 
 ```{python}
 #| fig-cap: "Skeletonised"
-ax = armley_sk.plot()
+ax = armley_sk.plot();
 ax.set_xticks([]);
 ax.set_yticks([]);
 ax.set_xlabel("")
