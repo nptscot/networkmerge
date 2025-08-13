@@ -49,6 +49,13 @@ library(stplanr)
 
 tmap_mode("plot")
 
+# Install Python dependencies using reticulate
+requirements_txt = readLines("requirements.txt")
+if (!requireNamespace("reticulate")) {
+  install.packages("reticulate")
+}
+reticulate::py_install(requirements_txt, pip = TRUE)
+
 rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_x_ed.geojson")
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 ```
@@ -1192,13 +1199,13 @@ def add_scalebar(ax, loc='lower center', pad=0.5):
   ax.add_artist(sb)
 # Plot 1: Input
 #fig = plt.figure(figsize=(7, 12))
-fig = plt.figure(figsize=(7, 18))
-ax1 = plt.subplot2grid((6, 1), (0, 0))
-ax2 = plt.subplot2grid((6, 1), (1, 0))
-ax3 = plt.subplot2grid((6, 1), (2, 0))
-ax4 = plt.subplot2grid((6, 1), (3, 0))
-ax5 = plt.subplot2grid((6, 1), (4, 0))
-ax6 = plt.subplot2grid((6, 1), (5, 0))
+fig = plt.figure(figsize=(14, 12))
+ax1 = plt.subplot2grid((3, 2), (0, 0))
+ax2 = plt.subplot2grid((3, 2), (0, 1))
+ax3 = plt.subplot2grid((3, 2), (1, 0))
+ax4 = plt.subplot2grid((3, 2), (1, 1))
+ax5 = plt.subplot2grid((3, 2), (2, 0))
+ax6 = plt.subplot2grid((3, 2), (2, 1))
 
 # Compute a tighter bounding box around the Edinburgh example:
 # shrink height by 3x and width by 2x, centred on the original bounds.
@@ -1213,7 +1220,7 @@ ax1 = base_edinburgh.plot(ax=ax1, color='black')
 ax1.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax1.xaxis.set_ticklabels([])
 ax1.yaxis.set_ticklabels([])
-ax1.set_title('Input')
+ax1.set_title('Input (OpenStreetMap)')
 ax1.set_xlim(xmin_t, xmax_t)
 ax1.set_ylim(ymin_t, ymax_t)
 
@@ -1250,7 +1257,7 @@ ax5 = edinburgh_neatnet.plot(ax=ax5, color='black')
 ax5.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax5.xaxis.set_ticklabels([])
 ax5.yaxis.set_ticklabels([])
-ax5.set_title('Neatnet Simplification')
+ax5.set_title('Neatnet Python package (artifact_threshold=5)')
 ax5.set_xlim(xmin_t, xmax_t)
 ax5.set_ylim(ymin_t, ymax_t)
 
@@ -1270,7 +1277,7 @@ plt.show()
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
 
-Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top), skeletonised network (second), Voronoi diagram (third), primal network (fourth), neatnet simplification (fifth) and ground truth network (sixth).
+Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), skeletonised network (top right), Voronoi diagram (middle left), primal network (middle right), neatnet simplification (bottom left) and ground truth network (bottom right).
 :::
 
 ```{=html}
