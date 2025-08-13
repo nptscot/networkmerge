@@ -1170,7 +1170,6 @@ for variable in PLOT_DATA:
 
 <!-- TODO: improve the figure layout. -->
 
-::: {#fig-results layout-ncol="1"}
 ```{python}
 #| results: hide
 #| eval: false
@@ -1279,6 +1278,7 @@ plt.show()
 ```{r}
 #| fig.cap: "Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), ground truth network (top right), skeletonised network (middle left), Voronoi diagram (middle right), primal network (bottom left) and neatnet simplification (bottom right)."
 #| out-width: 100%
+#| label: fig-results
 plot_files = c(
   "data/rnet_base_edinburgh.geojson",
   "data/rnet_os_edinburgh.geojson",
@@ -1341,8 +1341,6 @@ knitr::include_graphics("images/edinburgh_simplification.png")
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
 
-Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), ground truth network (top right), skeletonised network (middle left), Voronoi diagram (middle right), primal network (bottom left) and neatnet simplification (bottom right).
-:::
 
 ```{=html}
 <!-- @fig-apply_results presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method.
