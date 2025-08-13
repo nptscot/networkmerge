@@ -1173,6 +1173,7 @@ for variable in PLOT_DATA:
 ::: {#fig-results layout-ncol="1"}
 ```{python}
 #| results: hide
+#| eval: false
 # Add scale bars using AnchoredSizeBar (units in metres; EPSG:27700)
 from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 import matplotlib.font_manager as fm
@@ -1270,8 +1271,72 @@ ax6.set_xlim(xmin_t, xmax_t)
 ax6.set_ylim(ymin_t, ymax_t)
 add_scalebar(ax6, loc='lower center', pad=0.6)
 
-plt.subplots_adjust(hspace=0.15, wspace=0.1)
+# tight spacing:
+plt.tight_layout()
 plt.show()
+```
+
+```{r}
+#| fig.cap: "Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), ground truth network (top right), skeletonised network (middle left), Voronoi diagram (middle right), primal network (bottom left) and neatnet simplification (bottom right)."
+#| out-width: 100%
+plot_files = c(
+  "data/rnet_base_edinburgh.geojson",
+  "data/rnet_os_edinburgh.geojson",
+  "data/rnet_edinburgh_sk.geojson",
+  "data/rnet_edinburgh_line.geojson",
+  "data/rnet_edinburgh_edge_sk.geojson",
+  "data/rnet_edinburgh_neatnet.geojson"
+)
+plot_facet_captions = c(
+  "Input (OpenStreetMap)",
+  "Official Road Centrelines (Ordnance Survey OpenRoads)",
+  "Skeletonised",
+  "Voronoi",
+  "Primal",
+  "Neatnet Python package (artifact_threshold=5)"
+) |>
+  # convert to factor to ensure correct ordering
+  factor(levels = c(
+    "Input (OpenStreetMap)",
+    "Official Road Centrelines (Ordnance Survey OpenRoads)",
+    "Skeletonised",
+    "Voronoi",
+    "Primal",
+    "Neatnet Python package (artifact_threshold=5)"
+  ))
+plot_facet_df = tibble::tibble(
+  file = as.character(seq_along(plot_files)),
+  caption = plot_facet_captions
+)
+plot_data = purrr::map_dfr(plot_files, sf::read_sf, .id = "file")
+plot_data = dplyr::left_join(plot_data, plot_facet_df, by = "file")
+bbox_input = plot_data |>
+  dplyr::filter(file == 1) |>
+  sf::st_bbox()
+bbox_adjusted = bbox_input |>
+  tmaptools::bb(width = 0.5, height = 0.35, relative = TRUE) |>
+  sf::st_as_sfc()
+sf::st_crs(bbox_adjusted) = sf::st_crs(plot_data)
+bbox_adjusted = bbox_adjusted |>
+  sf::st_as_sf()
+# plot(bbox_adjusted)
+# plot(plot_data$geometry, col = "grey", add = TRUE)
+plot_data_adjusted = plot_data |>
+  sf::st_intersection(bbox_adjusted)
+library(tmap)
+m = tmap::tm_shape(plot_data_adjusted) +
+  tmap::tm_lines() +
+  tmap::tm_facets("caption", ncol = 2) +
+  tmap::tm_scalebar(text.size = 0.6, position = tm_pos_out("center", "bottom"))
+# tmap_save(m, "edinburgh_simplification.png", dpi = 400, scale = 0.9, outer.margins = c(0, 0, 0, 0), asp = 2.5)
+# tmap_save(m, "edinburgh_simplification.png", dpi = 400, scale = 0.9)
+# system("convert -trim edinburgh_simplification.png edinburgh_simplification.png")
+# browseURL("edinburgh_simplification.png")
+# Strip whitespace from the image
+# # Move to images directory
+# file.rename("edinburgh_simplification.png", "images/edinburgh_simplification.png")
+
+knitr::include_graphics("images/edinburgh_simplification.png")
 ```
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
