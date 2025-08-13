@@ -683,13 +683,24 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 ::: {#fig-skeleton-line layout-ncol="3"}
 ```{python}
 #| fig-cap: "Original"
-base_otley.plot(edgecolor="blue", color="blue")
+ax = base_otley.plot(edgecolor="blue", color="blue");
+ax.set_xticks([]);
+ax.set_yticks([]);
+ax.set_xlabel("")
+ax.set_ylabel("")
+for spine in ax.spines.values():
+    spine.set_visible(False)
 ```
 
 ```{python}
 #| fig-cap: "Skeletonised"
-
-otley_sk.plot()
+ax = otley_sk.plot();
+ax.set_xticks([]);
+ax.set_yticks([]);
+ax.set_xlabel("")
+ax.set_ylabel("")
+for spine in ax.spines.values():
+    spine.set_visible(False)
 ```
 
 ```{python}
@@ -702,18 +713,35 @@ otley_square = gp.GeoSeries(unary_union(otley_square.values).geoms, crs=CRS)
 otley_line = otley_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
 otley_line = set_geometry(otley_line, otley_square)
 otley_line = combine_line(otley_line)
-otley_line.plot()
+ax = otley_line.plot();
+ax.set_xticks([]);
+ax.set_yticks([]);
+ax.set_xlabel("")
+ax.set_ylabel("")
+for spine in ax.spines.values():
+    spine.set_visible(False)
 ```
 
 ```{python}
 #| fig-cap: "Original"
-base_armley.plot(edgecolor="blue", color="blue")
+ax = base_armley.plot(edgecolor="blue", color="blue");
+ax.set_xticks([]);
+ax.set_yticks([]);
+ax.set_xlabel("")
+ax.set_ylabel("")
+for spine in ax.spines.values():
+    spine.set_visible(False)
 ```
 
 ```{python}
 #| fig-cap: "Skeletonised"
-
-armley_sk.plot()
+ax = armley_sk.plot()
+ax.set_xticks([]);
+ax.set_yticks([]);
+ax.set_xlabel("")
+ax.set_ylabel("")
+for spine in ax.spines.values():
+    spine.set_visible(False)
 ```
 
 ```{python}
@@ -726,7 +754,13 @@ armley_square = gp.GeoSeries(unary_union(armley_square.values).geoms, crs=CRS)
 armley_line = armley_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
 armley_line = set_geometry(armley_line, armley_square)
 armley_line = combine_line(armley_line)
-armley_line.plot()
+ax = armley_line.plot()
+ax.set_xticks([]);
+ax.set_yticks([]);
+ax.set_xlabel("")
+ax.set_ylabel("")
+for spine in ax.spines.values():
+    spine.set_visible(False)
 ```
 
 Original and simplified versions of the Otley Road (top) and Armley Road (bottom) networks.
@@ -1072,6 +1106,9 @@ The resulting network geometries are 'cleaner' than the original, making them a 
 
 There are some differences between the skeletonised and Voronoi results that are visible in @fig-results.
 The Voronoi result captures crossroads more cleanly by aligning with the medial axes of intersecting streets, whereas skeletonisation sometimes introduces slight curves or offsets immediately before intersections.
+It is notable that the `neatnet` implementation results in a network that is similar to the Voronoi output, but with some differences such as effective removal of the complex roundabout at the top of the sub-figures and a single 'stranded' linestring in the central western part of the network.
+The differences between each approach and the official centreline network highlight that there is an element of subjectivity in the results, meaning that the flexibility of the methods and input parameters is important to achieve the desired outcome for a specific application.
+Still, the results suggest that more work is needed to achieve more automated outputs that 'just work' for many use cases in which simplification is required: none of the outputs are perfect from visual or network connectivity perspectives.
 
 Finally, the primal network shown in the bottom subfigure of @fig-results represents the highest level of simplification.
 This network is created by removing all nodes that are not intersections, effectively representing the network as a series of direct connections between junctions.
@@ -1398,13 +1435,12 @@ m2 = tm_shape(rnet_merged) +
      tm_layout(frame = FALSE, inner.margins = 0, outer.margins = 0, asp = 0)
 
 
+
+
+
 # Arrange the two maps vertically with a tight layout and synchronization
 tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 ```
-
-<!-- Comparison of Original Edinburgh Road Network (Up) and Simplied Edinburgh Road Network (Down). -->
-
-<!-- ::: -->
 
 # Discussion and Conclusion {#sec-discussion}
 
