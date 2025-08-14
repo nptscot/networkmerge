@@ -98,7 +98,7 @@ In this paper, we articulate the problem of complex route networks, present two 
 The primary aim is to provide transport planners with tools to simplify complex route networks as a 'pre‑processing' step in existing transport modelling workflows.
 More broadly, we aim to contribute to wider multi-disciplinary efforts in spatial network analysis and network simplification.
 
-To avoid ambiguity, we set-out key terms and how they are used consistently in the paper.
+To avoid ambiguity, we set out key terms and how they are used consistently in the paper.
 A spatial network is the abstract, graph-theoretic object embedded in geographic space (nodes and edges with geometry) [@barthélemy2011].
 A transport network dataset is a concrete geospatial dataset typically saved as a vector geographic dataset in a GeoPackage (.gpkg), GeoJSON (.geojson), or similar geographic file format that encodes a spatial network representing linear transport infrastructure [@kujala2018].
 'Route network' can be used interchangeably with transport network but the emphasis is on the travel demand on the network, which can be calculated by aggregating many routes (e.g., model outputs) into a consolidated set of corridors [@morgan2020; @moral-carcedo2024].
@@ -138,7 +138,7 @@ Implemented in the function `overline()` in the `stplanr` R package [@lovelace20
 However, without further processing, the 'overline' approach has two practical limitations: it retains functionally redundant vertices, leading to large file sizes and slow rendering; and it does not merge parallel ways that represent a single corridor.
 This lack of merging is particularly problematic for visualisation of transport networks, as shown in [@fig-pct; @lovelace2017].
 The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
-The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
+The right panel, by contrast, shows three parallel ways with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 = 850, which is greater than 818), this is not clear from the visualisation.
 
 ::: {#fig-pct layout-ncol="2" width="50%"}
@@ -769,7 +769,7 @@ From left to right: original network, skeletonised network, Voronoi simplified n
 
 ## Post-Processing
 
-Both skeletonisation and Voronoi outputs require post‑processing to remove 'knots'—short, tangled segments that form near intersections.
+Both skeletonisation and Voronoi outputs require post‑processing to remove 'knots' (short, tangled segments that form near intersections).
 To remove these features, short segments are clustered together, and a central point for each cluster is determined.
 The end-points of longer lines that connect to these segment clusters are then realigned to the cluster's central point, as illustrated in the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix.
 
