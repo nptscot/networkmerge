@@ -139,7 +139,7 @@ However, without further processing, the 'overline' approach has two practical l
 This lack of merging is particularly problematic for visualisation of transport networks, as shown in [@fig-pct; @lovelace2017].
 The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
 The right panel, by contrast, shows three parallel ways parallel to Armley Road with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
-Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 \> 818), this is not clear from the visualisation.
+Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 = 850, which is greater than 818), this is not clear from the visualisation.
 
 ::: {#fig-pct layout-ncol="2" width="50%"}
 ![](images/otley-road-narrow.png){#fig-otley-road width="80%"}
@@ -208,9 +208,9 @@ There are two main challenges that need to be overcome to simplify transport net
 2.  Assigning attributes to the simplified network
 
 We address the geometric simplification first, describing skeletonisation and then a Voronoi‑based approach.
-The key contributions of the paper are the novel methods of image skeletonisation, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+The key contributions of the paper are the novel methods of image skeletonisation, presented in @sec-simplification-via-skeletonisation, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 
-## Simplification via skeletonisation {#sec-simplification-via-skeletonization}
+## Simplification via skeletonisation {#sec-simplification-via-skeletonisation}
 
 The skeletonisation approach generates a simplified network by buffering the network, applying an image skeletonisation algorithm, and extracting line segments from a raster of this buffer.
 For an example of the resulting outputs, see the "Skeletonised" column of @fig-skeleton-line (Otley: top row; Armley: bottom row).
@@ -820,7 +820,7 @@ See Section 4 in [Methods](https://nptscot.github.io/networkmerge/methods.html) 
 
 ## Skeletonisation versus Voronoi
 
-With both pipelines defined, we summarize known limitations and performance trade-offs.
+With both pipelines defined, we summarise known limitations and performance trade-offs.
 Both the skeletonisation and Voronoi approaches are generic methods with the following known issues: they do not preserve links between attributes and the simplified network, nor do they identify subsets of edges that require simplification.
 Additionally, the resulting lines can be wobbly.
 The simplification process is memory- and CPU-intensive, and its speed depends on network density and overlap.

@@ -214,9 +214,9 @@ armley_segment.plot()
 Segmented buffer geometries of the Otley Road (left) and Armley Road (right) networks.
 :::
 
-### Skeletonization
+### skeletonisation
 
-In the skeletonization process, the buffered lines of the network are first transformed into a raster image.
+In the skeletonisation process, the buffered lines of the network are first transformed into a raster image.
 Subsequently, this raster image is processed through a thinning algorithm to produce a skeletal representation of the original network.
 This skeletal structure preserves the overall extent and connectivity of the initial network, with a central line that closely follows the contours of the combined buffered area.
 
@@ -302,7 +302,7 @@ Rasterio and Shapely affine transformation matrices for the Otley Road network.
 In these matrices, the first two columns represent the scaling and rotation components, while the last column represents the translation.
 The Rasterio transform matrix first scales the coordinates by 0.5 and then translates them, whereas the Shapely transform first rotates the coordinates and then applies the scaling.
 
-### Skeletonize the buffer to a point geometry
+### Skeletonise the buffer to a point geometry
 
 A scaled affine transformation is applied to align the projected coordinate geometry with the scaled raster image.
 This transformation adjusts the geometry to match the raster's scale and orientation.
