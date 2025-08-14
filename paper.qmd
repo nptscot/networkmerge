@@ -1312,7 +1312,7 @@ plt.show()
 ```
 
 ```{r}
-#| fig.cap: "Results of the route network simplification methods applied to Edinburgh city centre, comparing the input dataset (top left), ground truth network (top right), skeletonised network (middle left), Voronoi diagram (middle right), primal network (bottom left) and neatnet simplification (bottom right)."
+#| fig.cap: "Results of the route network simplification methods applied to Edinburgh city centre. The input dataset (top left) and road centrelines from Ordnance Survey's OpenRoads (©Crown copyright and database right 2025) released under the Open Government License (OGL) (top right) are shown for reference. Skeletonised (middle left), Voronoi (middle right) and primal network (bottom left) outputs are shown. A network simplified by the neatnet Python package is also shown (bottom right)."
 #| out-width: 100%
 #| label: fig-results
 plot_files = c(
