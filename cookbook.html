@@ -176,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#simplification-tldr" id="toc-simplification-tldr" class="nav-link" data-scroll-target="#simplification-tldr"><span class="header-section-number">3</span> Simplification: TL;DR</a>
   <ul class="collapse">
-  <li><a href="#skeletonize-simplification" id="toc-skeletonize-simplification" class="nav-link" data-scroll-target="#skeletonize-simplification"><span class="header-section-number">3.1</span> Skeletonize simplification</a></li>
+  <li><a href="#skeletonise-simplification" id="toc-skeletonise-simplification" class="nav-link" data-scroll-target="#skeletonise-simplification"><span class="header-section-number">3.1</span> Skeletonise simplification</a></li>
   <li><a href="#voronoi-simplification" id="toc-voronoi-simplification" class="nav-link" data-scroll-target="#voronoi-simplification"><span class="header-section-number">3.2</span> Voronoi simplification</a></li>
   </ul></li>
   <li><a href="#helper-scripts" id="toc-helper-scripts" class="nav-link" data-scroll-target="#helper-scripts"><span class="header-section-number">4</span> Helper scripts</a>
@@ -188,7 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#set-up-environment" id="toc-set-up-environment" class="nav-link" data-scroll-target="#set-up-environment"><span class="header-section-number">4.4.1</span> Set up environment</a></li>
   <li><a href="#archive-previous-files" id="toc-archive-previous-files" class="nav-link" data-scroll-target="#archive-previous-files"><span class="header-section-number">4.4.2</span> Archive previous files</a></li>
-  <li><a href="#simplify-using-skeletonization" id="toc-simplify-using-skeletonization" class="nav-link" data-scroll-target="#simplify-using-skeletonization"><span class="header-section-number">4.4.3</span> Simplify using skeletonization</a></li>
+  <li><a href="#simplify-using-skeletonisation" id="toc-simplify-using-skeletonisation" class="nav-link" data-scroll-target="#simplify-using-skeletonisation"><span class="header-section-number">4.4.3</span> Simplify using skeletonisation</a></li>
   <li><a href="#simplify-using-voronoi" id="toc-simplify-using-voronoi" class="nav-link" data-scroll-target="#simplify-using-voronoi"><span class="header-section-number">4.4.4</span> Simplify using Voronoi</a></li>
   <li><a href="#what-does-the-full-run.sh-script-look-like" id="toc-what-does-the-full-run.sh-script-look-like" class="nav-link" data-scroll-target="#what-does-the-full-run.sh-script-look-like"><span class="header-section-number">4.4.5</span> What does the full <code>run.sh</code> script look like?</a></li>
   </ul></li>
@@ -332,8 +332,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="simplification-tldr" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Simplification: TL;DR</h1>
 <p>The remaining “Too Long; Do not Read” sections explains more about how the <code>parenx</code> scripts work, and introduces a helper function used in testing. The <code>skeletonize.py</code> and <code>voronoi.py</code> simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Both allow the maximum displacement (simplify)<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and buffer size (buffer) to be set.</p>
-<section id="skeletonize-simplification" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="skeletonize-simplification"><span class="header-section-number">3.1</span> Skeletonize simplification</h2>
+<section id="skeletonise-simplification" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="skeletonise-simplification"><span class="header-section-number">3.1</span> Skeletonise simplification</h2>
 <p>As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> https://github.com/anisotropi4/parenx/blob/main/data/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The base <code>skeletonize.py</code> also takes parameters to split buffered line segments or preserve knots. These parameters:</p>
@@ -437,9 +437,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="simplify-using-skeletonization" class="level3" data-number="4.4.3">
-<h3 data-number="4.4.3" class="anchored" data-anchor-id="simplify-using-skeletonization"><span class="header-section-number">4.4.3</span> Simplify using skeletonization</h3>
-<p>This creates three skeletonization outputs with varying <code>simplify</code> and <code>segment</code> parameters:</p>
+<section id="simplify-using-skeletonisation" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="simplify-using-skeletonisation"><span class="header-section-number">4.4.3</span> Simplify using skeletonisation</h3>
+<p>This creates three skeletonisation outputs with varying <code>simplify</code> and <code>segment</code> parameters:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> skeletonize <span class="va">${INPATH}</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> <span class="va">${INPATH}</span> sk-<span class="va">${OUTPUT}</span>.gpkg</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> <span class="va">${INPATH}</span> sk-<span class="va">${OUTPUT}</span>-simple.gpkg <span class="at">--simplify</span> 1.0</span>
