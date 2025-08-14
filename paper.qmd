@@ -104,7 +104,7 @@ A transport network dataset is a concrete geospatial dataset typically saved as 
 'Route network' can be used interchangeably with transport network but the emphasis is on the travel demand on the network, which can be calculated by aggregating many routes (e.g., model outputs) into a consolidated set of corridors [@morgan2020; @moral-carcedo2024].
 We reserve "spatial network" for statements about the underlying graph concept.
 
-The growing availability of high-resolution geographic datasets, from open sources including OpenStreetMap [@openstreetmap] and government-funded mapping agencies, has enabled the creation of increasingly detailed maps.
+The growing availability of high-resolution geographic datasets, from open sources including OpenStreetMap [@openstreetmap] and government-funded mapping agencies [@ordnancesurvey], has enabled the creation of increasingly detailed maps.
 This trend, powered by advances in hardware and software, is beneficial for sustainable transport planning, which relies on accurate and detailed network information.
 However, the very intricacy of modern street network geometries can create significant problems.
 For transport model outputs to be useful to planners and the public, a clear and intuitive visual representation is crucial for identifying issues such as bottlenecks, congestion hotspots, and areas of poor accessibility.
@@ -186,7 +186,7 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
 In this paper we use the two street networks discussed in the previous section to illustrate the methods.
-See the ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) and [Methods](https://nptscot.github.io/networkmerge/methods.html) appendices for further details on the methods used in this paper and their application to alternative (railway based) datasets.
+See the [Methods](https://nptscot.github.io/networkmerge/methods.html) and ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) appendices for further details on the methods used in this paper and their application to alternative (railway based) datasets.
 
 In addition to these illustrative street-corridor examples, we apply the same pipelines to a real-world dataset for central Edinburgh derived from OpenStreetMap and analysed in a projected CRS (EPSG:27700).
 Unless otherwise stated, parameters (e.g., buffer size) are kept consistent across methods to enable a fair comparison; the full application is described in @sec-application.
@@ -816,7 +816,7 @@ armley_edge = get_primal(armley_line)
 
 <!-- ![](images/paste-1.png) -->
 
-See the [Methods](https://nptscot.github.io/networkmerge/methods.html) and [Cookbook](https://nptscot.github.io/networkmerge/cookbook.html) appendices for details on the methods, implementation, and how to run the pipelines on your own data.
+See the [Methods](https://nptscot.github.io/networkmerge/methods.html) and [`parenx` cookbook](https://nptscot.github.io/networkmerge/cookbook.html) appendices for details on the methods, implementation, and how to run the pipelines on your own data.
 
 ## Skeletonisation versus Voronoi
 
@@ -1106,7 +1106,7 @@ The resulting network geometries are 'cleaner' than the original, making them a 
 
 There are some differences between the skeletonised and Voronoi results that are visible in @fig-results.
 The Voronoi result captures crossroads more cleanly by aligning with the medial axes of intersecting streets, whereas skeletonisation sometimes introduces slight curves or offsets immediately before intersections.
-It is notable that the `neatnet` implementation results in a network that is similar to the Voronoi output, but with some differences such as effective removal of the complex roundabout at the top of the sub-figures and a single 'stranded' linestring in the central western part of the network.
+It is notable that the `neatnet` implementation [@fleischmann2025adaptivecontinuitypreservingsimplificationstreet] results in a network that is similar to the Voronoi output, but with some differences such as effective removal of the complex roundabout at the top of the sub-figures and a single 'stranded' linestring in the central western part of the network.
 The differences between each approach and the official centreline network highlight that there is an element of subjectivity in the results, meaning that the flexibility of the methods and input parameters is important to achieve the desired outcome for a specific application.
 Still, the results suggest that more work is needed to achieve more automated outputs that 'just work' for many use cases in which simplification is required: none of the outputs are perfect from visual or network connectivity perspectives.
 
@@ -1266,7 +1266,7 @@ ax2 = os_edinburgh.plot(ax=ax2, color='black')
 ax2.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax2.xaxis.set_ticklabels([])
 ax2.yaxis.set_ticklabels([])
-ax2.set_title('Official Road Centrelines (Ordnance Survey OpenRoads)')
+ax2.set_title('Official Road Centrelines (OS ©Crown copyright and database right 2025)')
 ax2.set_xlim(xmin_t, xmax_t)
 ax2.set_ylim(ymin_t, ymax_t)
 
@@ -1459,7 +1459,7 @@ One avenue is the exploration of alternative algorithms for generating centrelin
 This could include recursive thinning algorithms like the grassfire algorithm [@leymarie1992], or other medial axis transform algorithms [e.g. @smogavec2012].
 Another important area for development is performance enhancement.
 In particular, the speed of the process could be improved through parallelisation, implementation in lower-level programming languages such as Rust, or further optimisation of the core algorithms.
-Recent performance benchmarks comparing the computational efficiency of `neatnet` and `parenx` implementations [@fleischmann2025adaptivecontinuitypreservingsimplificationstreet] suggest substantial room for improvement in our implementation, motivating future work on computational efficiency in both Voronoi-based and skeletonisation approaches.
+Recent performance benchmarks comparing the computational efficiency of `neatnet`[@fleischmann2025adaptivecontinuitypreservingsimplificationstreet]  and `parenx` implementations suggest substantial room for improvement in our implementation, motivating future work on computational efficiency in both Voronoi-based and skeletonisation approaches.
 <!-- TODO: Mention the challenge of attribute conflation as a key area for future work, as it's a complex problem that this paper only touches on. -->
 
 A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
