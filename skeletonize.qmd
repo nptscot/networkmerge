@@ -1,5 +1,5 @@
 ---
-title: "network simplification using skeletonization"
+title: "network simplification using skeletonisation"
 format:
   html: default
 number-sections: true
@@ -11,9 +11,9 @@ editor:
 jupyter: python3
 ---
 
-# skeletonize 
+# skeletonise 
 
-simplify GeoJSON network to GeoPKG layers using image skeletonization
+simplify GeoJSON network to GeoPKG layers using image skeletonisation
 
 ## import and set global values
 

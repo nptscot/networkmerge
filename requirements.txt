@@ -1,4 +1,5 @@
 parenx >= 0.5.5
+git+https://github.com/uscuni/neatnet
 folium >= 0.14.0
 geopandas >= 0.13.2
 mapclassify >= 2.6.0
