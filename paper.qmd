@@ -1482,8 +1482,10 @@ To ensure that the paper is fully reproducible, continuous integration rebuilds 
 
 This work was supported by the Economic and Social Research Council (ESRC) & ADR UK as part of the ESRC-ADR UK No.10 Data Science (10DS) fellowship in collaboration with 10DS and ONS (Robin Lovelace, grant number ES/W004305/1).
 
-It was also supported by funding from Transport Scotland via a contract with Sustrans to develop the Network Planning Tool for Scotland (NPT)
-.
+It was also supported by funding from Transport Scotland via a contract with Sustrans to develop the Network Planning Tool for Scotland (NPT).
+
+We also acknowledge the Network Rail Volunteer Leave Policy for the Promotion of Science, Technology, Engineering and Maths (STEM) subjects in universities, as discussions following an event at the Institute of Transport in Leeds led, in part, to this collaboration.
+
 # References
 
 ```{python}
