@@ -816,7 +816,7 @@ armley_edge = get_primal(armley_line)
 
 <!-- ![](images/paste-1.png) -->
 
-See Section 4 in [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details.
+See the [Methods](https://nptscot.github.io/networkmerge/methods.html) and [Cookbook](https://nptscot.github.io/networkmerge/cookbook.html) appendices for details on the methods, implementation, and how to run the pipelines on your own data.
 
 ## Skeletonisation versus Voronoi
 
