@@ -1280,7 +1280,6 @@ ax3.set_xlim(xmin_t, xmax_t)
 ax3.set_ylim(ymin_t, ymax_t)
 
 # Plot 4: Voronoi
-ax4 = edinburgh_line.plot(ax=ax4, color='black')
 ax4.grid(True, color='grey', linestyle='--', linewidth=0.5)
 ax4.xaxis.set_ticklabels([])
 ax4.yaxis.set_ticklabels([])
@@ -1377,8 +1376,6 @@ knitr::include_graphics("images/edinburgh_simplification.png")
 ```
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
-
-
 ```{=html}
 <!-- @fig-apply_results presents the comparison results, showcasing the Edinburgh road network simplified by the proposed method.
 It is observed that the attribute `value` from the original network has been correctly transferred to the simplified network via a `sum` calculation process.
