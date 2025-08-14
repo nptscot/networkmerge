@@ -32,6 +32,12 @@ jobs:
             any::rcmdcheck
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
 #       - name: Install deps
 #         # Run the script in .devcontainer/install-additional-dependencies.sh
 #         run: bash .devcontainer/install-additional-dependencies.sh

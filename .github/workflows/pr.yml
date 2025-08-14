@@ -1,10 +1,10 @@
 on:
-    workflow_dispatch:
-    # Run on Pull Requests
-    pull_request:
-      branches:
-        - main
-  
+  workflow_dispatch:
+  # Run on Pull Requests
+  pull_request:
+    branches:
+      - main
+
 name: Quarto Publish
 
 jobs:
@@ -26,11 +26,19 @@ jobs:
           extra-packages: |
             any::ggplot2
             any::rcmdcheck
+            any::remotes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       - name: Install deps
-#         # Run the script in .devcontainer/install-additional-dependencies.sh
-#         run: bash .devcontainer/install-additional-dependencies.sh
-
+      - name: Set GitHub token for R
+        run: echo "GITHUB_PAT=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+#     - name: Install deps
+#       # Run the script in .devcontainer/install-additional-dependencies.sh
+#       run: bash .devcontainer/install-additional-dependencies.sh
       - name: Render
         uses: quarto-dev/quarto-actions/render@v2

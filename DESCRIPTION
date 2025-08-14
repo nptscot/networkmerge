@@ -44,6 +44,8 @@ Imports:
     ggplot2,
     stplanr,
     rsgeo (>= 0.1.6.9000)
+Suggests:
+    remotes
 Remotes:
     JosiahParry/rsgeo
 VignetteBuilder: 
