@@ -264,6 +264,7 @@ We have updated the conclusion to state that the methods have applications in tr
 
 # Additional changes made
 
-OpenStreetMap is now cited more appropriately, in the Introduction rather than in the abstract.
+- [x] We have added a results from the recently developed `neatnet` to the final figure, in addition to the new 'ground truth' figure from the official Ordance Survey OpenRoads dataset (which is not perfect either as alluded to in the discussion). Although the paper is not about `neatnet`, we wanted to include it as a relevant comparison and to encourage cross-project collaboration.
+
 
 # References
