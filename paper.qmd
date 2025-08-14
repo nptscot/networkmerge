@@ -1481,6 +1481,12 @@ While these applications are outside this paper’s scope, the methods presented
 All data and code used to generate the results presented in this paper are available in the GitHub repository for this paper: https://github.com/nptscot/networkmerge.
 To ensure that the paper is fully reproducible, continuous integration rebuilds the paper whenever changes are pushed to the repository.
 
+# Acknowledgements
+
+This work was supported by the Economic and Social Research Council (ESRC) & ADR UK as part of the ESRC-ADR UK No.10 Data Science (10DS) fellowship in collaboration with 10DS and ONS (Robin Lovelace, grant number ES/W004305/1).
+
+It was also supported by funding from Transport Scotland via a contract with Sustrans to develop the Network Planning Tool for Scotland (NPT)
+.
 # References
 
 ```{python}
