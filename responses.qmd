@@ -44,10 +44,9 @@ The paper tackles a task that is not easy - the simplification of road networks.
 We have added a new section titled "Skeletonization versus Voronoi" which compares the two algorithms, compares their performance with reference to performance and size.
 Importantly, we now highlight the performance benefits of the skeletonization approach for large networks, also highlighting the smoother output of the Voronoi approach.
 
-- [ ] **R2.2** On top of that, it would be great to see a comparison to some ground truth data (I am not sure if the primal network is not that, see below). 
+- [x] **R2.2** On top of that, it would be great to see a comparison to some ground truth data (I am not sure if the primal network is not that, see below). 
 
-<!-- TODO:
-We compared the outputs of our simplification methods against an independent and authoritative source of road network data, Ordnance Survey's OpenRoads data product. -->
+We compared the outputs of our simplification methods against an independent and authoritative source of road network data, Ordnance Survey's OpenRoads data product. This is now clearly shown in the updated Figure 3 which has been revised to include these comparisons, and to improve the figure in other ways highlighted by the review process.
 
 - [x] **R2.3** The parenx API is rather unusual. One would assume that a Python package could be imported and used in memory, but this does not seem to be the case as the only documented API is the CLI. Which is strange in itself. Instead of using something like `parenx skeletonize in.geojson out.geojson` and `parenx voronoi in.geojson out.geojson`, which is a common model, it registers `skeletonize.py` and `voronoi.py`, suggesting a Python file rather than a function name. With proper documentation this is probably fine, I just find these choices really weird and incompatible with the rest of the ecosystem. 
 
@@ -87,7 +86,9 @@ The introduction now states:
 
 > While the focus of this paper is on route network simplification for transport planning, and applications to other fields are beyond its scope, it is worth noting prior research tackling the challenge of simplifying linear features in other domains.
 
-- [ ] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment. 
+- [x] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment.
+
+We have now included the appendix in the submission.
 
 - [x] **R2.6**  Line 14 on p. 2 contains "->", which probably should not be there. 
 
@@ -259,12 +260,26 @@ We have updated the conclusion to state that the methods have applications in tr
 
 # Comments from marked-up PDF file
 
-- [ ] ... **PDF1** ... (please refer to the marked-up PDF file for specific comments).
+ (please refer to the marked-up PDF file for specific comments).
 
+ We have addressed all of the comments in the PDF file, many thanks for providing them in-line.
+ A couple of the changes are highlighted below.
+
+- [x] **PDF1** address this challenges, typo in abstract
+
+Fixed.
+
+<!-- - [ ] **PDF2** "In detail, skeletonization is only applied where more than line-segment buffer overlaps."
+
+Fixed, it now says "Skeletonization is only applied to segments where more than one of their respective buffers overlap." -->
+
+- [x] **PDF2** labels added to subplots in Figure 2
 
 # Additional changes made
 
 - [x] We have added a results from the recently developed `neatnet` to the final figure, in addition to the new 'ground truth' figure from the official Ordance Survey OpenRoads dataset (which is not perfect either as alluded to in the discussion). Although the paper is not about `neatnet`, we wanted to include it as a relevant comparison and to encourage cross-project collaboration.
+
+- [x] We have removed the axis labels from the subplots in Figure 2 to improve clarity and focus on the main content.
 
 
 # References

@@ -262,7 +262,7 @@ Buffered versions of the Otley Road (left) and Armley Road (right) networks.
 In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced.
 This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
 
-In detail, skeletonization is only applied where more than line-segment buffer overlaps.
+Skeletonization is only applied to segments where more than one of their respective buffers overlap.
 To identify overlapping line-segments, the buffer is split at the end of each line-segment, see top Otley Road (left) and Armley Road (right) @fig-split-ends.
 The overlapping line-segments are then buffered while retaining the remaining disjoint lines, shown in bottom @fig-split-ends.
 

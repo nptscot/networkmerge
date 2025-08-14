@@ -388,7 +388,7 @@ The challenge with this approach is that instead of generating points situated o
 This necessitates the inference of line geometry from the associated set of points.
 Transforming a skeletonized point set into a simplified line geometry is arguably the most complex step in creating a simplified network.
 
-The process of transforming point geometry into line geometry involves identifying adjacent points based on proximity within the raster coordinate system, usually within a 1x1 pixel square.
+In the parenx package, point geometry is transformed into line geometry by identifying and connecting adjacent pixels in the raster grid, where adjacency is determined on the pixel grid and the resolution is controlled by the `scale` parameter.
 After adjacent points are identified, line segments are created by connecting these points.
 The final and crucial step is the amalgamation of these individual line segments.
 This combination results in a continuous line geometry that represents the simplified network.
