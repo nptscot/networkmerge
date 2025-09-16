@@ -706,7 +706,7 @@ for spine in ax.spines.values():
 ```{python}
 #| fig-cap: "Voronoi"
 otley_line = filter_buffer(otley_line, otley_geometry)
-otley_edge, otley_node = get_source_target(otley_line.to_frame("geometry"))
+otley_edge, otley_node = get_source_target(otley_line)
 ix = otley_node["count"] < 4
 otley_square = otley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
 otley_square = gp.GeoSeries(unary_union(otley_square.values).geoms, crs=CRS)
@@ -747,7 +747,7 @@ for spine in ax.spines.values():
 ```{python}
 #| fig-cap: "Voronoi"
 armley_line = filter_buffer(armley_line, armley_geometry)
-armley_edge, armley_node = get_source_target(armley_line.to_frame("geometry"))
+armley_edge, armley_node = get_source_target(armley_line)
 ix = armley_node["count"] < 4
 armley_square = armley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
 armley_square = gp.GeoSeries(unary_union(armley_square.values).geoms, crs=CRS)
