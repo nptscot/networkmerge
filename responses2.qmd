@@ -1,0 +1,29 @@
+---
+title: "Responses to reviewer comments"
+bibliography: bibliography.bib
+---
+
+Dear Prof. Arribas-Bel, reviewers and editorial team,
+
+We thank you again for the opportunity to update the revision of our manuscript and for the continued constructive feedback provided by the reviewers. We have carefully considered the final set of comments and suggestions.
+
+To help the review process, we have numbered each of the reviewers' comments and provided our responses with reference to these.
+
+# Reviewer 1
+Outstanding paper review comments:
+
+R1: Significantly improved with more developed methods, comparisons, and interpretations but the paper is too short:
+- [ ] R1.1 **Paper** Section 3 [Data and Methods]. Move material in the Appendix to the body of the manuscript (specifically the figures) to Data and Methods.
+- [ ] R1.2 **Paper** Section 2 [Problem Description], more words and explanation.
+- [ ] R1.3 **Paper** Section 4 [Application to Edinburgh City Centre], more words and explanation.
+- [ ] R1.4 **Paper** Section 5 [Discussion and Conclusion]. more words and explanation.
+
+# Reviewer 2
+Outstanding paper review comments:
+
+R2:  A thorough revision of the paper with two  minor points that could addressed
+ - [ ]  R2.1 **Cookbook**.  Section 3. Update cookbook section 3 use the new not the original API.
+ - [ ]  R2.2 **Cookbook**. Fix the code block to fit on the page. 
+
+
+# References
