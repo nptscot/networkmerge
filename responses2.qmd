@@ -93,7 +93,6 @@ We have expanded the Edinburgh application section with detailed analysis of met
 We have expanded the Discussion and Conclusion section. The section now includes a more detailed description of both skeletonisation and Voronoi methods, their implementation in the parenx package, and evaluation results from the Edinburgh case study. We added specific discussion of benefits for transport planning workflows, including reduced file sizes, faster rendering, and improved visualisation clarity for evidence-based decision making. The expansion includes explanation of how users can choose appropriate simplification levels based on their specific needs, from routine applications requiring rapid processing to high-quality cartographic outputs. We also added more detailed discussion of future research directions including hybrid approaches, performance optimisation, and workflow integration, along with concrete examples of applications beyond transport planning such as hydrology, utility management, and ecological corridor analysis. Finally, we included a clearer articulation of the contribution to evidence-based transport planning and spatial analysis. The expanded section maintains conciseness while providing the requested additional explanation and context.
 
 
-
 # Reviewer 2
 Outstanding paper review comments:
 
@@ -115,5 +114,9 @@ The cookbook has been updated to use the new `parenx` command-line API instead o
 
 These changes improve the presentation and readability of the code examples.
 
+# Additional changes
+
+We have updated the 'devcontainer.json' file to improve reproducibility and make it easier for others to build on the work.
+We have updated the image that it builds on, to the new 'pythonr' image which contains R and Python building on the 'slim' version of the official Python base image, and includes the Quarto extension for improved support of Quarto documents within the development environment.
 
 # References
