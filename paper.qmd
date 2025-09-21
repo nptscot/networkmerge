@@ -1102,8 +1102,7 @@ To demonstrate the practical application and effectiveness of the proposed simpl
 This area is characterised by a dense network of streets, including multi-lane roads (notably Princes Street, which runs east-west through central Edinburgh), historic winding streets and roundabouts, making it a challenging test case for network simplification.
 The resulting OpenStreetMap representation of this area, shown in @fig-results (top), contains numerous parallel lines representing dual carriageways and other complex road features.
 
-The results of applying the proposed simplification methods are shown in the remaining subfigures of @fig-results.
-As shown in that figure, both methods effectively collapse dual carriageways into single centrelines while preserving overall connectivity.
+The results of applying the proposed simplification methods are shown in the remaining subfigures of @fig-results, which shows how both methods succeed in collapsing dual carriageways into single centrelines while preserving overall connectivity.
 The resulting network geometries are 'cleaner' than the original, making them a strong basis for interpreting flows or other attributes.
 
 There are some differences between the skeletonised and Voronoi results that are visible in @fig-results.
