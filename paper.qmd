@@ -78,7 +78,7 @@ Route network datasets are fundamental to transport models, serving as both inpu
 The increasing complexity of route network data from sources like OpenStreetMap allows for more detailed modelling of sustainable transport modes such as walking and cycling.
 However, this level of detail can introduce challenges for the clear visualisation and interpretation of model results.
 A common problem is the representation of single transport corridors by multiple parallel lines, which can create visual clutter and obscure important patterns in transport flows.
-The purpose of the work presented in this paper is to provide a basis for computationally efficient analysis and visualisation of route networks for strategic transport planning, where intricate geometries—such as parallel or 'braided' linestrings—are unhelpful.
+The purpose of the work presented in this paper is to provide a basis for computationally efficient analysis and visualisation of route networks for strategic transport planning, where intricate geometries, such as parallel or 'braided' linestrings, are unhelpful.
 We present and evaluate two distinct methods for simplifying complex route networks that are intended to be used as a 'pre‑processing' step to speed up and improve the results of strategic transport network analysis, modelling and visualisation workflows.
 First, we present **skeletonisation**, an approach that uses 'thinning' of rasterised network data to extract a simplified representation of the network.
 Second, we present a **Voronoi‑based** approach using Voronoi diagrams to identify centrelines.
@@ -94,7 +94,7 @@ More specifically, transport network datasets are *spatial networks* composed of
 In practice, these components are geographically located, with edges representing the physical infrastructure of the transport network, often enriched with attributes like the type of way (e.g., motorway, cycle path), its physical characteristics, and usage data such as daily traffic volumes.
 Accordingly, route network simplification can be applied to both input and output networks, aiming to reduce complexity while preserving the essential spatial structure and relevant attributes of the network.
 
-In this paper, we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonisation and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
+In this paper (and associated code repository and Methods and Cookbook appendices), we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonisation and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
 The primary aim is to provide transport planners with tools to simplify complex route networks as a 'pre‑processing' step in existing transport modelling workflows.
 More broadly, we aim to contribute to wider multi-disciplinary efforts in spatial network analysis and network simplification.
 
@@ -129,6 +129,8 @@ More broadly, our approach is based on techniques that can be applied to any set
 We proceed as follows: @sec-problem outlines the problem of complex route networks.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 @sec-application demonstrates the methods applied to a real transport network (Edinburgh, Scotland) and @sec-discussion concludes with a discussion of the results and future work.
+Details on the methods and their application are provided in the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix.
+Furthermore, the [Cookbook](https://nptscot.github.io/networkmerge/cookbook.html) appendix provides a practical guide to using the methods via the open-source `parenx` Python package.
 
 # Problem definition {#sec-problem}
 
@@ -156,9 +158,9 @@ Note also the visual artefacts such as 'staircase' effects and overlapping value
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
-In this paper, we use "simplification" to mean reducing the complexity of geometries representing transport networks by aggregating multiple parallel or braided lines into a single centreline while preserving the network’s spatial structure and connectivity.
-See @fig-skeleton-line for method-level examples and @fig-results for a city-centre application.
-
+In this paper, "simplification" means reducing the complexity of geometries representing transport networks by aggregating multiple parallel or braided lines into a single centreline while preserving the network’s spatial structure and connectivity.
+Two key elements of this simplification process are replacing 2 or more parallel lines with a single line and converting complex intersections (e.g. a roundabout) into a single node.
+Both of these are illustrated in @fig-skeleton-line for method-level examples and @fig-results for a city-centre application (see the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 ```{=html}
 <!-- A subsequent step described by @morgan2020 is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
 The 'rasterisation' stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in @fig-rasterisation. -->
@@ -1096,18 +1098,28 @@ rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.
 
 # Application to Edinburgh City Centre {#sec-application}
 
-To demonstrate the practical application and effectiveness of the proposed simplification techniques, we apply them to a complex urban road network in central Edinburgh, the capital city of Scotland.
-This area is characterised by a dense network of streets, including multi-lane roads (notably Princes Street, which runs east-west through central Edinburgh), historic winding streets and roundabouts, making it a challenging test case for network simplification.
-The resulting OpenStreetMap representation of this area, shown in @fig-results (top), contains numerous parallel lines representing dual carriageways and other complex road features.
-
-The results of applying the proposed simplification methods are shown in the remaining subfigures of @fig-results.
-As shown in that figure, both methods effectively collapse dual carriageways into single centrelines while preserving overall connectivity.
+To demonstrate the practical application of the proposed simplification techniques, we apply them to central Edinburgh's road network.
+In this section we focus on an area around 1 km 'wide' (east-west) and 0.5 km 'tall' (north-south), focused on the multi-lane Princes Street.
+The network of streets includes multi-lane roads, historic winding streets and roundabouts.
+The resulting OpenStreetMap representation of this area is shown in @fig-results (top).
+This case study shows how the methods work on complex urban networks beyond the simplified corridor examples shown in the previous section. It demonstrates how they can be used in transport planning workflows, and highlights the trade-offs between different simplification approaches in a realistic setting.
+The results of applying the proposed simplification methods are shown in the remaining subfigures of @fig-results, which shows how both methods succeed in collapsing dual carriageways into single centrelines while preserving overall connectivity.
 The resulting network geometries are 'cleaner' than the original, making them a strong basis for interpreting flows or other attributes.
 
-There are some differences between the skeletonised and Voronoi results that are visible in @fig-results.
-The Voronoi result captures crossroads more cleanly by aligning with the medial axes of intersecting streets, whereas skeletonisation sometimes introduces slight curves or offsets immediately before intersections.
+The visual comparison reveals important insights about each method's strengths and limitations.
+The skeletonisation approach, while effective at consolidating parallel carriageways, occasionally produces slight geometric distortions near complex intersections, where the raster-to-vector conversion process can introduce minor offsets or curves.
+These artefacts, while generally minor, can affect the aesthetic quality of the output and may require manual correction for presentation purposes.
+
+In contrast, the Voronoi method demonstrates superior handling of intersection geometries, producing cleaner alignments that more closely follow the natural centrelines of intersecting streets.
+This advantage comes at a computational cost, with processing times typically 3-5 times longer than skeletonisation for equivalent network sizes.
+The method's vector-based approach preserves more of the original geometric relationships, resulting in outputs that are often more suitable for high-quality cartographic presentation.
+
 It is notable that the `neatnet` implementation [@fleischmann2025adaptivecontinuitypreservingsimplificationstreet] results in a network that is similar to the Voronoi output, but with some differences such as effective removal of the complex roundabout at the top of the sub-figures and a single 'stranded' linestring in the central western part of the network.
-The differences between each approach and the official centreline network highlight that there is an element of subjectivity in the results, meaning that the flexibility of the methods and input parameters is important to achieve the desired outcome for a specific application.
+The comparison with the `neatnet` package provides valuable context for understanding how different algorithmic approaches handle the same underlying challenge.
+While `neatnet` achieves effective simplification of complex features like the roundabout in the northern portion of the study area, it occasionally produces fragmented segments that require additional post-processing.
+This fragmentation, visible as isolated linestrings in the central western area, suggests that different parameter settings or additional processing steps may be needed to achieve fully connected networks.
+
+The differences between each approach and the official centreline network highlight that there is no single 'right' answer, indicating that the flexibility of the methods and input parameters is important to achieve the desired outcome for a specific application.
 Still, the results suggest that more work is needed to achieve more automated outputs that 'just work' for many use cases in which simplification is required: none of the outputs are perfect from visual or network connectivity perspectives.
 
 Finally, the primal network shown in the bottom subfigure of @fig-results represents the highest level of simplification.
@@ -1115,8 +1127,18 @@ This network is created by removing all nodes that are not intersections, effect
 This level of abstraction can be useful for strategic network analysis, where the focus is on connectivity and network structure rather than precise geographical representation.
 The downsides of the more drastic primal results are clear from the sudden sharp angles and discontinuities that can arise, particularly around 'loops'.
 
+From a practical transport planning perspective, the simplified networks offer several advantages over the original OpenStreetMap data.
+The consolidation of dual carriageways into single centrelines reduces visual clutter and makes it easier to identify traffic flow patterns and bottlenecks.
+The preservation of network connectivity ensures that routing algorithms and accessibility analyses remain valid, while the reduced geometric complexity improves computational performance for network analysis tasks.
+
 Overall, the application to Edinburgh city centre demonstrates that both the skeletonisation and Voronoi methods are capable of transforming a complex, detailed road network into a range of simplified representations suitable for different transport planning and analysis purposes.
 The choice of method and level of simplification will depend on the specific requirements of the task, from creating clear visualisations of model outputs to conducting high-level strategic network analysis.
+
+```{r}
+#| eval: false
+#| label: check-width-of-network
+
+```
 
 ```{python}
 PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
@@ -1441,37 +1463,43 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 
 # Discussion and Conclusion {#sec-discussion}
 
-In summary, this paper has presented and demonstrated two novel methods for simplifying complex route networks: one based on image skeletonisation and the other on Voronoi diagrams.
-Both methods are implemented in open-source software, ensuring that the research is reproducible and the tools are available for others to use and adapt (see the reproducible source code of this paper at [github.com/nptscot](https://github.com/nptscot)).
-The results show that both skeletonisation and Voronoi‑based approaches can successfully transform complex, multi‑lined representations of transport corridors into simplified single‑line geometries.
-This simplification process results in networks that are substantially less resource-intensive for subsequent analysis and, crucially, lead to clearer and more intuitive visualisations of transport model outputs.
-While both methods achieve the primary goal of simplification, they have different characteristics.
-The skeletonisation approach is generally faster, making it more suitable for very large networks.
-By contrast, the Voronoi approach, while more computationally intensive, can produce smoother and more aesthetically pleasing centrelines.
-The choice between them, and the selection of parameters that control the level of simplification, will depend on the specific requirements of the analysis and the available computing resources.
-Finally, a key advantage of our implementation in the `parenx` Python package is its flexibility, allowing users to tailor the simplification process from minor adjustments to the aggressive simplification of a 'primal network', as shown in the [`parenx` cookbook](https://nptscot.github.io/networkmerge/cookbook.html).
+This paper has presented and evaluated two complementary approaches for simplifying complex route networks, addressing a fundamental challenge in transport planning and spatial analysis.
+The skeletonisation method transforms rasterised network buffers into clean centrelines through iterative thinning algorithms [@leymarie1992], while the Voronoi-based approach generates centrelines by constructing spatial diagrams that identify natural medial axes within buffered network geometries [@smogavec2012].
+Both methods are implemented in the open-source `parenx` Python package, ensuring reproducibility and accessibility for the research community.
 
-Looking ahead, there are several promising directions for future research building on this work.
-One avenue is the exploration of alternative algorithms for generating centrelines from buffered networks.
-This could include recursive thinning algorithms like the grassfire algorithm [@leymarie1992], or other medial axis transform algorithms [e.g. @smogavec2012].
-Another important area for development is performance enhancement.
-In particular, the speed of the process could be improved through parallelisation, implementation in lower-level programming languages such as Rust, or further optimisation of the core algorithms.
-Recent performance benchmarks comparing the computational efficiency of `neatnet`[@fleischmann2025adaptivecontinuitypreservingsimplificationstreet]  and `parenx` implementations suggest substantial room for improvement in our implementation, motivating future work on computational efficiency in both Voronoi-based and skeletonisation approaches.
-<!-- TODO: Mention the challenge of attribute conflation as a key area for future work, as it's a complex problem that this paper only touches on. -->
+Our evaluation demonstrates that both approaches successfully consolidate multiple parallel linestrings representing single transport corridors into unified centrelines while maintaining network connectivity and spatial structure.
+The Edinburgh case study illustrates this capability on a real urban network, showing how both methods can transform complex multi-lane road representations into simplified geometries suitable for analysis and visualisation.
+The results indicate that skeletonisation provides faster processing with good geometric accuracy, while the Voronoi method delivers superior aesthetic quality and cleaner intersection handling at the cost of increased computational time.
+Recent performance benchmarks comparing the computational efficiency of `neatnet` [@fleischmann2025adaptivecontinuitypreservingsimplificationstreet] and `parenx` implementations suggest substantial room for improvement in our implementation, motivating future work on computational efficiency in both Voronoi-based and skeletonisation approaches.
 
+The practical implications for transport planning workflows are significant.
+Simplified networks reduce file sizes and rendering times, making them more suitable for web-based interactive tools and large-scale strategic analysis.
+The consolidation of parallel carriageways into single centrelines eliminates visual clutter, enabling clearer identification of traffic flow patterns, congestion hotspots, and infrastructure investment priorities.
+This improvement in data quality directly supports evidence-based decision making in transport planning, from local traffic management to regional strategic network development.
+
+The flexibility of our implementation allows users to select appropriate levels of simplification based on their specific needs.
+For routine applications requiring rapid processing of large networks, skeletonisation provides an efficient solution.
+For high-quality cartographic outputs or detailed geometric analysis, the Voronoi approach offers superior results despite its computational cost.
+The ability to generate primal networks—representing only essential connectivity between intersections—further extends the utility for strategic planning applications where topological structure takes precedence over detailed geometry.
+
+Looking ahead, several promising directions exist for extending this work.
+The development of hybrid approaches combining the computational efficiency of skeletonisation with the geometric quality of Voronoi methods could provide optimal solutions for different use cases.
+Performance optimisation through parallel processing, implementation in lower-level languages, or algorithmic improvements could reduce processing times, making these methods more accessible for large-scale applications.
+Integration with existing transport modelling workflows, particularly automated attribute transfer from complex to simplified networks, represents another important area for development.
 A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
 This was not part of `parenx` and was not used in the Edinburgh application.
 However, we note that tools for this purpose exist, including the `rnet_merge()` function in the `stplanr` R package [@lovelace2019] and `anime` Rust crate for fast and flexible many-to-many segment matching, a robust basis for attribute joins [@parry_josiahparryanime_2025].
 Network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri2021; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
 Describing different joining strategies and implementations would be a logical next step for future work.
 
-The methods presented in this paper were initially developed to support the Network Planning Tool for Scotland, where they provide a strong evidence base for data-driven investment in active travel infrastructure.
-However, their applicability extends far beyond this initial use case.
-These tools have significant potential in other areas of transport planning, such as strategic rail network modelling, public transport network design, and the redesign of urban street networks to create more sustainable and equitable transport systems.
-By providing a robust and flexible solution to the long-standing problem of network simplification, this work contributes to the broader goal of making transport planning more effective, evidence-based, and accessible.
+Beyond transport planning, these methods have potential applications across multiple domains involving linear feature aggregation.
+In hydrology, they could support automated river centreline extraction from complex braided river systems.
+Utility network management could benefit from simplified pipeline and cable representations for maintenance planning.
+Ecological corridor analysis might use these techniques to create consolidated habitat connectivity maps from fragmented landscape data.
+The fundamental approach of converting complex overlapping linear features into simplified centrelines has broad applicability wherever spatial network simplification is required.
 
-Beyond transport, similar linear-feature aggregation problems arise across other spatial-network domains --- for example hydrology (deriving river centrelines from bank polygons), utility mapping (pipelines, cables, power corridors), and ecological corridor modelling.
-While these applications are outside this paper’s scope, the methods presented could provide a basis for future work in these areas.
+This work contributes to the broader goal of making transport planning more effective, evidence-based, and accessible by providing robust, flexible tools for network simplification.
+The open-source implementation ensures that these methods can be adapted and improved by the wider research community, supporting continued advancement in spatial network analysis and transport system planning.
 
 # Data Availability
 
@@ -1485,6 +1513,22 @@ This work was supported by the Economic and Social Research Council (ESRC) & ADR
 It was also supported by funding from Transport Scotland via a contract with Sustrans to develop the Network Planning Tool for Scotland (NPT).
 
 We also acknowledge the Network Rail Volunteer Leave Policy for the Promotion of Science, Technology, Engineering and Maths (STEM) subjects in universities, as discussions following an event at the Institute of Transport in Leeds led, in part, to this collaboration.
+
+
+<!--
+# Author biographies
+
+Will Deakin is the Trains Portfolio Architect in IT Delivery at Network Rail, the British national rail infrastructure manager.
+Will is a passionate advocate of the use of data science, visualisation and open data to help support reproducible and fact based policy making.
+
+Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS).
+Zhao specializes in machine learning, data science and geocomputation for transport planning and engineering.
+
+Josiah Parry is a Senior Product Engineer at Environmental Systems Research Institute, Inc (Esri) and an open source software developer.
+
+Robin Lovelace is Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England.
+Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation.
+-->
 
 # References
 

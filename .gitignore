@@ -170,3 +170,4 @@ paper_files/figure-pdf
 _freeze/
 _site/
 .Rhistory
+*.pdf

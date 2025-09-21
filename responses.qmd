@@ -221,11 +221,11 @@ We think that the plots already highlight what we mean by simplification. We wan
 
  - [x] **R3.13** this section only describes methods, what about the data? could be a place to also comment on the edinburgh city center use case?
 
-Added a brief data/use-case note in Data and Methods stating the Edinburgh dataset provenance (OSM, EPSG:27700), parameter consistency for fair comparison, and a pointer to the applications section for the full use-case description.
+Added a brief data/use-case note in Data and Methods stating the Edinburgh dataset provenance (OSM, EPSG:27700), parameter consistency for fair comparison, and a pointer to @sec-application for the full use-case description.
 
  - [x] **R3.14** Introduce references to (subfigures of) Figure 2 in the methods subsections
 
-Inserted explicit references in the skeletonisation and Voronoi subsections to the corresponding columns of the figure (Otley top row; Armley bottom row) to guide readers to concrete outputs.
+Inserted explicit references in the skeletonisation and Voronoi subsections to the corresponding columns of @fig-skeleton-line (Otley top row; Armley bottom row) to guide readers to concrete outputs.
 
 - [x] **R3.15** skeletonisation buffer size 8 meters: at first glance this seems to me use-case specific, not part of methods? so: if this is a location-based choice, i would suggest to move it to the use case description and there argue why 8m was chosen. if this is a general recommendation for future parenx use i would leave this here but then comment on the reasoning behind the choice of the buffer size
 
