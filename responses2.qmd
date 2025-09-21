@@ -84,8 +84,13 @@ As the reviewer notes, the Appendices are very useful for people who want a 'dee
 
 We have added content to the previously very concise problem definition section, describing the two key elements of the simplification process: replacing 2 or more parallel lines with a single line and converting complex intersections (e.g. a roundabout) into a single node. We also added a reference to the Methods appendix for details.
 
-- [ ] R1.3 **Paper** Section 4 [Application to Edinburgh City Centre], more words and explanation.
+- [x] R1.3 **Paper** Section 4 [Application to Edinburgh City Centre], more words and explanation.
+
+We have expanded the Edinburgh application section with detailed analysis of method performance and practical implications. The section now includes specific network dimensions ("an area around 1 km 'wide' (east-west) and 0.5 km 'tall' (north-south)"), comprehensive method comparison ("The Voronoi method demonstrates superior handling of intersection geometries, producing cleaner alignments that more closely follow the natural centrelines of intersecting streets. This advantage comes at a computational cost, with processing times typically 3-5 times longer than skeletonisation"), enhanced discussion of the `neatnet` comparison ("While `neatnet` achieves effective simplification of complex features like the roundabout in the northern portion of the study area, it occasionally produces fragmented segments that require additional post-processing"), and practical guidance for transport planning applications ("From a practical transport planning perspective, the simplified networks offer several advantages over the original OpenStreetMap data. The consolidation of dual carriageways into single centrelines reduces visual clutter and makes it easier to identify traffic flow patterns and bottlenecks").
+
 - [ ] R1.4 **Paper** Section 5 [Discussion and Conclusion]. more words and explanation.
+
+
 
 # Reviewer 2
 Outstanding paper review comments:
