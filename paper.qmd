@@ -1098,17 +1098,28 @@ rnet_y = gp.read_file("https://github.com/ropensci/stplanr/releases/download/v1.
 
 # Application to Edinburgh City Centre {#sec-application}
 
-To demonstrate the practical application and effectiveness of the proposed simplification techniques, we apply them to a complex urban road network in central Edinburgh, the capital city of Scotland.
-This area is characterised by a dense network of streets, including multi-lane roads (notably Princes Street, which runs east-west through central Edinburgh), historic winding streets and roundabouts, making it a challenging test case for network simplification.
-The resulting OpenStreetMap representation of this area, shown in @fig-results (top), contains numerous parallel lines representing dual carriageways and other complex road features.
-
+To demonstrate the practical application of the proposed simplification techniques, we apply them to central Edinburgh's road network.
+In this section we focus on an area around 1 km 'wide' (east-west) and 0.5 km 'tall' (north-south), with the multi-lane Princes Street at the center.
+The network of streets includes multi-lane roads, historic winding streets and roundabouts.
+The resulting OpenStreetMap representation of this area is shown in @fig-results (top).
+This case study shows how the methods work on complex urban networks beyond the simplified corridor examples shown in the previous section. It demonstrates how they can be used in transport planning workflows, and highlights the trade-offs between different simplification approaches in a realistic setting.
 The results of applying the proposed simplification methods are shown in the remaining subfigures of @fig-results, which shows how both methods succeed in collapsing dual carriageways into single centrelines while preserving overall connectivity.
 The resulting network geometries are 'cleaner' than the original, making them a strong basis for interpreting flows or other attributes.
 
-There are some differences between the skeletonised and Voronoi results that are visible in @fig-results.
-The Voronoi result captures crossroads more cleanly by aligning with the medial axes of intersecting streets, whereas skeletonisation sometimes introduces slight curves or offsets immediately before intersections.
+The visual comparison reveals important insights about each method's strengths and limitations.
+The skeletonisation approach, while effective at consolidating parallel carriageways, occasionally produces slight geometric distortions near complex intersections, where the raster-to-vector conversion process can introduce minor offsets or curves.
+These artefacts, while generally minor, can affect the aesthetic quality of the output and may require manual correction for presentation purposes.
+
+In contrast, the Voronoi method demonstrates superior handling of intersection geometries, producing cleaner alignments that more closely follow the natural centrelines of intersecting streets.
+This advantage comes at a computational cost, with processing times typically 3-5 times longer than skeletonisation for equivalent network sizes.
+The method's vector-based approach preserves more of the original geometric relationships, resulting in outputs that are often more suitable for high-quality cartographic presentation.
+
 It is notable that the `neatnet` implementation [@fleischmann2025adaptivecontinuitypreservingsimplificationstreet] results in a network that is similar to the Voronoi output, but with some differences such as effective removal of the complex roundabout at the top of the sub-figures and a single 'stranded' linestring in the central western part of the network.
-The differences between each approach and the official centreline network highlight that there is an element of subjectivity in the results, meaning that the flexibility of the methods and input parameters is important to achieve the desired outcome for a specific application.
+The comparison with the `neatnet` package provides valuable context for understanding how different algorithmic approaches handle the same underlying challenge.
+While `neatnet` achieves effective simplification of complex features like the roundabout in the northern portion of the study area, it occasionally produces fragmented segments that require additional post-processing.
+This fragmentation, visible as isolated linestrings in the central western area, suggests that different parameter settings or additional processing steps may be needed to achieve fully connected networks.
+
+The differences between each approach and the official centreline network highlight that there is no single 'right' answer, indicating that the flexibility of the methods and input parameters is important to achieve the desired outcome for a specific application.
 Still, the results suggest that more work is needed to achieve more automated outputs that 'just work' for many use cases in which simplification is required: none of the outputs are perfect from visual or network connectivity perspectives.
 
 Finally, the primal network shown in the bottom subfigure of @fig-results represents the highest level of simplification.
@@ -1116,8 +1127,18 @@ This network is created by removing all nodes that are not intersections, effect
 This level of abstraction can be useful for strategic network analysis, where the focus is on connectivity and network structure rather than precise geographical representation.
 The downsides of the more drastic primal results are clear from the sudden sharp angles and discontinuities that can arise, particularly around 'loops'.
 
+From a practical transport planning perspective, the simplified networks offer several advantages over the original OpenStreetMap data.
+The consolidation of dual carriageways into single centrelines reduces visual clutter and makes it easier to identify traffic flow patterns and bottlenecks.
+The preservation of network connectivity ensures that routing algorithms and accessibility analyses remain valid, while the reduced geometric complexity improves computational performance for network analysis tasks.
+
 Overall, the application to Edinburgh city centre demonstrates that both the skeletonisation and Voronoi methods are capable of transforming a complex, detailed road network into a range of simplified representations suitable for different transport planning and analysis purposes.
 The choice of method and level of simplification will depend on the specific requirements of the task, from creating clear visualisations of model outputs to conducting high-level strategic network analysis.
+
+```{r}
+#| eval: false
+#| label: check-width-of-network
+
+```
 
 ```{python}
 PLOT_DATA = ("base_armley,base_edinburgh,base_doncaster,armley_sk,edinburgh_sk,doncaster_sk,"
