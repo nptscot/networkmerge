@@ -94,7 +94,7 @@ More specifically, transport network datasets are *spatial networks* composed of
 In practice, these components are geographically located, with edges representing the physical infrastructure of the transport network, often enriched with attributes like the type of way (e.g., motorway, cycle path), its physical characteristics, and usage data such as daily traffic volumes.
 Accordingly, route network simplification can be applied to both input and output networks, aiming to reduce complexity while preserving the essential spatial structure and relevant attributes of the network.
 
-In this paper, we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonisation and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
+In this paper (and associated code repository and Methods and Cookbook appendices), we articulate the problem of complex route networks, present two open‑source and reproducible simplification methods—skeletonisation and a Voronoi‑based centreline approach—and demonstrate their application to support more effective transport planning.
 The primary aim is to provide transport planners with tools to simplify complex route networks as a 'pre‑processing' step in existing transport modelling workflows.
 More broadly, we aim to contribute to wider multi-disciplinary efforts in spatial network analysis and network simplification.
 
@@ -129,6 +129,8 @@ More broadly, our approach is based on techniques that can be applied to any set
 We proceed as follows: @sec-problem outlines the problem of complex route networks.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 @sec-application demonstrates the methods applied to a real transport network (Edinburgh, Scotland) and @sec-discussion concludes with a discussion of the results and future work.
+Details on the methods and their application are provided in the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix.
+Furthermore, the [Cookbook](https://nptscot.github.io/networkmerge/cookbook.html) appendix provides a practical guide to using the methods via the open-source `parenx` Python package.
 
 # Problem definition {#sec-problem}
 
@@ -156,9 +158,9 @@ Note also the visual artefacts such as 'staircase' effects and overlapping value
 Source: open access Propensity to Cycle Tool results available at www.pct.bike.
 :::
 
-In this paper, we use "simplification" to mean reducing the complexity of geometries representing transport networks by aggregating multiple parallel or braided lines into a single centreline while preserving the network’s spatial structure and connectivity.
-See @fig-skeleton-line for method-level examples and @fig-results for a city-centre application.
-
+In this paper, "simplification" means reducing the complexity of geometries representing transport networks by aggregating multiple parallel or braided lines into a single centreline while preserving the network’s spatial structure and connectivity.
+Two key elements of this simplification process are replacing 2 or more parallel lines with a single line and converting complex intersections (e.g. a roundabout) into a single node.
+Both of these are illustrated in @fig-skeleton-line for method-level examples and @fig-results for a city-centre application (see the [Methods](https://nptscot.github.io/networkmerge/methods.html) appendix for details).
 ```{=html}
 <!-- A subsequent step described by @morgan2020 is to post-process the geographic representation of the transport network into a raster image, which can be used to visualise the network.
 The 'rasterisation' stage can tackle some of the issues associated with multiple parallel ways, but introduces new issues, as shown in @fig-rasterisation. -->
