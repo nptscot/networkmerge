@@ -1464,13 +1464,13 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 # Discussion and Conclusion {#sec-discussion}
 
 This paper has presented and evaluated two complementary approaches for simplifying complex route networks, addressing a fundamental challenge in transport planning and spatial analysis.
-The skeletonisation method, based on image processing techniques, offers a robust solution for transforming rasterised network buffers into clean centrelines through iterative thinning algorithms.
-The Voronoi-based approach, operating in vector space, generates centrelines by constructing spatial diagrams that identify natural medial axes within buffered network geometries.
-Both methods are implemented in the open-source `parenx` Python package, ensuring reproducibility and accessibility for the research community (see the reproducible source code at [github.com/nptscot](https://github.com/nptscot)).
+The skeletonisation method transforms rasterised network buffers into clean centrelines through iterative thinning algorithms [@leymarie1992], while the Voronoi-based approach generates centrelines by constructing spatial diagrams that identify natural medial axes within buffered network geometries [@smogavec2012].
+Both methods are implemented in the open-source `parenx` Python package, ensuring reproducibility and accessibility for the research community.
 
 Our evaluation demonstrates that both approaches successfully consolidate multiple parallel linestrings representing single transport corridors into unified centrelines while maintaining network connectivity and spatial structure.
 The Edinburgh case study illustrates this capability on a real urban network, showing how both methods can transform complex multi-lane road representations into simplified geometries suitable for analysis and visualisation.
 The results indicate that skeletonisation provides faster processing with good geometric accuracy, while the Voronoi method delivers superior aesthetic quality and cleaner intersection handling at the cost of increased computational time.
+Recent performance benchmarks comparing the computational efficiency of `neatnet` [@fleischmann2025adaptivecontinuitypreservingsimplificationstreet] and `parenx` implementations suggest substantial room for improvement in our implementation, motivating future work on computational efficiency in both Voronoi-based and skeletonisation approaches.
 
 The practical implications for transport planning workflows are significant.
 Simplified networks reduce file sizes and rendering times, making them more suitable for web-based interactive tools and large-scale strategic analysis.
@@ -1486,6 +1486,11 @@ Looking ahead, several promising directions exist for extending this work.
 The development of hybrid approaches combining the computational efficiency of skeletonisation with the geometric quality of Voronoi methods could provide optimal solutions for different use cases.
 Performance optimisation through parallel processing, implementation in lower-level languages, or algorithmic improvements could reduce processing times, making these methods more accessible for large-scale applications.
 Integration with existing transport modelling workflows, particularly automated attribute transfer from complex to simplified networks, represents another important area for development.
+A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
+This was not part of `parenx` and was not used in the Edinburgh application.
+However, we note that tools for this purpose exist, including the `rnet_merge()` function in the `stplanr` R package [@lovelace2019] and `anime` Rust crate for fast and flexible many-to-many segment matching, a robust basis for attribute joins [@parry_josiahparryanime_2025].
+Network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri2021; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
+Describing different joining strategies and implementations would be a logical next step for future work.
 
 Beyond transport planning, these methods have potential applications across multiple domains involving linear feature aggregation.
 In hydrology, they could support automated river centreline extraction from complex braided river systems.
@@ -1495,28 +1500,6 @@ The fundamental approach of converting complex overlapping linear features into 
 
 This work contributes to the broader goal of making transport planning more effective, evidence-based, and accessible by providing robust, flexible tools for network simplification.
 The open-source implementation ensures that these methods can be adapted and improved by the wider research community, supporting continued advancement in spatial network analysis and transport system planning.
-
-Looking ahead, there are several promising directions for future research building on this work.
-One avenue is the exploration of alternative algorithms for generating centrelines from buffered networks.
-This could include recursive thinning algorithms like the grassfire algorithm [@leymarie1992], or other medial axis transform algorithms [e.g. @smogavec2012].
-Another important area for development is performance enhancement.
-In particular, the speed of the process could be improved through parallelisation, implementation in lower-level programming languages such as Rust, or further optimisation of the core algorithms.
-Recent performance benchmarks comparing the computational efficiency of `neatnet`[@fleischmann2025adaptivecontinuitypreservingsimplificationstreet]  and `parenx` implementations suggest substantial room for improvement in our implementation, motivating future work on computational efficiency in both Voronoi-based and skeletonisation approaches.
-<!-- TODO: Mention the challenge of attribute conflation as a key area for future work, as it's a complex problem that this paper only touches on. -->
-
-A further challenge, which is beyond the scope of this paper, is attribute conflation: joining attributes from the source network to the simplified network.
-This was not part of `parenx` and was not used in the Edinburgh application.
-However, we note that tools for this purpose exist, including the `rnet_merge()` function in the `stplanr` R package [@lovelace2019] and `anime` Rust crate for fast and flexible many-to-many segment matching, a robust basis for attribute joins [@parry_josiahparryanime_2025].
-Network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri2021; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
-Describing different joining strategies and implementations would be a logical next step for future work.
-
-The methods presented in this paper were initially developed to support the Network Planning Tool for Scotland, where they provide a strong evidence base for data-driven investment in active travel infrastructure.
-However, their applicability extends far beyond this initial use case.
-These tools have significant potential in other areas of transport planning, such as strategic rail network modelling, public transport network design, and the redesign of urban street networks to create more sustainable and equitable transport systems.
-By providing a robust and flexible solution to the long-standing problem of network simplification, this work contributes to the broader goal of making transport planning more effective, evidence-based, and accessible.
-
-Beyond transport, similar linear-feature aggregation problems arise across other spatial-network domains --- for example hydrology (deriving river centrelines from bank polygons), utility mapping (pipelines, cables, power corridors), and ecological corridor modelling.
-While these applications are outside this paper’s scope, the methods presented could provide a basis for future work in these areas.
 
 # Data Availability
 
