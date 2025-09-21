@@ -1463,15 +1463,38 @@ tmap_arrange(m1, m2, nrow = 2, sync = TRUE)
 
 # Discussion and Conclusion {#sec-discussion}
 
-In summary, this paper has presented and demonstrated two novel methods for simplifying complex route networks: one based on image skeletonisation and the other on Voronoi diagrams.
-Both methods are implemented in open-source software, ensuring that the research is reproducible and the tools are available for others to use and adapt (see the reproducible source code of this paper at [github.com/nptscot](https://github.com/nptscot)).
-The results show that both skeletonisation and Voronoi‑based approaches can successfully transform complex, multi‑lined representations of transport corridors into simplified single‑line geometries.
-This simplification process results in networks that are substantially less resource-intensive for subsequent analysis and, crucially, lead to clearer and more intuitive visualisations of transport model outputs.
-While both methods achieve the primary goal of simplification, they have different characteristics.
-The skeletonisation approach is generally faster, making it more suitable for very large networks.
-By contrast, the Voronoi approach, while more computationally intensive, can produce smoother and more aesthetically pleasing centrelines.
-The choice between them, and the selection of parameters that control the level of simplification, will depend on the specific requirements of the analysis and the available computing resources.
-Finally, a key advantage of our implementation in the `parenx` Python package is its flexibility, allowing users to tailor the simplification process from minor adjustments to the aggressive simplification of a 'primal network', as shown in the [`parenx` cookbook](https://nptscot.github.io/networkmerge/cookbook.html).
+This paper has presented and evaluated two complementary approaches for simplifying complex route networks, addressing a fundamental challenge in transport planning and spatial analysis.
+The skeletonisation method, based on image processing techniques, offers a robust solution for transforming rasterised network buffers into clean centrelines through iterative thinning algorithms.
+The Voronoi-based approach, operating in vector space, generates centrelines by constructing spatial diagrams that identify natural medial axes within buffered network geometries.
+Both methods are implemented in the open-source `parenx` Python package, ensuring reproducibility and accessibility for the research community (see the reproducible source code at [github.com/nptscot](https://github.com/nptscot)).
+
+Our evaluation demonstrates that both approaches successfully consolidate multiple parallel linestrings representing single transport corridors into unified centrelines while maintaining network connectivity and spatial structure.
+The Edinburgh case study illustrates this capability on a real urban network, showing how both methods can transform complex multi-lane road representations into simplified geometries suitable for analysis and visualisation.
+The results indicate that skeletonisation provides faster processing with good geometric accuracy, while the Voronoi method delivers superior aesthetic quality and cleaner intersection handling at the cost of increased computational time.
+
+The practical implications for transport planning workflows are significant.
+Simplified networks reduce file sizes and rendering times, making them more suitable for web-based interactive tools and large-scale strategic analysis.
+The consolidation of parallel carriageways into single centrelines eliminates visual clutter, enabling clearer identification of traffic flow patterns, congestion hotspots, and infrastructure investment priorities.
+This improvement in data quality directly supports evidence-based decision making in transport planning, from local traffic management to regional strategic network development.
+
+The flexibility of our implementation allows users to select appropriate levels of simplification based on their specific needs.
+For routine applications requiring rapid processing of large networks, skeletonisation provides an efficient solution.
+For high-quality cartographic outputs or detailed geometric analysis, the Voronoi approach offers superior results despite its computational cost.
+The ability to generate primal networks—representing only essential connectivity between intersections—further extends the utility for strategic planning applications where topological structure takes precedence over detailed geometry.
+
+Looking ahead, several promising directions exist for extending this work.
+The development of hybrid approaches combining the computational efficiency of skeletonisation with the geometric quality of Voronoi methods could provide optimal solutions for different use cases.
+Performance optimisation through parallel processing, implementation in lower-level languages, or algorithmic improvements could reduce processing times, making these methods more accessible for large-scale applications.
+Integration with existing transport modelling workflows, particularly automated attribute transfer from complex to simplified networks, represents another important area for development.
+
+Beyond transport planning, these methods have potential applications across multiple domains involving linear feature aggregation.
+In hydrology, they could support automated river centreline extraction from complex braided river systems.
+Utility network management could benefit from simplified pipeline and cable representations for maintenance planning.
+Ecological corridor analysis might use these techniques to create consolidated habitat connectivity maps from fragmented landscape data.
+The fundamental approach of converting complex overlapping linear features into simplified centrelines has broad applicability wherever spatial network simplification is required.
+
+This work contributes to the broader goal of making transport planning more effective, evidence-based, and accessible by providing robust, flexible tools for network simplification.
+The open-source implementation ensures that these methods can be adapted and improved by the wider research community, supporting continued advancement in spatial network analysis and transport system planning.
 
 Looking ahead, there are several promising directions for future research building on this work.
 One avenue is the exploration of alternative algorithms for generating centrelines from buffered networks.
