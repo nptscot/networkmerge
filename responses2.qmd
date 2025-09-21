@@ -5,7 +5,10 @@ bibliography: bibliography.bib
 
 Dear Prof. Arribas-Bel, reviewers and editorial team,
 
-We thank you again for the opportunity to update the revision of our manuscript and for the continued constructive feedback provided by the reviewers. We have carefully considered the final set of comments and suggestions.
+We thank you again for the opportunity to update the revision of our manuscript and for the continued constructive feedback provided by the reviewers.
+We would like to highlight reviewer 1's observation that the paper is "*dramatically* improved" (emphasis theirs) and reviewer 2's comment to the effect that the paper is ready for publication, noting that we "responded to all of my comments and resolved them in a way I am comfortable with. I can now recommend acceptance."
+
+We have carefully considered the final set of comments and suggestions, and we are very grateful for them as they have helped us to further improve the manuscript, and the work's usefulness to the community.
 
 To help the review process, we have numbered each of the reviewers' comments and provided our responses with reference to these.
 
