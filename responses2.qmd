@@ -10,6 +10,7 @@ We thank you again for the opportunity to update the revision of our manuscript 
 To help the review process, we have numbered each of the reviewers' comments and provided our responses with reference to these.
 
 # Reviewer 1
+
 Outstanding paper review comments:
 
 R1: Significantly improved with more developed methods, comparisons, and interpretations but the paper is too short:
@@ -22,8 +23,22 @@ R1: Significantly improved with more developed methods, comparisons, and interpr
 Outstanding paper review comments:
 
 R2:  A thorough revision of the paper with two  minor points that could addressed
- - [ ]  R2.1 **Cookbook**.  Section 3. Update cookbook section 3 use the new not the original API.
- - [ ]  R2.2 **Cookbook**. Fix the code block to fit on the page. 
+  - [x]  R2.1 **Cookbook**.  Section 3. Update cookbook section 3 use the new not the original API.
+  - [x]  R2.2 **Cookbook**. Fix the code block to fit on the page.
+
+**Changes made to address R2.1 and R2.2:**
+
+The cookbook has been updated to use the new `parenx` command-line API instead of the original direct Python script calls. Key changes include:
+
+- **API Migration: Updated all examples from `skeletonize.py URL file.gpkg` to `parenx skeletonize URL file.gpkg`
+- Code Formatting: Added `monofontoptions: 'Scale=0.2'` to improve code block display and fit content on the page
+- Line Breaks: Added line breaks in long command examples for better readability
+- Variable Usage: Updated examples to use proper shell variable syntax (`${URL}`)
+- Content Cleanup: Removed the old "Application Programming Interface (API) Example" section that used direct Python function calls
+- Consistency: Updated function calls in `methods.qmd` and `paper.qmd` to use the new API pattern
+- Typography: Fixed spelling from "skeletonise" to "skeletonize" for consistency
+
+These changes improve the presentation and readability of the code examples.
 
 
 # References
