@@ -1243,7 +1243,7 @@ Thanks to Sustrans Scotland, and Matt Davis and Angus Calder in particular, for 
 
 <!-- All contributing authors should include a biography of no more than 50 words each outlining their career stage and research interests. -->
 
-Robin Lovelace is Associate Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England.
+Robin Lovelace is Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England.
 Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation.
 
 Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS).

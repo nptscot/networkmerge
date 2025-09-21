@@ -1514,6 +1514,19 @@ It was also supported by funding from Transport Scotland via a contract with Sus
 
 We also acknowledge the Network Rail Volunteer Leave Policy for the Promotion of Science, Technology, Engineering and Maths (STEM) subjects in universities, as discussions following an event at the Institute of Transport in Leeds led, in part, to this collaboration.
 
+# Author biographies
+
+Will Deakin is the Trains Portfolio Architect in IT Delivery at Network Rail, the British national rail infrastructure manager.
+Will is a passionate advocate of the use of data science, visualisation and open data to help support reproducible and fact based policy making.
+
+Robin Lovelace is Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England.
+Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation.
+
+Zhao Wang is a researcher at the Leeds Institute for Transport Studies (ITS).
+Zhao specializes in machine learning, data science and geocomputation for transport planning and engineering.
+
+Josiah Parry is a Senior Product Engineer at Environmental Systems Research Institute, Inc (Esri) and an open source software developer.
+
 # References
 
 ```{python}
