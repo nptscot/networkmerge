@@ -96,7 +96,7 @@ Route network aggregation generates estimates of flow on the network, rasterisat
 ---
 
 
-### Skeletonisation
+### skeletonization
 
 ![](images/paste-9.png)
 

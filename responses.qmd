@@ -1,0 +1,286 @@
+---
+title: "Responses to reviewer comments"
+bibliography: bibliography.bib
+---
+
+Dear Prof. Arribas-Bel, reviewers and editorial team,
+
+We thank you for the opportunity to revise our manuscript and for the constructive feedback provided by the reviewers. We have carefully considered all comments and suggestions. We are confident that the revisions have improved the manuscript. Below, we provide a detailed response to each of the reviewers' comments.
+
+To help the review process, we have numbered each of the reviewers' comments and provided our responses with reference to these.
+
+# Reviewer 1
+
+- [x] **R1.1** With the exception of [Section 3 Data and Methods] (and possibly [Section 1 Introduction]), all sections need a healthy fleshing out. There is simply not enough language, for example [Section 4 Application to Edinburgh City Centre] is only 3 sentences long. 
+
+We agree, the paper was overly terse in places.
+This was largely by design, as a technical paper we wanted to focus on the methods and let the code speak for itself.
+But having carefully considered the reviewer's comments, we have added more detail to the paper, particularly in the "Application to Edinburgh" section, which now includes a more detailed description of the use case, the goals of the simplification process, and a discussion of the results.
+We have also fleshed out other sections and improved the general flow of the paper and key aspects such as the abstract and introduction.
+
+- [x] **R1.2** There are large swaths of the text that read choppily with no real transitions. 
+
+Similar to the previous comment, we have improved the flow of the paper by adding transitions and clarifying the connections between sections. We have also ensured that the text reads more smoothly and coherently. For example we:
+
+- Added a signpost in Data and Methods after the two-challenge list to lead into geometry first ("We address the geometric simplification first...").
+- Rewrote the skeletonization opening to a clean buffer step: "As a common first step, we buffer the lines in a projected coordinate system."
+- Clarified overlap targeting: "only where more than one buffered line segment overlaps."
+- Bridged segmentation -> scaling: added "To mitigate rasterization artefacts, we increase resolution via a uniform affine scale..." and explained the trade-off.
+- Smoothed the hole-removal and skeletonization-to-vector sentences for a single, continuous flow.
+- Rephrased the point-to-line reconstruction with a lead-in and tightened wording. We also noted it as the most complex stage.
+- Introduced the Voronoi approach ("In contrast to skeletonization...") and tightened the selection criteria for retained edges.
+- Clarified the Post-Processing purpose and defined "knots" succinctly.
+- Added a short bridge at the start of "Skeletonization versus Voronoi" to frame trade-offs.
+- Added a transition at the start of "Joining route networks" (shift from geometry to attributes).
+- Inserted a one-line signpost in the Edinburgh application about using consistent parameters for fair comparison.
+- Aligned Data Availability with the repository link and CI-based reproducibility language.
+
+# Reviewer 2
+
+The paper tackles a task that is not easy - the simplification of road networks. While it provides reusable software and two different algorithms that solve the problem at hand, the paper itself lacks some key components that would allow users to properly evaluate the usefulness of this contribution. Please see the points below. 
+
+- [x] **R2.1** My main comment relates to understanding how good these algorithms are and which is actually better. The paper provides no comparison of the two beyond the visual comparison in Figures 2 and 3. Nor does it provide any validation, leaving the reader without a much-needed understanding of the performance of the proposed methods. Do they do the job well? In which cases are they perfect and in which do they struggle? What are the limitations of the resulting geometry? The paper does not answer any of these questions. My suggestion is to include a section with an explicit comparison of the two methods and guidance on which should be used when. 
+
+We have added a new section titled "Skeletonization versus Voronoi" which compares the two algorithms, compares their performance with reference to performance and size.
+Importantly, we now highlight the performance benefits of the skeletonization approach for large networks, also highlighting the smoother output of the Voronoi approach.
+
+- [x] **R2.2** On top of that, it would be great to see a comparison to some ground truth data (I am not sure if the primal network is not that, see below). 
+
+We compared the outputs of our simplification methods against an independent and authoritative source of road network data, Ordnance Survey's OpenRoads data product. This is now clearly shown in the updated Figure 3 which has been revised to include these comparisons, and to improve the figure in other ways highlighted by the review process.
+
+- [x] **R2.3** The parenx API is rather unusual. One would assume that a Python package could be imported and used in memory, but this does not seem to be the case as the only documented API is the CLI. Which is strange in itself. Instead of using something like `parenx skeletonize in.geojson out.geojson` and `parenx voronoi in.geojson out.geojson`, which is a common model, it registers `skeletonize.py` and `voronoi.py`, suggesting a Python file rather than a function name. With proper documentation this is probably fine, I just find these choices really weird and incompatible with the rest of the ecosystem. 
+
+We have updated the implementation of the methods in the `parenx` package, which has been updated on PyPI and GitHub:
+
+- The package now exposes the core simplfication functions in the `parenx` namespace, so users and developers can import them directly in their Python code. These improvements are highlighted in the following example from the updated `parenx` documentation (previously this would have generated an error):
+
+```python
+import geopandas as gp
+from parenx import skeletonize_frame, voronoi_frame, skeletonize_tiles, get_primal
+
+CRS = "EPSG:27700"
+filepath = "data/rnet_princes_street.geojson"
+frame = gp.read_file(filepath).to_crs(CRS)
+
+parameter = {"simplify": 0.0, "buffer": 8.0, "scale": 1.0, "knot": False, "segment": False}
+r = skeletonize_frame(frame["geometry"], parameter)
+
+parameter = {"simplify": 0.0, "scale": 5.0, "buffer": 8.0, "tolerance": 1.0}
+r = voronoi_frame(frame["geometry"], parameter)
+
+primal = get_primal(r)
+```
+
+See the appendix for more details on the CLI and the API.
+
+- We have updated the function names to be more descriptive, e.g. `get_nx()` is now `get_primal()`, matching the description in the paper.
+- We have provided a command-line interface (CLI) that works from shell environments, allowing users to run the methods without needing to write Python code. The CLI uses the command `parenx` and, as the reviewer suggested, takes the algorithm name as the first argument (either `skeletonize` or `voronoi`, without needing the `.py` suffix). 
+
+## Other minor comments
+
+- [x] **R2.4** The title says that the algorithms are aimed at transport planning, but in the text the authors also mention other applications. This is a bit confusing. 
+
+We agree that there was an element of 'trying to ride two horses at once' and tension between the title and the paragraph in the introduction on other applications.
+We have decided to keep the title focused on transport planning, as this is the primary application of the methods, and we have made it clear that the mention of other applications is to highlight the general applicability of the approach, outside the scope of this paper.
+The introduction now states:
+
+> While the focus of this paper is on route network simplification for transport planning, and applications to other fields are beyond its scope, it is worth noting prior research tackling the challenge of simplifying linear features in other domains.
+
+- [x] **R2.5** The paper repeatedly refers to the appendix with a cookbook and the methods section. However, this appendix is not part of the review package. At least I could not find it anywhere. It is not possible for me to assess the details of any of the methods at this moment.
+
+We have now included the appendix in the submission.
+
+- [x] **R2.6**  Line 14 on p. 2 contains "->", which probably should not be there. 
+
+Done.
+
+- [x] **R2.7**  Fleischmann and Vybornova n.d. seems to have been published in the meantime at 10.5311/JOSIS.2024.28.319. 
+
+Done.
+
+- [x] **R2.8** Suri et al. n.d. also appears to have been published at 10.14778/3494124.3494149. 
+
+Done.
+
+- [x] **R2.9**  The buffer chosen in section 3.1 is 8. Why? Is it better than 7 or 9? How is this determined? How should a user specify this in their case study? 
+
+We have clarified in section 3.1 that the 8 m buffer was chosen to reflect UK road widths, referencing the Design Manual for Roads and Bridges (DMRB) and standard rail track separation. This value is now justified. We also state that the `buffer` argument in the simplification functions can be used to adjust the buffer size depending on reader/user needs in the main body of the paper.
+
+- [x] **R2.10** P.5 l.31 contains a typo "skeltonisation". 
+
+Done.
+
+- [x] **R2.11** This may be in the appendix, which I haven't received, but the main text would also benefit from understanding the resolution of the raster component in skeletonization and the reasoning behind it. 
+
+We have explained the transformation and how it influences the results, e.g. to reduce the 'wiggliness' of the skeletonized output. We now state in the main body of the paper:
+
+> This scale operation is a uniform affine scale transformation applied to increase the detail contained in the raster image. An increase in scale reduces undulation but at the cost of longer processing time and increased memory, which varies as the square of scale value. This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
+
+We now include the appendix in the submission.
+
+- [x] **R2.12** The same applies to the segmentation step of the Voronoi-based approach, as this can significantly affect the result.
+
+Details were included in the appendix, which is now included in the submission and appropriately referenced in the main body of the paper. 
+
+- [x] **R2.13**  I would suggest including titles for the columns in the figure for additional clarity and to eliminate the need to refer to the caption. 
+
+This is a good point and will be a 'win' for accessibility.
+We have added titles to the columns subfigures with columns for maximum clarity.
+
+- [x] **R2.14** Figure 3 contains a "primitive mesh". What is it, how was it created? It is unclear what we are looking at. 
+
+We have clarified what this means with the following additional sentence:
+
+> This highly simplified network is created by identifying all nodes in the network, counting the edges connected to each node, and removing all nodes that are connected to exactly two edges. Unconnected edges or those at intersections between edges are retained.
+
+- [x] **R2.15** Figure 3 contains images that are too small and it is difficult to see the differences. 
+
+This is an important and well-made point. The figure is perhaps the most important way we have of communicating what we have done and, having thought about and discussed this with reference to the previous figure, we agree that it was almost impossible to discern the differences in the outputs.
+To tackle this issue, we have 'zoomed-in' on Princes Street in the visualisation: specifically the bounding box of the figure has been made 3x smaller in the North-South direction and 2x smaller in the East-West direction.
+In parallel to this change, we have made each subfigure larger by making the panel have 1 column instead of 2 previously. 
+We are happy with the result, you can now clearly see that all simplified outputs now convert the 'braided' Princes Street in the center of the figures into a single linestring.
+Differences between the skeletonization and Voronoi approaches are now much clearer.
+For example, it is clear that the Voronoi approach captures crossroads better with its ability to identify the central axis of the street network compared with the skeletonized outputs which tend to create unwanted curves just before intersections.
+
+We have also added a scale bar to help show the spatial context of the network simplifications.
+
+# Reviewer 3
+
+This work addresses a relevant issue, i.e., route network simplification, which is here framed in the context of transportation planning, but has significance that goes beyond transportation planning - in any other field of study where route or street networks are used for spatial modelling. The methods presented here are highly relevant to the issue at hand, novel, and available to the wider community in packaged open-source format. I therefore recommend the publication of this article, with several minor caveats (minor revision) -- see my comments below.
+
+General comments:
+- [x] **R3.1** the text itself could use a fresh pair of eyes for revision due to several typoes, unfinished sentences, etc.
+
+We have carefully proofread the text and fixed all typos, unfinished sentences, and other minor issues.
+
+- [x] **R3.2** i answered "no" to the question above, "Are the interpretations and conclusions justified by the results?", mostly because i think there needs to be a more clear *interpretation* of parenx outcomes, see my comments on the "edinburgh use case" section below
+
+We agree that there could have been more interpretation of the results, particularly in relation to the Edinburgh use case, in the previous version of the paper. We have added a greatly improved final figure to illustrate what the simplification methods achieve in a real-world scenario.
+Building on this improved figure, which is 'zoomed-in' compared to the previous version, we have interpreted the results, highlighting the key differences between the original and simplified networks and discussing in some detail the differences between the skeletonized, Voronoi, and primal outputs.
+
+## abstract
+
+- [x] **R3.3** can it be made more clear what the _purpose_ of the paper is? (presenting parenx which enables the simplification of route networks by 2 methods, ...)
+
+We now state the purpose: 
+
+> The purpose of the work presented in this paper is to provide a basis for computationally efficient analysis and visualisation of route networks for strategic transport planning, where intricate geometries—such as parallel or 'braided' linestrings—are unhelpful.
+
+- [x] **R3.4** "new contexts" >> which contexts? (more specific?)
+
+We mention related research in other research contexts (by which we meant disciplines) in the Introduction but no longer mention these other contexts in the abstract, favouring a clear focus on transport planning, as alluded to in our responses to other reviewer comments.
+
+## introduction
+
+- [x] **R3.5** would be good to re-do the definitions used here to be more clear and concise. e.g. the nodes/edges/lines sentence with the several parentheses is a bit hard to read and somewhat circular in its definitions. Potentially helpful to refer to a plot here? (if there is space for more plots)
+
+We have rephrased the definitions to be clearer and more concise.
+
+ - [x] **R3.6** also be more clear about difference/overlap between "route network", "transport network data set", "spatial networks" etc.
+
+We added a concise Terminology paragraph in the Introduction that standardizes usage:
+
+- Spatial network: the abstract graph embedded in geographic space (nodes/edges with geometry).
+- Transport network dataset: a concrete geospatial dataset (e.g., GeoPackage/GeoJSON/GeoDataFrame) encoding a spatial network for the transport domain, with attributes and CRS.
+- Route network: an aggregated transport network dataset formed by combining many routes into consolidated corridors (used for model outputs); we keep “transport network dataset” for general inputs and reserve “spatial network” for graph-level statements.
+
+We added new references to show how these terms are used in the literature and have ensured these terms are used consistently throughout the manuscript.
+
+- [x] **R3.7** "Route network simplification can be applied to transport model networks" >> i would argue that route network simplification can be applied to many more contexts (basically anywhere that spatial networks are used) -- could help argue for the significance of the work?
+
+Addressed by adding a short paragraph in the Discussion and Conclusion highlighting broader applicability beyond transport (e.g., hydrology/rivers, utilities/power corridors, ecological corridors) while noting these are out of scope here and proposed as future work.
+
+- [x] **R3.8** OSM mention: add citation
+
+Done, and now cited following best practices [@openstreetmap]
+
+- [x] **R3.9** "unsolved challenge for other applications" 
+
+>> say which (or give at least some examples)
+
+We have added the following sentences.
+
+> This approach was taken as we could only find a few examples for the aggregation and simplification of linear features, especially with transport and planning networks. However, as this general approach is based on the application of techniques used for image simplification, it can be applied to any overlapping linear features where aggregation is appropriate. For example, simplification of transport or other flow networks to produce an aggregated route-view as the basis for capacity analysis. Whether that is for active-transport, rail, road or other logical network flows.
+
+ - [x] **R3.10** "The aim of this paper..." >> this sentence/its contents should ideally come earlier / as early as possible (first page of paper)
+
+We moved the aim statement to the start of the Introduction (immediately after the core definitions) and removed the later duplicate. This brings the paper’s purpose onto the first page.
+
+## problem definition
+
+ - [x] **R3.11** why a bullet point list for _limitations_ of the existing approach? are these limitations identical with the problem definition (it seems to me that they are not?)
+
+We replaced the bullet list with prose.
+The new wording frames these as limitations of the prior 'overline' approach (redundant vertices; unmerged parallel ways) and clarified they are not the problem definition itself.
+
+- [x] **R3.12** would be great to have a plot here (e.g. a parenx before//after detail) to use it to explain what exactly the authors mean by "simplification". (ambiguous word - cf the differing use in the osmnx package, etc.)
+
+We think that the plots already highlight what we mean by simplification. We want to avoid duplication of effort so have instead cross-referenced subsequent figures to illustrate our points.
+
+## Data and Methods
+
+ - [x] **R3.13** this section only describes methods, what about the data? could be a place to also comment on the edinburgh city center use case?
+
+Added a brief data/use-case note in Data and Methods stating the Edinburgh dataset provenance (OSM, EPSG:27700), parameter consistency for fair comparison, and a pointer to @sec-application for the full use-case description.
+
+ - [x] **R3.14** Introduce references to (subfigures of) Figure 2 in the methods subsections
+
+Inserted explicit references in the skeletonization and Voronoi subsections to the corresponding columns of @fig-skeleton-line (Otley top row; Armley bottom row) to guide readers to concrete outputs.
+
+- [x] **R3.15** skeletonization buffer size 8 meters: at first glance this seems to me use-case specific, not part of methods? so: if this is a location-based choice, i would suggest to move it to the use case description and there argue why 8m was chosen. if this is a general recommendation for future parenx use i would leave this here but then comment on the reasoning behind the choice of the buffer size
+
+See our response to **R2.9**. We have clarified that the 8 m buffer is informed by UK road widths and rail track separation, and that it can be adjusted using the `buffer` parameter in the simplification functions.
+
+- [x] **R3.16** skeletonization: last sentence of section 3.1. is cut short
+
+Typo fixed.
+
+ - [x] **R3.17** joining route networks: if this is not part of parenx (if i grasped this correctly) and also not part of the Edinburgh use case (?), then maybe this can be shortened/doesn't need its own subsection? (Could be moved to discussion/future work?)
+
+We moved the joining content to the discussion as it is relevant to future work but outside the scope of this paper.
+It is now more concise, and references the more up-to-date `anime` crate for network joining.
+
+- [x] **R3.18** Application to Edinburgh
+
+This section seems way too short, i would suggest to say more here (if word limit need to be respected, then maybe at the expense of summarizing a bit more the lit review part?), e.g. about
+- why this usecase, what are its particularities,
+- what is the goal of the simplification process here (e.g. "removing the roundabouts", etc.)
+- what should the reader pay attention to when comparing before/after parenx in figure 4,
+- how do the authors evaluate their own method based on this use case,
+- what are the differences between the 2 different parenx methods (point out where in figure 4 this becomes apparent?),
+- etc.
+
+We have expanded this section to provide more context and detail about the Edinburgh use case, including its particularities and the goals of the simplification process.
+
+## Conclusion
+
+- [x] **R3.19** "we believe it has applications.." >> i think the authors can be more confident about this ("we believe" is not necessary, you can state that there are in fact applications - & say which)
+
+We have updated the conclusion to state that the methods have applications in transport planning and other fields, as discussed in the introduction and discussion sections.
+
+# Comments from marked-up PDF file
+
+ (please refer to the marked-up PDF file for specific comments).
+
+ We have addressed all of the comments in the PDF file, many thanks for providing them in-line.
+ A couple of the changes are highlighted below.
+
+- [x] **PDF1** address this challenges, typo in abstract
+
+Fixed.
+
+<!-- - [ ] **PDF2** "In detail, skeletonization is only applied where more than line-segment buffer overlaps."
+
+Fixed, it now says "Skeletonization is only applied to segments where more than one of their respective buffers overlap." -->
+
+- [x] **PDF2** labels added to subplots in Figure 2
+
+# Additional changes made
+
+- [x] We have added a results from the recently developed `neatnet` to the final figure, in addition to the new 'ground truth' figure from the official Ordance Survey OpenRoads dataset (which is not perfect either as alluded to in the discussion). Although the paper is not about `neatnet`, we wanted to include it as a relevant comparison and to encourage cross-project collaboration.
+
+- [x] We have removed the axis labels from the subplots in Figure 2 to improve clarity and focus on the main content.
+
+- [x] We now use consistent language: previously the manuscript was a mix of British and American English. Now it is consistently British English, with the exception of the `skeletonize` function name which we have retained. 
+
+# References

@@ -28,10 +28,10 @@ editor:
 # # Uncomment to run with Jupyter:
 # jupyter: python3
 ---
-
 ```{r}
 # Engine: knitr
 ```
+
 
 ```{r}
 #| name: r-setup
@@ -47,13 +47,12 @@ rnet_x = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0
 rnet_y = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/v1.0.2/rnet_y_ed.geojson")
 ```
 
-
 ```{r}
 rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
 rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
-Both input datasets were sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM) (see the '`parenex` cookbook', a technical appendix that accomanies this paper, for an example of the method applied to a rail network dataset).
+Both input datasets were sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM) (see the '`parenx` cookbook', a technical appendix that accompanies this paper, for an example of the method applied to a rail network dataset).
 
 ```{r}
 #| include: false
@@ -103,7 +102,7 @@ The concept of a primal network that represents a high level of simplification i
 ## Topology-preserving simplification {#sec-topology-preserving-simplification}
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving (or at least attempting to preserve) the topology of the network, i.e. not merging parallel lines.
-As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
+As shown in top panel of @fig-topology-preserving, topology-preserving simplification *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
@@ -172,7 +171,7 @@ The % values represent the "percentage of removable points to retain" argument v
 
 ## Simplification via skeletonization {#sec-simplification-via-skeletonization}
 
-The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segements from a raster of this buffer.
+The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segments from a raster of this buffer.
 
 <!--- ### Create a projected combined buffered geometry --->
 
@@ -189,7 +188,7 @@ import geopandas as gp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from parenx.shared import combine_line, get_geometry_buffer, get_nx, get_source_target
+from parenx.shared import combine_line, get_geometry_buffer, get_primal, get_source_target
 from parenx.skeletonize import (
     get_affine_transform,
     get_raster_line,
@@ -262,7 +261,7 @@ Buffered versions of the Otley Road (left) and Armley Road (right) networks.
 In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced.
 This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
 
-In detail, skeletonization is only applied where more than line-segment buffer overlaps.
+Skeletonization is only applied to segments where more than one of their respective buffers overlap.
 To identify overlapping line-segments, the buffer is split at the end of each line-segment, see top Otley Road (left) and Armley Road (right) @fig-split-ends.
 The overlapping line-segments are then buffered while retaining the remaining disjoint lines, shown in bottom @fig-split-ends.
 
@@ -450,7 +449,7 @@ rip.show(armley_im, cmap="Greys", title="buffer geometry")
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
 :::
 
-The skeltonisation algorithm is then appled to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
+The skeletonization algorithm is then applied to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
 <!---The image undergoes a thinning process, yielding a skeletal raster image as the result.
 This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
 
@@ -505,7 +504,7 @@ These points are combined, giving a continuous line geometry representing the si
 Finally, a reverse scaling affine transformation is applied to return to the original coordinate system.
 <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
 
-Noting that creating a line geometry from the set of points in the raster buffer is arguable the most complex step.
+Noting that creating a line geometry from the set of points in the raster buffer is arguably the most complex step.
 
 The resulting simplified network is illustrated in @fig-skeleton-line.
 
@@ -699,7 +698,7 @@ While knots common to both skeletonization and Voronoi simplification, these art
 ::: {#fig-voronoi-line layout-ncol="2"}
 ```{python}
 otley_line = filter_buffer(otley_line, otley_geometry)
-otley_edge, otley_node = get_source_target(otley_line.to_frame("geometry"))
+otley_edge, otley_node = get_source_target(otley_line)
 ix = otley_node["count"] < 4
 otley_square = otley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
 otley_square = gp.GeoSeries(unary_union(otley_square.values).geoms, crs=CRS)
@@ -711,7 +710,7 @@ otley_line.plot()
 
 ```{python}
 armley_line = filter_buffer(armley_line, armley_geometry)
-armley_edge, armley_node = get_source_target(armley_line.to_frame("geometry"))
+armley_edge, armley_node = get_source_target(armley_line)
 ix = armley_node["count"] < 4
 armley_square = armley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
 armley_square = gp.GeoSeries(unary_union(armley_square.values).geoms, crs=CRS)
@@ -754,12 +753,12 @@ The primal networks for the Otley Road and Armley Road skeletonized networks are
 
 ::: {#fig-primal-skeleton layout-ncol="2"}
 ```{python}
-otley_edge_sk = get_nx(otley_sk)
+otley_edge_sk = get_primal(otley_sk)
 otley_edge_sk.plot()
 ```
 
 ```{python}
-armley_edge_sk = get_nx(armley_sk)
+armley_edge_sk = get_primal(armley_sk)
 armley_edge_sk.plot()
 ```
 
@@ -772,12 +771,12 @@ Primal skeletonized networks for the Otley Road (left) and Armley Road (right) n
 
 ::: {#fig-primal-voronoi layout-ncol="2"}
 ```{python}
-otley_edge = get_nx(otley_line)
+otley_edge = get_primal(otley_line)
 otley_edge.plot()
 ```
 
 ```{python}
-armley_edge = get_nx(armley_line)
+armley_edge = get_primal(armley_line)
 armley_edge.plot()
 ```
 
@@ -799,7 +798,7 @@ This 'joining' step is vital for using simplified networks as the basis for pres
 We have implemented the steps presented in this section in the `rnet_merge()` function in the `stplanr` R package. -->
 
 The process is analogous to joining two datasets based on a common 'key' variable.
-In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
+In this case there is no definitive key, meaning that network joining can be regarded as a 'fuzzy' or 'keyless' join process [@suri2021; @wachowicz2019]: as with the network simplification steps outlined above, the user must select joining parameters to maximise the accuracy of the join.
 The simplified (typically denoted 'x') object can also be referred to as the 'target' object, following the terminology used to describe database and 'spatial similarity' joins [@ballesteros2011].
 There are at least a couple of implementations of network joining approaches in open source software: the `rnet_merge()` function in the `stplanr` R package [@lovelace2019], and the [`rnetmatch` Rust crate](https://github.com/nptscot/rnetmatch/tree/main/rust) which has binding to R and (soon) Python.
 The details of network joining methods, algorithms and implementations are outside the scope of this paper, see the documentation associated with the projects mentioned above for more information.
