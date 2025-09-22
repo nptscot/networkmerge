@@ -268,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details></section>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This cookbook is an addendum of the network merge paper<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone <code>parenx</code> module<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was developed and deployed to <code>pypy</code>. However, noting this is <strong>beta software</strong>, the hope is that by sharing these examples will make using these scripts a bit less painful.</p>
+<p>This cookbook is an addendum to the network merge paper<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone <code>parenx</code> module<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was developed and deployed to <code>pypy</code>. However, noting this is <strong>beta software</strong>, the hope is that by sharing these examples will make using these scripts a bit less painful.</p>
 <p>This was developed and tested on a Debian Linux variant<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and run on the command-line interface with various versions of <code>python3</code>. While not tested on other environments they should work on under environments and operating systems.</p>
 </section>
 <section id="set-up-and-run" class="level1" data-number="2">
@@ -336,7 +336,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="simplification-tldr" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Simplification: TL;DR</h1>
-<p>The remaining “Too Long; Do not Read” sections explains more about how the <code>parenx</code> scripts work, and introduces a helper function used in testing. The <code>parenx</code> wrapper to the <code>skeletonize.py</code> and <code>voronoi.py</code> simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Both allow the maximum displacement (simplify)<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and buffer size (buffer) to be set.</p>
+<p>The remaining “Too Long; Do not Read” sections explains more about how the <code>parenx</code> scripts work, and introduces a helper function used in testing. The <code>parenx</code> wrapper to the <code>skeletonize.py</code> and <code>voronoi.py</code> simplification scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Both allow the maximum displacement (simplify)<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and buffer size (buffer) to be set.</p>
 <section id="skeletonize-simplification" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="skeletonize-simplification"><span class="header-section-number">3.1</span> Skeletonize simplification</h2>
 <p>As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
@@ -353,7 +353,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="3.2" class="anchored" data-anchor-id="voronoi-simplification"><span class="header-section-number">3.2</span> Voronoi simplification</h2>
 <p>As the script take a filepath or URL, simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="va">URL</span><span class="op">=</span>https://github.com/anisotropi4/parenx/blob/main/data</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">skeletonize.py</span> <span class="va">${URL}</span>/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">voronoi.py</span> <span class="va">${URL}</span>/rnet_doncaster_rail.geojson<span class="pp">?</span>raw=true sk-doncaster.gpkg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The base <code>voronoi.py</code> also takes a tolerance parameter<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> to sets to the Voronoi polygon overlap:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">start</span>       0:00:00.000154</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">usage:</span> voronoi.py <span class="pp">[-</span><span class="ss">h</span><span class="pp">]</span> [--simplify SIMPLIFY] [--scale SCALE] [--buffer BUFFER]</span>
@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-does-the-helper-run.sh-do" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="what-does-the-helper-run.sh-do"><span class="header-section-number">4.4</span> What does the helper <code>run.sh</code> do?</h2>
-<p>The helper script creates the enviroment and runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed. The path and output filename can also be specified.</p>
+<p>The helper script creates the environment and runs the <code>skeletonize</code> and <code>voronoi</code> simplification scripts with different simplification parameters, and converts the output into a sanitized <code>GeoJSON</code> format if <code>ogr2ogr</code> is installed. The path and output filename can also be specified.</p>
 <section id="set-up-environment" class="level3" data-number="4.4.1">
 <h3 data-number="4.4.1" class="anchored" data-anchor-id="set-up-environment"><span class="header-section-number">4.4.1</span> Set up environment</h3>
 <p>As above this checks to see if a <code>venv</code> directory exists, creates and populates it if not, and activates the environment:</p>
@@ -531,7 +531,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Many thanks to everyone who has helped and supported in making this work possible, and making the data available.</p>
 <ul>
 <li>The centre-line track-model is an extract of the Network Rail centre-line track-model hosted by <a href="https://github.com/openraildata/network-rail-gis">OpenRailData</a> under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government License</a>, retrieved 2023-07-11.</li>
-<li>The road network data are static extracts from OpenStreeMap under <a href="https://www.openstreetmap.org/copyright">CC-BY-SA 2.0</a> through the <a href="https://overpass-turbo.eu/">OverPassAPI Turbo service</a>.</li>
+<li>The road network data are static extracts from OpenStreetMap under <a href="https://www.openstreetmap.org/copyright">CC-BY-SA 2.0</a> through the <a href="https://overpass-turbo.eu/">OverPassAPI Turbo service</a>.</li>
 </ul>
 
 
