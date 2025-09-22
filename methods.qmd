@@ -52,7 +52,7 @@ rnet_otley = sf::read_sf("./data/rnet_otley.geojson")
 rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
-Both input datasets were sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM) (see the '`parenex` cookbook', a technical appendix that accomanies this paper, for an example of the method applied to a rail network dataset).
+Both input datasets were sourced from the Propensity to Cycle Tool (PCT) which in turn is based on OpenStreetMap (OSM) (see the '`parenx` cookbook', a technical appendix that accomanies this paper, for an example of the method applied to a rail network dataset).
 
 ```{r}
 #| include: false

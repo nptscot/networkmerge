@@ -188,7 +188,7 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 ```
 
 In this paper we use the two street networks discussed in the previous section to illustrate the methods.
-See the [Methods](https://nptscot.github.io/networkmerge/methods.html) and ['`parenex` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) appendices for further details on the methods used in this paper and their application to alternative (railway based) datasets.
+See the [Methods](https://nptscot.github.io/networkmerge/methods.html) and ['`parenx` cookbook'](https://nptscot.github.io/networkmerge/cookbook.html) appendices for further details on the methods used in this paper and their application to alternative (railway based) datasets.
 
 In addition to these illustrative street-corridor examples, we apply the same pipelines to a real-world dataset for central Edinburgh derived from OpenStreetMap and analysed in a projected CRS (EPSG:27700).
 Unless otherwise stated, parameters (e.g., buffer size) are kept consistent across methods to enable a fair comparison; the full application is described in @sec-application.
