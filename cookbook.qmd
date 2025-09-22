@@ -157,7 +157,7 @@ plt.show()
 
 ## Notes
 
-While there are many different takes and system to manage `python` packages, my personal experience is that package management in a virtual environment with `python3` just works.
+While there are many different ways to manage packages, our experiences suggest that package management in a virtual environment with `python3` works well. Another recommended option is to use a Docker container such as the `python` image from the Geocompx project, which can be downloaded with the command `docker pull ghcr.io/geocompx/python` (or `pythonr` for a variant with R packages needed to reproduce all the images in the paper installed) or using the 'Devcontainer' in the networkmerge repo for full reproducibility.
 
 # Simplification: TL;DR
 
