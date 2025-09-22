@@ -171,7 +171,7 @@ The % values represent the "percentage of removable points to retain" argument v
 
 ## Simplification via skeletonisation {#sec-simplification-via-skeletonization}
 
-The skeletonisation approach generates a simplified network by buffering the network, applying an image skeletonisation algorithm, and extracting lines segements from a raster of this buffer.
+The skeletonisation approach generates a simplified network by buffering the network, applying an image skeletonisation algorithm, and extracting lines segments from a raster of this buffer.
 
 <!--- ### Create a projected combined buffered geometry --->
 
@@ -449,7 +449,7 @@ rip.show(armley_im, cmap="Greys", title="buffer geometry")
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
 :::
 
-The skeltonisation algorithm is then appled to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
+The skeletonisation algorithm is then applied to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
 <!---The image undergoes a thinning process, yielding a skeletal raster image as the result.
 This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
 
