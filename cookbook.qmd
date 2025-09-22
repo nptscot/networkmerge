@@ -44,7 +44,7 @@ quarto render cookbook.qmd
 
 # Introduction
 
-This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, this module is neither well documentmed nor intuitive to use. So the hope is that by sharing these examples will make using these scripts a bit less painful.
+This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, the hope is that by sharing these examples will make using these scripts a bit less painful.
 
 This was developed and tested on a Debian Linux variant[^3] and run on the command-line interface with various versions of `python3`. While not tested on other environments they should work on under environments and operating systems.
 
@@ -157,11 +157,11 @@ plt.show()
 
 ## Notes
 
-While there are many different takes and system to manage `python` packages, my experience is that package management in a virtual environment with `python3` just works.
+While there are many different ways to manage packages, our experiences suggest that package management in a virtual environment with `python3` works well. Another recommended option is to use a Docker container such as the `python` image from the Geocompx project, which can be downloaded with the command `docker pull ghcr.io/geocompx/python` (or `pythonr` for a variant with R packages needed to reproduce all the images in the paper installed) or using the 'Devcontainer' in the networkmerge repo for full reproducibility.
 
 # Simplification: TL;DR
 
-The remaining "Too Long; Do not Read" sections explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
+The remaining "Too Long; Do not Read" sections explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `parenx` wrapper to the `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
 
 ## Skeletonize simplification
 
@@ -374,7 +374,8 @@ if [ x"${OGR2OGR}" != x ]; then
     for k in sk vr
     do
         rm -f ${k}-${OUTPUT}.geojson
-        ogr2ogr -f GeoJSON ${k}-${OUTPUT}.geojson ${k}-${OUTPUT}.gpkg line
+        ogr2ogr -f GeoJSON ${k}-${OUTPUT}.geojson ${k}-${OUTPUT}.gpkg \
+           line
         sed -i 's/00000[0-9]*//g' ${k}-${OUTPUT}.geojson
     done
     for k in sk vr
