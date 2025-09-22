@@ -96,7 +96,7 @@ Route network aggregation generates estimates of flow on the network, rasterisat
 ---
 
 
-### Skeletonisation
+### skeletonization
 
 ![](images/paste-9.png)
 
@@ -131,7 +131,7 @@ See https://github.com/nptscot/rnetmatch/blob/main/paper.qmd
 The code underlying the results presented in this paper are available from the following repositories:
 
 -   The [`nptscot/networkmerge`](https://github.com/nptscot/networkmerge) repository contains the reproducible paper.
--   The `parenx` Python for image skeletonisation and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
+-   The `parenx` Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
 -   The `rnetmatch` R package for network simplification is available on GitHub in the repo [`nptscot/rnetmatch`](https://github.com/nptscot/rnetmatch).
 
 </small>

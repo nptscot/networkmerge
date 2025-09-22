@@ -89,12 +89,12 @@ There are two main challenges that need to be overcome to simplify transport net
 2.  Assigning attributes to the simplified network
 
 Sections @sec-topology-preserving-simplification to @sec-simplification-via-voronoi-polygons describe methods for simplifying the geometry of the network.
-The key contributions of the paper are the novel methods of image skeletonisation, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+The key contributions of the paper are the novel methods of image skeletonization, presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 To make use of simplified networks in transport planning, it is also necessary to assign attributes to the simplified network.
 This is covered in @sec-joining-route-networks.
 
 ```{=html}
-<!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonisation section?
+<!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
 The concept of a primal network that represents a high level of simplification is explored as well. -->
 ```
@@ -102,7 +102,7 @@ The concept of a primal network that represents a high level of simplification i
 ## Topology-preserving simplification {#sec-topology-preserving-simplification}
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving (or at least attempting to preserve) the topology of the network, i.e. not merging parallel lines.
-As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
+As shown in top panel of @fig-topology-preserving, topology-preserving simplification *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving.
 
 ::: {#fig-topology-preserving layout-ncol="1"}
 ```{r}
@@ -169,13 +169,13 @@ Illustration of topology-preserving simplification, using the `mapshaper` JavaSc
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 :::
 
-## Simplification via skeletonisation {#sec-simplification-via-skeletonization}
+## Simplification via skeletonization {#sec-simplification-via-skeletonization}
 
-The skeletonisation approach generates a simplified network by buffering the network, applying an image skeletonisation algorithm, and extracting lines segments from a raster of this buffer.
+The skeletonization approach generates a simplified network by buffering the network, applying an image skeletonization algorithm, and extracting lines segments from a raster of this buffer.
 
 <!--- ### Create a projected combined buffered geometry --->
 
-In both the skeletonisation and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system.
+In both the skeletonization and Voronoi approaches, the network simplification process starts by applying a buffer to linear geometry in a projected, rather than coordinate system.
 <!-- , achieved using the `get_geometry_buffer` function. --> We use a buffer size of 8 meters in this paper, which roughly corresponds to the width of a typical road, with the result illustrated in @fig-buffered-network.
 
 ```{python}
@@ -256,9 +256,9 @@ armley_geometry.plot(edgecolor="blue", color="blue")
 Buffered versions of the Otley Road (left) and Armley Road (right) networks.
 :::
 
-### Network skeletonisation
+### Network skeletonization
 
-In skeletonisation, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced.
+In skeletonization, overlapping lines are identified, buffered, transformed into a raster image, the image processed through a thinning algorithm, and a skeletal representation of the original network produced.
 This skeletal structure preserves the overall extent and connectivity of the network, with a central line that follows the centre-line of the combined buffered area.
 
 Skeletonization is only applied to segments where more than one of their respective buffers overlap.
@@ -353,7 +353,7 @@ armley_segment.plot()
 Segmented line-buffer geometries (top) and geometries to be skeletonized (bottom) for the Otley Road (left) and Armley Road (right) networks.
 :::
 
-As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonisation and reducing scale when creating the simplified linear geometric representation.
+As detail is lost in transforming of the geometry to an image buffer or raster, more detail can be retained by using an affine transformation to increase the number of points in the buffer prior to skeletonization and reducing scale when creating the simplified linear geometric representation.
 <!-- This transformation is scaled to ensure that the projected coordinate geometry of the network aligns accurately with the corresponding dimensions of the scaled raster image.
 Through this process, we maintain the spatial integrity and relational positioning of the network elements within the simplified raster format. --->
 
@@ -449,7 +449,7 @@ rip.show(armley_im, cmap="Greys", title="buffer geometry")
 Rasterized versions of the Otley Road (left) and Armley Road (right) networks, with post processing to remove small holes.
 :::
 
-The skeletonisation algorithm is then applied to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
+The skeletonization algorithm is then applied to the raster image yielding a skeletal raster image, as shown in @fig-thin-skeleton.
 <!---The image undergoes a thinning process, yielding a skeletal raster image as the result.
 This skeletonized image effectively captures the essential structure and layout of the original network, as illustrated in @fig-thin-skeleton. --->
 
@@ -504,7 +504,7 @@ These points are combined, giving a continuous line geometry representing the si
 Finally, a reverse scaling affine transformation is applied to return to the original coordinate system.
 <!-- This conversion from point to line geometry is a pivotal aspect of network simplification. -->
 
-Noting that creating a line geometry from the set of points in the raster buffer is arguable the most complex step.
+Noting that creating a line geometry from the set of points in the raster buffer is arguably the most complex step.
 
 The resulting simplified network is illustrated in @fig-skeleton-line.
 
@@ -693,7 +693,7 @@ Voronoi diagram lines with lines that are completely within the buffer geometry 
 <!--- ### Voronoi simplified network --->
 
 The final center-line network shown in @fig-voronoi-line is created through a clean up process that involves the removal of knot-like features from the simplified network.
-While knots common to both skeletonisation and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
+While knots common to both skeletonization and Voronoi simplification, these artefacts are more prevalent on Voronoi simplified networks.
 
 ::: {#fig-voronoi-line layout-ncol="2"}
 ```{python}
@@ -725,7 +725,7 @@ Simplified versions of the Otley Road (left) and Armley Road (right) networks.
 
 ## Post-Processing
 
-Both skeletonisation and Voronoi simplified networks require post-processing to remove unwanted [knots](@sec-knots).
+Both skeletonization and Voronoi simplified networks require post-processing to remove unwanted [knots](@sec-knots).
 Optionally by removing intermediate lines-sections, a further simplified or [primal network](@sec-primal) that captures the essential connectivity and layout of transport routes can be generated.
 
 ### Knots {#sec-knots}

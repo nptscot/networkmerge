@@ -8,7 +8,7 @@ format: gfm
 
 We thank the review for the positive feedback.
 
-1.2. I am not overly clear on the methods and I think some more content could be added here. For example, the skeletonisation example could have another figure to demonstrate the process. Also, which (skeletonization or Voronoi) is better, what are the differences? Which one was used in the Network Planning tool for Scotland?
+1.2. I am not overly clear on the methods and I think some more content could be added here. For example, the skeletonization example could have another figure to demonstrate the process. Also, which (skeletonization or Voronoi) is better, what are the differences? Which one was used in the Network Planning tool for Scotland?
 
 For us, the "quality" of the Voronoi simplified network appears to be better. Noting this is subjective rather than a quantitative assessment
 However, the algorithm is more complicated and marginally slower.

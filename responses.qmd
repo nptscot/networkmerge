@@ -23,12 +23,12 @@ We have also fleshed out other sections and improved the general flow of the pap
 Similar to the previous comment, we have improved the flow of the paper by adding transitions and clarifying the connections between sections. We have also ensured that the text reads more smoothly and coherently. For example we:
 
 - Added a signpost in Data and Methods after the two-challenge list to lead into geometry first ("We address the geometric simplification first...").
-- Rewrote the skeletonisation opening to a clean buffer step: "As a common first step, we buffer the lines in a projected coordinate system."
+- Rewrote the skeletonization opening to a clean buffer step: "As a common first step, we buffer the lines in a projected coordinate system."
 - Clarified overlap targeting: "only where more than one buffered line segment overlaps."
 - Bridged segmentation -> scaling: added "To mitigate rasterization artefacts, we increase resolution via a uniform affine scale..." and explained the trade-off.
-- Smoothed the hole-removal and skeletonisation-to-vector sentences for a single, continuous flow.
+- Smoothed the hole-removal and skeletonization-to-vector sentences for a single, continuous flow.
 - Rephrased the point-to-line reconstruction with a lead-in and tightened wording. We also noted it as the most complex stage.
-- Introduced the Voronoi approach ("In contrast to skeletonisation...") and tightened the selection criteria for retained edges.
+- Introduced the Voronoi approach ("In contrast to skeletonization...") and tightened the selection criteria for retained edges.
 - Clarified the Post-Processing purpose and defined "knots" succinctly.
 - Added a short bridge at the start of "Skeletonization versus Voronoi" to frame trade-offs.
 - Added a transition at the start of "Joining route networks" (shift from geometry to attributes).
@@ -42,7 +42,7 @@ The paper tackles a task that is not easy - the simplification of road networks.
 - [x] **R2.1** My main comment relates to understanding how good these algorithms are and which is actually better. The paper provides no comparison of the two beyond the visual comparison in Figures 2 and 3. Nor does it provide any validation, leaving the reader without a much-needed understanding of the performance of the proposed methods. Do they do the job well? In which cases are they perfect and in which do they struggle? What are the limitations of the resulting geometry? The paper does not answer any of these questions. My suggestion is to include a section with an explicit comparison of the two methods and guidance on which should be used when. 
 
 We have added a new section titled "Skeletonization versus Voronoi" which compares the two algorithms, compares their performance with reference to performance and size.
-Importantly, we now highlight the performance benefits of the skeletonisation approach for large networks, also highlighting the smoother output of the Voronoi approach.
+Importantly, we now highlight the performance benefits of the skeletonization approach for large networks, also highlighting the smoother output of the Voronoi approach.
 
 - [x] **R2.2** On top of that, it would be great to see a comparison to some ground truth data (I am not sure if the primal network is not that, see below). 
 
@@ -110,7 +110,7 @@ We have clarified in section 3.1 that the 8 m buffer was chosen to reflect UK ro
 
 Done.
 
-- [x] **R2.11** This may be in the appendix, which I haven't received, but the main text would also benefit from understanding the resolution of the raster component in skeletonisation and the reasoning behind it. 
+- [x] **R2.11** This may be in the appendix, which I haven't received, but the main text would also benefit from understanding the resolution of the raster component in skeletonization and the reasoning behind it. 
 
 We have explained the transformation and how it influences the results, e.g. to reduce the 'wiggliness' of the skeletonized output. We now state in the main body of the paper:
 
@@ -139,7 +139,7 @@ This is an important and well-made point. The figure is perhaps the most importa
 To tackle this issue, we have 'zoomed-in' on Princes Street in the visualisation: specifically the bounding box of the figure has been made 3x smaller in the North-South direction and 2x smaller in the East-West direction.
 In parallel to this change, we have made each subfigure larger by making the panel have 1 column instead of 2 previously. 
 We are happy with the result, you can now clearly see that all simplified outputs now convert the 'braided' Princes Street in the center of the figures into a single linestring.
-Differences between the skeletonisation and Voronoi approaches are now much clearer.
+Differences between the skeletonization and Voronoi approaches are now much clearer.
 For example, it is clear that the Voronoi approach captures crossroads better with its ability to identify the central axis of the street network compared with the skeletonized outputs which tend to create unwanted curves just before intersections.
 
 We have also added a scale bar to help show the spatial context of the network simplifications.
@@ -225,13 +225,13 @@ Added a brief data/use-case note in Data and Methods stating the Edinburgh datas
 
  - [x] **R3.14** Introduce references to (subfigures of) Figure 2 in the methods subsections
 
-Inserted explicit references in the skeletonisation and Voronoi subsections to the corresponding columns of @fig-skeleton-line (Otley top row; Armley bottom row) to guide readers to concrete outputs.
+Inserted explicit references in the skeletonization and Voronoi subsections to the corresponding columns of @fig-skeleton-line (Otley top row; Armley bottom row) to guide readers to concrete outputs.
 
-- [x] **R3.15** skeletonisation buffer size 8 meters: at first glance this seems to me use-case specific, not part of methods? so: if this is a location-based choice, i would suggest to move it to the use case description and there argue why 8m was chosen. if this is a general recommendation for future parenx use i would leave this here but then comment on the reasoning behind the choice of the buffer size
+- [x] **R3.15** skeletonization buffer size 8 meters: at first glance this seems to me use-case specific, not part of methods? so: if this is a location-based choice, i would suggest to move it to the use case description and there argue why 8m was chosen. if this is a general recommendation for future parenx use i would leave this here but then comment on the reasoning behind the choice of the buffer size
 
 See our response to **R2.9**. We have clarified that the 8 m buffer is informed by UK road widths and rail track separation, and that it can be adjusted using the `buffer` parameter in the simplification functions.
 
-- [x] **R3.16** skeletonisation: last sentence of section 3.1. is cut short
+- [x] **R3.16** skeletonization: last sentence of section 3.1. is cut short
 
 Typo fixed.
 
@@ -269,7 +269,7 @@ We have updated the conclusion to state that the methods have applications in tr
 
 Fixed.
 
-<!-- - [ ] **PDF2** "In detail, skeletonisation is only applied where more than line-segment buffer overlaps."
+<!-- - [ ] **PDF2** "In detail, skeletonization is only applied where more than line-segment buffer overlaps."
 
 Fixed, it now says "Skeletonization is only applied to segments where more than one of their respective buffers overlap." -->
 

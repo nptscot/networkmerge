@@ -44,7 +44,7 @@ quarto render cookbook.qmd
 
 # Introduction
 
-This cookbook is an addendum of the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, the hope is that by sharing these examples will make using these scripts a bit less painful.
+This cookbook is an addendum to the network merge paper[^1], and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone `parenx` module[^2] was developed and deployed to `pypy`. However, noting this is **beta software**, the hope is that by sharing these examples will make using these scripts a bit less painful.
 
 This was developed and tested on a Debian Linux variant[^3] and run on the command-line interface with various versions of `python3`. While not tested on other environments they should work on under environments and operating systems.
 
@@ -161,7 +161,7 @@ While there are many different ways to manage packages, our experiences suggest 
 
 # Simplification: TL;DR
 
-The remaining "Too Long; Do not Read" sections explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `parenx` wrapper to the `skeletonize.py` and `voronoi.py` simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
+The remaining "Too Long; Do not Read" sections explains more about how the `parenx` scripts work, and introduces a helper function used in testing. The `parenx` wrapper to the `skeletonize.py` and `voronoi.py` simplification scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available[^7]. Both allow the maximum displacement (simplify)[^8] and buffer size (buffer) to be set. 
 
 ## Skeletonize simplification
 
@@ -189,7 +189,7 @@ As the script take a filepath or URL, simplify the rail centre-line track-model 
 
 ```bash
 URL=https://github.com/anisotropi4/parenx/blob/main/data
-skeletonize.py ${URL}/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
+voronoi.py ${URL}/rnet_doncaster_rail.geojson?raw=true sk-doncaster.gpkg
 ```
 
 The base `voronoi.py` also takes a tolerance parameter[^9] to sets to the Voronoi polygon overlap:
@@ -249,7 +249,7 @@ stop		0:00:19.703512
 ```
 
 ## What does the helper `run.sh` do?
-The helper script creates the enviroment and runs the `skeletonize` and `voronoi` simplification scripts with different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. The path and output filename can also be specified.
+The helper script creates the environment and runs the `skeletonize` and `voronoi` simplification scripts with different simplification parameters, and converts the output into a sanitized `GeoJSON` format if `ogr2ogr` is installed. The path and output filename can also be specified.
 
 ### Set up environment
 As above this checks to see if a `venv` directory exists, creates and populates it if not, and activates the environment:
@@ -393,4 +393,4 @@ fi
 Many thanks to everyone who has helped and supported in making this work possible, and making the data available.
 
 * The centre-line track-model is an extract of the Network Rail centre-line track-model hosted by [OpenRailData](https://github.com/openraildata/network-rail-gis) under the [Open Government License](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/), retrieved 2023-07-11.
-* The road network data are static extracts from OpenStreeMap under [CC-BY-SA 2.0](https://www.openstreetmap.org/copyright) through the [OverPassAPI Turbo service](https://overpass-turbo.eu/).
+* The road network data are static extracts from OpenStreetMap under [CC-BY-SA 2.0](https://www.openstreetmap.org/copyright) through the [OverPassAPI Turbo service](https://overpass-turbo.eu/).

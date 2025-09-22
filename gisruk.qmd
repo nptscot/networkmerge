@@ -15,7 +15,7 @@ author:
     affiliation: Environmental Systems Research Institute (Esri), Redlands, CA, USA 
     orcid: 0000-0001-9910-865X
 abstract: |
-  Route network datasets, crucial to transport models, have grown complex, leading to visualization issues and potential misinterpretations. We address this by presenting two methods for simplifying these datasets: image skeletonisation and Voronoi diagram-centreline identification. We have developed two packages, the 'parenx' Python package (available on pip) and the 'rnetmatch' R package (available on GitHub) to implement these methods. The approach has applications in transportation, demonstrated by their use in the publicly available Network Planning Tool funded by Transport for Scotland.
+  Route network datasets, crucial to transport models, have grown complex, leading to visualization issues and potential misinterpretations. We address this by presenting two methods for simplifying these datasets: image skeletonization and Voronoi diagram-centreline identification. We have developed two packages, the 'parenx' Python package (available on pip) and the 'rnetmatch' R package (available on GitHub) to implement these methods. The approach has applications in transportation, demonstrated by their use in the publicly available Network Planning Tool funded by Transport for Scotland.
 keywords: [network simplification, transport planning, urban analytics, geocomputation, reproducible research]
 execute: 
   echo: false
@@ -158,7 +158,7 @@ The aim of this paper is to present new ways to simplify transport networks, wit
 The code underlying the results presented in this paper are available from the following repositories:
 
 - The [`nptscot/networkmerge`](https://github.com/nptscot/networkmerge) repository contains the reproducible paper.
-- The `parenx` Python for image skeletonisation and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
+- The `parenx` Python for image skeletonization and Voronoi diagram-centreline identification is available on PyPI in the GitHub repo [`anisotropi4/parenx`](https://github.com/anisotropi4/parenx).
 - The `rnetmatch` R package for network simplification is available on GitHub in the repo [`nptscot/rnetmatch`](https://github.com/nptscot/rnetmatch).
 
 ```{=html}
@@ -203,10 +203,10 @@ rnet_armley = sf::read_sf("./data/rnet_armley.geojson")
 
 # Methods {#sec-methods}
 
-The key contributions of the paper are the novel methods of image skeletonisation[@scikit2014; @zha1984; @lee1994], presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
+The key contributions of the paper are the novel methods of image skeletonization[@scikit2014; @zha1984; @lee1994], presented in @sec-simplification-via-skeletonization, and simplification with Voronoi diagrams to identify central lines, covered in @sec-simplification-via-voronoi-polygons.
 
 ```{=html}
-<!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonisation section?
+<!-- TODO: shouldn't the following topics be stand-alone subsections rather than existing within the skeletonization section?
 Additionally, the section tackles challenges associated with knots at intersections, offering solutions for their removal to simplify the network's appearance.
 The concept of a primal network that represents a high level of simplification is explored as well. -->
 ```
@@ -214,7 +214,7 @@ The concept of a primal network that represents a high level of simplification i
 <!-- ## Topology-preserving simplification {#sec-topology-preserving-simplification}
 
 Topology-preserving simplification reduces the number of vertices in a linestring while preserving the topology of the network.
-As shown in top panel of @fig-topology-preserving, topology-preserving simplication *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving. -->
+As shown in top panel of @fig-topology-preserving, topology-preserving simplification *can* reduce the number of edges, but fails to merge parallel lines in complex geometries, as shown in the the bottom panel in @fig-topology-preserving. -->
 ```
 <!-- ::: {#fig-topology-preserving layout-ncol="1"} -->
 
@@ -284,7 +284,7 @@ tmap_arrange(m_otley, m_armley)
 The % values represent the "percentage of removable points to retain" argument values used in the simplification process.
 ::: -->
 ```
-## Simplification via skeletonisation {#sec-simplification-via-skeletonization}
+## Simplification via skeletonization {#sec-simplification-via-skeletonization}
 
 <!-- ### Create a projected combined buffered geometry: -->
 
@@ -456,9 +456,9 @@ except AttributeError:
 armley_segment.plot()
 ```
 
-<!-- ### skeletonisation -->
+<!-- ### skeletonization -->
 
-The skeletonisation approach is based on the idea of creating a buffer around the network and then skeletonizing the buffer.
+The skeletonization approach is based on the idea of creating a buffer around the network and then skeletonizing the buffer.
 The buffered lines of the network are first transformed into a raster image.
 Subsequently, this raster image is processed through a thinning algorithm to produce a skeletal representation of the original network.
 
@@ -1208,7 +1208,7 @@ Note that the values on Princes Street (highlighted) are hard to interpret witho
 
 A question raised by the provision of two algorithms is "which is best".
 Based on our visual inspection and discussion, we sense that the Voronoi approach generates higher quality results.
-The skeletonisation approach is more computationally efficient, but the Voronoi approach yields more accurate (in terms of true centreline) and less 'wavy' results.
+The skeletonization approach is more computationally efficient, but the Voronoi approach yields more accurate (in terms of true centreline) and less 'wavy' results.
 However, these are subjective judgements and we would like to test them more rigorously in future work, as outlined below.
 
 We are confident that there will be more research and accompanying open source software to address this knotty problem.
