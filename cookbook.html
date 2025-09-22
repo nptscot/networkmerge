@@ -268,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details></section>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This cookbook is an addendum of the network merge paper<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone <code>parenx</code> module<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was developed and deployed to <code>pypy</code>. However, noting this is <strong>beta software</strong>, this module is neither well documentmed nor intuitive to use. So the hope is that by sharing these examples will make using these scripts a bit less painful.</p>
+<p>This cookbook is an addendum of the network merge paper<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and consists of a number of examples based on real datasets used in the development and testing. As part of this for the paper the standalone <code>parenx</code> module<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was developed and deployed to <code>pypy</code>. However, noting this is <strong>beta software</strong>, the hope is that by sharing these examples will make using these scripts a bit less painful.</p>
 <p>This was developed and tested on a Debian Linux variant<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and run on the command-line interface with various versions of <code>python3</code>. While not tested on other environments they should work on under environments and operating systems.</p>
 </section>
 <section id="set-up-and-run" class="level1" data-number="2">
@@ -331,12 +331,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="notes" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="notes"><span class="header-section-number">2.6</span> Notes</h2>
-<p>While there are many different takes and system to manage <code>python</code> packages, my experience is that package management in a virtual environment with <code>python3</code> just works.</p>
+<p>While there are many different ways to manage packages, our experiences suggest that package management in a virtual environment with <code>python3</code> works well. Another recommended option is to use a Docker container such as the <code>python</code> image from the Geocompx project, which can be downloaded with the command <code>docker pull ghcr.io/geocompx/python</code> (or <code>pythonr</code> for a variant with R packages needed to reproduce all the images in the paper installed) or using the ‘Devcontainer’ in the networkmerge repo for full reproducibility.</p>
 </section>
 </section>
 <section id="simplification-tldr" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Simplification: TL;DR</h1>
-<p>The remaining “Too Long; Do not Read” sections explains more about how the <code>parenx</code> scripts work, and introduces a helper function used in testing. The <code>skeletonize.py</code> and <code>voronoi.py</code> simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Both allow the maximum displacement (simplify)<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and buffer size (buffer) to be set.</p>
+<p>The remaining “Too Long; Do not Read” sections explains more about how the <code>parenx</code> scripts work, and introduces a helper function used in testing. The <code>parenx</code> wrapper to the <code>skeletonize.py</code> and <code>voronoi.py</code> simplication scripts simplify linear geometry with example road and rail data for Leeds, Edinburgh and Doncaster used during development is available<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Both allow the maximum displacement (simplify)<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and buffer size (buffer) to be set.</p>
 <section id="skeletonize-simplification" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="skeletonize-simplification"><span class="header-section-number">3.1</span> Skeletonize simplification</h2>
 <p>As the script take both a filepath or URL, to simplify the rail centre-line track-model near Doncaster to the <code>GeoPKG</code> file <code>sk-doncaster.gpkg</code>:</p>
@@ -511,17 +511,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> sk vr</span>
 <span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
 <span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rm</span> <span class="at">-f</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.geojson</span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        <span class="ex">ogr2ogr</span> <span class="at">-f</span> GeoJSON <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.geojson <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.gpkg line</span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sed</span> <span class="at">-i</span> <span class="st">'s/00000[0-9]*//g'</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.geojson</span>
-<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
-<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> sk vr</span>
-<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
-<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rm</span> <span class="at">-f</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.geojson</span>
-<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>        <span class="ex">ogr2ogr</span> <span class="at">-f</span> GeoJSON <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.geojson <span class="dt">\</span></span>
-<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>            <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.gpkg line</span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sed</span> <span class="at">-i</span> <span class="st">'s/00000[0-9]*//g'</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.geojson</span>
-<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        <span class="ex">ogr2ogr</span> <span class="at">-f</span> GeoJSON <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.geojson <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.gpkg <span class="dt">\</span></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>           line</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sed</span> <span class="at">-i</span> <span class="st">'s/00000[0-9]*//g'</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>.geojson</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> sk vr</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rm</span> <span class="at">-f</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.geojson</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>        <span class="ex">ogr2ogr</span> <span class="at">-f</span> GeoJSON <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.geojson <span class="dt">\</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>            <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.gpkg line</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sed</span> <span class="at">-i</span> <span class="st">'s/00000[0-9]*//g'</span> <span class="va">${k}</span>-<span class="va">${OUTPUT}</span>-simple.geojson</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
