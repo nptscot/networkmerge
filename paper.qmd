@@ -1,19 +1,19 @@
 ---
 title: "Route network simplification for transport planning"
 bibliography: references.bib
-author:
-  - name: Will Deakin
-    affiliation: Digital, Data and Technology services, Network Rail, UK
-    orcid: 0009-0008-5656-4469
-  - name: Zhao Wang
-    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
-    orcid: 0000-0002-4054-0533
-  - name: Josiah Parry
-    affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
-    orcid: 0000-0001-9910-865X
-  - name: Robin Lovelace
-    affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
-    orcid: 0000-0001-5679-6536
+# author:
+#   - name: Will Deakin
+#     affiliation: Digital, Data and Technology services, Network Rail, UK
+#     orcid: 0009-0008-5656-4469
+#   - name: Zhao Wang
+#     affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+#     orcid: 0000-0002-4054-0533
+#   - name: Josiah Parry
+#     affiliation: Environmental Systems Research Institute, Redlands, CA, USA 
+#     orcid: 0000-0001-9910-865X
+#   - name: Robin Lovelace
+#     affiliation: Leeds Institute for Transport Studies, University of Leeds, UK
+#     orcid: 0000-0001-5679-6536
 format:
   # pdf: default
   html: default
@@ -22,15 +22,34 @@ execute:
   echo: false
   message: false
   warning: false
+  eval: false
 editor: 
   markdown: 
     wrap: sentence
 # # Uncomment to run with Jupyter:
 # jupyter: python3
 ---
+Will Deakin<sup>1</sup>, Zhao Wang<sup>2</sup>, Josiah Parry<sup>3</sup>, Robin Lovelace<sup>2,</sup>*
+
+1.  Digital, Data and Technology services, Network Rail, UK ([0009-0008-5656-4469](https://orcid.org/0009-0008-5656-4469))
+2.  Leeds Institute for Transport Studies, University of Leeds, UK ([0000-0002-4054-0533](https://orcid.org/0000-0002-4054-0533), [0000-0001-5679-6536](https://orcid.org/0000-0001-5679-6536))
+3.  Environmental Systems Research Institute, Redlands, CA, USA ([0000-0001-9910-865X](https://orcid.org/0000-0001-9910-865X))
+
+\* Corresponding author: r.lovelace@leeds.ac.uk
+
 
 ```{r}
 # Engine: knitr
+# export and upload Word version
+quarto::quarto_render("paper.qmd", output_format = "docx", output_file = "paper.docx")
+system("gh release list")
+system("gh release upload v3 _site/paper.docx --clobber")
+# Linux system command to convert fig1.png to fig1.jpg:
+system("convert fig1.png -quality 85 fig1.jpg")
+system("convert fig2.png -quality 85 fig2.jpg")
+system("convert fig3.png -quality 85 fig3.jpg")
+# upload jpgs to GitHub release:
+system("gh release upload v3 fig1.jpg fig2.jpg fig3.jpg --clobber")
 ```
 
 <!-- # Reproducibility {.unnumbered} -->
@@ -139,18 +158,13 @@ This can be illustrated with reference to the Propensity to Cycle Tool for Engla
 Implemented in the function `overline()` in the `stplanr` R package [@lovelace2017], the methods enable visualisation of large transport networks and inform investment decisions in transport planning internationally [@lovelace2024; @félix2025].
 However, without further processing, the 'overline' approach has two practical limitations: it retains functionally redundant vertices, leading to large file sizes and slow rendering; and it does not merge parallel ways that represent a single corridor.
 This lack of merging is particularly problematic for visualisation of transport networks, as shown in [@fig-pct; @lovelace2017].
-The left panel shows Otley Road with a flow value of 818 (@fig-otley-road).
-The right panel, by contrast, shows three parallel ways with flow values of 515 (shown), 288 and 47 (values not shown) (@fig-armley-road).
+The left panel shows Otley Road with a flow value of 818.
+The right panel, by contrast, shows three parallel ways with flow values of 515 (shown), 288 and 47 (values not shown).
 Although this section of Armley road has a higher cycling potential than the section of Otley Road shown (515 + 288 + 47 = 850, which is greater than 818), this is not clear from the visualisation.
 
-::: {#fig-pct layout-ncol="2" width="50%"}
-![](images/otley-road-narrow.png){#fig-otley-road width="80%"}
+::: {#fig-pct}
 
-![](images/armley-road-narrow.png){#fig-armley-road width="80%"}
-
-![](images/otley-road-raster.png){#fig-otley-road-raster width="80%"}
-
-![](images/armley-road-raster.png){#fig-armley-road-raster width="80%"}
+![](fig1.jpg){width=100%}{#fig-pct}
 
 Vector (top) and raster (bottom) visualisations of route network results in the Propensity to Cycle Tool.
 Note that it is not clear from the visualisation that the corridor shown in the right hand figures (Armley Road corridor) has greater flow than the corridor shown in the left (Otley Road).
@@ -682,88 +696,9 @@ armley_line = filter_distance(armley_voronoi, armley_boundary, offset)
 
 <!--- ### Voronoi simplified network --->
 
-::: {#fig-skeleton-line layout-ncol="3"}
-```{python}
-#| fig-cap: "Original"
-ax = base_otley.plot(edgecolor="blue", color="blue");
-ax.set_xticks([]);
-ax.set_yticks([]);
-ax.set_xlabel("")
-ax.set_ylabel("")
-for spine in ax.spines.values():
-    spine.set_visible(False)
-```
+::: {#fig-skeleton-line}
 
-```{python}
-#| fig-cap: "skeletonized"
-ax = otley_sk.plot();
-ax.set_xticks([]);
-ax.set_yticks([]);
-ax.set_xlabel("")
-ax.set_ylabel("")
-for spine in ax.spines.values():
-    spine.set_visible(False)
-```
-
-```{python}
-#| fig-cap: "Voronoi"
-otley_line = filter_buffer(otley_line, otley_geometry)
-otley_edge, otley_node = get_source_target(otley_line)
-ix = otley_node["count"] < 4
-otley_square = otley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
-otley_square = gp.GeoSeries(unary_union(otley_square.values).geoms, crs=CRS)
-otley_line = otley_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
-otley_line = set_geometry(otley_line, otley_square)
-otley_line = combine_line(otley_line)
-ax = otley_line.plot();
-ax.set_xticks([]);
-ax.set_yticks([]);
-ax.set_xlabel("")
-ax.set_ylabel("")
-for spine in ax.spines.values():
-    spine.set_visible(False)
-```
-
-```{python}
-#| fig-cap: "Original"
-ax = base_armley.plot(edgecolor="blue", color="blue");
-ax.set_xticks([]);
-ax.set_yticks([]);
-ax.set_xlabel("")
-ax.set_ylabel("")
-for spine in ax.spines.values():
-    spine.set_visible(False)
-```
-
-```{python}
-#| fig-cap: "skeletonized"
-ax = armley_sk.plot();
-ax.set_xticks([]);
-ax.set_yticks([]);
-ax.set_xlabel("")
-ax.set_ylabel("")
-for spine in ax.spines.values():
-    spine.set_visible(False)
-```
-
-```{python}
-#| fig-cap: "Voronoi"
-armley_line = filter_buffer(armley_line, armley_geometry)
-armley_edge, armley_node = get_source_target(armley_line)
-ix = armley_node["count"] < 4
-armley_square = armley_node[ix].buffer(offset, cap_style="square", mitre_limit=offset)
-armley_square = gp.GeoSeries(unary_union(armley_square.values).geoms, crs=CRS)
-armley_line = armley_edge["geometry"].map(get_linestring).explode().to_frame("geometry")
-armley_line = set_geometry(armley_line, armley_square)
-armley_line = combine_line(armley_line)
-ax = armley_line.plot()
-ax.set_xticks([]);
-ax.set_yticks([]);
-ax.set_xlabel("")
-ax.set_ylabel("")
-for spine in ax.spines.values():
-    spine.set_visible(False)
-```
+![](fig2.jpg){width=100%}
 
 Original and simplified versions of the Otley Road (top) and Armley Road (bottom) networks.
 From left to right: original network, skeletonized network, Voronoi simplified network.
@@ -1337,6 +1272,7 @@ plt.show()
 #| fig.cap: "Results of the route network simplification methods applied to Edinburgh city centre. The input dataset (top left) and road centrelines from Ordnance Survey's OpenRoads (©Crown copyright and database right 2025) released under the Open Government License (OGL) (top right) are shown for reference. skeletonized (middle left), Voronoi (middle right) and primal network (bottom left) outputs are shown. A network simplified by the neatnet Python package is also shown (bottom right)."
 #| out-width: 100%
 #| label: fig-results
+#| eval: true
 plot_files = c(
   "data/rnet_base_edinburgh.geojson",
   "data/rnet_os_edinburgh.geojson",
@@ -1394,7 +1330,7 @@ m = tmap::tm_shape(plot_data_adjusted) +
 # # Move to images directory
 # file.rename("edinburgh_simplification.png", "images/edinburgh_simplification.png")
 
-knitr::include_graphics("images/edinburgh_simplification.png")
+knitr::include_graphics("fig3.jpg")
 ```
 
 <!--- Matrix of Route Network Simplification Stages across Armley, Edinburgh, and Doncaster Rail. --->
@@ -1514,8 +1450,8 @@ It was also supported by funding from Transport Scotland via a contract with Sus
 
 We also acknowledge the Network Rail Volunteer Leave Policy for the Promotion of Science, Technology, Engineering and Maths (STEM) subjects in universities, as discussions following an event at the Institute for Transport Studies in Leeds led, in part, to this collaboration.
 
+We have no conflicts of interest to declare.
 
-<!--
 # Author biographies
 
 Will Deakin is the Trains Portfolio Architect in IT Delivery at Network Rail, the British national rail infrastructure manager.
@@ -1528,7 +1464,7 @@ Josiah Parry is a Senior Product Engineer at Environmental Systems Research Inst
 
 Robin Lovelace is Professor of Transport Data Science at the Leeds Institute for Transport Studies (ITS) and Head of Data Science at the UK government agency Active Travel England.
 Robin specializes in data science and geocomputation, with a focus on modeling transport systems, active travel, and decarbonisation.
--->
+
 
 # References
 
