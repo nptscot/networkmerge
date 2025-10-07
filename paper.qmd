@@ -126,6 +126,7 @@ The `riverdist` R package also provides functionality to simplify braided river 
 The methods presented in this paper draw inspiration from these wider applications of linear feature simplification.
 More broadly, our approach is based on techniques that can be applied to any set of overlapping linear features where aggregation is desired, such as simplifying transport or other flow networks to create a consolidated route-view for capacity analysis or strategic modelling.
 
+
 We proceed as follows: @sec-problem outlines the problem of complex route networks.
 @sec-methods presents methods for route network simplification alongside results based on the example datasets.
 @sec-application demonstrates the methods applied to a real transport network (Edinburgh, Scotland) and @sec-discussion concludes with a discussion of the results and future work.
